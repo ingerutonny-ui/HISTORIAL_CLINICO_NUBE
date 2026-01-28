@@ -1,94 +1,68 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Clínico - HISTORIAL_CLINICO_NUBE</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; padding: 20px; }
-        .container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
-        h2 { text-align: center; color: #333; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #666; }
-        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #003366; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        button:hover { background-color: #002244; }
-        .status { text-align: center; margin-top: 15px; font-weight: bold; }
-    </style>
-</head>
-<body>
+import os
+import json
+import requests
+import traceback
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from vercel_blob import put, list_blobs
 
-<div class="container">
-    <h2>Registro de Paciente</h2>
-    <p style="text-align: center; color: #666;">Proyecto: <strong>HISTORIAL_CLINICO_NUBE</strong></p>
-    
-    <div class="form-group">
-        <label>Nombre:</label>
-        <input type="text" id="nombre" placeholder="Ej: Ruben">
-    </div>
-    <div class="form-group">
-        <label>Apellido:</label>
-        <input type="text" id="apellido" placeholder="Ej: Alarcon">
-    </div>
-    <div class="form-group">
-        <label>DNI:</label>
-        <input type="text" id="dni" placeholder="Ej: 4858748">
-    </div>
+app = Flask(__name__)
+CORS(app)
 
-    <button onclick="registrarPaciente()">REGISTRAR PACIENTE</button>
-    <div id="mensaje" class="status"></div>
-</div>
+BLOB_FILENAME = "pacientes_datos.json"
 
-<script>
-    function registrarPaciente() {
-        const nombre = document.getElementById('nombre').value;
-        const apellido = document.getElementById('apellido').value;
-        const dni = document.getElementById('dni').value;
-        const divMensaje = document.getElementById('mensaje');
+@app.route('/api/pacientes', methods=['GET'])
+def get_pacientes():
+    try:
+        all_blobs = list_blobs()
+        target = next((b for b in all_blobs['blobs'] if b['pathname'] == BLOB_FILENAME), None)
+        if target:
+            r = requests.get(target['url'])
+            return jsonify(r.json()), 200
+        return jsonify([]), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-        if (!nombre || !apellido || !dni) {
-            alert("Por favor, completa todos los campos.");
-            return;
+@app.route('/api/pacientes', methods=['POST'])
+def add_paciente():
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No se recibieron datos"}), 400
+
+        # Intentar conectar con el Blob
+        try:
+            all_blobs = list_blobs()
+        except Exception as e:
+            return jsonify({"error": f"Error de autenticación Blob: {str(e)}"}), 500
+
+        target = next((b for b in all_blobs['blobs'] if b['pathname'] == BLOB_FILENAME), None)
+        
+        lista_actual = []
+        if target:
+            r = requests.get(target['url'])
+            lista_actual = r.json()
+
+        nuevo_paciente = {
+            "id": len(lista_actual) + 1,
+            "nombre": data.get('nombre'),
+            "apellido": data.get('apellido'),
+            "dni": data.get('dni')
         }
+        lista_actual.append(nuevo_paciente)
 
-        divMensaje.innerText = "Enviando...";
-        divMensaje.style.color = "blue";
-
-        const datos = { 
-            nombre: nombre, 
-            apellido: apellido, 
-            dni: dni 
-        };
-
-        // La ruta absoluta a tu API en Vercel
-        fetch('/api/pacientes', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(datos)
+        # Guardar en la nube
+        put(BLOB_FILENAME, json.dumps(lista_actual), {
+            "contentType": "application/json",
+            "addRandomSuffix": "false"
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(err => { throw new Error(err.error || 'Error en el servidor') });
-            }
-            return response.json();
-        })
-        .then(data => {
-            divMensaje.innerText = data.mensaje;
-            divMensaje.style.color = "green";
-            alert(data.mensaje);
-            // Limpiar campos tras éxito
-            document.getElementById('nombre').value = '';
-            document.getElementById('apellido').value = '';
-            document.getElementById('dni').value = '';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            divMensaje.innerText = "❌ " + error.message;
-            divMensaje.style.color = "red";
-            alert("❌ " + error.message);
-        });
-    }
-</script>
+        
+        return jsonify({"mensaje": "Registrado exitosamente"}), 201
+    except Exception:
+        # Esto nos dirá el error real en la consola de Vercel
+        error_detallado = traceback.format_exc()
+        print(error_detallado)
+        return jsonify({"error": "Fallo interno", "detalle": error_detallado}), 500
 
-</body>
-</html>
+if __name__ == '__main__':
+    app.run()
