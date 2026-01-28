@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 # Importamos directamente, ya que sys.path ahora incluye esta carpeta
-import crud, models, schemas, database
+import crud, schemas, database
 
 app = FastAPI()
 
