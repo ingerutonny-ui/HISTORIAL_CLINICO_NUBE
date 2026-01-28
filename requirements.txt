@@ -1,4 +1,7 @@
 flask
-flask-cors
-vercel-blob
-requests
+cloudinary
+fpdf2
+fastapi
+uvicorn
+sqlalchemy
+pydantic
