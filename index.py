@@ -1,59 +1,35 @@
 import os
-import json
-import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from vercel_blob import put, list_blobs
+import random
 
 app = Flask(__name__)
 CORS(app)
 
-# Nombre del archivo en tu almacenamiento Blob
-BLOB_FILENAME = "pacientes_datos.json"
-
-@app.route('/api/pacientes', methods=['GET'])
-def get_pacientes():
+@app.route('/api/pacientes', methods=['POST'])
+def registrar_paciente():
     try:
-        all_blobs = list_blobs()
-        target = next((b for b in all_blobs['blobs'] if b['pathname'] == BLOB_FILENAME), None)
-        if target:
-            r = requests.get(target['url'])
-            return jsonify(r.json()), 200
-        return jsonify([]), 200
+        datos = request.json
+        nombre = datos.get('nombre', '').strip()
+        apellido = datos.get('apellido', '').strip()
+        
+        # Lógica exacta para la imagen: Primera letra de Nombre + Primera de Apellido
+        # Si falta alguno, usamos 'X' para evitar errores.
+        in_n = nombre[0].upper() if nombre else 'X'
+        in_a = apellido[0].upper() if apellido else 'X'
+        
+        # Generar 4 números aleatorios (ej. 6055)
+        num = random.randint(1000, 9999)
+        
+        codigo_final = f"{in_n}{in_a}{num}"
+        
+        return jsonify({
+            "mensaje": "PACIENTE REGISTRADO",
+            "codigo": codigo_final
+        }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/api/pacientes', methods=['POST'])
-def add_paciente():
-    try:
-        data = request.json
-        # 1. Obtener datos actuales
-        all_blobs = list_blobs()
-        target = next((b for b in all_blobs['blobs'] if b['pathname'] == BLOB_FILENAME), None)
-        
-        lista_actual = []
-        if target:
-            r = requests.get(target['url'])
-            lista_actual = r.json()
-
-        # 2. Crear el nuevo registro
-        nuevo_paciente = {
-            "id": len(lista_actual) + 1,
-            "nombre": data.get('nombre'),
-            "apellido": data.get('apellido'),
-            "dni": data.get('dni')
-        }
-        lista_actual.append(nuevo_paciente)
-
-        # 3. Guardar en la nube (addRandomSuffix: false es clave)
-        put(BLOB_FILENAME, json.dumps(lista_actual), {
-            "contentType": "application/json",
-            "addRandomSuffix": "false"
-        })
-        
-        return jsonify({"mensaje": "Registrado exitosamente"}), 201
-    except Exception as e:
-        return jsonify({"error": f"Fallo: {str(e)}"}), 500
-
-if __name__ == '__main__':
-    app.run()
+# Manejador para Vercel
+def handler(event, context):
+    return app(event, context)
