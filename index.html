@@ -3,21 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historial Clínico</title>
+    <title>Registro Clínico - HISTORIAL_CLINICO_NUBE</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-align: center; background-color: #f0f2f5; }
+        .container { max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; margin-bottom: 5px; }
+        .info-automatica { background: #fdf9ea; color: #947600; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; border: 1px solid #f1e4b8; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; background-color: #2980b9; color: white; padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; }
+        button:hover { background-color: #1c5982; }
+        .preview-box { margin-top: 15px; padding: 10px; border: 1px dashed #3498db; border-radius: 8px; color: #3498db; display: none; font-family: monospace; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; margin: 0; padding: 20px; text-align: center; background-color: #f4f4f4;">
-    
-    <div style="max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-        <img src="clinica.jpg" alt="Imagen de la Clínica" style="width:100%; height:auto; border-radius: 10px;">
+<body>
+
+    <div class="container">
+        <h1>REGISTRO DE PACIENTE</h1>
+        <p>Proyecto: <strong>HISTORIAL_CLINICO_NUBE</strong></p>
         
-        <h1 style="color: #2c3e50; font-size: 1.5rem;">¡PROYECTO EN LA NUBE ACTIVO!</h1>
+        <div class="info-automatica">
+            Fecha de Ingreso: <span id="fecha-actual"></span>
+        </div>
+
+        <input type="text" id="nombre" placeholder="Nombre(s)" oninput="actualizarVista()" required>
+        <input type="text" id="apellido" placeholder="Apellidos" oninput="actualizarVista()" required>
+        <input type="text" id="dni" placeholder="Cédula de Identidad (CI)" oninput="actualizarVista()" required>
         
-        <p style="color: #7f8c8d;">El esqueleto de <strong>HISTORIAL_CLINICO_NUBE</strong> funciona correctamente.</p>
+        <div id="preview" class="preview-box"></div>
         
-        <hr style="border: 0; height: 1px; background: #eee; margin: 20px 0;">
-        
-        <p style="font-weight: bold; color: #34495e;">-- SAMEL -- DANIEL -- RUBÉN --</p>
+        <button onclick="guardarPaciente()">REGISTRAR PACIENTE</button>
     </div>
 
+    <script>
+        // Cargar fecha automáticamente al abrir la página
+        const hoy = new Date();
+        const fechaISO = hoy.toLocaleDateString('es-ES');
+        document.getElementById('fecha-actual').innerText = fechaISO;
+
+        function generarCodigoUnico() {
+            const nombre = document.getElementById('nombre').value.trim();
+            const apellido = document.getElementById('apellido').value.trim();
+            
+            if (nombre.length > 0 && apellido.length > 0) {
+                const iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
+                // Usamos los últimos 4 dígitos del timestamp para simular un correlativo único AR0001
+                const correlativo = Date.now().toString().slice(-4); 
+                return `${iniciales}${correlativo}`;
+            }
+            return "";
+        }
+
+        function actualizarVista() {
+            const codigo = generarCodigoUnico();
+            const box = document.getElementById('preview');
+            if (codigo) {
+                box.style.display = "block";
+                box.innerText = "CÓDIGO GENERADO: " + codigo;
+            } else {
+                box.style.display = "none";
+            }
+        }
+
+        async function guardarPaciente() {
+            const nombre = document.getElementById('nombre').value;
+            const apellido = document.getElementById('apellido').value;
+            const dni = document.getElementById('dni').value;
+            const codigo = generarCodigoUnico();
+
+            if (!nombre || !apellido || !dni) return alert("⚠️ Error: Llene todos los datos.");
+
+            const url = 'https://historial-clinico-nube.vercel.app/api/pacientes';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        nombre: nombre, 
+                        // Guardamos Fecha y Código dentro del campo Apellido para el historial
+                        apellido: `${apellido} | COD: ${codigo} | FECHA: ${fechaISO}`,
+                        dni: dni 
+                    })
+                });
+
+                if (response.ok) {
+                    alert(`✅ REGISTRADO\nCódigo: ${codigo}\nFecha: ${fechaISO}`);
+                    location.reload(); // Recarga para limpiar y actualizar fecha
+                } else {
+                    alert("❌ Error en el servidor.");
+                }
+            } catch (error) {
+                alert("❌ Sin conexión.");
+            }
+        }
+    </script>
 </body>
 </html>
