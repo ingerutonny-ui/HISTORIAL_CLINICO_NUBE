@@ -1,8 +1,15 @@
+import os
+import sys
+
+# Esta línea es la clave: le dice a Python que busque archivos dentro de la carpeta actual
+sys.path.append(os.path.dirname(__file__))
+
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from typing import List
-# Importación desde la carpeta api para el entorno de Vercel
-from api import crud, models, schemas, database
+
+# Importamos directamente, ya que sys.path ahora incluye esta carpeta
+import crud, models, schemas, database
 
 app = FastAPI()
 
@@ -13,15 +20,11 @@ def get_db():
     finally:
         db.close()
 
-# Eliminamos el prefijo /api/ de aquí porque vercel.json ya lo maneja
+# Usamos la ruta raíz "/" porque vercel.json ya redirige /api/ aquí
 @app.get("/")
+@app.get("/api")
+@app.get("/api/")
 def read_root():
     return {"message": "API de Historial Clínico en la Nube funcionando"}
 
-@app.post("/pacientes", response_model=schemas.Paciente)
-def crear_nuevo_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    return crud.crear_paciente(db=db, paciente=paciente)
-
-@app.get("/pacientes", response_model=List[schemas.Paciente])
-def listar_pacientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return crud.obtener_pacientes(db, skip=skip, limit=limit)
+# ... (deja el resto de tus funciones post y get igual, pero asegúrate de que usen schemas.Paciente, etc.)
