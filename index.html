@@ -5,97 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Clínico - HISTORIAL_CLINICO_NUBE</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-align: center; background-color: #f0f2f5; }
-        .container { max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; margin-bottom: 5px; }
-        .info-automatica { background: #fdf9ea; color: #947600; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; border: 1px solid #f1e4b8; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; background-color: #2980b9; color: white; padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; }
-        button:hover { background-color: #1c5982; }
-        .preview-box { margin-top: 15px; padding: 10px; border: 1px dashed #3498db; border-radius: 8px; color: #3498db; display: none; font-family: monospace; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 500px; }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #666; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #003366; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background-color: #002244; }
+        .status { text-align: center; margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>REGISTRO DE PACIENTE</h1>
-        <p>Proyecto: <strong>HISTORIAL_CLINICO_NUBE</strong></p>
-        
-        <div class="info-automatica">
-            Fecha de Ingreso: <span id="fecha-actual"></span>
-        </div>
-
-        <input type="text" id="nombre" placeholder="Nombre(s)" oninput="actualizarVista()" required>
-        <input type="text" id="apellido" placeholder="Apellidos" oninput="actualizarVista()" required>
-        <input type="text" id="dni" placeholder="Cédula de Identidad (CI)" oninput="actualizarVista()" required>
-        
-        <div id="preview" class="preview-box"></div>
-        
-        <button onclick="guardarPaciente()">REGISTRAR PACIENTE</button>
+<div class="container">
+    <h2>Registro de Paciente</h2>
+    <p style="text-align: center; color: #666;">Proyecto: <strong>HISTORIAL_CLINICO_NUBE</strong></p>
+    
+    <div class="form-group">
+        <label>Nombre:</label>
+        <input type="text" id="nombre" placeholder="Ej: Ruben">
+    </div>
+    <div class="form-group">
+        <label>Apellido:</label>
+        <input type="text" id="apellido" placeholder="Ej: Alarcon">
+    </div>
+    <div class="form-group">
+        <label>DNI:</label>
+        <input type="text" id="dni" placeholder="Ej: 4858748">
     </div>
 
-    <script>
-        // Cargar fecha automáticamente al abrir la página
-        const hoy = new Date();
-        const fechaISO = hoy.toLocaleDateString('es-ES');
-        document.getElementById('fecha-actual').innerText = fechaISO;
+    <button onclick="registrarPaciente()">REGISTRAR PACIENTE</button>
+    <div id="mensaje" class="status"></div>
+</div>
 
-        function generarCodigoUnico() {
-            const nombre = document.getElementById('nombre').value.trim();
-            const apellido = document.getElementById('apellido').value.trim();
-            
-            if (nombre.length > 0 && apellido.length > 0) {
-                const iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
-                // Usamos los últimos 4 dígitos del timestamp para simular un correlativo único AR0001
-                const correlativo = Date.now().toString().slice(-4); 
-                return `${iniciales}${correlativo}`;
-            }
-            return "";
+<script>
+    function registrarPaciente() {
+        const nombre = document.getElementById('nombre').value;
+        const apellido = document.getElementById('apellido').value;
+        const dni = document.getElementById('dni').value;
+        const divMensaje = document.getElementById('mensaje');
+
+        if (!nombre || !apellido || !dni) {
+            alert("Por favor, completa todos los campos.");
+            return;
         }
 
-        function actualizarVista() {
-            const codigo = generarCodigoUnico();
-            const box = document.getElementById('preview');
-            if (codigo) {
-                box.style.display = "block";
-                box.innerText = "CÓDIGO GENERADO: " + codigo;
-            } else {
-                box.style.display = "none";
+        divMensaje.innerText = "Enviando...";
+        divMensaje.style.color = "blue";
+
+        const datos = { 
+            nombre: nombre, 
+            apellido: apellido, 
+            dni: dni 
+        };
+
+        // La ruta absoluta a tu API en Vercel
+        fetch('/api/pacientes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(datos)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'Error en el servidor') });
             }
-        }
+            return response.json();
+        })
+        .then(data => {
+            divMensaje.innerText = data.mensaje;
+            divMensaje.style.color = "green";
+            alert(data.mensaje);
+            // Limpiar campos tras éxito
+            document.getElementById('nombre').value = '';
+            document.getElementById('apellido').value = '';
+            document.getElementById('dni').value = '';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            divMensaje.innerText = "❌ " + error.message;
+            divMensaje.style.color = "red";
+            alert("❌ " + error.message);
+        });
+    }
+</script>
 
-        async function guardarPaciente() {
-            const nombre = document.getElementById('nombre').value;
-            const apellido = document.getElementById('apellido').value;
-            const dni = document.getElementById('dni').value;
-            const codigo = generarCodigoUnico();
-
-            if (!nombre || !apellido || !dni) return alert("⚠️ Error: Llene todos los datos.");
-
-            const url = 'https://historial-clinico-nube.vercel.app/api/pacientes';
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        nombre: nombre, 
-                        // Guardamos Fecha y Código dentro del campo Apellido para el historial
-                        apellido: `${apellido} | COD: ${codigo} | FECHA: ${fechaISO}`,
-                        dni: dni 
-                    })
-                });
-
-                if (response.ok) {
-                    alert(`✅ REGISTRADO\nCódigo: ${codigo}\nFecha: ${fechaISO}`);
-                    location.reload(); // Recarga para limpiar y actualizar fecha
-                } else {
-                    alert("❌ Error en el servidor.");
-                }
-            } catch (error) {
-                alert("❌ Sin conexión.");
-            }
-        }
-    </script>
 </body>
 </html>
