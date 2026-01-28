@@ -10,14 +10,14 @@
       "use": "@vercel/static"
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/pacientes",
-      "destination": "index.py"
+      "src": "/api/pacientes",
+      "dest": "index.py"
     },
     {
-      "source": "/(.*)",
-      "destination": "/$1"
+      "src": "/(.*)",
+      "dest": "/$1"
     }
   ]
 }
