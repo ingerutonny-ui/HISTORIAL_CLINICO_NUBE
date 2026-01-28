@@ -1,52 +1,75 @@
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
-from typing import List
-from pydantic import BaseModel
+import os
+import sqlite3
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 
-# 1. Configuración de Base de Datos (Ruta permitida en Vercel)
-SQLALCHEMY_DATABASE_URL = "sqlite:////tmp/sql_app.db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+app = Flask(__name__)
+# Habilitamos CORS para que el index.html pueda hablar con este código
+CORS(app)
 
-# 2. Modelo de Base de Datos
-class PacienteDB(Base):
-    __tablename__ = "pacientes"
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String)
-    apellido = Column(String)
-    dni = Column(String, unique=True, index=True)
+# Ubicación permitida para escribir en la nube de Vercel
+DB_PATH = '/tmp/pacientes.db'
 
-Base.metadata.create_all(bind=engine)
+def init_db():
+    """Crea la tabla si no existe al iniciar la aplicación"""
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS pacientes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            apellido TEXT NOT NULL,
+            dni TEXT NOT NULL
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
-# 3. Esquemas de validación (Pydantic)
-class PacienteBase(BaseModel):
-    nombre: str
-    apellido: str
-    dni: str
+# Ejecutamos la creación de la tabla cada vez que el servidor despierta
+init_db()
 
-class Paciente(PacienteBase):
-    id: int
-    class Config:
-        from_attributes = True
-
-# 4. Aplicación FastAPI
-app = FastAPI()
-
-def get_db():
-    db = SessionLocal()
+@app.route('/api/pacientes', methods=['POST'])
+def agregar_paciente():
     try:
-        yield db
-    finally:
-        db.close()
+        data = request.json
+        # Extraemos los datos enviados desde el formulario
+        nombre = data.get('nombre')
+        apellido = data.get('apellido')
+        dni = data.get('dni')
 
-@app.get("/api")
-@app.get("/api/")
-def read_root():
-    return {"message": "API de Historial Clínico en la Nube funcionando"}
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO pacientes (nombre, apellido, dni) VALUES (?, ?, ?)',
+                       (nombre, apellido, dni))
+        conn.commit()
+        conn.close()
+        return jsonify({"status": "success", "message": "Paciente guardado"}), 201
+    except Exception as e:
+        # Si algo falla, el servidor nos dirá exactamente qué pasó
+        return jsonify({"status": "error", "message": str(e)}), 500
 
-@app.get("/api/pacientes", response_model=List[Paciente])
-def listar_pacientes(db: Session = Depends(get_db)):
-    return db.query(PacienteDB).all()
+@app.route('/api/pacientes', methods=['GET'])
+def obtener_pacientes():
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM pacientes')
+        rows = cursor.fetchall()
+        conn.close()
+        
+        # Convertimos los datos de la base de datos a formato JSON
+        pacientes = []
+        for p in rows:
+            pacientes.append({
+                "id": p[0],
+                "nombre": p[1],
+                "apellido": p[2],
+                "dni": p[3]
+            })
+        return jsonify(pacientes), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Esta parte es necesaria para el entorno local y Vercel
+if __name__ == '__main__':
+    app.run(debug=True)
