@@ -5,38 +5,53 @@
     <title>Registro Clínico - HISTORIAL_CLINICO_NUBE</title>
     <style>
         body { font-family: sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 400px; text-align: center; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background-color: #2980b9; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .info { background: #fffdf0; padding: 8px; border: 1px solid #f9e79f; border-radius: 6px; margin-bottom: 15px; font-size: 0.9em; }
+        .card { background: white; padding: 2.5rem; border-radius: 15px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); width: 450px; text-align: center; }
+        h2 { color: #1a2a3a; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #d1d9e0; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        button { width: 100%; padding: 14px; background-color: #2980b9; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 15px; }
+        .info-box { background: #fffcf0; padding: 10px; border: 1px solid #f9e79f; border-radius: 8px; margin-bottom: 20px; color: #7d6608; }
+        .codigo-box { display: none; margin-top: 20px; padding: 12px; border: 2px dashed #3498db; border-radius: 8px; color: #2980b9; font-weight: bold; text-transform: uppercase; }
     </style>
 </head>
 <body>
     <div class="card">
         <h2>REGISTRO DE PACIENTE</h2>
         <p>Proyecto: <b>HISTORIAL_CLINICO_NUBE</b></p>
-        <div class="info">Fecha de Ingreso: 28/1/2026</div>
+        <div class="info-box">Fecha de Ingreso: 28/1/2026</div>
+        
         <input type="text" id="nombre" placeholder="Nombre">
         <input type="text" id="apellido" placeholder="Apellido">
-        <input type="text" id="dni" placeholder="DNI">
+        <input type="text" id="ci" placeholder="CI">
+        
+        <div id="resultado" class="codigo-box"></div>
+        
         <button onclick="registrar()">REGISTRAR PACIENTE</button>
-        <p id="mensaje"></p>
     </div>
 
     <script>
         async function registrar() {
+            const resBox = document.getElementById('resultado');
             const datos = {
                 nombre: document.getElementById('nombre').value,
                 apellido: document.getElementById('apellido').value,
-                dni: document.getElementById('dni').value
+                ci: document.getElementById('ci').value
             };
-            const res = await fetch('/api/pacientes', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(datos)
-            });
-            const result = await res.json();
-            document.getElementById('mensaje').innerText = result.mensaje || result.error;
+
+            try {
+                const response = await fetch('/api/pacientes', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(datos)
+                });
+                const result = await response.json();
+                
+                if (result.codigo) {
+                    resBox.style.display = 'block';
+                    resBox.innerText = `CÓDIGO GENERADO: ${result.codigo}`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
         }
     </script>
 </body>
