@@ -46,11 +46,13 @@
                 const result = await response.json();
                 
                 if (result.codigo) {
-                    resBox.style.display = 'block';
                     resBox.innerText = `CÓDIGO GENERADO: ${result.codigo}`;
+                    resBox.style.display = 'block';
+                } else {
+                    alert("Error al generar el código");
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error de conexión:', error);
             }
         }
     </script>
