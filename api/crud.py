@@ -2,11 +2,11 @@ from sqlalchemy.orm import Session
 from . import models
 
 # Crear un nuevo paciente
-def crear_paciente(db: Session, nombre: str, apellido: str, dni: str, fecha_ingreso: str, codigo: str):
+def crear_paciente(db: Session, nombre: str, apellido: str, ci: str, fecha_ingreso: str, codigo: str):
     nuevo_paciente = models.Paciente(
         nombre=nombre,
         apellido=apellido,
-        dni=dni,
+        ci=ci,
         fecha_ingreso=fecha_ingreso,
         codigo=codigo
     )
@@ -19,6 +19,6 @@ def crear_paciente(db: Session, nombre: str, apellido: str, dni: str, fecha_ingr
 def obtener_pacientes(db: Session):
     return db.query(models.Paciente).all()
 
-# Consultar un paciente por DNI
-def obtener_paciente_por_dni(db: Session, dni: str):
-    return db.query(models.Paciente).filter(models.Paciente.dni == dni).first()
+# Consultar un paciente por CI
+def obtener_paciente_por_ci(db: Session, ci: str):
+    return db.query(models.Paciente).filter(models.Paciente.ci == ci).first()
