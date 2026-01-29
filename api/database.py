@@ -1,24 +1,19 @@
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-import datetime
+import os
+from dotenv import load_dotenv
 
-# En Vercel, el único lugar con permiso de escritura es /tmp/
-SQLALCHEMY_DATABASE_URL = "sqlite:////tmp/pacientes.db"
+# Cargar variables del archivo .env
+load_dotenv()
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+# Crear el motor de conexión
+engine = create_engine(DATABASE_URL)
+
+# Crear la sesión
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Base para los modelos
 Base = declarative_base()
-
-class Paciente(Base):
-    __tablename__ = "pacientes"
-
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String, index=True)
-    apellido = Column(String, index=True)
-    dni = Column(String, unique=True, index=True)
-    fecha_ingreso = Column(String)
-    codigo = Column(String, unique=True)
-
-# Crear la tabla si no existe
-Base.metadata.create_all(bind=engine)
