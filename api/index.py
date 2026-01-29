@@ -14,7 +14,6 @@ def registrar():
     db = SessionLocal()
 
     try:
-        # Validar datos con Pydantic
         paciente_data = schemas.PacienteBase(**data)
 
         nuevo_paciente = crud.crear_paciente(
@@ -33,6 +32,8 @@ def registrar():
     finally:
         db.close()
 
-def handler(request):
-    return app(request)
+# 🔧 Esta función es obligatoria para que Vercel ejecute Flask correctamente
+def handler(request, response):
+    return app(request.environ, response.start_response)
+
 
