@@ -1,30 +1,39 @@
-import os
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import random
+from flask import Flask, jsonify, request
+from .database import SessionLocal
+from . import crud
 
 app = Flask(__name__)
-CORS(app)
 
-@app.route('/api/pacientes', methods=['POST'])
-def registrar_paciente():
+@app.route('/api/healthcheck', methods=['GET'])
+def healthcheck():
+    return jsonify({"status": "ok", "message": "HISTORIAL_CLINICO_NUBE funcionando"})
+
+@app.route('/api/registrar', methods=['POST'])
+def registrar():
+    data = request.get_json()
+    db = SessionLocal()
+
     try:
-        datos = request.json
-        nombre = datos.get('nombre', '')
-        apellido = datos.get('apellido', '')
-        
-        # Generar código: Iniciales + 4 números aleatorios
-        iniciales = (nombre[0] if nombre else 'X') + (apellido[0] if apellido else 'X')
-        numero_aleatorio = random.randint(1000, 9999)
-        codigo_generado = f"{iniciales.upper()}{numero_aleatorio}"
-        
-        return jsonify({
-            "mensaje": "PACIENTE REGISTRADO",
-            "codigo": codigo_generado
-        }), 200
+        nuevo_paciente = crud.crear_paciente(
+            db,
+            nombre=data.get("nombre"),
+            apellido=data.get("apellido"),
+            dni=data.get("dni"),
+            fecha_ingreso=data.get("fechaIngreso"),
+            codigo=data.get("codigo")
+        )
+        return jsonify({"status": "ok", "mensaje": "Paciente registrado", "paciente": {
+            "id": nuevo_paciente.id,
+            "nombre": nuevo_paciente.nombre,
+            "apellido": nuevo_paciente.apellido,
+            "dni": nuevo_paciente.dni,
+            "fecha_ingreso": nuevo_paciente.fecha_ingreso,
+            "codigo": nuevo_paciente.codigo
+        }})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"status": "error", "mensaje": str(e)})
+    finally:
+        db.close()
 
-# Requerido para Vercel
-def handler(event, context):
-    return app(event, context)
+def handler(request):
+    return app(request)
