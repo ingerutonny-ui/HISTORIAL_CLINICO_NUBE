@@ -3,6 +3,7 @@ from .database import Base
 
 class Paciente(Base):
     __tablename__ = "pacientes"
+    __table_args__ = {'extend_existing': True}
 
     id = Column(Integer, primary_key=True, index=True)
     nombre = Column(String, index=True)
