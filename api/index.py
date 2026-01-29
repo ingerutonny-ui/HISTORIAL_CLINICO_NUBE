@@ -18,7 +18,7 @@ def registrar():
             db,
             nombre=data.get("nombre"),
             apellido=data.get("apellido"),
-            dni=data.get("dni"),
+            ci=data.get("ci"),
             fecha_ingreso=data.get("fechaIngreso"),
             codigo=data.get("codigo")
         )
@@ -26,7 +26,7 @@ def registrar():
             "id": nuevo_paciente.id,
             "nombre": nuevo_paciente.nombre,
             "apellido": nuevo_paciente.apellido,
-            "dni": nuevo_paciente.dni,
+            "ci": nuevo_paciente.ci,
             "fecha_ingreso": nuevo_paciente.fecha_ingreso,
             "codigo": nuevo_paciente.codigo
         }})
