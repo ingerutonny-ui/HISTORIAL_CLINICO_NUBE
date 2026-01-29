@@ -38,3 +38,9 @@ def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_d
     db.refresh(nuevo_paciente)
     
     return nuevo_paciente
+    
+@app.get("/pacientes/", response_model=list[schemas.PacienteResponse])
+def obtener_pacientes(db: Session = Depends(get_db)):
+    # Busca todos los pacientes en la base de datos
+    pacientes = db.query(models.Paciente).all()
+    return pacientes
