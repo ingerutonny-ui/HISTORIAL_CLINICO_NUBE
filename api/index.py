@@ -33,7 +33,5 @@ def registrar():
         db.close()
 
 # 🔧 Esta función es obligatoria para que Vercel ejecute Flask correctamente
-def handler(request, response):
-    return app(request.environ, response.start_response)
-
-
+def handler(request):
+    return app(request.environ, lambda status, headers: None)
