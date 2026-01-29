@@ -35,3 +35,4 @@ def registrar():
 
 def handler(request):
     return app(request)
+
