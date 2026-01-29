@@ -5,3 +5,5 @@ sqlalchemy
 pydantic
 gunicorn
 psycopg2-binary
+fastapi
+uvicorn
