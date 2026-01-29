@@ -1,3 +1,4 @@
+from http.server import BaseHTTPRequestHandler
 from flask import Flask, jsonify, request
 from .database import SessionLocal
 from . import crud, schemas
@@ -32,6 +33,14 @@ def registrar():
     finally:
         db.close()
 
-# 🔧 Esta función es obligatoria para que Vercel ejecute Flask correctamente
-def handler(request):
-    return app(request.environ, lambda status, headers: None)
+# 🔧 Adaptador oficial para Vercel Functions
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path == "/api/healthcheck":
+            self.send_response(200)
+            self.send_header("Content-type", "application/json")
+            self.end_headers()
+            self.wfile.write(b'{"status":"ok","message":"HISTORIAL_CLINICO_NUBE funcionando"}')
+        else:
+            self.send_response(404)
+            self.end_headers()
