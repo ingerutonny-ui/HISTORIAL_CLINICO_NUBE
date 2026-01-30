@@ -15,14 +15,14 @@
         .form-label { display: block; text-align: left; font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; }
         .form-control { border-radius: 12px; background-color: #f4f7fa; border: none; padding: 14px; margin-bottom: 20px; color: #1a2b4b; font-weight: 600; text-align: center; }
         
-        /* Código elegante centrado semi-claro */
         #codigo_display { background-color: #f0f4ff !important; color: #2d6df6 !important; font-size: 18px; letter-spacing: 4px; border: 1px solid #dbe4ff; display: none; margin-bottom: 25px; }
         
-        .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 16px; font-weight: 700; width: 100%; color: white; margin-top: 10px; }
-        /* Botón con margen plomo clarito solicitado */
-        .btn-db { background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 12px; font-weight: 700; width: 100%; margin-top: 15px; color: #7a869a; font-size: 12px; text-transform: uppercase; }
+        .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 16px; font-weight: 700; width: 100%; color: white; margin-top: 10px; transition: 0.3s; }
+        .btn-registrar:hover { background-color: #1a56d1; }
         
-        #seccionLista { display: none; width: 100%; max-width: 400px; margin-top: 30px; }
+        .btn-db { background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 12px; font-weight: 700; width: 100%; margin-top: 15px; color: #7a869a; font-size: 12px; text-transform: uppercase; cursor: pointer; }
+        
+        #seccionLista { display: none; width: 100%; max-width: 400px; margin-top: 30px; padding-bottom: 50px; }
         .paciente-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border: 1px solid #f0f0f0; }
         .paciente-card h4 { margin: 0; font-size: 13px; font-weight: 800; color: #1a2b4b; text-transform: uppercase; }
         .paciente-codigo { font-weight: 800; color: #2d6df6; font-size: 12px; background: #f0f4ff; padding: 4px 8px; border-radius: 6px; }
@@ -46,7 +46,7 @@
 
             <input type="text" id="codigo_display" class="form-control" readonly>
 
-            <button type="submit" class="btn btn-registrar">REGISTRAR PACIENTE</button>
+            <button type="submit" id="btnRegistrar" class="btn btn-registrar">REGISTRAR PACIENTE</button>
             <button type="button" id="btnToggleDB" class="btn btn-db">CONSULTAR BASE DE DATOS</button>
         </form>
     </div>
@@ -57,25 +57,28 @@
     </div>
 
     <script>
-        const API_URL = 'https://historial-clinico-nube.onrender.com';
+        // URL EXACTA DE TU PROYECTO NUBE
+        const API_URL = 'https://historial-clinico-nube.onrender.com/pacientes/';
         
-        // Poner fecha actual
+        // 1. FECHA AUTOMÁTICA
         const fechaDiv = document.getElementById('fechaActual');
         const hoy = new Date();
         fechaDiv.innerText = hoy.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         const nombres = document.getElementById('nombres');
         const apellidos = document.getElementById('apellidos');
+        const ci = document.getElementById('ci');
         const codigoDisplay = document.getElementById('codigo_display');
         const btnToggle = document.getElementById('btnToggleDB');
         const seccionLista = document.getElementById('seccionLista');
 
-        // Generar código aleatorio con iniciales
-        function generarCodigo() {
+        // 2. GENERAR CÓDIGO (Iniciales + 4 números aleatorios)
+        function gestionarCodigo() {
             const n = nombres.value.trim().charAt(0).toUpperCase();
             const a = apellidos.value.trim().charAt(0).toUpperCase();
+            
             if (n && a) {
-                if (!codigoDisplay.value) {
+                if (!codigoDisplay.value || codigoDisplay.value.charAt(0) !== n || codigoDisplay.value.charAt(1) !== a) {
                     const random = Math.floor(1000 + Math.random() * 9000);
                     codigoDisplay.value = n + a + random;
                 }
@@ -85,15 +88,18 @@
                 codigoDisplay.value = '';
             }
         }
-        nombres.addEventListener('input', generarCodigo);
-        apellidos.addEventListener('input', generarCodigo);
+        nombres.addEventListener('input', gestionarCodigo);
+        apellidos.addEventListener('input', gestionarCodigo);
 
-        // CONSULTAR / CERRAR BASE DE DATOS
-        btnToggle.onclick = async function() {
+        // 3. BOTÓN CONSULTAR / CERRAR (CONMUTADOR)
+        btnToggle.addEventListener('click', async () => {
             if (seccionLista.style.display === 'none' || seccionLista.style.display === '') {
                 try {
-                    const res = await fetch(`${API_URL}/pacientes/`);
+                    btnToggle.innerText = 'CARGANDO...';
+                    const res = await fetch(API_URL);
+                    if (!res.ok) throw new Error();
                     const data = await res.json();
+                    
                     const lista = document.getElementById('listaContenido');
                     lista.innerHTML = '';
                     data.reverse().forEach(p => {
@@ -103,36 +109,55 @@
                                 <div class="paciente-codigo">${p.codigo_paciente}</div>
                             </div>`;
                     });
+                    
                     seccionLista.style.display = 'block';
                     btnToggle.innerText = 'CERRAR BASE DE DATOS';
-                } catch (e) { alert("Error de conexión."); }
+                } catch (e) {
+                    alert("No se pudo conectar con la base de datos en Render.");
+                    btnToggle.innerText = 'CONSULTAR BASE DE DATOS';
+                }
             } else {
                 seccionLista.style.display = 'none';
                 btnToggle.innerText = 'CONSULTAR BASE DE DATOS';
             }
-        };
+        });
 
-        // GUARDAR REGISTRO
-        document.getElementById('formRegistro').onsubmit = async function(e) {
+        // 4. BOTÓN REGISTRAR (ENVÍO A RENDER)
+        document.getElementById('formRegistro').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const btnReg = document.getElementById('btnRegistrar');
+            btnReg.innerText = 'GUARDANDO...';
+            btnReg.disabled = true;
+
             const datos = {
                 nombres: nombres.value,
                 apellidos: apellidos.value,
-                documento_identidad: document.getElementById('ci').value,
+                documento_identidad: ci.value,
                 codigo_paciente: codigoDisplay.value
             };
+
             try {
-                const res = await fetch(`${API_URL}/pacientes/`, {
+                const res = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
                 });
+
                 if (res.ok) {
                     const p = await res.json();
+                    // Salto a declaración jurada con parámetros
                     window.location.href = `declaracion_jurada.html?nombre=${encodeURIComponent(p.nombres + ' ' + p.apellidos)}&ci=${encodeURIComponent(p.documento_identidad)}&codigo=${encodeURIComponent(p.codigo_paciente)}`;
+                } else {
+                    alert("Error en el registro. Verifique si el CI ya existe.");
+                    btnReg.innerText = 'REGISTRAR PACIENTE';
+                    btnReg.disabled = false;
                 }
-            } catch (e) { alert("Error al registrar."); }
-        };
+            } catch (e) {
+                alert("Error crítico de conexión.");
+                btnReg.innerText = 'REGISTRAR PACIENTE';
+                btnReg.disabled = false;
+            }
+        });
     </script>
 </body>
 </html>
