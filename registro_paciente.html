@@ -1,80 +1,43 @@
-<script>
-        // CAMBIO CRÍTICO: Eliminamos la subruta /pacientes de la base para probar la conexión directa
-        const API_BASE = 'https://historial-clinico-936s.onrender.com';
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from typing import List
+from . import models, schemas, crud
+from .database import engine, SessionLocal
 
-        document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES', { 
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-        }).toUpperCase();
+# Crea las tablas automáticamente en la base de datos de Render
+models.Base.metadata.create_all(bind=engine)
 
-        const inputNombres = document.getElementById('nombres');
-        const inputApellidos = document.getElementById('apellidos');
-        const codigoDisplay = document.getElementById('codigo_display');
+app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
-        function generarCodigo() {
-            const n = inputNombres.value.trim().substring(0,1).toUpperCase();
-            const a = inputApellidos.value.trim().substring(0,1).toUpperCase();
-            if (n && a) {
-                const num = Math.floor(1000 + Math.random() * 9000);
-                codigoDisplay.value = n + a + num;
-                codigoDisplay.style.display = 'block';
-                document.getElementById('label_codigo').style.display = 'block';
-            }
-        }
-        inputNombres.oninput = generarCodigo;
-        inputApellidos.oninput = generarCodigo;
+# CONFIGURACIÓN TOTAL DE CORS: Permite la entrada desde cualquier origen (GitHub)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-        document.getElementById('formRegistro').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnRegistrar');
-            btn.innerText = 'CONECTANDO...';
-            btn.disabled = true;
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-            const datos = {
-                nombres: inputNombres.value,
-                apellidos: inputApellidos.value,
-                documento_identidad: document.getElementById('ci').value,
-                codigo_paciente: codigoDisplay.value
-            };
+@app.get("/")
+def home():
+    return {"mensaje": "Servidor HISTORIAL_CLINICO_NUBE activo"}
 
-            try {
-                // Probamos la ruta con el slash final exacto que pide FastAPI
-                const res = await fetch(`${API_BASE}/pacientes/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
+@app.get("/pacientes", response_model=List[schemas.Paciente])
+def read_pacientes(db: Session = Depends(get_db)):
+    return crud.get_pacientes(db)
 
-                if (res.ok) {
-                    alert("PACIENTE REGISTRADO EN LA NUBE");
-                    location.reload();
-                } else {
-                    const err = await res.json();
-                    alert("SERVIDOR DICE: " + (err.detail || "Error de datos"));
-                }
-            } catch (e) {
-                // Si esto sale, es que el navegador sigue bloqueando la IP de Render
-                alert("EL NAVEGADOR BLOQUEA LA RED. Intenta abrir la página en Modo Incógnito.");
-            } finally {
-                btn.innerText = 'REGISTRAR PACIENTE';
-                btn.disabled = false;
-            }
-        };
-
-        // Botón de consulta
-        document.getElementById('btnToggleDB').onclick = async () => {
-            const lista = document.getElementById('listaContenido');
-            const seccion = document.getElementById('seccionLista');
-            try {
-                const res = await fetch(`${API_BASE}/pacientes`);
-                const data = await res.json();
-                lista.innerHTML = data.map(p => `
-                    <div style="background:white; padding:10px; margin-bottom:5px; border-radius:10px; border:1px solid #eee; display:flex; justify-content:space-between;">
-                        <span>${p.nombres} ${p.apellidos}</span>
-                        <b style="color:blue">${p.codigo_paciente}</b>
-                    </div>`).join('');
-                seccion.style.display = 'block';
-            } catch (e) {
-                alert("No se puede leer la base de datos.");
-            }
-        };
-    </script>
+@app.post("/pacientes/", response_model=schemas.Paciente)
+def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
+    # Verifica si el paciente ya existe por Documento de Identidad
+    db_paciente = crud.get_paciente_by_ci(db, ci=paciente.documento_identidad)
+    if db_paciente:
+        raise HTTPException(status_code=400, detail="El documento de identidad ya está registrado.")
+    return crud.create_paciente(db=db, paciente=paciente)
