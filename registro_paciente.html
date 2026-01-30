@@ -2,49 +2,55 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HISTORIAL CLÍNICO NUBE</title>
+    <title>REGISTRO - HISTORIAL CLÍNICO NUBE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background:#f8f9fa; display:flex; flex-direction:column; align-items:center; padding-top:50px; }
-        .box { background:white; padding:40px; border-radius:30px; box-shadow:0 10px 40px rgba(0,0,0,0.05); width:400px; }
-        .form-control { background:#f4f7fa; border:none; margin-bottom:15px; padding:12px; }
-        .btn-reg { background:#2d6df6; color:white; width:100%; padding:15px; border:none; border-radius:12px; font-weight:700; }
+        body { background:#f8f9fa; font-family:'Segoe UI',sans-serif; display:flex; flex-direction:column; align-items:center; padding-top:50px; }
+        .box { max-width:400px; width:95%; background:white; padding:40px; border-radius:30px; box-shadow:0 10px 40px rgba(0,0,0,0.05); }
+        .label { font-size:11px; font-weight:700; color:#a0aab4; text-transform:uppercase; margin-bottom:5px; display:block; }
+        .form-control { border-radius:12px; background:#f4f7fa; border:none; padding:12px; margin-bottom:20px; font-weight:600; }
         #codigo_display { background:#f0f4ff!important; color:#2d6df6!important; text-align:center; font-weight:800; display:none; }
+        .btn-reg { background:#2d6df6; border:none; border-radius:12px; padding:15px; font-weight:700; width:100%; color:white; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h2 class="text-center">REGISTRO</h2>
+        <h2 class="text-center" style="font-weight:800; color:#1a2b4b;">REGISTRO</h2>
         <form id="formRegistro">
-            <input type="text" id="nombres" placeholder="NOMBRES" class="form-control" required>
-            <input type="text" id="apellidos" placeholder="APELLIDOS" class="form-control" required>
-            <input type="text" id="ci" placeholder="DOCUMENTO (CI)" class="form-control" required>
+            <span class="label">NOMBRES</span>
+            <input type="text" id="nombres" class="form-control" required autocomplete="off">
+            <span class="label">APELLIDOS</span>
+            <input type="text" id="apellidos" class="form-control" required autocomplete="off">
+            <span class="label">DOCUMENTO (CI)</span>
+            <input type="text" id="ci" class="form-control" required autocomplete="off">
+            <span class="label" id="l_cod" style="display:none; text-align:center;">CÓDIGO GENERADO</span>
             <input type="text" id="codigo_display" class="form-control" readonly>
             <button type="submit" id="btn" class="btn-reg">REGISTRAR PACIENTE</button>
         </form>
     </div>
 
     <script>
-        const API = "https://historial-clinico-936s.onrender.com/pacientes/";
-
+        const API = 'https://historial-clinico-936s.onrender.com/pacientes/';
         const n = document.getElementById('nombres');
         const a = document.getElementById('apellidos');
         const c = document.getElementById('codigo_display');
 
-        function gen() {
+        function generar() {
             if(n.value && a.value) {
                 if(!c.value) c.value = n.value[0].toUpperCase() + a.value[0].toUpperCase() + Math.floor(1000+Math.random()*9000);
                 c.style.display = 'block';
+                document.getElementById('l_cod').style.display = 'block';
             }
         }
-        n.oninput = gen; a.oninput = gen;
+        n.oninput = generar; a.oninput = generar;
 
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn');
-            btn.innerText = "ENVIANDO...";
-            
-            const data = {
+            btn.innerText = "GUARDANDO...";
+            btn.disabled = true;
+
+            const payload = {
                 nombres: n.value,
                 apellidos: a.value,
                 documento_identidad: document.getElementById('ci').value,
@@ -55,12 +61,16 @@
                 const r = await fetch(API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(payload)
                 });
-                if(r.ok) { alert("REGISTRADO"); location.reload(); }
-                else { const err = await r.json(); alert(err.detail); }
-            } catch (err) { alert("FALLO DE RED"); }
-            btn.innerText = "REGISTRAR PACIENTE";
+                if(r.ok) { alert("PACIENTE REGISTRADO"); location.reload(); }
+                else { const e = await r.json(); alert(e.detail || "Error"); }
+            } catch (err) {
+                alert("FALLO DE RED: El navegador bloqueó la conexión.");
+            } finally {
+                btn.innerText = "REGISTRAR PACIENTE";
+                btn.disabled = false;
+            }
         };
     </script>
 </body>
