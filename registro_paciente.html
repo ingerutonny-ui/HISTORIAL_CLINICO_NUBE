@@ -6,23 +6,25 @@
     <title>REGISTRO - HISTORIAL CLÍNICO NUBE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
-        .registro-container { max-width: 400px; width: 95%; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); text-align: center; }
-        .registro-container h2 { font-weight: 800; color: #1a2b4b; margin-bottom: 5px; }
-        .registro-container p.brand { color: #a0aab4; font-size: 11px; letter-spacing: 2px; margin-bottom: 30px; text-transform: uppercase; }
-        .form-label { display: block; text-align: left; font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-bottom: 5px; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 60px; }
+        .registro-container { max-width: 400px; width: 90%; background: white; padding: 40px; border-radius: 35px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); text-align: center; }
+        .registro-container h2 { font-weight: 800; color: #1a2b4b; letter-spacing: 1px; margin-bottom: 5px; }
+        .registro-container p.brand { color: #a0aab4; font-size: 11px; letter-spacing: 2px; margin-bottom: 35px; text-transform: uppercase; }
+        .form-label { display: block; text-align: left; font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; }
         .form-control { border-radius: 12px; background-color: #f4f7fa; border: none; padding: 12px; margin-bottom: 20px; color: #1a2b4b; font-weight: 600; }
         
-        /* Estilo elegante para el código generado */
-        .codigo-box { background-color: #eef2ff !important; color: #2d6df6 !important; font-size: 18px; letter-spacing: 3px; display: none; }
+        /* Código elegante semi-claro */
+        .codigo-box { background-color: #f0f4ff !important; color: #2d6df6 !important; font-size: 16px; letter-spacing: 2px; text-align: center; border: 1px dashed #2d6df6; display: none; }
         
-        .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 15px; font-weight: 700; width: 100%; color: white; }
-        .btn-db { background: white; border: 2px solid #000; border-radius: 12px; padding: 10px; font-weight: 700; width: 100%; margin-top: 15px; color: #000; font-size: 13px; text-transform: uppercase; }
+        .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 16px; font-weight: 700; width: 100%; color: white; box-shadow: 0 5px 15px rgba(45, 109, 246, 0.2); }
+        .btn-db { background: white; border: 2px solid #000; border-radius: 12px; padding: 10px; font-weight: 700; width: 100%; margin-top: 15px; color: #000; font-size: 12px; text-transform: uppercase; }
         
-        /* Lista de pacientes */
-        #seccionLista { display: none; width: 100%; max-width: 400px; margin-top: 20px; }
-        .paciente-item { background: white; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); }
-        .paciente-item span { font-weight: 700; color: #1a2b4b; text-transform: uppercase; font-size: 13px; }
+        /* Lista inferior (como en la segunda imagen) */
+        #seccionLista { display: none; width: 100%; max-width: 400px; margin-top: 30px; }
+        .paciente-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.02); }
+        .paciente-card div h4 { margin: 0; font-size: 14px; font-weight: 800; color: #1a2b4b; text-transform: uppercase; }
+        .paciente-card div p { margin: 0; font-size: 11px; color: #a0aab4; }
+        .paciente-codigo { font-weight: 800; color: #2d6df6; background: #eef2ff; padding: 5px 10px; border-radius: 8px; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -32,10 +34,10 @@
         
         <form id="formRegistro">
             <label class="form-label">NOMBRES</label>
-            <input type="text" id="nombres" class="form-control" placeholder="Escriba aquí..." required>
+            <input type="text" id="nombres" class="form-control" required>
 
             <label class="form-label">APELLIDOS</label>
-            <input type="text" id="apellidos" class="form-control" placeholder="Escriba aquí..." required>
+            <input type="text" id="apellidos" class="form-control" required>
 
             <label class="form-label">DOCUMENTO (CI)</label>
             <input type="text" id="ci" class="form-control" required>
@@ -48,57 +50,58 @@
     </div>
 
     <div id="seccionLista">
-        <h6 class="text-center mt-4 mb-3" style="font-size: 10px; color: #a0aab4; letter-spacing: 2px;">PACIENTES EN LA NUBE</h6>
+        <h6 class="text-center mb-3" style="font-size: 10px; color: #a0aab4; letter-spacing: 2px;">PACIENTES EN LA NUBE</h6>
         <div id="listaContenido"></div>
     </div>
 
     <script>
+        const API_URL = 'https://historial-clinico-nube.onrender.com';
         const nombres = document.getElementById('nombres');
         const apellidos = document.getElementById('apellidos');
         const codigoDisplay = document.getElementById('codigo_display');
         const btnToggle = document.getElementById('btnToggleDB');
         const seccionLista = document.getElementById('seccionLista');
 
-        // GENERAR CÓDIGO ALEATORIO CON INICIALES
-        function generarCodigo() {
+        // Generar código aleatorio
+        function actualizarCodigo() {
             const n = nombres.value.trim().charAt(0).toUpperCase();
             const a = apellidos.value.trim().charAt(0).toUpperCase();
-            
             if (n && a) {
-                const randomNum = Math.floor(1000 + Math.random() * 9000); // 4 números aleatorios
-                codigoDisplay.value = n + a + randomNum;
+                const random = Math.floor(1000 + Math.random() * 9000);
+                codigoDisplay.value = n + a + random;
                 codigoDisplay.style.display = 'block';
             } else {
                 codigoDisplay.style.display = 'none';
             }
         }
+        nombres.addEventListener('input', actualizarCodigo);
+        apellidos.addEventListener('input', actualizarCodigo);
 
-        nombres.addEventListener('input', generarCodigo);
-        apellidos.addEventListener('input', generarCodigo);
-
-        // BOTÓN CONMUTADOR (CONSULTAR / CERRAR)
+        // Botón Consultar/Cerrar (Funcional)
         btnToggle.addEventListener('click', async () => {
             if (seccionLista.style.display === 'none' || seccionLista.style.display === '') {
-                // Abrir
                 try {
-                    const res = await fetch('https://historial-clinico-nube.onrender.com/pacientes/');
-                    const pacientes = await res.json();
+                    const res = await fetch(`${API_URL}/pacientes/`);
+                    const data = await res.json();
                     const lista = document.getElementById('listaContenido');
                     lista.innerHTML = '';
-                    pacientes.reverse().forEach(p => {
-                        lista.innerHTML += `<div class="paciente-item"><span>${p.nombres} ${p.apellidos}</span> <small style="color:#2d6df6">${p.codigo_paciente}</small></div>`;
+                    data.reverse().forEach(p => {
+                        lista.innerHTML += `
+                            <div class="paciente-card">
+                                <div><h4>${p.nombres} ${p.apellidos}</h4><p>CI: ${p.documento_identidad}</p></div>
+                                <div class="paciente-codigo">${p.codigo_paciente}</div>
+                            </div>`;
                     });
                     seccionLista.style.display = 'block';
                     btnToggle.innerText = 'CERRAR BASE DE DATOS';
-                } catch (e) { alert("Error al conectar con la nube."); }
+                } catch (e) { alert("Error de conexión con la base de datos."); }
             } else {
-                // Cerrar
                 seccionLista.style.display = 'none';
                 btnToggle.innerText = 'CONSULTAR BASE DE DATOS';
             }
         });
 
-        // GUARDAR REGISTRO
+        // Registrar paciente
         document.getElementById('formRegistro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const datos = {
@@ -107,17 +110,17 @@
                 documento_identidad: document.getElementById('ci').value,
                 codigo_paciente: codigoDisplay.value
             };
-
-            const response = await fetch('https://historial-clinico-nube.onrender.com/pacientes/', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                window.location.href = `declaracion_jurada.html?nombre=${encodeURIComponent(data.nombres + ' ' + data.apellidos)}&ci=${encodeURIComponent(data.documento_identidad)}&codigo=${encodeURIComponent(data.codigo_paciente)}`;
-            }
+            try {
+                const res = await fetch(`${API_URL}/pacientes/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    window.location.href = `declaracion_jurada.html?nombre=${encodeURIComponent(data.nombres + ' ' + data.apellidos)}&ci=${encodeURIComponent(data.documento_identidad)}&codigo=${encodeURIComponent(data.codigo_paciente)}`;
+                }
+            } catch (e) { alert("Error al registrar."); }
         });
     </script>
 </body>
