@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,10 +17,10 @@
 
         .form-label { display: block; font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; text-align: left; }
         
-        /* Inputs alineados a la IZQUIERDA */
+        /* Inputs alineados a la izquierda */
         .form-control { border-radius: 12px; background-color: #f4f7fa; border: none; padding: 14px; margin-bottom: 20px; color: #1a2b4b; font-weight: 600; text-align: left; }
         
-        /* ÚNICO ELEMENTO CENTRADO: EL CÓDIGO GENERADO */
+        /* Único elemento centrado: El Código */
         #codigo_display { background-color: #f0f4ff !important; color: #2d6df6 !important; font-size: 18px; letter-spacing: 4px; border: 1px solid #dbe4ff; display: none; margin-bottom: 25px; text-align: center; width: 100%; }
         
         .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 16px; font-weight: 700; width: 100%; color: white; margin-top: 10px; text-align: center; }
@@ -63,7 +64,9 @@
     </div>
 
     <script>
-        const API_URL = 'https://historial-clinico-nube.onrender.com/pacientes';
+        // URL ACTUALIZADA SEGÚN TU IMAGEN DE RENDER
+        const API_URL = 'https://historial-clinico-936s.onrender.com/pacientes';
+        
         document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES');
 
         const nombres = document.getElementById('nombres');
@@ -96,16 +99,21 @@
                 btnToggle.innerText = 'CONECTANDO...';
                 try {
                     const res = await fetch(API_URL);
+                    if (!res.ok) throw new Error();
                     const data = await res.json();
                     const lista = document.getElementById('listaContenido');
                     lista.innerHTML = '';
                     data.reverse().forEach(p => {
-                        lista.innerHTML += `<div class="paciente-card"><div><h4>${p.nombres} ${p.apellidos}</h4></div><div class="paciente-codigo">${p.codigo_paciente}</div></div>`;
+                        lista.innerHTML += `
+                            <div class="paciente-card">
+                                <div><h4>${p.nombres} ${p.apellidos}</h4></div>
+                                <div class="paciente-codigo">${p.codigo_paciente}</div>
+                            </div>`;
                     });
                     seccionLista.style.display = 'block';
                     btnToggle.innerText = 'CERRAR BASE DE DATOS';
                 } catch (e) {
-                    alert("Error: No se pudo conectar a la Nube.");
+                    alert("Error: No se pudo conectar con el servidor en Render.");
                     btnToggle.innerText = 'CONSULTAR BASE DE DATOS';
                 }
             } else {
@@ -119,6 +127,7 @@
             const btn = document.getElementById('btnRegistrar');
             btn.innerText = 'GUARDANDO...';
             btn.disabled = true;
+
             try {
                 const res = await fetch(API_URL + '/', {
                     method: 'POST',
@@ -130,16 +139,17 @@
                         codigo_paciente: codigoDisplay.value
                     })
                 });
+
                 if (res.ok) {
                     const p = await res.json();
                     window.location.href = `declaracion_jurada.html?nombre=${encodeURIComponent(p.nombres+' '+p.apellidos)}&ci=${p.documento_identidad}&codigo=${p.codigo_paciente}`;
                 } else {
-                    alert("Error al guardar.");
+                    alert("Error al registrar. El CI podría estar duplicado.");
                     btn.innerText = 'REGISTRAR PACIENTE';
                     btn.disabled = false;
                 }
             } catch (e) {
-                alert("Fallo de red.");
+                alert("Fallo de red al intentar registrar.");
                 btn.innerText = 'REGISTRAR PACIENTE';
                 btn.disabled = false;
             }
