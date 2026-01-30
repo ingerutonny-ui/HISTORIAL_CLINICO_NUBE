@@ -2,66 +2,56 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - HISTORIAL_CLINICO_NUBE</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Registro de Paciente - HISTORIAL_CLINICO_NUBE</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body { background-color: #f4f7f6; }
-        .card { border: none; border-radius: 15px; }
-        .btn-primary { background-color: #0d6efd; border: none; }
+        .card-header { background-color: #0056b3; color: white; }
+        .btn-primary { background-color: #007bff; border: none; width: 100%; }
     </style>
 </head>
-<body>
-    <div class="container py-5">
+<body class="bg-light">
+    <div class="container mt-5">
         <div class="row justify-content-center">
-            <div class="col-12 col-md-8 col-lg-6">
-                <div class="card shadow-lg p-4">
-                    <h2 class="text-center text-primary mb-4">Registro de Paciente</h2>
-                    <p class="text-muted text-center">Ingrese los datos básicos para iniciar el historial.</p>
-                    <hr>
-                    
-                    <form id="registroForm">
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Nombres</label>
-                            <input type="text" id="nombres" class="form-control form-control-lg" placeholder="Ej. Juan" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Apellidos</label>
-                            <input type="text" id="apellidos" class="form-control form-control-lg" placeholder="Ej. Pérez" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label class="form-label fw-bold">Documento de Identidad (CI)</label>
-                            <input type="text" id="documento_identidad" class="form-control form-control-lg" placeholder="Número de CI" required>
-                        </div>
-
-                        <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                Guardar y Continuar 
-                            </button>
-                        </div>
-                    </form>
+            <div class="col-md-6">
+                <div class="card shadow">
+                    <div class="card-header text-center">
+                        <h3 class="mb-0">Registro de Paciente</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="formRegistro">
+                            <div class="mb-3">
+                                <label class="form-label">Nombres</label>
+                                <input type="text" id="nombres" class="form-control" placeholder="Ej. Carlos" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Apellidos</label>
+                                <input type="text" id="apellidos" class="form-control" placeholder="Ej. Fernandez" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Documento de Identidad (CI)</label>
+                                <input type="text" id="ci" class="form-control" placeholder="Ej. 8746568" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg">Guardar y Continuar</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const form = document.getElementById('registroForm');
-
-        form.addEventListener('submit', async (e) => {
+        document.getElementById('formRegistro').addEventListener('submit', async (e) => {
             e.preventDefault();
-
+            
             const datos = {
                 nombres: document.getElementById('nombres').value,
                 apellidos: document.getElementById('apellidos').value,
-                documento_identidad: document.getElementById('documento_identidad').value
+                documento_identidad: document.getElementById('ci').value
             };
 
             try {
-                // Reemplaza con tu URL real de Render cuando esté Live
-                const response = await fetch('https://historial-clinico-nube.onrender.com/pacientes/', {
+                // USAMOS LA URL REAL DE TU RENDER
+                const response = await fetch('https://historial-clinico-936s.onrender.com/pacientes/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
@@ -70,21 +60,16 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Aquí el servidor ya generó el código (ej: JP1234)
-                    alert(`¡Éxito! Paciente: ${data.nombres}\nCódigo Generado: ${data.codigo_paciente}`);
-
-                    // Saltamos a la Declaración Jurada pasando el código generado
-                    const nombreComp = encodeURIComponent(`${data.nombres} ${data.apellidos}`);
-                    const ci = encodeURIComponent(data.documento_identidad);
-                    const cod = encodeURIComponent(data.codigo_paciente);
-
-                    window.location.href = `declaracion_jurada.html?nombre=${nombreComp}&ci=${ci}&codigo=${cod}`;
+                    // AQUÍ SE MUESTRA EL CÓDIGO QUE GENERA EL SERVIDOR
+                    alert("¡Éxito! Código Generado: " + data.codigo_paciente);
+                    
+                    // Salto automático a la declaración con los datos
+                    window.location.href = `declaracion_jurada.html?nombre=${data.nombres} ${data.apellidos}&ci=${data.documento_identidad}&codigo=${data.codigo_paciente}`;
                 } else {
-                    alert("Error: " + (data.detail || "No se pudo registrar"));
+                    alert("Error del servidor: " + (data.detail || "Verifique los datos"));
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert("Error de conexión con el servidor. Verifique si Render está Live.");
+                alert("Error crítico: No se pudo conectar con Render. Verifique que el servicio esté LIVE.");
             }
         });
     </script>
