@@ -5,22 +5,20 @@ from typing import List
 from . import models, schemas, crud
 from .database import engine, SessionLocal
 
-# Crea las tablas en la base de datos al iniciar
+# Inicialización de tablas
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="HISTORIAL CLINICO NUBE")
+app = FastAPI()
 
-# CONFIGURACIÓN CERTERA DE CORS
-# Esto permite que tu página de GitHub se comunique con Render
+# ÚNICA FORMA DE QUE LOS BOTONES FUNCIONEN:
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Abre la puerta a cualquier origen
+    allow_origins=["*"],  # Permite que tu GitHub Pages se conecte
     allow_credentials=True,
-    allow_methods=["*"],  # Permite GET, POST, etc.
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Dependencia para la base de datos
 def get_db():
     db = SessionLocal()
     try:
@@ -29,18 +27,18 @@ def get_db():
         db.close()
 
 @app.get("/")
-def read_root():
-    return {"status": "Servidor en la Nube Activo"}
+def root():
+    return {"status": "Servidor HISTORIAL_CLINICO_NUBE activo"}
 
-# Endpoint para CONSULTAR (GET)
+# Ruta para el botón CONSULTAR
 @app.get("/pacientes", response_model=List[schemas.Paciente])
 def read_pacientes(db: Session = Depends(get_db)):
     return crud.get_pacientes(db)
 
-# Endpoint para REGISTRAR (POST)
+# Ruta para el botón REGISTRAR
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     db_paciente = crud.get_paciente_by_ci(db, ci=paciente.documento_identidad)
     if db_paciente:
-        raise HTTPException(status_code=400, detail="El CI ya existe")
+        raise HTTPException(status_code=400, detail="CI ya registrado")
     return crud.create_paciente(db=db, paciente=paciente)
