@@ -6,14 +6,15 @@
     <title>REGISTRO - HISTORIAL CLÍNICO NUBE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .registro-container { max-width: 400px; margin: 80px auto; background: white; padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
-        .registro-container h2 { font-weight: 800; color: #1a2b4b; letter-spacing: 1px; margin-bottom: 5px; }
-        .registro-container p { color: #a0aab4; font-size: 12px; letter-spacing: 2px; margin-bottom: 30px; }
-        .form-label { display: block; text-align: left; font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; }
-        .form-control { border-radius: 12px; background-color: #f4f7fa; border: none; padding: 12px 15px; margin-bottom: 20px; color: #1a2b4b; }
-        .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 15px; font-weight: 700; width: 100%; margin-top: 10px; color: white; box-shadow: 0 4px 15px rgba(45, 109, 246, 0.3); }
-        .btn-consultar { background: none; border: 2px solid #000; border-radius: 12px; padding: 10px; font-weight: 700; width: 100%; margin-top: 15px; color: #000; font-size: 13px; }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .registro-container { max-width: 420px; width: 90%; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); text-align: center; }
+        .registro-container h2 { font-weight: 800; color: #1a2b4b; margin-bottom: 5px; }
+        .registro-container p { color: #a0aab4; font-size: 11px; letter-spacing: 2px; margin-bottom: 30px; text-transform: uppercase; }
+        .form-label { display: block; text-align: left; font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-bottom: 5px; }
+        .form-control { border-radius: 12px; background-color: #f4f7fa; border: none; padding: 12px; margin-bottom: 15px; color: #1a2b4b; font-weight: 600; }
+        .form-control:read-only { background-color: #e9ecef; color: #2d6df6; }
+        .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 15px; font-weight: 700; width: 100%; color: white; margin-top: 10px; }
+        .btn-consultar { background: white; border: 2px solid #000; border-radius: 12px; padding: 10px; font-weight: 700; width: 100%; margin-top: 15px; color: #000; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -28,22 +29,48 @@
             <label class="form-label">APELLIDOS</label>
             <input type="text" id="apellidos" class="form-control" required>
 
-            <label class="form-label">DOCUMENTO</label>
+            <label class="form-label">DOCUMENTO (CI)</label>
             <input type="text" id="ci" class="form-control" required>
 
+            <label class="form-label">CÓDIGO GENERADO</label>
+            <input type="text" id="codigo_generado" class="form-control" readonly placeholder="Se generará solo...">
+
             <button type="submit" class="btn btn-registrar">REGISTRAR PACIENTE</button>
-            <button type="button" class="btn btn-consultar">CONSULTAR BASE DE DATOS</button>
+            <button type="button" id="btnConsultar" class="btn btn-consultar">CONSULTAR BASE DE DATOS</button>
         </form>
     </div>
 
     <script>
+        const nombresInput = document.getElementById('nombres');
+        const apellidosInput = document.getElementById('apellidos');
+        const ciInput = document.getElementById('ci');
+        const codigoInput = document.getElementById('codigo_generado');
+
+        // FUNCIÓN PARA GENERAR CÓDIGO EN TIEMPO REAL
+        function actualizarCodigo() {
+            const n = nombresInput.value.trim().charAt(0).toUpperCase();
+            const a = apellidosInput.value.trim().charAt(0).toUpperCase();
+            const ci = ciInput.value.trim();
+            
+            if (n && a && ci) {
+                codigoInput.value = n + a + ci;
+            } else {
+                codigoInput.value = "";
+            }
+        }
+
+        nombresInput.addEventListener('input', actualizarCodigo);
+        apellidosInput.addEventListener('input', actualizarCodigo);
+        ciInput.addEventListener('input', actualizarCodigo);
+
+        // ENVÍO DE DATOS
         document.getElementById('formRegistro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const datos = {
-                nombres: document.getElementById('nombres').value,
-                apellidos: document.getElementById('apellidos').value,
-                documento_identidad: document.getElementById('ci').value
+                nombres: nombresInput.value,
+                apellidos: apellidosInput.value,
+                documento_identidad: ciInput.value,
+                codigo_paciente: codigoInput.value
             };
 
             try {
@@ -53,17 +80,20 @@
                     body: JSON.stringify(datos)
                 });
 
-                const data = await response.json();
-
                 if (response.ok) {
-                    alert("¡Paciente registrado!\nCódigo Generado: " + data.codigo_paciente);
+                    const data = await response.json();
+                    alert("¡PACIENTE GUARDADO EXITOSAMENTE!");
                     window.location.href = `declaracion_jurada.html?nombre=${encodeURIComponent(data.nombres + ' ' + data.apellidos)}&ci=${encodeURIComponent(data.documento_identidad)}&codigo=${encodeURIComponent(data.codigo_paciente)}`;
                 } else {
-                    alert("Error: " + (data.detail || "Error en el servidor"));
+                    alert("Error al guardar en el servidor.");
                 }
             } catch (error) {
-                alert("Error de conexión con el servidor 'nube'.");
+                alert("Error crítico de conexión.");
             }
+        });
+
+        document.getElementById('btnConsultar').addEventListener('click', () => {
+            window.open('https://historial-clinico-nube.onrender.com', '_blank');
         });
     </script>
 </body>
