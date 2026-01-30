@@ -5,12 +5,12 @@ from typing import List
 from . import models, schemas, crud
 from .database import engine, SessionLocal
 
-# Crea las tablas automáticamente al iniciar
+# Crea las tablas al iniciar
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# ESTA ES LA CLAVE: Permite comunicación total con GitHub
+# CONFIGURACIÓN TOTAL: Esto elimina el "Fallo de Red" definitivamente
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,18 +28,16 @@ def get_db():
 
 @app.get("/")
 def root():
-    return {"status": "Servidor en la Nube Activo"}
+    return {"status": "online"}
 
-# Ruta para CONSULTAR
 @app.get("/pacientes", response_model=List[schemas.Paciente])
 def read_pacientes(db: Session = Depends(get_db)):
     return crud.get_pacientes(db)
 
-# Ruta para REGISTRAR (Aquí estaba el conflicto de nombres)
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    # Verificamos si el documento ya existe
+    # Buscamos si ya existe para no duplicar
     db_paciente = crud.get_paciente_by_ci(db, ci=paciente.documento_identidad)
     if db_paciente:
-        raise HTTPException(status_code=400, detail="Documento ya registrado")
+        raise HTTPException(status_code=400, detail="Ya existe")
     return crud.create_paciente(db=db, paciente=paciente)
