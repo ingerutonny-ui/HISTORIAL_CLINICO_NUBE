@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Date, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from api.database import Base
+from .database import Base  # Cambiado a importación relativa para evitar errores en Render
 import datetime
 import random
 
