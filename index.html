@@ -13,32 +13,50 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-950 flex items-center justify-center min-h-screen">
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-6">
 
     <div id="loader-screen" class="text-center">
-        <div class="loader ease-linear rounded-full border-4 border-slate-800 h-12 w-12 mb-4 mx-auto"></div>
-        <p class="text-slate-500 text-[10px] uppercase tracking-[0.4em] animate-pulse">Iniciando Servidores...</p>
+        <div class="loader ease-linear rounded-full border-4 border-slate-900 h-12 w-12 mb-4 mx-auto"></div>
+        <p class="text-slate-600 text-[9px] uppercase tracking-[0.4em] animate-pulse font-bold">Cargando Protocolos...</p>
     </div>
 
-    <div id="portal" class="hidden text-center fade-in">
-        <img src="puerta.jpeg" alt="Logo" class="w-32 h-32 mx-auto rounded-full mb-8 border-4 border-slate-800 shadow-2xl object-cover">
+    <div id="portal" class="hidden text-center fade-in w-full max-w-lg">
+        <div class="relative inline-block mb-8">
+            <img src="clinica.jpg" alt="Logo" class="w-32 h-32 mx-auto rounded-full border-4 border-slate-900 shadow-2xl object-cover">
+            <div class="absolute inset-0 rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"></div>
+        </div>
+
         <h1 class="text-white text-3xl font-bold uppercase tracking-tighter mb-1">Historial Clínico Nube</h1>
-        <p class="text-slate-500 text-[10px] uppercase tracking-[0.3em] mb-12">Panel de Control de Acceso</p>
+        <p class="text-slate-500 text-[10px] uppercase tracking-[0.4em] mb-12">Panel de Control de Acceso</p>
 
-        <div class="flex gap-6 justify-center">
-            <button onclick="location.href=''" class="w-40 py-10 bg-slate-900 rounded-3xl border border-slate-800 hover:border-blue-500 hover:bg-slate-800/50 transition-all group">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">👨‍⚕️</div>
-                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest">MÉDICO</span>
-            </button>
+        <div class="flex flex-wrap gap-8 justify-center items-start">
+            
+            <div class="flex flex-col items-center">
+                <button class="w-40 py-10 bg-slate-900/40 rounded-[2.5rem] border border-slate-900 opacity-40 cursor-not-allowed flex flex-col items-center">
+                    <div class="text-4xl mb-4 grayscale">👨‍⚕️</div>
+                    <span class="text-[11px] font-bold text-slate-600 uppercase tracking-widest">Médico</span>
+                </button>
+                <p class="text-[7px] text-slate-700 uppercase tracking-[0.3em] mt-4 font-bold animate-pulse">Próximamente</p>
+            </div>
 
-            <button onclick="location.href='enfermera.html'" class="w-40 py-10 bg-slate-900 rounded-3xl border border-slate-800 hover:border-emerald-500 hover:bg-slate-800/50 transition-all group">
-                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform text-emerald-500">⚕️</div>
-                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest">ENFERMERA</span>
-            </button>
+            <div class="flex flex-col items-center">
+                <button onclick="location.href='enfermera.html'" 
+                    class="w-40 py-10 bg-slate-900 rounded-[2.5rem] border border-slate-800 hover:border-emerald-500 hover:bg-slate-900/80 transition-all duration-500 group flex flex-col items-center shadow-2xl shadow-black/50">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform duration-500 text-emerald-500">⚕️</div>
+                    <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">Enfermera</span>
+                </button>
+                <p class="text-[7px] text-emerald-900 uppercase tracking-[0.3em] mt-4 font-bold">Módulo Activo</p>
+            </div>
+
+        </div>
+
+        <div class="mt-16">
+            <p class="text-slate-700 text-[8px] uppercase tracking-widest font-medium">Sistema de Gestión Hospitalaria v1.0</p>
         </div>
     </div>
 
     <script>
+        // Temporizador de 3 segundos solicitado
         setTimeout(() => {
             document.getElementById('loader-screen').classList.add('hidden');
             document.getElementById('portal').classList.remove('hidden');
