@@ -7,39 +7,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
     <style>
-        .loader { border-top-color: #3498db; animation: spinner 1.5s linear infinite; }
+        .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .fade-in { animation: fadeIn 1s ease-in forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-900 flex items-center justify-center min-h-screen">
+<body class="bg-slate-950 flex items-center justify-center min-h-screen">
 
     <div id="loader-screen" class="text-center">
-        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-700 h-12 w-12 mb-4 mx-auto"></div>
-        <p class="text-slate-400 text-[10px] uppercase tracking-[0.4em] animate-pulse">Cargando Sistema...</p>
+        <div class="loader ease-linear rounded-full border-4 border-slate-800 h-12 w-12 mb-4 mx-auto"></div>
+        <p class="text-slate-500 text-[10px] uppercase tracking-[0.4em] animate-pulse">Iniciando Servidores...</p>
     </div>
 
     <div id="portal" class="hidden text-center fade-in">
-        <img src="puerta.jpeg" alt="Logo" class="w-32 h-32 mx-auto rounded-full mb-6 border-4 border-slate-800 shadow-2xl object-cover">
-        <h1 class="text-white text-2xl font-bold uppercase tracking-tighter mb-1">Historial Clínico Nube</h1>
-        <p class="text-slate-500 text-[9px] uppercase tracking-[0.3em] mb-10">Seleccione su Rol de Acceso</p>
+        <img src="puerta.jpeg" alt="Logo" class="w-32 h-32 mx-auto rounded-full mb-8 border-4 border-slate-800 shadow-2xl object-cover">
+        <h1 class="text-white text-3xl font-bold uppercase tracking-tighter mb-1">Historial Clínico Nube</h1>
+        <p class="text-slate-500 text-[10px] uppercase tracking-[0.3em] mb-12">Panel de Control de Acceso</p>
 
-        <div class="flex gap-4 justify-center">
-            <button onclick="location.href='medico.html'" class="w-32 py-8 bg-slate-800 rounded-2xl border border-slate-700 hover:border-blue-500 transition-all group">
-                <span class="block text-3xl mb-2 group-hover:scale-110 transition-transform">👨‍⚕️</span>
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Médico</span>
+        <div class="flex gap-6 justify-center">
+            <button onclick="location.href='medico.html'" class="w-40 py-10 bg-slate-900 rounded-3xl border border-slate-800 hover:border-blue-500 hover:bg-slate-800/50 transition-all group">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">👨‍⚕️</div>
+                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest">MÉDICO</span>
             </button>
 
-            <button onclick="location.href='enfermera.html'" class="w-32 py-8 bg-slate-800 rounded-2xl border border-slate-700 hover:border-green-500 transition-all group">
-                <span class="block text-3xl mb-2 group-hover:scale-110 transition-transform">👩‍ white⚕️</span>
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Enfermera</span>
+            <button onclick="location.href='enfermera.html'" class="w-40 py-10 bg-slate-900 rounded-3xl border border-slate-800 hover:border-emerald-500 hover:bg-slate-800/50 transition-all group">
+                <div class="text-4xl mb-4 group-hover:scale-110 transition-transform text-emerald-500">⚕️</div>
+                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest">ENFERMERA</span>
             </button>
         </div>
     </div>
 
     <script>
-        // Simulador de carga de 3 segundos solicitado
         setTimeout(() => {
             document.getElementById('loader-screen').classList.add('hidden');
             document.getElementById('portal').classList.remove('hidden');
