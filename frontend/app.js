@@ -2,29 +2,27 @@ const { useState, useEffect } = React;
 
 function App() {
     const [formData, setFormData] = useState({ nombres: '', apellidos: '', documento_identidad: '' });
-    const [codigoPrevio, setCodigoPrevio] = useState('');
-    const [resultadoFinal, setResultadoFinal] = useState(null);
+    const [codigoActual, setCodigoActual] = useState('');
 
-    // Lógica para generar el código apenas escribes (Como en la versión corta)
+    // Generación instantánea del código mientras escribes
     useEffect(() => {
         if (formData.nombres && formData.apellidos) {
             const iniciales = (formData.nombres[0] + formData.apellidos[0]).toUpperCase();
             const numAleatorio = Math.floor(1000 + Math.random() * 9000);
-            setCodigoPrevio(`${iniciales}${numAleatorio}`);
+            setCodigoActual(`${iniciales}${numAleatorio}`);
         } else {
-            setCodigoPrevio('');
+            setCodigoActual('');
         }
     }, [formData.nombres, formData.apellidos]);
 
     const registrar = async (e) => {
         e.preventDefault();
         try {
-            const datosAEnviar = { ...formData, codigo_paciente: codigoPrevio };
-            const res = await axios.post('https://historial-clinico-936s.onrender.com/pacientes/', datosAEnviar);
-            setResultadoFinal(res.data);
-            alert("¡GUARDADO EN LA NUBE!");
+            const datosConCodigo = { ...formData, codigo_paciente: codigoActual };
+            await axios.post('https://historial-clinico-936s.onrender.com/pacientes/', datosConCodigo);
+            alert("¡PACIENTE REGISTRADO CON ÉXITO EN LA NUBE!");
         } catch (err) {
-            alert("Error al conectar con Render. Revisa que el servidor esté activo.");
+            alert("Error de conexión con el servidor Render.");
         }
     };
 
@@ -41,15 +39,15 @@ function App() {
                 <input type="text" placeholder="Documento de Identidad" required className="w-full p-4 border rounded-xl"
                     onChange={e => setFormData({...formData, documento_identidad: e.target.value})} />
                 
-                {codigoPrevio && (
-                    <div className="p-4 border-2 border-dashed border-blue-400 rounded-xl text-center bg-blue-50">
-                        <span className="text-blue-700 font-bold text-xl uppercase italic">
-                            CÓDIGO SUGERIDO: {codigoPrevio}
+                {codigoActual && (
+                    <div className="mt-4 p-3 border-2 border-dashed border-blue-300 rounded-xl text-center bg-blue-50">
+                        <span className="text-blue-600 font-semibold text-sm tracking-wide uppercase">
+                            CÓDIGO GENERADO: {codigoActual}
                         </span>
                     </div>
                 )}
 
-                <button type="submit" className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700">
+                <button type="submit" className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-blue-700 transition-all shadow-lg">
                     REGISTRAR PACIENTE
                 </button>
             </form>
