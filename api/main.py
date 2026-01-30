@@ -5,17 +5,17 @@ from typing import List
 from . import models, schemas, crud
 from .database import engine, SessionLocal
 
-# Crea las tablas al iniciar
+# Crea las tablas automáticamente
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CONFIGURACIÓN TOTAL: Esto elimina el "Fallo de Red" definitivamente
+# CONFIGURACIÓN RADICAL DE CORS PARA ELIMINAR EL "FALLO DE RED"
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_origins=["*"],  # Permite cualquier sitio (como tu GitHub)
+    allow_credentials=False, # Cambiado a False para evitar conflictos de seguridad
+    allow_methods=["GET", "POST", "OPTIONS"], # Métodos explícitos
     allow_headers=["*"],
 )
 
@@ -27,8 +27,8 @@ def get_db():
         db.close()
 
 @app.get("/")
-def root():
-    return {"status": "online"}
+def health_check():
+    return {"status": "ok"}
 
 @app.get("/pacientes", response_model=List[schemas.Paciente])
 def read_pacientes(db: Session = Depends(get_db)):
@@ -36,7 +36,6 @@ def read_pacientes(db: Session = Depends(get_db)):
 
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    # Buscamos si ya existe para no duplicar
     db_paciente = crud.get_paciente_by_ci(db, ci=paciente.documento_identidad)
     if db_paciente:
         raise HTTPException(status_code=400, detail="Ya existe")
