@@ -2,126 +2,65 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTRO - HISTORIAL CLÍNICO NUBE</title>
+    <title>HISTORIAL CLÍNICO NUBE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
-        .registro-container { max-width: 400px; width: 95%; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
-        .text-header { text-align: center; margin-bottom: 25px; }
-        .text-header h2 { font-weight: 800; color: #1a2b4b; margin-bottom: 0; }
-        .brand { color: #a0aab4; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
-        .form-label { font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-top: 15px; display: block; }
-        .form-control { border-radius: 12px; background-color: #f4f7fa; border: none; padding: 12px; font-weight: 600; color: #1a2b4b; }
-        #codigo_display { background-color: #f0f4ff !important; color: #2d6df6 !important; font-size: 18px; text-align: center; font-weight: 800; display: none; margin-top: 10px; }
-        .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 15px; font-weight: 700; width: 100%; color: white; margin-top: 20px; }
-        .btn-db { background: none; border: 1px solid #e0e0e0; border-radius: 12px; padding: 10px; width: 100%; margin-top: 15px; color: #7a869a; font-size: 12px; font-weight: 700; }
-        #seccionLista { display: none; width: 100%; max-width: 400px; margin-top: 20px; }
-        .paciente-item { background: white; padding: 10px; border-radius: 10px; margin-bottom: 8px; border: 1px solid #eee; display: flex; justify-content: space-between; }
+        body { background:#f8f9fa; display:flex; flex-direction:column; align-items:center; padding-top:50px; }
+        .box { background:white; padding:40px; border-radius:30px; box-shadow:0 10px 40px rgba(0,0,0,0.05); width:400px; }
+        .form-control { background:#f4f7fa; border:none; margin-bottom:15px; padding:12px; }
+        .btn-reg { background:#2d6df6; color:white; width:100%; padding:15px; border:none; border-radius:12px; font-weight:700; }
+        #codigo_display { background:#f0f4ff!important; color:#2d6df6!important; text-align:center; font-weight:800; display:none; }
     </style>
 </head>
 <body>
-    <div class="registro-container">
-        <div class="text-header">
-            <h2>REGISTRO</h2>
-            <p class="brand">HISTORIAL CLÍNICO NUBE</p>
-        </div>
+    <div class="box">
+        <h2 class="text-center">REGISTRO</h2>
         <form id="formRegistro">
-            <label class="form-label">NOMBRES</label>
-            <input type="text" id="nombres" class="form-control" required autocomplete="off">
-            
-            <label class="form-label">APELLIDOS</label>
-            <input type="text" id="apellidos" class="form-control" required autocomplete="off">
-            
-            <label class="form-label">DOCUMENTO (CI)</label>
-            <input type="text" id="ci" class="form-control" required autocomplete="off">
-            
-            <label class="form-label" id="label_codigo" style="display:none; text-align:center;">CÓDIGO GENERADO</label>
+            <input type="text" id="nombres" placeholder="NOMBRES" class="form-control" required>
+            <input type="text" id="apellidos" placeholder="APELLIDOS" class="form-control" required>
+            <input type="text" id="ci" placeholder="DOCUMENTO (CI)" class="form-control" required>
             <input type="text" id="codigo_display" class="form-control" readonly>
-            
-            <button type="submit" id="btnRegistrar" class="btn btn-registrar">REGISTRAR PACIENTE</button>
-            <button type="button" id="btnVerDB" class="btn btn-db">CONSULTAR BASE DE DATOS</button>
+            <button type="submit" id="btn" class="btn-reg">REGISTRAR PACIENTE</button>
         </form>
     </div>
 
-    <div id="seccionLista">
-        <div id="listaContenido"></div>
-    </div>
-
     <script>
-        const API_URL = 'https://historial-clinico-936s.onrender.com/pacientes/';
+        const API = "https://historial-clinico-936s.onrender.com/pacientes/";
 
-        // Generación de código automática
-        const inputN = document.getElementById('nombres');
-        const inputA = document.getElementById('apellidos');
-        const displayC = document.getElementById('codigo_display');
+        const n = document.getElementById('nombres');
+        const a = document.getElementById('apellidos');
+        const c = document.getElementById('codigo_display');
 
-        function actualizarCodigo() {
-            const n = inputN.value.trim().charAt(0).toUpperCase();
-            const a = inputA.value.trim().charAt(0).toUpperCase();
-            if (n && a) {
-                if (!displayC.value || displayC.value.substring(0,2) !== (n+a)) {
-                    displayC.value = n + a + Math.floor(1000 + Math.random() * 9000);
-                }
-                displayC.style.display = 'block';
-                document.getElementById('label_codigo').style.display = 'block';
+        function gen() {
+            if(n.value && a.value) {
+                if(!c.value) c.value = n.value[0].toUpperCase() + a.value[0].toUpperCase() + Math.floor(1000+Math.random()*9000);
+                c.style.display = 'block';
             }
         }
-        inputN.oninput = actualizarCodigo;
-        inputA.oninput = actualizarCodigo;
+        n.oninput = gen; a.oninput = gen;
 
-        // Registro de paciente
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('btnRegistrar');
-            btn.innerText = 'PROCESANDO...';
-            btn.disabled = true;
-
-            const datos = {
-                nombres: inputN.value,
-                apellidos: inputA.value,
+            const btn = document.getElementById('btn');
+            btn.innerText = "ENVIANDO...";
+            
+            const data = {
+                nombres: n.value,
+                apellidos: a.value,
                 documento_identidad: document.getElementById('ci').value,
-                codigo_paciente: displayC.value
+                codigo_paciente: c.value
             };
 
             try {
-                const response = await fetch(API_URL, {
+                const r = await fetch(API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
+                    body: JSON.stringify(data)
                 });
-
-                if (response.ok) {
-                    alert("¡PACIENTE REGISTRADO EXITOSAMENTE!");
-                    location.reload();
-                } else {
-                    const errorData = await response.json();
-                    alert("ERROR: " + (errorData.detail || "Error en el servidor"));
-                }
-            } catch (error) {
-                alert("FALLO DE RED: El servidor de Render no responde. Revisa el estado del servicio.");
-            } finally {
-                btn.innerText = 'REGISTRAR PACIENTE';
-                btn.disabled = false;
-            }
-        };
-
-        // Consulta de base de datos
-        document.getElementById('btnVerDB').onclick = async () => {
-            const lista = document.getElementById('listaContenido');
-            const seccion = document.getElementById('seccionLista');
-            try {
-                const res = await fetch('https://historial-clinico-936s.onrender.com/pacientes');
-                const data = await res.json();
-                lista.innerHTML = data.map(p => `
-                    <div class="paciente-item">
-                        <span>${p.nombres} ${p.apellidos}</span>
-                        <b style="color:#2d6df6">${p.codigo_paciente}</b>
-                    </div>`).join('');
-                seccion.style.display = 'block';
-            } catch (e) {
-                alert("Error al conectar con la base de datos.");
-            }
+                if(r.ok) { alert("REGISTRADO"); location.reload(); }
+                else { const err = await r.json(); alert(err.detail); }
+            } catch (err) { alert("FALLO DE RED"); }
+            btn.innerText = "REGISTRAR PACIENTE";
         };
     </script>
 </body>
