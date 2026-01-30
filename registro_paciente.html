@@ -13,25 +13,25 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="card shadow">
-                    <div class="card-header text-center">
-                        <h3 class="mb-0">Registro de Paciente</h3>
+                <div class="card shadow border-0">
+                    <div class="card-header text-center py-3">
+                        <h4 class="mb-0">Registro Inicial de Paciente</h4>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body p-4">
                         <form id="formRegistro">
                             <div class="mb-3">
-                                <label class="form-label">Nombres</label>
-                                <input type="text" id="nombres" class="form-control" placeholder="Ej. Carlos" required>
+                                <label class="form-label fw-bold">Nombres</label>
+                                <input type="text" id="nombres" class="form-control" placeholder="Nombre completo" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Apellidos</label>
-                                <input type="text" id="apellidos" class="form-control" placeholder="Ej. Fernandez" required>
+                                <label class="form-label fw-bold">Apellidos</label>
+                                <input type="text" id="apellidos" class="form-control" placeholder="Apellidos completos" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Documento de Identidad (CI)</label>
-                                <input type="text" id="ci" class="form-control" placeholder="Ej. 8746568" required>
+                                <label class="form-label fw-bold">Documento de Identidad (CI)</label>
+                                <input type="text" id="ci" class="form-control" placeholder="Número de carnet" required>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg">Guardar y Continuar</button>
+                            <button type="submit" class="btn btn-primary btn-lg mt-3">Guardar y Continuar</button>
                         </form>
                     </div>
                 </div>
@@ -50,8 +50,8 @@
             };
 
             try {
-                // USAMOS LA URL REAL DE TU RENDER
-                const response = await fetch('https://historial-clinico-936s.onrender.com/pacientes/', {
+                // USAMOS TU URL ORIGINAL "NUBE"
+                const response = await fetch('https://historial-clinico-nube.onrender.com/pacientes/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(datos)
@@ -60,16 +60,17 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // AQUÍ SE MUESTRA EL CÓDIGO QUE GENERA EL SERVIDOR
-                    alert("¡Éxito! Código Generado: " + data.codigo_paciente);
+                    // El servidor genera el código y lo devuelve aquí
+                    alert("¡Paciente registrado con éxito!\nCódigo Generado: " + data.codigo_paciente);
                     
-                    // Salto automático a la declaración con los datos
-                    window.location.href = `declaracion_jurada.html?nombre=${data.nombres} ${data.apellidos}&ci=${data.documento_identidad}&codigo=${data.codigo_paciente}`;
+                    // Redirección a la declaración jurada con los datos por URL
+                    const urlParams = `?nombre=${data.nombres} ${data.apellidos}&ci=${data.documento_identidad}&codigo=${data.codigo_paciente}`;
+                    window.location.href = `declaracion_jurada.html${urlParams}`;
                 } else {
-                    alert("Error del servidor: " + (data.detail || "Verifique los datos"));
+                    alert("Error del servidor: " + (data.detail || "Verifique los datos del paciente"));
                 }
             } catch (error) {
-                alert("Error crítico: No se pudo conectar con Render. Verifique que el servicio esté LIVE.");
+                alert("Error de conexión: No se pudo contactar con el servidor 'nube'.");
             }
         });
     </script>
