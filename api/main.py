@@ -2,24 +2,27 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
+import os
+
+# Importaciones de tu estructura de proyecto
 from . import models, schemas, crud
 from .database import engine, SessionLocal
 
-# Crea las tablas en la base de datos
+# Crear tablas al iniciar
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="HISTORIAL CLINICO NUBE API")
+app = FastAPI(title="HISTORIAL CLINICO NUBE")
 
-# CONFIGURACIÓN CERTERA DE CORS (Esto es lo que evita el error de los botones)
+# 1. SOLUCIÓN AL ERROR DE CONEXIÓN: Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite conexiones desde cualquier origen (GitHub Pages, Local, etc.)
+    allow_origins=["*"],  # Permite que tu GitHub Pages se conecte sin errores de red
     allow_credentials=True,
-    allow_methods=["*"],  # Permite todos los métodos (GET, POST, etc.)
-    allow_headers=["*"],  # Permite todas las cabeceras
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Dependencia para obtener la sesión de la base de datos
+# Dependencia de DB
 def get_db():
     db = SessionLocal()
     try:
@@ -28,19 +31,18 @@ def get_db():
         db.close()
 
 @app.get("/")
-def read_root():
-    return {"message": "API de Historial Clínico Nube funcionando correctamente"}
+def home():
+    return {"status": "Servidor en la Nube Activo"}
 
-# RUTA PARA OBTENER PACIENTES (Botón Consultar)
-@app.get("/pacientes/", response_model=List[schemas.Paciente])
-def read_pacientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    pacientes = crud.get_pacientes(db, skip=skip, limit=limit)
-    return pacientes
+# 2. RUTA PARA CONSULTAR (Botón: Consultar Base de Datos)
+@app.get("/pacientes", response_model=List[schemas.Paciente])
+def read_pacientes(db: Session = Depends(get_db)):
+    return crud.get_pacientes(db)
 
-# RUTA PARA REGISTRAR PACIENTE (Botón Registrar)
+# 3. RUTA PARA REGISTRAR (Botón: Registrar Paciente)
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     db_paciente = crud.get_paciente_by_ci(db, ci=paciente.documento_identidad)
     if db_paciente:
-        raise HTTPException(status_code=400, detail="El documento de identidad ya está registrado")
+        raise HTTPException(status_code=400, detail="El CI ya existe en el sistema")
     return crud.create_paciente(db=db, paciente=paciente)
