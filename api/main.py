@@ -3,25 +3,25 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 
-# Importaciones relativas seguras para Render
+# Importaciones relativas para estructura de nube
 from . import models, schemas, crud
 from .database import engine, SessionLocal
 
-# Crea todas las tablas (Pacientes y Declaraciones) al iniciar el servidor
+# Crea las tablas automáticamente con la estructura de pacientes y declaraciones
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
-# CONFIGURACIÓN DE SEGURIDAD (CORS): Vital para que funcionen los botones
+# LA SOLUCIÓN AL FALLO DE RED: Configuración total de CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Permite que tu GitHub Pages se conecte
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["*"],  # Permite POST, GET, etc.
     allow_headers=["*"],
 )
 
-# Dependencia para conectar a la base de datos
+# Dependencia para la base de datos
 def get_db():
     db = SessionLocal()
     try:
@@ -31,15 +31,14 @@ def get_db():
 
 @app.get("/")
 def home():
-    return {"mensaje": "Servidor HISTORIAL_CLINICO_NUBE Activo y Sincronizado"}
+    return {"status": "Servidor en la Nube Activo"}
 
-# Ruta para el botón CONSULTAR BASE DE DATOS
+# Ruta para CONSULTAR (Botón inferior)
 @app.get("/pacientes", response_model=List[schemas.Paciente])
 def read_pacientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    pacientes = crud.get_pacientes(db, skip=skip, limit=limit)
-    return pacientes
+    return crud.get_pacientes(db, skip=skip, limit=limit)
 
-# Ruta para el botón REGISTRAR PACIENTE
+# Ruta para REGISTRAR (Botón principal)
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     db_paciente = crud.get_paciente_by_ci(db, ci=paciente.documento_identidad)
