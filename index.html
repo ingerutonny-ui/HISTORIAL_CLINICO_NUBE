@@ -3,25 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OHS NUBE | Registro</title>
+    <title>HC NUBE | Registro</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+    
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    </style>
 </head>
-<body class="bg-slate-50 flex items-center justify-center min-h-screen">
+<body class="bg-slate-50 flex items-center justify-center min-h-screen p-4">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
         function App() {
+            // Estados para el Formulario
             const [formData, setFormData] = useState({ nombres: '', apellidos: '', documento_identidad: '' });
             const [codigo, setCodigo] = useState('');
+            
+            // Estados para la Consulta (Paso 23)
+            const [listaPacientes, setListaPacientes] = useState([]);
+            const [mostrarLista, setMostrarLista] = useState(false);
+            const [cargando, setCargando] = useState(false);
 
-            // Generación elegante e instantánea
+            // Generación de Código Automático
             useEffect(() => {
                 if (formData.nombres && formData.apellidos) {
                     const iniciales = (formData.nombres[0] + formData.apellidos[0]).toUpperCase();
@@ -30,6 +44,7 @@
                 } else { setCodigo(''); }
             }, [formData.nombres, formData.apellidos]);
 
+            // Función POST: Registrar
             const registrar = async (e) => {
                 e.preventDefault();
                 try {
@@ -38,13 +53,29 @@
                         codigo_paciente: codigo
                     });
                     alert("¡PACIENTE REGISTRADO EN LA NUBE!");
+                    // Limpiar formulario y recargar lista si está abierta
+                    if(mostrarLista) consultarPacientes();
                 } catch (err) {
-                    alert("Error: El servidor en Render está despertando o desconectado.");
+                    alert("Error: El servidor en Render no respondió.");
+                }
+            };
+
+            // Función GET: Consultar (Paso 23)
+            const consultarPacientes = async () => {
+                setCargando(true);
+                try {
+                    const res = await axios.get('https://historial-clinico-936s.onrender.com/pacientes/');
+                    setListaPacientes(res.data);
+                    setMostrarLista(true);
+                } catch (err) {
+                    alert("Error al obtener datos de la nube.");
+                } finally {
+                    setCargando(false);
                 }
             };
 
             return (
-                <div className="bg-white p-8 rounded-2xl shadow-xl w-[380px] border border-slate-100">
+                <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-[400px] border border-slate-100">
                     <h1 className="text-2xl font-bold text-center text-slate-800 mb-1 uppercase tracking-tight">Registro de Paciente</h1>
                     <p className="text-center text-[9px] text-slate-400 mb-6 uppercase tracking-[0.3em]">Historial Clínico Nube</p>
                     
@@ -79,6 +110,36 @@
                             Registrar Paciente
                         </button>
                     </form>
+
+                    {/* Botón de Consulta */}
+                    <button onClick={consultarPacientes} className="w-full mt-4 bg-slate-100 text-slate-500 py-2 rounded-xl font-bold text-[9px] uppercase tracking-widest hover:bg-slate-200 transition-all">
+                        {cargando ? 'Cargando...' : 'Consultar Base de Datos'}
+                    </button>
+
+                    {/* Lista de Pacientes (Paso 23) */}
+                    {mostrarLista && (
+                        <div className="mt-8 border-t border-slate-100 pt-6 animate-fade-in">
+                            <h2 className="text-[10px] font-bold text-slate-400 mb-4 uppercase text-center tracking-[0.2em]">Pacientes en la Nube</h2>
+                            <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
+                                {listaPacientes.map((p) => (
+                                    <div key={p.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100 flex justify-between items-center hover:border-blue-100 transition-colors">
+                                        <div>
+                                            <p className="text-[11px] font-bold text-slate-700 uppercase leading-none mb-1">{p.nombres} {p.apellidos}</p>
+                                            <p className="text-[8px] text-slate-400 uppercase tracking-tighter">ID: {p.documento_identidad}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <span className="text-[9px] font-mono font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded block mb-1">
+                                                {p.codigo_paciente}
+                                            </span>
+                                            <p className="text-[7px] text-slate-300 font-mono">
+                                                {p.fecha_ingreso ? p.fecha_ingreso.split('T')[0] : ''}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         }
