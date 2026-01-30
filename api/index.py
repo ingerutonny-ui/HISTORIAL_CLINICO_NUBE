@@ -1,41 +1,158 @@
-from flask import Flask, jsonify, request
-from .database import SessionLocal
-from . import crud, schemas
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REGISTRO - HISTORIAL CLÍNICO NUBE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
+        .registro-container { max-width: 400px; width: 95%; background: white; padding: 45px; border-radius: 35px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); text-align: left; }
+        
+        /* Títulos centrados */
+        .text-header { text-align: center; margin-bottom: 30px; }
+        .text-header h2 { font-weight: 800; color: #1a2b4b; margin-bottom: 2px; letter-spacing: 1px; }
+        .brand { color: #a0aab4; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; margin-bottom: 2px; }
+        .fecha-actual { color: #a0aab4; font-size: 10px; font-weight: 600; }
 
-app = Flask(__name__)
+        .form-label { display: block; font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; }
+        
+        /* Inputs alineados a la izquierda por defecto */
+        .form-control { border-radius: 12px; background-color: #f4f7fa; border: none; padding: 14px; margin-bottom: 20px; color: #1a2b4b; font-weight: 600; text-align: left; }
+        
+        /* ÚNICO ELEMENTO CENTRADO: EL CÓDIGO */
+        #codigo_display { background-color: #f0f4ff !important; color: #2d6df6 !important; font-size: 18px; letter-spacing: 4px; border: 1px solid #dbe4ff; display: none; margin-bottom: 25px; text-align: center; width: 100%; }
+        
+        .btn-registrar { background-color: #2d6df6; border: none; border-radius: 12px; padding: 16px; font-weight: 700; width: 100%; color: white; margin-top: 10px; text-align: center; }
+        .btn-db { background: white; border: 1px solid #e0e0e0; border-radius: 12px; padding: 12px; font-weight: 700; width: 100%; margin-top: 15px; color: #7a869a; font-size: 12px; text-transform: uppercase; cursor: pointer; text-align: center; }
+        
+        #seccionLista { display: none; width: 100%; max-width: 400px; margin-top: 30px; padding-bottom: 50px; }
+        .paciente-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #f0f0f0; }
+        .paciente-card h4 { margin: 0; font-size: 13px; font-weight: 800; color: #1a2b4b; text-transform: uppercase; }
+        .paciente-codigo { font-weight: 800; color: #2d6df6; font-size: 12px; background: #f0f4ff; padding: 4px 8px; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <div class="registro-container">
+        <div class="text-header">
+            <h2>REGISTRO</h2>
+            <p class="brand">HISTORIAL CLÍNICO NUBE</p>
+            <div id="fechaActual" class="fecha-actual"></div>
+        </div>
+        
+        <form id="formRegistro">
+            <label class="form-label">NOMBRES</label>
+            <input type="text" id="nombres" class="form-control" required>
 
-@app.route('/api/healthcheck', methods=['GET'])
-def healthcheck():
-    return jsonify({"status": "ok", "message": "HISTORIAL_CLINICO_NUBE funcionando"})
+            <label class="form-label">APELLIDOS</label>
+            <input type="text" id="apellidos" class="form-control" required>
 
-@app.route('/api/registrar', methods=['POST'])
-def registrar():
-    data = request.get_json()
-    db = SessionLocal()
+            <label class="form-label">DOCUMENTO (CI)</label>
+            <input type="text" id="ci" class="form-control" required>
 
-    try:
-        paciente_data = schemas.PacienteBase(**data)
+            <input type="text" id="codigo_display" class="form-control" readonly>
 
-        nuevo_paciente = crud.crear_paciente(
-            db,
-            nombre=paciente_data.nombre,
-            apellido=paciente_data.apellido,
-            ci=paciente_data.ci,
-            fecha_ingreso=paciente_data.fechaIngreso,
-            codigo=paciente_data.codigo
-        )
+            <button type="submit" id="btnRegistrar" class="btn btn-registrar">REGISTRAR PACIENTE</button>
+            <button type="button" id="btnToggleDB" class="btn btn-db">CONSULTAR BASE DE DATOS</button>
+        </form>
+    </div>
 
-        respuesta = schemas.PacienteResponse.from_orm(nuevo_paciente)
-        return jsonify({"status": "ok", "mensaje": "Paciente registrado", "paciente": respuesta.dict()})
-    except Exception as e:
-        return jsonify({"status": "error", "mensaje": str(e)})
-    finally:
-        db.close()
+    <div id="seccionLista">
+        <h6 class="text-center mb-3" style="font-size: 10px; color: #a0aab4; letter-spacing: 2px;">PACIENTES EN LA NUBE</h6>
+        <div id="listaContenido"></div>
+    </div>
 
-# 🔧 Adaptación para Vercel usando WSGI
-def handler(environ, start_response):
-    from werkzeug.middleware.dispatcher import DispatcherMiddleware
-    from werkzeug.serving import run_simple
+    <script>
+        // URL de tu servicio en Render [cite: 330]
+        const API_URL = 'https://historial-clinico-nube.onrender.com/pacientes';
+        
+        // Fecha automática bajo el título
+        document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES');
 
-    # Vercel ejecuta esta función como punto de entrada
-    return app.wsgi_app(environ, start_response)
+        const nombres = document.getElementById('nombres');
+        const apellidos = document.getElementById('apellidos');
+        const codigoDisplay = document.getElementById('codigo_display');
+        const btnToggle = document.getElementById('btnToggleDB');
+        const seccionLista = document.getElementById('seccionLista');
+
+        function generarCodigo() {
+            const n = nombres.value.trim().substring(0,1).toUpperCase();
+            const a = apellidos.value.trim().substring(0,1).toUpperCase();
+            if (n && a) {
+                if (!codigoDisplay.value || !codigoDisplay.value.startsWith(n+a)) {
+                    codigoDisplay.value = n + a + Math.floor(1000 + Math.random() * 9000);
+                }
+                codigoDisplay.style.display = 'block';
+            } else {
+                codigoDisplay.style.display = 'none';
+            }
+        }
+        nombres.oninput = generarCodigo;
+        apellidos.oninput = generarCodigo;
+
+        // Lógica Botón Consultar (GET)
+        btnToggle.onclick = async () => {
+            if (seccionLista.style.display === 'none' || seccionLista.style.display === '') {
+                btnToggle.innerText = 'CONECTANDO...';
+                try {
+                    const response = await fetch(API_URL);
+                    const data = await response.json();
+                    const lista = document.getElementById('listaContenido');
+                    lista.innerHTML = '';
+                    data.reverse().forEach(p => {
+                        lista.innerHTML += `
+                            <div class="paciente-card">
+                                <div><h4>${p.nombres} ${p.apellidos}</h4></div>
+                                <div class="paciente-codigo">${p.codigo_paciente}</div>
+                            </div>`;
+                    });
+                    seccionLista.style.display = 'block';
+                    btnToggle.innerText = 'CERRAR BASE DE DATOS';
+                } catch (e) {
+                    alert("Error: No se pudo conectar a la Nube. Verifica si Render está activo.");
+                    btnToggle.innerText = 'CONSULTAR BASE DE DATOS';
+                }
+            } else {
+                seccionLista.style.display = 'none';
+                btnToggle.innerText = 'CONSULTAR BASE DE DATOS';
+            }
+        };
+
+        // Lógica Botón Registrar (POST)
+        document.getElementById('formRegistro').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btnRegistrar');
+            btn.innerText = 'GUARDANDO...';
+            btn.disabled = true;
+
+            const payload = {
+                nombres: nombres.value,
+                apellidos: apellidos.value,
+                documento_identidad: document.getElementById('ci').value,
+                codigo_paciente: codigoDisplay.value
+            };
+
+            try {
+                const response = await fetch(API_URL + '/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const p = await response.json();
+                    window.location.href = `declaracion_jurada.html?nombre=${encodeURIComponent(p.nombres+' '+p.apellidos)}&ci=${p.documento_identidad}&codigo=${p.codigo_paciente}`;
+                } else {
+                    alert("Error al guardar. Posible CI duplicado.");
+                    btn.innerText = 'REGISTRAR PACIENTE';
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                alert("Fallo de red. Intenta de nuevo.");
+                btn.innerText = 'REGISTRAR PACIENTE';
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>
