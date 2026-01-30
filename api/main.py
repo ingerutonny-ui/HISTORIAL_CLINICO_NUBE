@@ -5,12 +5,10 @@ from typing import List
 from . import models, schemas, crud
 from .database import engine, SessionLocal
 
-# Crea las tablas automáticamente en la base de datos de Render
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
+app = FastAPI()
 
-# CONFIGURACIÓN TOTAL DE CORS: Permite la entrada desde cualquier origen (GitHub)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -27,8 +25,8 @@ def get_db():
         db.close()
 
 @app.get("/")
-def home():
-    return {"mensaje": "Servidor HISTORIAL_CLINICO_NUBE activo"}
+def health():
+    return {"status": "ok"}
 
 @app.get("/pacientes", response_model=List[schemas.Paciente])
 def read_pacientes(db: Session = Depends(get_db)):
@@ -36,8 +34,7 @@ def read_pacientes(db: Session = Depends(get_db)):
 
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    # Verifica si el paciente ya existe por Documento de Identidad
     db_paciente = crud.get_paciente_by_ci(db, ci=paciente.documento_identidad)
     if db_paciente:
-        raise HTTPException(status_code=400, detail="El documento de identidad ya está registrado.")
+        raise HTTPException(status_code=400, detail="Ya existe")
     return crud.create_paciente(db=db, paciente=paciente)
