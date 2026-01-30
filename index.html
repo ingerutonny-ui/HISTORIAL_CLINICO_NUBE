@@ -5,16 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HC NUBE | Registro</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
-    
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
     </style>
@@ -26,16 +24,12 @@
         const { useState, useEffect } = React;
 
         function App() {
-            // Estados para el Formulario
             const [formData, setFormData] = useState({ nombres: '', apellidos: '', documento_identidad: '' });
             const [codigo, setCodigo] = useState('');
-            
-            // Estados para la Consulta (Paso 23)
             const [listaPacientes, setListaPacientes] = useState([]);
             const [mostrarLista, setMostrarLista] = useState(false);
             const [cargando, setCargando] = useState(false);
 
-            // Generación de Código Automático
             useEffect(() => {
                 if (formData.nombres && formData.apellidos) {
                     const iniciales = (formData.nombres[0] + formData.apellidos[0]).toUpperCase();
@@ -44,7 +38,6 @@
                 } else { setCodigo(''); }
             }, [formData.nombres, formData.apellidos]);
 
-            // Función POST: Registrar
             const registrar = async (e) => {
                 e.preventDefault();
                 try {
@@ -52,23 +45,30 @@
                         ...formData,
                         codigo_paciente: codigo
                     });
-                    alert("¡PACIENTE REGISTRADO EN LA NUBE!");
-                    // Limpiar formulario y recargar lista si está abierta
+                    alert("¡PACIENTE REGISTRADO!");
+                    // PASO SOLICITADO: Limpiar datos después de guardar
+                    setFormData({ nombres: '', apellidos: '', documento_identidad: '' });
+                    setCodigo('');
                     if(mostrarLista) consultarPacientes();
                 } catch (err) {
-                    alert("Error: El servidor en Render no respondió.");
+                    alert("Error al conectar con Render.");
                 }
             };
 
-            // Función GET: Consultar (Paso 23)
             const consultarPacientes = async () => {
+                // PASO SOLICITADO: Cerrar si ya está abierto (Toggle)
+                if (mostrarLista) {
+                    setMostrarLista(false);
+                    return;
+                }
+                
                 setCargando(true);
                 try {
                     const res = await axios.get('https://historial-clinico-936s.onrender.com/pacientes/');
                     setListaPacientes(res.data);
                     setMostrarLista(true);
                 } catch (err) {
-                    alert("Error al obtener datos de la nube.");
+                    alert("Error al obtener datos.");
                 } finally {
                     setCargando(false);
                 }
@@ -76,65 +76,59 @@
 
             return (
                 <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-[400px] border border-slate-100">
-                    <h1 className="text-2xl font-bold text-center text-slate-800 mb-1 uppercase tracking-tight">Registro de Paciente</h1>
+                    <h1 className="text-2xl font-bold text-center text-slate-800 mb-1 uppercase tracking-tight">Registro</h1>
                     <p className="text-center text-[9px] text-slate-400 mb-6 uppercase tracking-[0.3em]">Historial Clínico Nube</p>
                     
                     <form onSubmit={registrar} className="space-y-4">
                         <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Nombres</label>
-                            <input type="text" required className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400 transition-all"
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nombres</label>
+                            <input type="text" required value={formData.nombres} className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400"
                                 onChange={e => setFormData({...formData, nombres: e.target.value})} />
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Apellidos</label>
-                            <input type="text" required className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400 transition-all"
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Apellidos</label>
+                            <input type="text" required value={formData.apellidos} className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400"
                                 onChange={e => setFormData({...formData, apellidos: e.target.value})} />
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Documento de Identidad</label>
-                            <input type="text" required className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400 transition-all"
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Documento</label>
+                            <input type="text" required value={formData.documento_identidad} className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400"
                                 onChange={e => setFormData({...formData, documento_identidad: e.target.value})} />
                         </div>
                         
                         {codigo && (
                             <div className="mt-4 p-2 border border-dashed border-blue-200 rounded-lg text-center bg-blue-50/30">
-                                <span className="text-blue-500 font-medium text-[10px] tracking-[0.2em] uppercase">
-                                    CÓDIGO GENERADO: {codigo}
+                                <span className="text-blue-500 font-medium text-[10px] tracking-widest uppercase">
+                                    CÓDIGO: {codigo}
                                 </span>
                             </div>
                         )}
 
-                        <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-md active:scale-95">
+                        <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-700 shadow-md active:scale-95 transition-all">
                             Registrar Paciente
                         </button>
                     </form>
 
-                    {/* Botón de Consulta */}
+                    {/* PASO SOLICITADO: Botón con función de cerrar */}
                     <button onClick={consultarPacientes} className="w-full mt-4 bg-slate-100 text-slate-500 py-2 rounded-xl font-bold text-[9px] uppercase tracking-widest hover:bg-slate-200 transition-all">
-                        {cargando ? 'Cargando...' : 'Consultar Base de Datos'}
+                        {cargando ? 'Cargando...' : mostrarLista ? 'Cerrar Consulta' : 'Consultar Base de Datos'}
                     </button>
 
-                    {/* Lista de Pacientes (Paso 23) */}
                     {mostrarLista && (
                         <div className="mt-8 border-t border-slate-100 pt-6 animate-fade-in">
-                            <h2 className="text-[10px] font-bold text-slate-400 mb-4 uppercase text-center tracking-[0.2em]">Pacientes en la Nube</h2>
+                            <h2 className="text-[10px] font-bold text-slate-400 mb-4 uppercase text-center tracking-widest">Pacientes en la Nube</h2>
                             <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
                                 {listaPacientes.map((p) => (
-                                    <div key={p.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100 flex justify-between items-center hover:border-blue-100 transition-colors">
+                                    <div key={p.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100 flex justify-between items-center">
                                         <div>
                                             <p className="text-[11px] font-bold text-slate-700 uppercase leading-none mb-1">{p.nombres} {p.apellidos}</p>
-                                            <p className="text-[8px] text-slate-400 uppercase tracking-tighter">ID: {p.documento_identidad}</p>
+                                            <p className="text-[8px] text-slate-400 uppercase">ID: {p.documento_identidad}</p>
                                         </div>
-                                        <div className="text-right">
-                                            <span className="text-[9px] font-mono font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded block mb-1">
-                                                {p.codigo_paciente}
-                                            </span>
-                                            <p className="text-[7px] text-slate-300 font-mono">
-                                                {p.fecha_ingreso ? p.fecha_ingreso.split('T')[0] : ''}
-                                            </p>
-                                        </div>
+                                        <span className="text-[9px] font-mono font-bold text-blue-500 bg-blue-50 px-2 py-1 rounded">
+                                            {p.codigo_paciente}
+                                        </span>
                                     </div>
                                 ))}
                             </div>
