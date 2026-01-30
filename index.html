@@ -4,98 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Clínico - HISTORIAL_CLINICO_NUBE</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-align: center; background-color: #f0f2f5; }
-        .container { max-width: 500px; margin: 40px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        h1 { color: #2c3e50; margin-bottom: 5px; }
-        .info-automatica { background: #fdf9ea; color: #947600; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; border: 1px solid #f1e4b8; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; background-color: #2980b9; color: white; padding: 14px; border: none; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; margin-top: 15px; }
-        button:hover { background-color: #1c5982; }
-        .preview-box { margin-top: 15px; padding: 10px; border: 1px dashed #3498db; border-radius: 8px; color: #3498db; display: none; font-family: monospace; }
-    </style>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen">
+    <div id="root"></div>
 
-    <div class="container">
-        <h1>REGISTRO DE PACIENTE</h1>
-        <p>Proyecto: <strong>HISTORIAL_CLINICO_NUBE</strong></p>
-        
-        <div class="info-automatica">
-            Fecha de Ingreso: <span id="fecha-actual"></span>
-        </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-        <input type="text" id="nombre" placeholder="Nombre(s)" oninput="actualizarVista()" required>
-        <input type="text" id="apellido" placeholder="Apellidos" oninput="actualizarVista()" required>
-        <input type="text" id="dni" placeholder="Cédula de Identidad (CI)" oninput="actualizarVista()" required>
-        
-        <div id="preview" class="preview-box"></div>
-        
-        <button onclick="guardarPaciente()">REGISTRAR PACIENTE</button>
-    </div>
+        function App() {
+            const [formData, setFormData] = useState({ nombres: '', apellidos: '', documento_identidad: '' });
+            const [codigo, setCodigo] = useState('');
 
-    <script>
-        // Cargar fecha automáticamente al abrir la página
-        const hoy = new Date();
-        const fechaISO = hoy.toLocaleDateString('es-ES');
-        document.getElementById('fecha-actual').innerText = fechaISO;
+            // Generación elegante e instantánea
+            useEffect(() => {
+                if (formData.nombres && formData.apellidos) {
+                    const iniciales = (formData.nombres[0] + formData.apellidos[0]).toUpperCase();
+                    const num = Math.floor(1000 + Math.random() * 9000);
+                    setCodigo(`${iniciales}${num}`);
+                } else { setCodigo(''); }
+            }, [formData.nombres, formData.apellidos]);
 
-        function generarCodigoUnico() {
-            const nombre = document.getElementById('nombre').value.trim();
-            const apellido = document.getElementById('apellido').value.trim();
-            
-            if (nombre.length > 0 && apellido.length > 0) {
-                const iniciales = (nombre.charAt(0) + apellido.charAt(0)).toUpperCase();
-                // Usamos los últimos 4 dígitos del timestamp para simular un correlativo único AR0001
-                const correlativo = Date.now().toString().slice(-4); 
-                return `${iniciales}${correlativo}`;
-            }
-            return "";
-        }
-
-        function actualizarVista() {
-            const codigo = generarCodigoUnico();
-            const box = document.getElementById('preview');
-            if (codigo) {
-                box.style.display = "block";
-                box.innerText = "CÓDIGO GENERADO: " + codigo;
-            } else {
-                box.style.display = "none";
-            }
-        }
-
-        async function guardarPaciente() {
-            const nombre = document.getElementById('nombre').value;
-            const apellido = document.getElementById('apellido').value;
-            const dni = document.getElementById('dni').value;
-            const codigo = generarCodigoUnico();
-
-            if (!nombre || !apellido || !dni) return alert("⚠️ Error: Llene todos los datos.");
-
-            const url = 'https://historial-clinico-nube.vercel.app/api/pacientes';
-
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        nombre: nombre, 
-                        // Guardamos Fecha y Código dentro del campo Apellido para el historial
-                        apellido: `${apellido} | COD: ${codigo} | FECHA: ${fechaISO}`,
-                        dni: dni 
-                    })
-                });
-
-                if (response.ok) {
-                    alert(`✅ REGISTRADO\nCódigo: ${codigo}\nFecha: ${fechaISO}`);
-                    location.reload(); // Recarga para limpiar y actualizar fecha
-                } else {
-                    alert("❌ Error en el servidor.");
+            const registrar = async (e) => {
+                e.preventDefault();
+                try {
+                    await axios.post('https://historial-clinico-936s.onrender.com/pacientes/', {
+                        ...formData,
+                        codigo_paciente: codigo
+                    });
+                    alert("¡PACIENTE REGISTRADO EN LA NUBE!");
+                } catch (err) {
+                    alert("Error: El servidor en Render está despertando o desconectado.");
                 }
-            } catch (error) {
-                alert("❌ Sin conexión.");
-            }
+            };
+
+            return (
+                <div className="bg-white p-8 rounded-2xl shadow-xl w-[380px] border border-slate-100">
+                    <h1 className="text-2xl font-bold text-center text-slate-800 mb-1 uppercase tracking-tight">Registro de Paciente</h1>
+                    <p className="text-center text-[9px] text-slate-400 mb-6 uppercase tracking-[0.3em]">Historial Clínico Nube</p>
+                    
+                    <form onSubmit={registrar} className="space-y-4">
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Nombres</label>
+                            <input type="text" required className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400 transition-all"
+                                onChange={e => setFormData({...formData, nombres: e.target.value})} />
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Apellidos</label>
+                            <input type="text" required className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400 transition-all"
+                                onChange={e => setFormData({...formData, apellidos: e.target.value})} />
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1 tracking-wider">Documento de Identidad</label>
+                            <input type="text" required className="w-full p-3 bg-slate-50 border border-slate-100 rounded-lg text-sm outline-none focus:border-blue-400 transition-all"
+                                onChange={e => setFormData({...formData, documento_identidad: e.target.value})} />
+                        </div>
+                        
+                        {codigo && (
+                            <div className="mt-4 p-2 border border-dashed border-blue-200 rounded-lg text-center bg-blue-50/30">
+                                <span className="text-blue-500 font-medium text-[10px] tracking-[0.2em] uppercase">
+                                    CÓDIGO GENERADO: {codigo}
+                                </span>
+                            </div>
+                        )}
+
+                        <button type="submit" className="w-full bg-blue-600 text-white py-3 rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-blue-700 transition-all shadow-md active:scale-95">
+                            Registrar Paciente
+                        </button>
+                    </form>
+                </div>
+            );
         }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
