@@ -23,7 +23,7 @@ function App() {
         } finally {
             setCargando(false);
         }
-    };
+    };  
 
     return (
         <div className="bg-white p-10 rounded-3xl shadow-2xl w-[450px] border border-gray-100">
