@@ -1,12 +1,22 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from api.database import SessionLocal, engine, Base
 from api import models, schemas
 
-# Crea las tablas si no existen
+# Crea las tablas si no existen en PostgreSQL
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# --- CONFIGURACIÓN DE CORS (SOLUCIÓN AL ERROR DE CONEXIÓN) ---
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite que GitHub Pages se conecte
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite POST, GET, etc.
+    allow_headers=["*"],  # Permite todas las cabeceras
+)
 
 # Función para obtener la base de datos
 def get_db():
@@ -20,6 +30,7 @@ def get_db():
 def read_root():
     return {"message": "API HISTORIAL_CLINICO_NUBE en linea"}
 
+# RUTA PARA REGISTRAR (POST)
 @app.post("/pacientes/", response_model=schemas.PacienteResponse)
 def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     # 1. Crear la instancia del modelo con los datos recibidos
@@ -38,7 +49,8 @@ def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_d
     db.refresh(nuevo_paciente)
     
     return nuevo_paciente
-    
+
+# RUTA PARA LISTAR (GET)
 @app.get("/pacientes/", response_model=list[schemas.PacienteResponse])
 def obtener_pacientes(db: Session = Depends(get_db)):
     # Busca todos los pacientes en la base de datos
