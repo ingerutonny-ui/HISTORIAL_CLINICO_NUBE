@@ -22,18 +22,18 @@ class DeclaracionJuradaBase(BaseModel):
     paciente_id: int
     
     # --- SECCIÓN 1: AFILIACIÓN ---
-    edad: Optional[int] = None
-    sexo: Optional[str] = None
-    fecha_nacimiento: Optional[str] = None
-    lugar_nacimiento: Optional[str] = None
-    domicilio_av_calle: Optional[str] = None
-    domicilio_numero: Optional[str] = None
-    barrio: Optional[str] = None
-    ciudad: Optional[str] = None
-    pais: Optional[str] = None
-    telefono: Optional[str] = None
-    estado_civil: Optional[str] = None
-    profesion_labor: Optional[str] = None
+    edad: Optional[int] = 0
+    sexo: Optional[str] = ""
+    fecha_nacimiento: Optional[str] = ""
+    lugar_nacimiento: Optional[str] = ""
+    domicilio_av_calle: Optional[str] = ""
+    domicilio_numero: Optional[str] = ""
+    barrio: Optional[str] = ""
+    ciudad: Optional[str] = ""
+    pais: Optional[str] = ""
+    telefono: Optional[str] = ""
+    estado_civil: Optional[str] = ""
+    profesion_labor: Optional[str] = ""
 
     # --- SECCIÓN 2: ANTECEDENTES DE SALUD ---
     vista: Optional[str] = "NO"
@@ -52,45 +52,45 @@ class DeclaracionJuradaBase(BaseModel):
     piel: Optional[str] = "NO"
     infecciones: Optional[str] = "NO"
     
-    alergia_med: Optional[str] = None
-    alergia_ali: Optional[str] = None
+    alergia_med: Optional[str] = ""
+    alergia_ali: Optional[str] = ""
 
     # --- SECCIÓN 3.1: HÁBITOS ---
-    h_alc_sn: Optional[str] = None
-    h_alc_cant: Optional[str] = None
-    h_alc_freq: Optional[str] = None
+    h_alc_sn: Optional[str] = "NO"
+    h_alc_cant: Optional[str] = ""
+    h_alc_freq: Optional[str] = ""
     
-    h_tab_sn: Optional[str] = None
-    h_tab_cant: Optional[str] = None
-    h_tab_freq: Optional[str] = None
+    h_tab_sn: Optional[str] = "NO"
+    h_tab_cant: Optional[str] = ""
+    h_tab_freq: Optional[str] = ""
     
-    h_coca_sn: Optional[str] = None
-    h_coca_cant: Optional[str] = None
-    h_coca_freq: Optional[str] = None
+    h_coca_sn: Optional[str] = "NO"
+    h_coca_cant: Optional[str] = ""
+    h_coca_freq: Optional[str] = ""
 
     # --- SECCIÓN 3.2: HISTORIA LABORAL ---
-    historia_laboral: Optional[str] = None
+    historia_laboral: Optional[str] = ""
 
     # --- SECCIÓN 3.3: LOS 17 RIESGOS ---
-    r_ruido: Optional[str] = None
-    r_radiacion: Optional[str] = None
-    r_vibracion: Optional[str] = None
-    r_mecanicos: Optional[str] = None
-    r_temperatura: Optional[str] = None
-    r_polvo: Optional[str] = None
-    r_humos: Optional[str] = None
-    r_gases: Optional[str] = None
-    r_metales: Optional[str] = None
-    r_plomo: Optional[str] = None
-    r_repetitivos: Optional[str] = None
-    r_carga: Optional[str] = None
-    r_psicologico: Optional[str] = None
-    r_biologico: Optional[str] = None
-    r_altura: Optional[str] = None
-    r_confinados: Optional[str] = None
-    r_otros: Optional[str] = None
+    r_ruido: Optional[str] = "NO"
+    r_radiacion: Optional[str] = "NO"
+    r_vibracion: Optional[str] = "NO"
+    r_mecanicos: Optional[str] = "NO"
+    r_temperatura: Optional[str] = "NO"
+    r_polvo: Optional[str] = "NO"
+    r_humos: Optional[str] = "NO"
+    r_gases: Optional[str] = "NO"
+    r_metales: Optional[str] = "NO"
+    r_plomo: Optional[str] = "NO"
+    r_repetitivos: Optional[str] = "NO"
+    r_carga: Optional[str] = "NO"
+    r_psicologico: Optional[str] = "NO"
+    r_biologico: Optional[str] = "NO"
+    r_altura: Optional[str] = "NO"
+    r_confinados: Optional[str] = "NO"
+    r_otros: Optional[str] = "NO"
     
-    observaciones: Optional[str] = None
+    observaciones: Optional[str] = ""
 
 class DeclaracionJuradaCreate(DeclaracionJuradaBase):
     pass
