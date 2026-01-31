@@ -21,54 +21,74 @@ class Paciente(PacienteBase):
 class DeclaracionJuradaBase(BaseModel):
     paciente_id: int
     
-    # --- SECCIÓN 1: DATOS COMPLEMENTARIOS ---
+    # --- SECCIÓN 1: AFILIACIÓN ---
+    edad: Optional[int] = None
+    sexo: Optional[str] = None
+    fecha_nacimiento: Optional[str] = None
+    lugar_nacimiento: Optional[str] = None
     domicilio_av_calle: Optional[str] = None
     domicilio_numero: Optional[str] = None
     barrio: Optional[str] = None
     ciudad: Optional[str] = None
     pais: Optional[str] = None
-    profesion_labor: Optional[str] = None
     telefono: Optional[str] = None
     estado_civil: Optional[str] = None
+    profesion_labor: Optional[str] = None
 
-    # --- SECCIÓN 2: ANTECEDENTES PATOLÓGICOS ---
-    vista: Optional[str] = None
-    auditivo: Optional[str] = None
-    respiratorios: Optional[str] = None
-    cardiovasculares: Optional[str] = None
-    estomago_intestino: Optional[str] = None
-    sangre: Optional[str] = None
-    genitourinario: Optional[str] = None
-    sistema_nervioso: Optional[str] = None
-    psiquiatricos_mentales: Optional[str] = None
-    osteomusculares: Optional[str] = None
-    endocrinos_metabolicos: Optional[str] = None
-    reumatologicos: Optional[str] = None
-    dermatologicos: Optional[str] = None
-    generales_cancer_hernias: Optional[str] = None
+    # --- SECCIÓN 2: ANTECEDENTES DE SALUD ---
+    vista: Optional[str] = "NO"
+    auditivo: Optional[str] = "NO"
+    respiratorios: Optional[str] = "NO"
+    cardio: Optional[str] = "NO"
+    digestivo: Optional[str] = "NO"
+    sangre: Optional[str] = "NO"
+    urinario: Optional[str] = "NO"
+    nervioso: Optional[str] = "NO"
+    psiquiatrico: Optional[str] = "NO"
+    oseo: Optional[str] = "NO"
+    metabolico: Optional[str] = "NO"
+    reuma: Optional[str] = "NO"
+    generales: Optional[str] = "NO"
+    piel: Optional[str] = "NO"
+    infecciones: Optional[str] = "NO"
     
-    # ALERGIAS E INFECCIONES
-    alergias_medicamentos: Optional[str] = None
-    alergias_alimentos: Optional[str] = None
-    infecciones_detalle: Optional[str] = None
+    alergia_med: Optional[str] = None
+    alergia_ali: Optional[str] = None
+
+    # --- SECCIÓN 3.1: HÁBITOS ---
+    h_alc_sn: Optional[str] = None
+    h_alc_cant: Optional[str] = None
+    h_alc_freq: Optional[str] = None
     
-    # --- SECCIÓN 3: PERSONALES, HÁBITOS Y LABORAL ---
-    cirugias: Optional[str] = None
-    accidentes_trabajo: Optional[str] = None
-    accidentes_particulares: Optional[str] = None
-    medicamentos_uso_actual: Optional[str] = None
-    grupo_sanguineo: Optional[str] = None
-    deportes: Optional[str] = None
+    h_tab_sn: Optional[str] = None
+    h_tab_cant: Optional[str] = None
+    h_tab_freq: Optional[str] = None
     
-    alcohol: Optional[str] = None
-    tabaco: Optional[str] = None
-    drogas: Optional[str] = None
-    coca_bolo: Optional[str] = None
-    
-    edad_inicio_trabajo: Optional[int] = None
-    historia_laboral_detalle: Optional[str] = None
-    riesgos_expuestos: Optional[str] = None
-    uso_epp: Optional[str] = None
+    h_coca_sn: Optional[str] = None
+    h_coca_cant: Optional[str] = None
+    h_coca_freq: Optional[str] = None
+
+    # --- SECCIÓN 3.2: HISTORIA LABORAL ---
+    historia_laboral: Optional[str] = None
+
+    # --- SECCIÓN 3.3: LOS 17 RIESGOS ---
+    r_ruido: Optional[str] = None
+    r_radiacion: Optional[str] = None
+    r_vibracion: Optional[str] = None
+    r_mecanicos: Optional[str] = None
+    r_temperatura: Optional[str] = None
+    r_polvo: Optional[str] = None
+    r_humos: Optional[str] = None
+    r_gases: Optional[str] = None
+    r_metales: Optional[str] = None
+    r_plomo: Optional[str] = None
+    r_repetitivos: Optional[str] = None
+    r_carga: Optional[str] = None
+    r_psicologico: Optional[str] = None
+    r_biologico: Optional[str] = None
+    r_altura: Optional[str] = None
+    r_confinados: Optional[str] = None
+    r_otros: Optional[str] = None
     
     observaciones: Optional[str] = None
 
