@@ -8,7 +8,6 @@
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
         
-        /* Enlace volver corregido */
         .btn-volver { color: #b0bac9; font-size: 11px; font-weight: 700; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; transition: 0.3s; }
         .btn-volver:hover { color: #24a174; }
 
@@ -18,17 +17,14 @@
         
         .form-control { border-radius: 18px; background-color: #f3f6f9; border: none; padding: 15px; font-weight: 600; color: #1e293b; text-transform: uppercase; }
 
-        /* Estilo elegante de Código Generado */
         #codigo_contenedor { border: 2px dashed #d1eadd; border-radius: 18px; padding: 15px; margin-top: 20px; display: none; background-color: #f9fdfc; color: #24a174; font-weight: 800; font-size: 16px; letter-spacing: 1px; }
 
-        /* Botón Verde Esmeralda Elegante */
         .btn-registrar { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 30px; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); }
         
         .btn-consultar { background-color: transparent; border: none; padding: 15px; width: 100%; margin-top: 10px; color: #b0bac9; font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
 
         .fecha-texto { color: #cbd5e1; font-size: 12px; font-weight: 700; margin-top: 5px; text-transform: uppercase; }
 
-        /* LISTA MEJORADA */
         #seccionLista { display: none; width: 100%; max-width: 450px; margin-top: 20px; background: white; padding: 30px; border-radius: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
         .paciente-fila { padding: 15px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
         .paciente-nombre { font-size: 13px; font-weight: 700; color: #1e293b; text-transform: uppercase; }
@@ -70,7 +66,6 @@
     <script>
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
         
-        // Fecha actual automática
         const fecha = new Date();
         document.getElementById('fechaActual').innerText = fecha.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
@@ -108,6 +103,11 @@
                     body: JSON.stringify(payload)
                 });
                 if (res.ok) {
+                    // PERSISTENCIA: Guardamos para la Declaración Jurada
+                    localStorage.setItem('temp_nombres', inN.value.trim());
+                    localStorage.setItem('temp_apellidos', inA.value.trim());
+                    localStorage.setItem('temp_codigo', codVal.innerText);
+                    
                     alert("¡PACIENTE REGISTRADO EXITOSAMENTE!");
                     window.location.href = "declaracion_jurada.html"; 
                 } else {
