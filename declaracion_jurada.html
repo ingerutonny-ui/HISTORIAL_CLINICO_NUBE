@@ -6,34 +6,40 @@
     <title>HC NUBE | Declaración Jurada</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 30px; display: flex; flex-direction: column; align-items: center; }
         .form-container { max-width: 900px; width: 100%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
         
         .header-section { text-align: center; margin-bottom: 30px; }
-        .titulo-principal { font-weight: 800; color: #1e293b; font-size: 26px; text-transform: uppercase; margin: 0; }
-        .subtitulo { color: #b0bac9; font-size: 12px; font-weight: 700; letter-spacing: 2px; }
+        .titulo-principal { font-weight: 800; color: #1e293b; font-size: 24px; text-transform: uppercase; margin: 0; letter-spacing: -0.5px; }
+        .subtitulo { color: #b0bac9; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
         
-        .seccion-titulo { background-color: #f3f6f9; color: #1e293b; padding: 10px 20px; border-radius: 15px; font-weight: 800; font-size: 13px; margin-top: 30px; margin-bottom: 20px; text-transform: uppercase; }
+        .seccion-titulo { background-color: #f3f6f9; color: #1e293b; padding: 12px 20px; border-radius: 15px; font-weight: 800; font-size: 13px; margin-top: 30px; margin-bottom: 20px; text-transform: uppercase; display: flex; justify-content: space-between; }
         
-        .form-label { font-size: 10px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; }
+        .form-label { font-size: 10px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; display: block; }
         
-        /* Inputs elegantes y bloqueo de edición para datos ya existentes */
-        .form-control { border-radius: 15px; background-color: #f3f6f9; border: none; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 13px; }
-        .readonly-field { background-color: #eef2f7; color: #24a174; cursor: not-allowed; border: 1px solid #d1eadd; }
+        .form-control, .form-select { border-radius: 15px; background-color: #f3f6f9; border: none; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 13px; }
+        .form-control:focus { background-color: #ebf0f5; box-shadow: none; outline: none; }
 
-        .row-gap { margin-bottom: 15px; }
+        .readonly-field { background-color: #f0fdf4; color: #24a174; border: 1px dashed #d1eadd; cursor: not-allowed; }
+
+        .btn-siguiente { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 40px; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); text-transform: uppercase; letter-spacing: 1px; }
+        
+        .row-gap { margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <div class="form-container">
         <div class="header-section">
             <h1 class="titulo-principal">Declaración Jurada de Salud</h1>
-            <p class="subtitulo">Historial Clínico Nube | Módulo de Enfermería</p>
+            <p class="subtitulo">Módulo de Enfermería | Primera Sección</p>
         </div>
 
-        <div class="seccion-titulo">1. Afiliación del Trabajador</div>
-        
-        <form id="formDeclaracion">
+        <form id="formParte1">
+            <div class="seccion-titulo">
+                <span>1. Afiliación del Trabajador</span>
+                <span id="fecha_hoy" style="color: #b0bac9;"></span>
+            </div>
+            
             <div class="row row-gap">
                 <div class="col-md-8">
                     <label class="form-label">Apellidos y Nombres</label>
@@ -41,18 +47,18 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Código de Paciente</label>
-                    <input type="text" id="codigo_id" class="form-control readonly-field" readonly>
+                    <input type="text" id="codigo_id" class="form-control readonly-field" readonly style="text-align: center; font-size: 16px;">
                 </div>
             </div>
 
             <div class="row row-gap">
                 <div class="col-md-2">
                     <label class="form-label">Edad</label>
-                    <input type="number" class="form-control" required>
+                    <input type="number" id="edad" class="form-control" required>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">Sexo</label>
-                    <select class="form-control" required>
+                    <select id="sexo" class="form-select" required>
                         <option value="">SELECCIONE</option>
                         <option value="MASCULINO">MASCULINO</option>
                         <option value="FEMENINO">FEMENINO</option>
@@ -60,26 +66,82 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">Fecha de Nacimiento</label>
-                    <input type="date" class="form-control" required>
+                    <input type="date" id="fecha_nacimiento" class="form-control" required>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">Lugar</label>
-                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                    <label class="form-label">Lugar de Nacimiento</label>
+                    <input type="text" id="lugar_nacimiento" class="form-control" oninput="this.value = this.value.toUpperCase()">
                 </div>
             </div>
-            
-            <div class="text-center mt-5">
-                <p style="color:#b0bac9; font-size: 11px; font-weight: 700;">LA SECCIÓN DE ANTECEDENTES SE ACTIVARÁ MAÑANA</p>
+
+            <div class="row row-gap">
+                <div class="col-md-5">
+                    <label class="form-label">Domicilio (Av./Calle)</label>
+                    <input type="text" id="domicilio" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">N° Casa</label>
+                    <input type="text" id="n_casa" class="form-control">
+                </div>
+                <div class="col-md-5">
+                    <label class="form-label">Zona / Barrio</label>
+                    <input type="text" id="zona" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
             </div>
+
+            <div class="row row-gap">
+                <div class="col-md-3">
+                    <label class="form-label">Ciudad</label>
+                    <input type="text" id="ciudad" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">País</label>
+                    <input type="text" id="pais" class="form-control" value="BOLIVIA" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Teléfono / Celular</label>
+                    <input type="text" id="telefono" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Estado Civil</label>
+                    <select id="estado_civil" class="form-select">
+                        <option value="SOLTERO(A)">SOLTERO(A)</option>
+                        <option value="CASADO(A)">CASADO(A)</option>
+                        <option value="DIVORCIADO(A)">DIVORCIADO(A)</option>
+                        <option value="VIUDO(A)">VIUDO(A)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row row-gap">
+                <div class="col-md-12">
+                    <label class="form-label">Profesión / Labor que desempeña</label>
+                    <input type="text" id="profesion" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-siguiente">Guardar y continuar a siguiente sección</button>
         </form>
     </div>
 
     <script>
-        // Lógica para recuperar datos del paciente recién registrado (simulada por ahora)
+        // Cargar datos automáticamente al abrir
         window.onload = () => {
-            // Esto lo conectaremos con el almacenamiento local o la nube en el siguiente paso
-            document.getElementById('nombre_completo').value = "CARGANDO DATOS...";
-            document.getElementById('codigo_id').value = "---";
+            document.getElementById('fecha_hoy').innerText = new Date().toLocaleDateString();
+            
+            // Intentar recuperar del registro anterior
+            const nombres = localStorage.getItem('temp_nombres') || "PACIENTE";
+            const apellidos = localStorage.getItem('temp_apellidos') || "NUEVO";
+            const codigo = localStorage.getItem('temp_codigo') || "S/C";
+
+            document.getElementById('nombre_completo').value = `${apellidos} ${nombres}`;
+            document.getElementById('codigo_id').value = codigo;
+        };
+
+        document.getElementById('formParte1').onsubmit = (e) => {
+            e.preventDefault();
+            alert("SECCIÓN 1 GUARDADA LOCALMENTE. MAÑANA CONTINUAREMOS CON LOS ANTECEDENTES.");
+            // Aquí guardaremos en la base de datos mañana junto con la parte 2
         };
     </script>
 </body>
