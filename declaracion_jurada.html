@@ -7,79 +7,67 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 30px; display: flex; flex-direction: column; align-items: center; }
-        .form-container { max-width: 900px; width: 100%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
+        .form-container { max-width: 1000px; width: 100%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
         .titulo-principal { font-weight: 800; color: #1e293b; font-size: 24px; text-transform: uppercase; text-align: center; margin-bottom: 30px; }
         .seccion-titulo { background-color: #f3f6f9; color: #1e293b; padding: 12px 20px; border-radius: 15px; font-weight: 800; font-size: 13px; margin-top: 30px; margin-bottom: 20px; text-transform: uppercase; }
-        .form-label { font-size: 10px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        .form-control, .form-select { border-radius: 15px; background-color: #f3f6f9; border: none; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 13px; }
+        .form-label { font-size: 11px; font-weight: 800; color: #1e293b; text-transform: uppercase; margin-bottom: 2px; }
+        .enfermedad-ejemplo { font-size: 10px; color: #94a3b8; margin-bottom: 10px; line-height: 1.2; font-style: italic; }
+        .form-select { border-radius: 12px; background-color: #f3f6f9; border: 2px solid transparent; padding: 8px; font-weight: 700; font-size: 13px; transition: 0.3s; }
+        .form-select:focus { border-color: #24a174; background-color: white; outline: none; }
         .btn-siguiente { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 40px; text-transform: uppercase; }
-        .row-gap { margin-bottom: 20px; }
-        .hidden { display: none; }
+        .row-gap { margin-bottom: 25px; border-bottom: 1px solid #f1f5f9; pb-3; }
     </style>
 </head>
 <body>
     <div class="form-container">
         <h1 class="titulo-principal">Declaración Jurada de Salud</h1>
         
-        <div id="divSeccion1" class="hidden">
-            </div>
-
         <form id="formSeccion2">
-            <div class="seccion-titulo">2. Antecedentes de Salud (Marque si fue diagnosticado)</div>
-            
-            <div class="row row-gap">
-                <div class="col-md-4">
-                    <label class="form-label">VISTA (Glaucoma, Miopía, etc.)</label>
-                    <select id="vista" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+            <div class="seccion-titulo">2. Antecedentes de Salud (Marque SI o NO)</div>
+            <p style="font-size: 11px; color: #64748b; margin-bottom: 25px;">Por favor lea con cuidado y marque si usted fue diagnosticado de alguna de las enfermedades mencionadas.</p>
+
+            <div class="row">
+                <div class="col-md-6 row-gap">
+                    <label class="form-label">VISTA</label>
+                    <div class="enfermedad-ejemplo">Disminución visión, Daltonismo, Glaucoma, Miopía, etc.</div>
+                    <select id="vista" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">AUDITIVO (Sordera, Vértigo)</label>
-                    <select id="auditivo" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <div class="col-md-6 row-gap">
+                    <label class="form-label">AUDITIVO</label>
+                    <div class="enfermedad-ejemplo">Sordera, Otitis, Trauma acústico, Vértigo.</div>
+                    <select id="auditivo" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">RESPIRATORIOS (Asma, EPOC)</label>
-                    <select id="respiratorios" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <div class="col-md-6 row-gap">
+                    <label class="form-label">RESPIRATORIOS</label>
+                    <div class="enfermedad-ejemplo">Tuberculosis, EPOC, Asma, Bronquitis, Rinitis.</div>
+                    <select id="respiratorios" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
+                </div>
+                <div class="col-md-6 row-gap">
+                    <label class="form-label">CARDIO-VASCULARES</label>
+                    <div class="enfermedad-ejemplo">Presión alta, Arritmia, Trombosis, Infarto, AVC.</div>
+                    <select id="cardiovasculares" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
+                </div>
+                <div class="col-md-6 row-gap">
+                    <label class="form-label">SISTEMA NERVIOSO / MENTALES</label>
+                    <div class="enfermedad-ejemplo">Epilepsia, Migraña, Depresión, Ansiedad, Psicosis.</div>
+                    <select id="sistema_nervioso" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
+                </div>
+                <div class="col-md-6 row-gap">
+                    <label class="form-label">OSTEOMUSCULARES</label>
+                    <div class="enfermedad-ejemplo">Lumbalgia, Escoliosis, Fracturas, Dolor articular.</div>
+                    <select id="osteomusculares" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
             </div>
 
-            <div class="row row-gap">
-                <div class="col-md-4">
-                    <label class="form-label">CARDIO-VASCULARES (Presión Alta)</label>
-                    <select id="cardiovasculares" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">ESTÓMAGO / HÍGADO / PANCREAS</label>
-                    <select id="estomago_intestino" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">SANGRE (Anemia, Coagulopatía)</label>
-                    <select id="sangre" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                </div>
-            </div>
-
-            <div class="row row-gap">
-                <div class="col-md-4">
-                    <label class="form-label">GENITO / URINARIO (ITS, Renal)</label>
-                    <select id="genitourinario" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">SISTEMA NERVIOSO / PSIQUIÁTRICO</label>
-                    <select id="sistema_nervioso" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">OSTEOMUSCULARES (Fracturas)</label>
-                    <select id="osteomusculares" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                </div>
-            </div>
-
-            <div class="row row-gap">
+            <div class="seccion-titulo" style="background-color: #fff1f2;">Alergias e Infecciones</div>
+            <div class="row">
                 <div class="col-md-6">
                     <label class="form-label">ALERGIAS (Medicamentos / Alimentos)</label>
-                    <input type="text" id="alergias_detalle" class="form-control" placeholder="Indique a qué o ponga NO" oninput="this.value = this.value.toUpperCase()">
+                    <input type="text" id="alergias_detalle" class="form-control" placeholder="Indique cuál o ponga NO" style="background-color: #f3f6f9; border-radius:12px; border:none; padding:12px;">
                 </div>
                 <div class="col-md-6">
                     <label class="form-label">INFECCIONES (Chagas, Hepatitis, HIV)</label>
-                    <input type="text" id="infecciones_detalle" class="form-control" placeholder="Indique detalle o ponga NO" oninput="this.value = this.value.toUpperCase()">
+                    <input type="text" id="infecciones_detalle" class="form-control" placeholder="Indique detalle o ponga NO" style="background-color: #f3f6f9; border-radius:12px; border:none; padding:12px;">
                 </div>
             </div>
 
@@ -90,24 +78,18 @@
     <script>
         document.getElementById('formSeccion2').onsubmit = (e) => {
             e.preventDefault();
-            
             const dataSeccion2 = {
                 vista: document.getElementById('vista').value,
                 auditivo: document.getElementById('auditivo').value,
                 respiratorios: document.getElementById('respiratorios').value,
                 cardiovasculares: document.getElementById('cardiovasculares').value,
-                estomago_intestino: document.getElementById('estomago_intestino').value,
-                sangre: document.getElementById('sangre').value,
-                genitourinario: document.getElementById('genitourinario').value,
                 sistema_nervioso: document.getElementById('sistema_nervioso').value,
                 osteomusculares: document.getElementById('osteomusculares').value,
                 alergias_detalle: document.getElementById('alergias_detalle').value,
                 infecciones_detalle: document.getElementById('infecciones_detalle').value
             };
-
             localStorage.setItem('datos_seccion_2', JSON.stringify(dataSeccion2));
-            alert("Sección 2 guardada con éxito. Procediendo a la Sección 3.");
-            // En el próximo paso habilitaremos la Sección 3 según el PDF
+            alert("Sección 2 guardada. Vamos a la parte Laboral.");
         };
     </script>
 </body>
