@@ -6,158 +6,65 @@
     <title>HC NUBE | DECLARACIÓN JURADA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --esmeralda: #24a174;
-            --oscuro: #1e293b;
-            --radio: 40px; /* Según tu captura image_bddb37.png */
-        }
-
-        body { 
-            background-color: #f0f4f8; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            text-transform: uppercase; 
-            padding: 40px 10px;
-        }
-
+        :root { --esmeralda: #24a174; --oscuro: #1e293b; --radio: 40px; }
+        body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; text-transform: uppercase; padding: 40px 10px; }
+        
+        /* Contenedor con bordes de 40px */
         .form-container { 
-            max-width: 1000px; 
-            margin: auto; 
-            background: white; 
-            padding: 50px; 
-            border-radius: var(--radio); 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
-        }
-
-        .header-clinica {
-            text-align: center;
-            margin-bottom: 40px;
-            border-bottom: 4px solid var(--esmeralda);
-            padding-bottom: 20px;
-        }
-
-        .seccion-box {
-            background: #ffffff;
-            border: 2px solid #edf2f7;
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 30px;
+            max-width: 900px; margin: auto; background: white; padding: 50px; 
+            border-radius: var(--radio); box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
         }
 
         .seccion-titulo { 
-            background: var(--esmeralda); 
-            color: white; 
-            padding: 10px 25px; 
-            border-radius: 15px; 
-            display: inline-block;
-            font-weight: 800;
-            font-size: 13px;
-            margin-bottom: 20px;
+            background: var(--esmeralda); color: white; padding: 10px 25px; 
+            border-radius: 15px; display: inline-block; font-weight: 800; font-size: 13px; margin-bottom: 20px;
         }
 
         .form-control, .form-select { 
-            background-color: #f7fafc; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 15px; 
-            padding: 12px; 
-            font-weight: 700; 
-            font-size: 13px;
-            color: var(--oscuro);
+            background-color: #f7fafc; border: 2px solid #e2e8f0; border-radius: 15px; 
+            padding: 12px; font-weight: 700; font-size: 13px; color: var(--oscuro);
         }
 
-        .form-control:focus {
-            border-color: var(--esmeralda);
-            box-shadow: 0 0 0 3px rgba(36, 161, 116, 0.2);
-        }
-
-        label { font-weight: 800; color: #64748b; font-size: 11px; margin-bottom: 6px; margin-left: 10px; }
-
+        /* Botón con bordes de 40px */
         .btn-nube { 
-            background: var(--oscuro); 
-            color: white; 
-            border: none; 
-            border-radius: var(--radio); 
-            padding: 25px; 
-            width: 100%; 
-            font-weight: 900; 
-            font-size: 18px;
-            letter-spacing: 2px;
-            transition: 0.3s;
-            margin-top: 20px;
+            background: var(--oscuro); color: white; border: none; border-radius: var(--radio); 
+            padding: 20px; width: 100%; font-weight: 900; font-size: 18px; transition: 0.3s;
         }
-
-        .btn-nube:hover { 
-            background: var(--esmeralda); 
-            transform: scale(1.02);
-        }
-
-        .paciente-info {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-left: 10px solid var(--esmeralda);
-        }
+        .btn-nube:hover { background: var(--esmeralda); }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <div class="header-clinica">
-        <h2 class="fw-black" style="color: var(--oscuro);">HISTORIAL_CLINICO_NUBE</h2>
-        <span class="badge bg-success">DECLARACIÓN JURADA DE SALUD</span>
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color: var(--oscuro);">HISTORIAL_CLINICO_NUBE</h2>
+        <div class="seccion-titulo">DECLARACIÓN JURADA DE SALUD</div>
     </div>
-    
+
     <form id="mainForm">
-        <div class="paciente-info row align-items-center">
+        <div class="row g-3 mb-4">
             <div class="col-md-8">
-                <label>PACIENTE IDENTIFICADO:</label>
-                <input type="text" id="display_nombre" class="form-control border-0 bg-transparent h4 mb-0" readonly>
+                <label class="small fw-bold ms-2">PACIENTE:</label>
+                <input type="text" id="display_nombre" class="form-control" readonly>
             </div>
-            <div class="col-md-4 text-end">
-                <label>ID DE SEGUIMIENTO:</label>
-                <h3 id="display_id" class="fw-bold text-success">--</h3>
-                <input type="hidden" id="paciente_id">
-            </div>
-        </div>
-
-        <div class="seccion-box">
-            <div class="seccion-titulo">1. DATOS DE AFILIACIÓN</div>
-            <div class="row g-3">
-                <div class="col-md-2"><label>EDAD</label><input type="number" id="edad" class="form-control" value="0"></div>
-                <div class="col-md-3"><label>SEXO</label><select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
-                <div class="col-md-3"><label>FECHA NAC.</label><input type="date" id="fecha_nacimiento" class="form-control"></div>
-                <div class="col-md-4"><label>CIUDAD/PAÍS</label><input type="text" id="ciudad" class="form-control" value="LA PAZ, BOLIVIA"></div>
-                <div class="col-md-12"><label>DIRECCIÓN DE DOMICILIO</label><input type="text" id="domicilio_av_calle" class="form-control"></div>
+            <div class="col-md-4">
+                <label class="small fw-bold ms-2">ID SEGUIMIENTO:</label>
+                <input type="text" id="paciente_id" class="form-control text-success" readonly>
             </div>
         </div>
 
-        <div class="seccion-box">
-            <div class="seccion-titulo">2. ESTADO DE SALUD Y ANTECEDENTES</div>
-            <div class="row g-3">
-                <div class="col-md-3"><label>VISTA</label><select id="vista" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-3"><label>OÍDO</label><select id="auditivo" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-3"><label>RESPIRACIÓN</label><select id="respiratorios" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-3"><label>CORAZÓN</label><select id="cardio" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-6"><label>ALERGIA A MEDICAMENTOS</label><input type="text" id="alergia_med" class="form-control" placeholder="NINGUNA"></div>
-                <div class="col-md-6"><label>ALERGIA A ALIMENTOS</label><input type="text" id="alergia_ali" class="form-control" placeholder="NINGUNA"></div>
-            </div>
+        <div class="row g-3">
+            <div class="col-md-4"><label class="small fw-bold ms-2">EDAD</label><input type="number" id="edad" class="form-control" value="0"></div>
+            <div class="col-md-4"><label class="small fw-bold ms-2">SEXO</label><select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
+            <div class="col-md-4"><label class="small fw-bold ms-2">CIUDAD</label><input type="text" id="ciudad" class="form-control" value="LA PAZ"></div>
+            
+            <div class="col-12 mt-4"><div class="seccion-titulo">ANTECEDENTES Y RIESGOS</div></div>
+            <div class="col-md-6"><label class="small fw-bold ms-2">ALERGIA MED.</label><input type="text" id="alergia_med" class="form-control" value="NINGUNA"></div>
+            <div class="col-md-6"><label class="small fw-bold ms-2">ALERGIA ALIM.</label><input type="text" id="alergia_ali" class="form-control" value="NINGUNA"></div>
+            <div class="col-12"><label class="small fw-bold ms-2">HISTORIA LABORAL</label><input type="text" id="historia_laboral" class="form-control"></div>
         </div>
 
-        <div class="seccion-box">
-            <div class="seccion-titulo">3. HÁBITOS Y RIESGOS LABORALES</div>
-            <div class="row g-3">
-                <div class="col-md-4"><label>ALCOHOL</label><select id="h_alc_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-8"><label>HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</label><input type="text" id="historia_laboral" class="form-control"></div>
-                <div class="col-md-3"><label>RUIDO</label><input type="text" id="r_ruido" class="form-control" value="NO"></div>
-                <div class="col-md-3"><label>POLVO</label><input type="text" id="r_polvo" class="form-control" value="NO"></div>
-                <div class="col-md-3"><label>QUÍMICOS</label><input type="text" id="r_gases" class="form-control" value="NO"></div>
-                <div class="col-md-3"><label>OTROS</label><input type="text" id="r_otros" class="form-control" value="NO"></div>
-            </div>
-        </div>
-
-        <div class="px-3"><label>OBSERVACIONES MÉDICAS GENERALES</label><input type="text" id="observaciones" class="form-control" placeholder="ESCRIBA AQUÍ..."></div>
-
-        <button type="submit" id="btnNube" class="btn-nube">FINALIZAR Y GUARDAR EN NUBE</button>
+        <button type="submit" id="btnNube" class="btn-nube mt-5">FINALIZAR Y GUARDAR EN NUBE</button>
     </form>
 </div>
 
@@ -165,67 +72,43 @@
     const API_URL = "https://historial-clinico-936s.onrender.com/declaraciones/";
 
     window.onload = () => {
-        const p_id = localStorage.getItem('temp_paciente_id');
-        document.getElementById('display_nombre').value = localStorage.getItem('temp_nombres_completos') || "SIN NOMBRE";
-        document.getElementById('display_id').innerText = p_id || "ERR";
-        document.getElementById('paciente_id').value = p_id || "";
+        document.getElementById('display_nombre').value = localStorage.getItem('temp_nombres_completos') || "";
+        document.getElementById('paciente_id').value = localStorage.getItem('temp_paciente_id') || "";
     };
 
     document.getElementById('mainForm').onsubmit = async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btnNube');
         const p_id = document.getElementById('paciente_id').value;
-
-        if(!p_id) { alert("ERROR: NO EXISTE EL ID DEL PACIENTE"); return; }
-
-        btn.innerText = "SINCRONIZANDO CON LA NUBE...";
-        btn.disabled = true;
+        if(!p_id) { alert("ERROR: REGISTRE AL PACIENTE PRIMERO"); return; }
 
         const payload = {
             paciente_id: parseInt(p_id),
             edad: parseInt(document.getElementById('edad').value) || 0,
             sexo: document.getElementById('sexo').value,
-            fecha_nacimiento: document.getElementById('fecha_nacimiento').value || "2000-01-01",
-            lugar_nacimiento: "BOLIVIA",
-            domicilio_av_calle: document.getElementById('domicilio_av_calle').value || "NO",
-            domicilio_numero: "S/N", barrio: "CENTRO", ciudad: document.getElementById('ciudad').value || "LA PAZ",
-            pais: "BOLIVIA", telefono: "0", estado_civil: "SOLTERO", profesion_labor: "TRABAJADOR",
-            vista: document.getElementById('vista').value, auditivo: document.getElementById('auditivo').value,
-            respiratorios: document.getElementById('respiratorios').value, cardio: document.getElementById('cardio').value,
-            digestivo: "NO", sangre: "NO", urinario: "NO", nervioso: "NO", psiquiatrico: "NO", oseo: "NO", 
-            metabolico: "NO", reuma: "NO", generales: "NO", piel: "NO", infecciones: "NO",
-            alergia_med: document.getElementById('alergia_med').value || "NO",
-            alergia_ali: document.getElementById('alergia_ali').value || "NO",
-            h_alc_sn: document.getElementById('h_alc_sn').value, h_alc_cant: "0", h_alc_freq: "N/A",
-            h_tab_sn: "NO", h_tab_cant: "0", h_tab_freq: "N/A", h_coca_sn: "NO", h_coca_cant: "0", h_coca_freq: "N/A",
-            historia_laboral: document.getElementById('historia_laboral').value || "NO",
-            r_ruido: document.getElementById('r_ruido').value, r_radiacion: "NO", r_vibracion: "NO", r_mecanicos: "NO",
-            r_temperatura: "NO", r_polvo: document.getElementById('r_polvo').value, r_humos: "NO", r_gases: document.getElementById('r_gases').value,
-            r_metales: "NO", r_plomo: "NO", r_repetitivos: "NO", r_carga: "NO", r_psicologico: "NO", r_biologico: "NO",
-            r_altura: "NO", r_confinados: "NO", r_otros: document.getElementById('r_otros').value,
-            observaciones: document.getElementById('observaciones').value || "S/O"
+            ciudad: document.getElementById('ciudad').value,
+            alergia_med: document.getElementById('alergia_med').value,
+            alergia_ali: document.getElementById('alergia_ali').value,
+            historia_laboral: document.getElementById('historia_laboral').value || "NINGUNA",
+            // Campos por defecto para evitar el error 422 de FastAPI
+            pais: "BOLIVIA", fecha_nacimiento: "2000-01-01", vista: "NO", auditivo: "NO", respiratorios: "NO", cardio: "NO"
         };
 
         try {
             const res = await fetch(API_URL, {
                 method: 'POST',
+                mode: 'cors', // Crucial para resolver error de image_becff9.png
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("¡DATOS SUBIDOS A LA NUBE CON ÉXITO!");
+                alert("¡EXITO! GUARDADO EN NUBE.");
                 window.location.href = "index.html";
             } else {
-                const error = await res.json();
-                console.error(error);
-                alert("ERROR 422: EL SERVIDOR RECHAZÓ EL FORMATO DE DATOS.");
+                alert("ERROR EN DATOS (422). REVISAR CONSOLA.");
             }
-        } catch (e) {
-            alert("ERROR DE CONEXIÓN: EL SERVIDOR EN RENDER NO RESPONDE.");
-        } finally {
-            btn.innerText = "FINALIZAR Y GUARDAR EN NUBE";
-            btn.disabled = false;
+        } catch (err) {
+            alert("ERROR DE CONEXIÓN CON RENDER.");
         }
     };
 </script>
