@@ -6,17 +6,17 @@
     <title>HC NUBE | DECLARACIÓN JURADA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 30px; display: flex; flex-direction: column; align-items: center; }
-        .form-container { max-width: 1100px; width: 100%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .form-container { max-width: 1100px; width: 100%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
         .titulo-principal { font-weight: 800; color: #1e293b; font-size: 24px; text-transform: uppercase; text-align: center; margin-bottom: 30px; }
         .seccion-titulo { background-color: #f3f6f9; color: #1e293b; padding: 12px 20px; border-radius: 15px; font-weight: 800; font-size: 13px; margin-top: 30px; margin-bottom: 20px; text-transform: uppercase; }
-        .form-label { font-size: 11px; font-weight: 800; color: #1e293b; text-transform: uppercase; margin-bottom: 2px; }
-        .enfermedad-ejemplo { font-size: 10px; color: #64748b; margin-bottom: 12px; line-height: 1.4; font-style: italic; text-transform: uppercase; min-height: 30px; }
-        .form-control, .form-select { border-radius: 15px; background-color: #f3f6f9; border: 2px solid transparent; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 13px; transition: 0.3s; width: 100%; }
+        .form-label { font-size: 10px; font-weight: 800; color: #1e293b; text-transform: uppercase; margin-bottom: 4px; display: block; }
+        .form-control, .form-select { border-radius: 12px; background-color: #f3f6f9; border: 2px solid transparent; padding: 10px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 12px; transition: 0.3s; width: 100%; }
         .form-select:focus, .form-control:focus { border-color: #24a174; background-color: white; outline: none; }
-        .readonly-field { background-color: #f0fdf4; color: #24a174; border: 1px dashed #d1eadd; cursor: not-allowed; }
+        .readonly-field { background-color: #f0fdf4; color: #24a174; border: 1px dashed #d1eadd; }
         .btn-siguiente { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 40px; text-transform: uppercase; }
-        .row-gap { margin-bottom: 25px; }
+        .row-gap { margin-bottom: 20px; }
+        .sub-categoria-text { font-size: 9px; color: #64748b; font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
         .hidden { display: none; }
     </style>
 </head>
@@ -64,126 +64,99 @@
                     </select>
                 </div>
             </div>
-            <div class="row row-gap">
-                <div class="col-md-12"><label class="form-label">PROFESIÓN O LABOR QUE DESEMPEÑA</label><input type="text" id="profesion_labor" class="form-control"></div>
-            </div>
-            <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 2: ANTECEDENTES</button>
+            <button type="submit" class="btn-siguiente">SIGUIENTE: SECCIÓN 2</button>
         </form>
 
         <form id="formSeccion2" class="hidden">
-            <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (MARQUE SI O NO)</div>
-            <p style="font-size: 11px; color: #64748b; margin-bottom: 25px; text-transform: uppercase; font-weight: 700;">POR FAVOR LEA CON CUIDADO Y MARQUE (SI) O (NO) SI USTED FUE DIAGNOSTICADO DE ALGUNA DE LAS ENFERMEDADES MENCIONADAS.</p>
-            
-            <div class="row" id="contenedorPreguntasSalud">
-                </div>
-
-            <div class="seccion-titulo" style="background-color: #fff1f2;">ALERGIAS</div>
-            <div class="row row-gap">
-                <div class="col-md-6"><label class="form-label">ALERGIAS MEDICAMENTOS</label><input type="text" id="alergia_med" class="form-control" placeholder="DETALLE O PONGA NO"></div>
-                <div class="col-md-6"><label class="form-label">ALERGIAS ALIMENTOS</label><input type="text" id="alergia_ali" class="form-control" placeholder="DETALLE O PONGA NO"></div>
-            </div>
-            <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 3: LABORAL Y HÁBITOS</button>
+            <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (SI/NO)</div>
+            <div class="row" id="contenedorPreguntasSalud"></div>
+            <button type="submit" class="btn-siguiente">SIGUIENTE: SECCIÓN 3</button>
         </form>
 
         <form id="formSeccion3" class="hidden">
-            <div class="seccion-titulo">3.1 HÁBITOS (SI/NO, CANTIDAD, FRECUENCIA)</div>
+            <div class="seccion-titulo">3.1 HÁBITOS (SI / NO / CANTIDAD / FRECUENCIA)</div>
             <div class="row row-gap">
-                <div class="col-md-4">
-                    <label class="form-label">ALCOHOL</label>
-                    <input type="text" id="habito_alcohol" class="form-control" placeholder="SI/NO - CANTIDAD - FRECUENCIA">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">TABACO</label>
-                    <input type="text" id="habito_tabaco" class="form-control" placeholder="SI/NO - CANTIDAD - FRECUENCIA">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">DROGAS / COCA (BOLO)</label>
-                    <input type="text" id="habito_coca" class="form-control" placeholder="SI/NO - CANTIDAD - FRECUENCIA">
-                </div>
+                <div class="col-md-4"><label class="form-label">ALCOHOL</label><input type="text" id="habito_alcohol" class="form-control"></div>
+                <div class="col-md-4"><label class="form-label">TABACO</label><input type="text" id="habito_tabaco" class="form-control"></div>
+                <div class="col-md-4"><label class="form-label">COCA (BOLO) / DROGAS</label><input type="text" id="habito_coca" class="form-control"></div>
             </div>
 
             <div class="seccion-titulo">3.2 ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
-            <p class="enfermedad-ejemplo" style="margin-bottom: 10px;">ESCRIBA: EDAD INICIO, EMPRESA, OCUPACIÓN, TIEMPO Y RIESGOS.</p>
             <div class="row row-gap">
                 <div class="col-md-12">
-                    <textarea id="antecedentes_ocupacionales" class="form-control" rows="5" placeholder="EJ: 18 AÑOS - EMPRESA X - ARQUITECTO - 2 AÑOS - POLVO, RUIDO"></textarea>
+                    <textarea id="historia_laboral" class="form-control" rows="4" placeholder="EDAD INICIO, EMPRESA, CARGO, TIEMPO, RIESGOS..."></textarea>
                 </div>
             </div>
 
-            <div class="seccion-titulo">3.3 ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
+            <div class="seccion-titulo">3.3 RIESGOS EXPUESTOS (MARQUE CON X O DETALLE)</div>
+            
+            <div class="sub-categoria-text">RIESGOS FÍSICOS</div>
             <div class="row row-gap">
-                <div class="col-md-3"><label class="form-label">FÍSICOS (RUIDO, RADIACIÓN)</label><input type="text" id="riesgo_fisico" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">QUÍMICOS (POLVO, HUMOS)</label><input type="text" id="riesgo_quimico" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">ERGONÓMICOS (POSTURAS)</label><input type="text" id="riesgo_ergonomico" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">BIOLÓGICOS / OTROS</label><input type="text" id="riesgo_biologico" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">RUIDO</label><input type="text" id="r_ruido" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">RADIACIÓN</label><input type="text" id="r_radiacion" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">VIBRACIÓN</label><input type="text" id="r_vibracion" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">TEMP. EXTREMAS</label><input type="text" id="r_temperatura" class="form-control"></div>
+            </div>
+
+            <div class="sub-categoria-text">RIESGOS QUÍMICOS</div>
+            <div class="row row-gap">
+                <div class="col-md-2"><label class="form-label">POLVO</label><input type="text" id="r_polvo" class="form-control"></div>
+                <div class="col-md-2"><label class="form-label">HUMOS</label><input type="text" id="r_humos" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">GASES / VAPORES</label><input type="text" id="r_gases" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">METALES PESADOS</label><input type="text" id="r_metales" class="form-control"></div>
+                <div class="col-md-2"><label class="form-label">SOLVENTES</label><input type="text" id="r_solventes" class="form-control"></div>
+            </div>
+
+            <div class="sub-categoria-text">RIESGOS ERGONÓMICOS Y OTROS</div>
+            <div class="row row-gap">
+                <div class="col-md-3"><label class="form-label">MOV. REPETITIVOS</label><input type="text" id="r_repetitivos" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">LEVANTAMIENTO CARGA</label><input type="text" id="r_carga" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">POSTURAS FORZADAS</label><input type="text" id="r_posturas" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">PSICOLÓGICOS</label><input type="text" id="r_psicologico" class="form-control"></div>
+            </div>
+
+            <div class="sub-categoria-text">BIOLÓGICOS Y SEGURIDAD</div>
+            <div class="row row-gap">
+                <div class="col-md-4"><label class="form-label">BIOLÓGICOS (VIRUS/BACT.)</label><input type="text" id="r_biologico" class="form-control"></div>
+                <div class="col-md-4"><label class="form-label">TRABAJO EN ALTURA</label><input type="text" id="r_altura" class="form-control"></div>
+                <div class="col-md-4"><label class="form-label">ESPACIOS CONFINADOS</label><input type="text" id="r_confinados" class="form-control"></div>
             </div>
 
             <div class="row row-gap">
-                <div class="col-md-12"><label class="form-label">OBSERVACIONES ADICIONALES</label><input type="text" id="observaciones_finales" class="form-control"></div>
+                <div class="col-md-12"><label class="form-label">OBSERVACIONES Y OTROS RIESGOS</label><input type="text" id="r_observaciones" class="form-control"></div>
             </div>
 
-            <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR Y ENVIAR A HISTORIAL_CLINICO_NUBE</button>
+            <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR Y GUARDAR EN LA NUBE</button>
         </form>
     </div>
 
     <script>
-        const preguntas = [
-            { id: "vista", titulo: "1. VISTA", desc: "DISMINUCIÓN VISIÓN, DALTONISMO, GLAUCOMA, RETINOPATÍA, AMETROPÍA, PTERIGIÓN, MIOPÍA." },
-            { id: "auditivo", titulo: "2. AUDITIVO", desc: "SORDERA, OTITIS, TRAUMA ACÚSTICO, PERFORACIÓN TIMPÁNICA, VÉRTIGO." },
-            { id: "respiratorios", titulo: "3. RESPIRATORIOS", desc: "TUBERCULOSIS, EPOC, ASMA, BRONQUITIS, RINITIS, FARINGITIS, SINUSITIS." },
-            { id: "cardiovasculares", titulo: "4. CARDIO-VASCULARES", desc: "PRESIÓN ALTA, ARRITMIA, TROMBOSIS, ANGINA, INFARTO, AVC, INSUFICIENCIA CARDIACA." },
-            { id: "estomago", titulo: "5. ESTÓMAGO / HÍGADO / PÁNCREAS", desc: "GASTRITIS, ÚLCERA, REFLUJO, CIRROSIS, HERNIA, ESPLENOMEGALIA, HEMORROIDES." },
-            { id: "sangre", titulo: "6. SANGRE", desc: "ANEMIA, COAGULOPATÍA, POLIGLOBULIA, OTRAS." },
-            { id: "genitourinario", titulo: "7. GENITO / URINARIO", desc: "INSUFICIENCIA RENAL, INFECCIÓN URINARIA, CISTITIS, ANOMALÍA ANATÓMICA." },
-            { id: "its", titulo: "8. ITS", desc: "ITS, CONTACTOS DE RIESGO." },
-            { id: "sistema_nervioso", titulo: "9. SISTEMA NERVIOSO", desc: "EPILEPSIA, VÉRTIGO, APNEA, DERRAME CEREBRAL, MIGRAÑA, TEC." },
-            { id: "psiquiatricos", titulo: "10. PSIQUIÁTRICOS / MENTALES", desc: "DEPRESIÓN, ANSIEDAD, FOBIAS, PSICOSIS, TRASTORNO ESQUIZOIDE." },
-            { id: "osteomusculares", titulo: "11. OSTEOMUSCULARES", desc: "LUMBALGIA, CERVICALGIA, ESCOLIOSIS, FRACTURAS, ARTRALGIA, MIOPATÍAS." },
-            { id: "endocrinologicos", titulo: "12. ENDOCRINOLÓGICOS / METABÓLICOS", desc: "DIABETES, HIPERTIROIDISMO, HIPOTIROIDISMO, OBESIDAD, GOTA." },
-            { id: "reumatologicos", titulo: "13. REUMATOLÓGICOS", desc: "ARTRITIS REUMATOIDE, LUPUS, ETC." },
-            { id: "generales", titulo: "14. GENERALES", desc: "CÁNCER, ADENOPATÍAS, HERNIAS: ABDOMINALES, UMBILICALES, INGUINALES." },
-            { id: "dermatologicas", titulo: "15. DERMATOLÓGICAS", desc: "DERMATITIS, PSORIASIS, VITÍLIGO, ONICOMICOSIS, HONGOS." },
-            { id: "infecciones", titulo: "16. INFECCIONES", desc: "HEPATITIS, TIFOIDEA, BRUCELOSIS, HIV, PARASITOSIS, CHAGAS, RUBEOLA." }
+        const preguntasSalud = [
+            { id: "vista", t: "VISTA" }, { id: "auditivo", t: "AUDITIVO" },
+            { id: "respiratorios", t: "RESPIRATORIOS" }, { id: "cardio", t: "CARDIO-VASCULARES" },
+            { id: "digestivo", t: "ESTOMAGO/HIGADO" }, { id: "sangre", t: "SANGRE" },
+            { id: "urinario", t: "GENITO/URINARIO" }, { id: "nervioso", t: "SISTEMA NERVIOSO" },
+            { id: "oseo", t: "OSTEOMUSCULARES" }, { id: "piel", t: "DERMATOLOGICAS" }
         ];
 
         window.onload = () => {
             document.getElementById('nombre_completo').value = `${localStorage.getItem('temp_apellidos') || ''} ${localStorage.getItem('temp_nombres') || ''}`;
             document.getElementById('codigo_id').value = localStorage.getItem('temp_codigo') || "0";
             
-            const contenedor = document.getElementById('contenedorPreguntasSalud');
-            preguntas.forEach(p => {
-                contenedor.innerHTML += `
-                    <div class="col-md-6 row-gap">
-                        <label class="form-label">${p.titulo}</label>
-                        <div class="enfermedad-ejemplo">${p.desc}</div>
-                        <select id="${p.id}" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                    </div>`;
+            const cont = document.getElementById('contenedorPreguntasSalud');
+            preguntasSalud.forEach(p => {
+                cont.innerHTML += `<div class="col-md-6 row-gap"><label class="form-label">${p.t}</label><select id="${p.id}" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>`;
             });
         };
 
-        document.body.addEventListener('input', (e) => { 
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-                e.target.value = e.target.value.toUpperCase();
-            }
-        });
+        document.body.addEventListener('input', (e) => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') e.target.value = e.target.value.toUpperCase(); });
 
-        document.getElementById('formSeccion1').onsubmit = (e) => {
-            e.preventDefault();
-            document.getElementById('formSeccion1').classList.add('hidden');
-            document.getElementById('formSeccion2').classList.remove('hidden');
-            window.scrollTo(0, 0);
-        };
+        document.getElementById('formSeccion1').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion1').classList.add('hidden'); document.getElementById('formSeccion2').classList.remove('hidden'); };
+        document.getElementById('formSeccion2').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion2').classList.add('hidden'); document.getElementById('formSeccion3').classList.remove('hidden'); };
 
-        document.getElementById('formSeccion2').onsubmit = (e) => {
+        document.getElementById('formSeccion3').onsubmit = (e) => {
             e.preventDefault();
-            document.getElementById('formSeccion2').classList.add('hidden');
-            document.getElementById('formSeccion3').classList.remove('hidden');
-            window.scrollTo(0, 0);
-        };
-
-        document.getElementById('formSeccion3').onsubmit = async (e) => {
-            e.preventDefault();
-            alert("DECLARACIÓN COMPLETADA CON ÉXITO. LISTO PARA INTEGRAR CON EL SERVIDOR.");
+            alert("PROYECTO HISTORIAL_CLINICO_NUBE: ESTRUCTURA SECCIÓN 3 FINALIZADA.");
         };
     </script>
 </body>
