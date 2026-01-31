@@ -3,24 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTRO - HISTORIAL CLÍNICO NUBE</title>
+    <title>HC NUBE | Registro de Paciente</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
-        .registro-container { max-width: 400px; width: 95%; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
-        .form-label { font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-top: 15px; display: block; }
-        .form-control { border-radius: 12px; background-color: #f4f7fa; border: none; padding: 12px; font-weight: 600; color: #1a2b4b; }
-        #codigo_display { background-color: #f0f4ff !important; color: #2d6df6 !important; font-size: 18px; text-align: center; font-weight: 800; display: none; margin-top: 10px; }
-        .btn-registrar { background-color: #1a5c4e; border: none; border-radius: 12px; padding: 15px; font-weight: 700; width: 100%; color: white; margin-top: 20px; }
-        .btn-consultar { background: none; border: 1px solid #e0e0e0; border-radius: 12px; padding: 10px; width: 100%; margin-top: 15px; color: #7a869a; font-size: 12px; font-weight: 700; }
-        #seccionLista { display: none; width: 100%; max-width: 400px; margin-top: 20px; background: white; padding: 20px; border-radius: 20px; }
-        .paciente-item { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+        /* Fondo y tipografía original */
+        body { background-color: #f1f4f9; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; }
+        
+        /* Contenedor con bordes redondeados suaves */
+        .registro-container { max-width: 450px; width: 95%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.03); text-align: center; }
+        
+        .form-label { font-size: 11px; font-weight: 700; color: #a0aab4; text-transform: uppercase; margin-top: 20px; display: block; text-align: left; margin-left: 10px; }
+        
+        /* Inputs con tu estilo gris suave */
+        .form-control { border-radius: 15px; background-color: #f0f2f5; border: none; padding: 15px; font-weight: 600; color: #1a2b4b; }
+        
+        /* Código Generado Estilo original */
+        #codigo_contenedor { border: 2px dashed #a0d8c3; border-radius: 15px; padding: 15px; margin-top: 20px; display: none; background-color: #f9fdfb; }
+        #codigo_texto { color: #1a5c4e; font-weight: 700; margin: 0; font-size: 14px; }
+
+        /* EL VERDE ORIGINAL DE TU CAPTURA */
+        .btn-registrar { background-color: #1a8c6c; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 25px; transition: 0.3s; }
+        .btn-registrar:hover { background-color: #146d54; }
+
+        /* BOTÓN CONSULTAR ESTILO ORIGINAL */
+        .btn-consultar { background-color: #f0f2f5; border: none; border-radius: 20px; padding: 12px; width: 100%; margin-top: 15px; color: #7a869a; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        
+        #seccionLista { display: none; width: 100%; max-width: 450px; margin-top: 20px; background: white; padding: 20px; border-radius: 25px; text-align: left; }
     </style>
 </head>
 <body>
     <div class="registro-container">
-        <h2 class="text-center" style="font-weight:800; color:#1a2b4b;">REGISTRO DE PACIENTE</h2>
-        <p class="text-center text-muted small">MÓDULO DE ENFERMERÍA</p>
+        <div class="mb-3"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="40" alt="icon"></div>
+        <h2 style="font-weight:800; color:#1a2b4b; font-size: 24px; margin-bottom: 5px;">REGISTRO DE PACIENTE</h2>
+        <p style="color:#a0aab4; font-size: 12px; font-weight: 700; letter-spacing: 1px;">MÓDULO DE ENFERMERÍA</p>
         
         <form id="formRegistro">
             <label class="form-label">NOMBRES</label>
@@ -32,7 +47,9 @@
             <label class="form-label">DOCUMENTO DE IDENTIDAD</label>
             <input type="text" id="ci" class="form-control" required autocomplete="off">
             
-            <input type="text" id="codigo_display" class="form-control" readonly>
+            <div id="codigo_contenedor">
+                <p id="codigo_texto">CÓDIGO GENERADO: <span id="codigo_val"></span></p>
+            </div>
             
             <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR REGISTRO</button>
             <button type="button" id="btnConsultar" class="btn-consultar">CONSULTAR REGISTROS EN NUBE</button>
@@ -40,35 +57,37 @@
     </div>
 
     <div id="seccionLista">
-        <h6 class="fw-bold mb-3">Pacientes en Nube:</h6>
+        <h6 class="fw-bold mb-3" style="color:#1a2b4b;">Pacientes en Nube:</h6>
         <div id="listaContenido"></div>
+        <button class="btn-consultar mt-3" onclick="document.getElementById('seccionLista').style.display='none'">CERRAR LISTA</button>
     </div>
 
     <script>
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
+        const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos');
+        const codCont = document.getElementById('codigo_contenedor'), codVal = document.getElementById('codigo_val');
 
-        // Generador de código (Tu lógica actual)
-        const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos'), displayC = document.getElementById('codigo_display');
         function genCod() {
             if(inN.value && inA.value) {
-                if(!displayC.value) displayC.value = inN.value[0].toUpperCase() + inA.value[0].toUpperCase() + Math.floor(1000 + Math.random() * 9000);
-                displayC.style.display = 'block';
+                if(!codVal.innerText) {
+                    const initials = inN.value[0].toUpperCase() + inA.value[0].toUpperCase();
+                    codVal.innerText = initials + Math.floor(1000 + Math.random() * 9000);
+                }
+                codCont.style.display = 'block';
             }
         }
         inN.oninput = genCod; inA.oninput = genCod;
 
-        // REGISTRO Y REDIRECCIÓN
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegistrar');
             btn.innerText = "GUARDANDO...";
-            btn.disabled = true;
-
+            
             const payload = {
                 nombres: inN.value,
                 apellidos: inA.value,
                 documento_identidad: document.getElementById('ci').value,
-                codigo_paciente: displayC.value
+                codigo_paciente: codVal.innerText
             };
 
             try {
@@ -80,34 +99,32 @@
 
                 if (res.ok) {
                     alert("¡PACIENTE REGISTRADO EXITOSAMENTE!");
-                    // REDIRECCIÓN A DECLARACIÓN JURADA
                     window.location.href = "declaracion_jurada.html"; 
                 } else {
                     const err = await res.json();
-                    alert("Error: " + (err.detail || "No se pudo registrar"));
+                    alert("Error: " + (err.detail || "Error"));
                 }
             } catch (error) {
-                alert("FALLO DE RED: Revisa tu conexión.");
+                alert("FALLO DE RED");
             } finally {
                 btn.innerText = "GUARDAR REGISTRO";
-                btn.disabled = false;
             }
         };
 
-        // CONSULTAR REGISTROS (Arreglado)
         document.getElementById('btnConsultar').onclick = async () => {
-            const lista = document.getElementById('listaContenido');
-            const seccion = document.getElementById('seccionLista');
+            const lista = document.getElementById('listaContenido'), seccion = document.getElementById('seccionLista');
+            lista.innerHTML = "Cargando...";
+            seccion.style.display = 'block';
             try {
                 const res = await fetch(`${API_BASE}/pacientes`);
                 const data = await res.json();
                 lista.innerHTML = data.map(p => `
-                    <div class="paciente-item">
-                        <strong>${p.nombres} ${p.apellidos}</strong> - <span class="text-primary">${p.codigo_paciente}</span>
+                    <div style="padding:10px; border-bottom:1px solid #f0f2f5; font-size:13px; color:#1a2b4b;">
+                        <strong>${p.nombres} ${p.apellidos}</strong> <br>
+                        <span style="color:#1a8c6c; font-weight:700;">ID: ${p.id} | Código: ${p.codigo_paciente}</span>
                     </div>`).join('');
-                seccion.style.display = 'block';
             } catch (e) {
-                alert("Error al obtener la lista de la nube.");
+                alert("Error al obtener la lista.");
             }
         };
     </script>
