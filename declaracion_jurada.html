@@ -3,160 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | DECLARACIÓN JURADA</title>
+    <title>HISTORIAL_CLINICO_NUBE | DECLARACIÓN JURADA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .form-container { max-width: 1100px; width: 100%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); }
-        .titulo-principal { font-weight: 800; color: #1e293b; font-size: 24px; text-transform: uppercase; text-align: center; margin-bottom: 30px; }
-        .seccion-titulo { background-color: #f3f6f9; color: #1e293b; padding: 12px 20px; border-radius: 15px; font-weight: 800; font-size: 13px; margin-top: 30px; margin-bottom: 20px; text-transform: uppercase; }
-        .form-label { font-size: 10px; font-weight: 800; color: #1e293b; text-transform: uppercase; margin-bottom: 4px; display: block; }
-        .form-control, .form-select { border-radius: 12px; background-color: #f3f6f9; border: 2px solid transparent; padding: 10px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 12px; transition: 0.3s; width: 100%; }
-        .form-select:focus, .form-control:focus { border-color: #24a174; background-color: white; outline: none; }
-        .readonly-field { background-color: #f0fdf4; color: #24a174; border: 1px dashed #d1eadd; }
-        .btn-siguiente { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 40px; text-transform: uppercase; }
-        .row-gap { margin-bottom: 20px; }
-        .sub-categoria-text { font-size: 9px; color: #64748b; font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; text-transform: uppercase; }
+        .form-container { max-width: 1100px; margin: auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .titulo-principal { font-weight: 800; text-align: center; margin-bottom: 30px; color: #1e293b; }
+        .seccion-titulo { background-color: #f3f6f9; padding: 10px 20px; border-radius: 10px; font-weight: 800; margin-top: 25px; margin-bottom: 15px; font-size: 14px; }
+        .form-label { font-size: 11px; font-weight: 800; margin-bottom: 3px; display: block; }
+        .form-control, .form-select { border-radius: 10px; background-color: #f3f6f9; border: 2px solid transparent; font-size: 12px; font-weight: 600; padding: 10px; }
+        .desc-enfermedad { font-size: 10px; color: #64748b; font-style: italic; margin-bottom: 10px; line-height: 1.2; }
+        .btn-siguiente { background-color: #24a174; border: none; border-radius: 15px; padding: 15px; font-weight: 700; width: 100%; color: white; margin-top: 30px; }
         .hidden { display: none; }
+        .grid-riesgos { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; background: #fff; padding: 15px; border: 1px solid #e2e8f0; border-radius: 10px; }
     </style>
 </head>
 <body>
     <div class="form-container">
-        <h1 class="titulo-principal">DECLARACIÓN JURADA DE SALUD</h1>
+        <h2 class="titulo-principal">DECLARACIÓN JURADA DE SALUD</h2>
 
         <form id="formSeccion1">
             <div class="seccion-titulo">1. AFILIACIÓN DEL TRABAJADOR</div>
-            <div class="row row-gap">
-                <div class="col-md-8">
-                    <label class="form-label">APELLIDOS Y NOMBRES</label>
-                    <input type="text" id="nombre_completo" class="form-control readonly-field" readonly>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">CÓDIGO DE PACIENTE</label>
-                    <input type="text" id="codigo_id" class="form-control readonly-field" readonly style="text-align: center;">
-                </div>
-            </div>
-            <div class="row row-gap">
-                <div class="col-md-2"><label class="form-label">EDAD</label><input type="number" id="edad" class="form-control" required></div>
-                <div class="col-md-3">
-                    <label class="form-label">SEXO</label>
-                    <select id="sexo" class="form-select" required><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select>
-                </div>
-                <div class="col-md-4"><label class="form-label">FECHA DE NACIMIENTO</label><input type="date" id="fecha_nacimiento" class="form-control" required></div>
-                <div class="col-md-3"><label class="form-label">LUGAR DE NACIMIENTO</label><input type="text" id="lugar_nacimiento" class="form-control"></div>
-            </div>
-            <div class="row row-gap">
+            <div class="row g-3">
+                <div class="col-md-8"><label class="form-label">APELLIDOS Y NOMBRES</label><input type="text" id="nombre_completo" class="form-control" readonly style="background-color: #f0fdf4;"></div>
+                <div class="col-md-4"><label class="form-label">CÓDIGO DE PACIENTE</label><input type="text" id="codigo_id" class="form-control" readonly style="background-color: #f0fdf4; text-align: center;"></div>
+                <div class="col-md-2"><label class="form-label">EDAD</label><input type="number" id="edad" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">SEXO</label><select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
+                <div class="col-md-4"><label class="form-label">FECHA DE NACIMIENTO</label><input type="date" id="fecha_nacimiento" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">LUGAR</label><input type="text" id="lugar_nacimiento" class="form-control"></div>
                 <div class="col-md-5"><label class="form-label">AV./CALLE</label><input type="text" id="domicilio_av_calle" class="form-control"></div>
                 <div class="col-md-2"><label class="form-label">NÚMERO</label><input type="text" id="domicilio_numero" class="form-control"></div>
-                <div class="col-md-5"><label class="form-label">BARRIO / ZONA</label><input type="text" id="barrio" class="form-control"></div>
+                <div class="col-md-5"><label class="form-label">BARRIO</label><input type="text" id="barrio" class="form-control"></div>
+                <div class="col-md-4"><label class="form-label">CIUDAD</label><input type="text" id="ciudad" class="form-control"></div>
+                <div class="col-md-4"><label class="form-label">PAÍS</label><input type="text" id="pais" class="form-control" value="BOLIVIA"></div>
+                <div class="col-md-4"><label class="form-label">TELÉFONO</label><input type="text" id="telefono" class="form-control"></div>
+                <div class="col-md-4"><label class="form-label">ESTADO CIVIL</label><input type="text" id="estado_civil" class="form-control"></div>
+                <div class="col-md-8"><label class="form-label">PROFESIÓN O LABOR</label><input type="text" id="profesion_labor" class="form-control"></div>
             </div>
-            <div class="row row-gap">
-                <div class="col-md-3"><label class="form-label">CIUDAD</label><input type="text" id="ciudad" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">PAÍS</label><input type="text" id="pais" class="form-control" value="BOLIVIA"></div>
-                <div class="col-md-3"><label class="form-label">TELÉFONO</label><input type="text" id="telefono" class="form-control"></div>
-                <div class="col-md-3">
-                    <label class="form-label">ESTADO CIVIL</label>
-                    <select id="estado_civil" class="form-select">
-                        <option value="SOLTERO(A)">SOLTERO(A)</option>
-                        <option value="CASADO(A)">CASADO(A)</option>
-                        <option value="DIVORCIADO(A)">DIVORCIADO(A)</option>
-                        <option value="VIUDO(A)">VIUDO(A)</option>
-                    </select>
-                </div>
-            </div>
-            <button type="submit" class="btn-siguiente">SIGUIENTE: SECCIÓN 2</button>
+            <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 2: ANTECEDENTES</button>
         </form>
 
         <form id="formSeccion2" class="hidden">
-            <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (SI/NO)</div>
-            <div class="row" id="contenedorPreguntasSalud"></div>
-            <button type="submit" class="btn-siguiente">SIGUIENTE: SECCIÓN 3</button>
+            <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (MARQUE SI O NO)</div>
+            <p style="font-size: 11px; font-weight: bold;">POR FAVOR LEA CON CUIDADO Y MARQUE (SI) O (NO) SI USTED FUE DIAGNOSTICADO DE ALGUNA DE LAS ENFERMEDADES MENCIONADAS A CONTINUACIÓN.</p>
+            <div class="row" id="contenedorSalud">
+                </div>
+            
+            <div class="seccion-titulo">ALERGIAS</div>
+            <div class="row g-3">
+                <div class="col-md-6"><label class="form-label">MEDICAMENTOS SI ( ) NO ( )</label><input type="text" id="alergia_med" class="form-control" placeholder="INDIQUE CUÁL"></div>
+                <div class="col-md-6"><label class="form-label">ALERGIAS ALIMENTOS SI ( ) NO ( )</label><input type="text" id="alergia_ali" class="form-control" placeholder="INDIQUE CUÁL"></div>
+            </div>
+            <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 3: LABORAL Y HÁBITOS</button>
         </form>
 
         <form id="formSeccion3" class="hidden">
-            <div class="seccion-titulo">3.1 HÁBITOS (SI / NO / CANTIDAD / FRECUENCIA)</div>
-            <div class="row row-gap">
-                <div class="col-md-4"><label class="form-label">ALCOHOL</label><input type="text" id="habito_alcohol" class="form-control"></div>
-                <div class="col-md-4"><label class="form-label">TABACO</label><input type="text" id="habito_tabaco" class="form-control"></div>
-                <div class="col-md-4"><label class="form-label">COCA (BOLO) / DROGAS</label><input type="text" id="habito_coca" class="form-control"></div>
+            <div class="seccion-titulo">HABITOS</div>
+            <div class="row g-3 text-center" style="font-size: 10px; font-weight: bold;">
+                <div class="col-md-3"></div><div class="col-md-1">SI</div><div class="col-md-1">NO</div><div class="col-md-3">CANTIDAD</div><div class="col-md-4">FRECUENCIA</div>
+            </div>
+            <div class="row g-2 align-items-center mb-2">
+                <div class="col-md-3"><label class="form-label">ALCOHOL</label></div>
+                <div class="col-md-2"><select id="h_alc_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="col-md-3"><input type="text" id="h_alc_cant" class="form-control"></div>
+                <div class="col-md-4"><input type="text" id="h_alc_freq" class="form-control"></div>
+            </div>
+            <div class="row g-2 align-items-center mb-2">
+                <div class="col-md-3"><label class="form-label">TABACO</label></div>
+                <div class="col-md-2"><select id="h_tab_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="col-md-3"><input type="text" id="h_tab_cant" class="form-control"></div>
+                <div class="col-md-4"><input type="text" id="h_tab_freq" class="form-control"></div>
+            </div>
+            <div class="row g-2 align-items-center mb-2">
+                <div class="col-md-3"><label class="form-label">COCA (BOLO) / DROGAS</label></div>
+                <div class="col-md-2"><select id="h_coca_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="col-md-3"><input type="text" id="h_coca_cant" class="form-control"></div>
+                <div class="col-md-4"><input type="text" id="h_coca_freq" class="form-control"></div>
             </div>
 
-            <div class="seccion-titulo">3.2 ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
-            <div class="row row-gap">
-                <div class="col-md-12">
-                    <textarea id="historia_laboral" class="form-control" rows="4" placeholder="EDAD INICIO, EMPRESA, CARGO, TIEMPO, RIESGOS..."></textarea>
-                </div>
-            </div>
+            <div class="seccion-titulo">ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
+            <p style="font-size: 10px;">ESCRIBA: EDAD INICIO, EMPRESA, OCUPACIÓN, TIEMPO, RIESGOS Y SI USABA EPP.</p>
+            <textarea id="historia_laboral" class="form-control" rows="4"></textarea>
 
-            <div class="seccion-titulo">3.3 RIESGOS EXPUESTOS (MARQUE CON X O DETALLE)</div>
+            <div class="seccion-titulo">ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
+            <p style="font-size: 10px;">INDIQUE CON UNA "X" A LOS RIESGOS QUE ESTUVO EXPUESTO:</p>
             
-            <div class="sub-categoria-text">RIESGOS FÍSICOS</div>
-            <div class="row row-gap">
-                <div class="col-md-3"><label class="form-label">RUIDO</label><input type="text" id="r_ruido" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">RADIACIÓN</label><input type="text" id="r_radiacion" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">VIBRACIÓN</label><input type="text" id="r_vibracion" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">TEMP. EXTREMAS</label><input type="text" id="r_temperatura" class="form-control"></div>
+            <div class="grid-riesgos">
+                <div><label class="form-label">RUIDO</label><input type="text" id="r_ruido" class="form-control"></div>
+                <div><label class="form-label">RADIACIÓN</label><input type="text" id="r_radiacion" class="form-control"></div>
+                <div><label class="form-label">VIBRACIÓN</label><input type="text" id="r_vibracion" class="form-control"></div>
+                <div><label class="form-label">MECÁNICOS</label><input type="text" id="r_mecanicos" class="form-control"></div>
+                <div><label class="form-label">TEMP. EXTREMAS</label><input type="text" id="r_temperatura" class="form-control"></div>
+                <div><label class="form-label">POLVO</label><input type="text" id="r_polvo" class="form-control"></div>
+                <div><label class="form-label">HUMOS</label><input type="text" id="r_humos" class="form-control"></div>
+                <div><label class="form-label">GASES</label><input type="text" id="r_gases" class="form-control"></div>
+                <div><label class="form-label">METALES PESADOS</label><input type="text" id="r_metales" class="form-control"></div>
+                <div><label class="form-label">PLOMO,CADMIO,ETC</label><input type="text" id="r_plomo" class="form-control"></div>
+                <div><label class="form-label">MOV. REPETITIVOS</label><input type="text" id="r_repetitivos" class="form-control"></div>
+                <div><label class="form-label">LEVANTAMIENTO CARGA</label><input type="text" id="r_carga" class="form-control"></div>
+                <div><label class="form-label">PSICOLÓGICOS</label><input type="text" id="r_psicologico" class="form-control"></div>
+                <div><label class="form-label">BIOLÓGICOS</label><input type="text" id="r_biologico" class="form-control"></div>
+                <div><label class="form-label">TRABAJO EN ALTURA</label><input type="text" id="r_altura" class="form-control"></div>
+                <div><label class="form-label">ESPACIOS CONFINADOS</label><input type="text" id="r_confinados" class="form-control"></div>
+                <div><label class="form-label">OTROS</label><input type="text" id="r_otros" class="form-control"></div>
             </div>
 
-            <div class="sub-categoria-text">RIESGOS QUÍMICOS</div>
-            <div class="row row-gap">
-                <div class="col-md-2"><label class="form-label">POLVO</label><input type="text" id="r_polvo" class="form-control"></div>
-                <div class="col-md-2"><label class="form-label">HUMOS</label><input type="text" id="r_humos" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">GASES / VAPORES</label><input type="text" id="r_gases" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">METALES PESADOS</label><input type="text" id="r_metales" class="form-control"></div>
-                <div class="col-md-2"><label class="form-label">SOLVENTES</label><input type="text" id="r_solventes" class="form-control"></div>
+            <div class="mt-3">
+                <label class="form-label">OBSERVACIONES</label>
+                <input type="text" id="observaciones" class="form-control">
             </div>
 
-            <div class="sub-categoria-text">RIESGOS ERGONÓMICOS Y OTROS</div>
-            <div class="row row-gap">
-                <div class="col-md-3"><label class="form-label">MOV. REPETITIVOS</label><input type="text" id="r_repetitivos" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">LEVANTAMIENTO CARGA</label><input type="text" id="r_carga" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">POSTURAS FORZADAS</label><input type="text" id="r_posturas" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">PSICOLÓGICOS</label><input type="text" id="r_psicologico" class="form-control"></div>
-            </div>
-
-            <div class="sub-categoria-text">BIOLÓGICOS Y SEGURIDAD</div>
-            <div class="row row-gap">
-                <div class="col-md-4"><label class="form-label">BIOLÓGICOS (VIRUS/BACT.)</label><input type="text" id="r_biologico" class="form-control"></div>
-                <div class="col-md-4"><label class="form-label">TRABAJO EN ALTURA</label><input type="text" id="r_altura" class="form-control"></div>
-                <div class="col-md-4"><label class="form-label">ESPACIOS CONFINADOS</label><input type="text" id="r_confinados" class="form-control"></div>
-            </div>
-
-            <div class="row row-gap">
-                <div class="col-md-12"><label class="form-label">OBSERVACIONES Y OTROS RIESGOS</label><input type="text" id="r_observaciones" class="form-control"></div>
-            </div>
-
-            <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR Y GUARDAR EN LA NUBE</button>
+            <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR DECLARACIÓN JURADA</button>
         </form>
     </div>
 
     <script>
-        const preguntasSalud = [
-            { id: "vista", t: "VISTA" }, { id: "auditivo", t: "AUDITIVO" },
-            { id: "respiratorios", t: "RESPIRATORIOS" }, { id: "cardio", t: "CARDIO-VASCULARES" },
-            { id: "digestivo", t: "ESTOMAGO/HIGADO" }, { id: "sangre", t: "SANGRE" },
-            { id: "urinario", t: "GENITO/URINARIO" }, { id: "nervioso", t: "SISTEMA NERVIOSO" },
-            { id: "oseo", t: "OSTEOMUSCULARES" }, { id: "piel", t: "DERMATOLOGICAS" }
+        const dataSalud = [
+            { id: "vista", t: "VISTA", d: "Disminución de la visión, alteraciones del color, Glaucoma, Retinopatía, Ametropía, Pterigión, miopía maligna." },
+            { id: "auditivo", t: "AUDITIVO", d: "Hipoacusia (Sordera), Otitis, Trauma acústico, perforación de membrana timpánica, VÉRTIGO." },
+            { id: "respiratorios", t: "RESPIRATORIOS", d: "Tuberculosis, EPOC, Asma, Bronquitis, Rinitis, faringitis, sinusitis." },
+            { id: "cardio", t: "CARDIO-VASCULARES", d: "Hipertensión arterial, Cardiopatía, Arritmia, Trombosis, Infarto, AVC, Insuficiencia Cardiaca." },
+            { id: "digestivo", t: "ESTOMAGO/HIGADO/PANCREAS", d: "Gastritis, Úlcera, Reflujo, Cirrosis hepática, Hernia de Hiato, Esplenomegalia, Hemorroides, Estreñimiento." },
+            { id: "sangre", t: "SANGRE", d: "Anemia, coagulopatía, Poliglobulia, Otras." },
+            { id: "urinario", t: "GENITO/URINARIO", d: "Insuficiencia renal, Infección urinaria, Cistitis, Anomalía anatómica, Incontinencia, ITS." },
+            { id: "nervioso", t: "SISTEMA NERVIOSO", d: "Epilepsia, Vértigo, Apnea, Accidente cerebrovascular, Migraña, Neurocisticercosis, TEC." },
+            { id: "psiquiatrico", t: "PSIQUIATRICOS MENTALES", d: "Depresión, Ansiedad, Fobias, Psicosis, Trastorno Esquizoide." },
+            { id: "oseo", t: "OSTEOMUSCULARES", d: "Lumbalgia, cervicalgia, escoliosis, Fracturas, Artralgia, Miopatías." },
+            { id: "metabolico", t: "ENDOCRINOLOGICOS METABOLICOS", d: "Diabetes, Hipertiroidismo, Hipotiroidismo, Obesidad, Gota." },
+            { id: "reuma", t: "REUMATOLOGICOS", d: "Artritis reumatoide, LUPUS, etc." },
+            { id: "generales", t: "GENERALES", d: "Cáncer, Adenopatías, Hernias: abdominales, umbilicales, inguinales, crurales." },
+            { id: "piel", t: "DERMATOLOGICAS", d: "Dermatitis de contacto, Psoriasis, Vitíligo, Onicomicosis, hongos." },
+            { id: "infecciones", t: "INFECCIONES", d: "Hepatitis, Tifoidea, Brucelosis, HIV, Parasitosis, CHAGAS, Rubeola, Toxoplasmosis." }
         ];
 
         window.onload = () => {
             document.getElementById('nombre_completo').value = `${localStorage.getItem('temp_apellidos') || ''} ${localStorage.getItem('temp_nombres') || ''}`;
             document.getElementById('codigo_id').value = localStorage.getItem('temp_codigo') || "0";
             
-            const cont = document.getElementById('contenedorPreguntasSalud');
-            preguntasSalud.forEach(p => {
-                cont.innerHTML += `<div class="col-md-6 row-gap"><label class="form-label">${p.t}</label><select id="${p.id}" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>`;
+            const cont = document.getElementById('contenedorSalud');
+            dataSalud.forEach(p => {
+                cont.innerHTML += `
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">${p.t}</label>
+                        <div class="desc-enfermedad">${p.d}</div>
+                        <select id="${p.id}" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    </div>`;
             });
         };
 
+        // Forzar Mayúsculas
         document.body.addEventListener('input', (e) => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') e.target.value = e.target.value.toUpperCase(); });
 
-        document.getElementById('formSeccion1').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion1').classList.add('hidden'); document.getElementById('formSeccion2').classList.remove('hidden'); };
-        document.getElementById('formSeccion2').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion2').classList.add('hidden'); document.getElementById('formSeccion3').classList.remove('hidden'); };
+        document.getElementById('formSeccion1').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion1').classList.add('hidden'); document.getElementById('formSeccion2').classList.remove('hidden'); window.scrollTo(0,0); };
+        document.getElementById('formSeccion2').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion2').classList.add('hidden'); document.getElementById('formSeccion3').classList.remove('hidden'); window.scrollTo(0,0); };
 
         document.getElementById('formSeccion3').onsubmit = (e) => {
             e.preventDefault();
-            alert("PROYECTO HISTORIAL_CLINICO_NUBE: ESTRUCTURA SECCIÓN 3 FINALIZADA.");
+            alert("DECLARACIÓN COMPLETADA. DATOS LISTOS PARA GUARDAR EN HISTORIAL_CLINICO_NUBE.");
         };
     </script>
 </body>
