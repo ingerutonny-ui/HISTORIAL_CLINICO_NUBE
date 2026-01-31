@@ -15,7 +15,7 @@
         .desc-enfermedad { font-size: 10px; color: #64748b; font-style: italic; margin-bottom: 10px; line-height: 1.2; }
         .btn-siguiente { background-color: #24a174; border: none; border-radius: 15px; padding: 15px; font-weight: 700; width: 100%; color: white; margin-top: 30px; }
         .hidden { display: none; }
-        .grid-riesgos { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; background: #fff; padding: 15px; border: 1px solid #e2e8f0; border-radius: 10px; }
+        .grid-riesgos { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; background: #fff; padding: 15px; border: 1px solid #e2e8f0; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -27,7 +27,7 @@
             <div class="row g-3">
                 <div class="col-md-8"><label class="form-label">APELLIDOS Y NOMBRES</label><input type="text" id="nombre_completo" class="form-control" readonly style="background-color: #f0fdf4;"></div>
                 <div class="col-md-4"><label class="form-label">CÓDIGO DE PACIENTE</label><input type="text" id="codigo_id" class="form-control" readonly style="background-color: #f0fdf4; text-align: center;"></div>
-                <div class="col-md-2"><label class="form-label">EDAD</label><input type="number" id="edad" class="form-control"></div>
+                <div class="col-md-2"><label class="form-label">EDAD</label><input type="number" id="edad" class="form-control" required></div>
                 <div class="col-md-3"><label class="form-label">SEXO</label><select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
                 <div class="col-md-4"><label class="form-label">FECHA DE NACIMIENTO</label><input type="date" id="fecha_nacimiento" class="form-control"></div>
                 <div class="col-md-3"><label class="form-label">LUGAR</label><input type="text" id="lugar_nacimiento" class="form-control"></div>
@@ -40,27 +40,25 @@
                 <div class="col-md-4"><label class="form-label">ESTADO CIVIL</label><input type="text" id="estado_civil" class="form-control"></div>
                 <div class="col-md-8"><label class="form-label">PROFESIÓN O LABOR</label><input type="text" id="profesion_labor" class="form-control"></div>
             </div>
-            <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 2: ANTECEDENTES</button>
+            <button type="submit" class="btn-siguiente">SIGUIENTE: SECCIÓN 2</button>
         </form>
 
         <form id="formSeccion2" class="hidden">
-            <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (MARQUE SI O NO)</div>
-            <p style="font-size: 11px; font-weight: bold;">POR FAVOR LEA CON CUIDADO Y MARQUE (SI) O (NO) SI USTED FUE DIAGNOSTICADO DE ALGUNA DE LAS ENFERMEDADES MENCIONADAS A CONTINUACIÓN.</p>
-            <div class="row" id="contenedorSalud">
-                </div>
-            
+            <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (SI O NO)</div>
+            <p style="font-size: 11px; font-weight: bold;">LEA CON CUIDADO Y MARQUE SI USTED FUE DIAGNOSTICADO DE:</p>
+            <div class="row" id="contenedorSalud"></div>
             <div class="seccion-titulo">ALERGIAS</div>
             <div class="row g-3">
-                <div class="col-md-6"><label class="form-label">MEDICAMENTOS SI ( ) NO ( )</label><input type="text" id="alergia_med" class="form-control" placeholder="INDIQUE CUÁL"></div>
-                <div class="col-md-6"><label class="form-label">ALERGIAS ALIMENTOS SI ( ) NO ( )</label><input type="text" id="alergia_ali" class="form-control" placeholder="INDIQUE CUÁL"></div>
+                <div class="col-md-6"><label class="form-label">MEDICAMENTOS</label><input type="text" id="alergia_med" class="form-control" placeholder="INDIQUE CUÁL O 'NO'"></div>
+                <div class="col-md-6"><label class="form-label">ALIMENTOS</label><input type="text" id="alergia_ali" class="form-control" placeholder="INDIQUE CUÁL O 'NO'"></div>
             </div>
-            <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 3: LABORAL Y HÁBITOS</button>
+            <button type="submit" class="btn-siguiente">SIGUIENTE: SECCIÓN 3</button>
         </form>
 
         <form id="formSeccion3" class="hidden">
-            <div class="seccion-titulo">HABITOS</div>
-            <div class="row g-3 text-center" style="font-size: 10px; font-weight: bold;">
-                <div class="col-md-3"></div><div class="col-md-1">SI</div><div class="col-md-1">NO</div><div class="col-md-3">CANTIDAD</div><div class="col-md-4">FRECUENCIA</div>
+            <div class="seccion-titulo">3.1 HÁBITOS</div>
+            <div class="row g-3 mb-3 text-center" style="font-size: 10px; font-weight: bold;">
+                <div class="col-md-3"></div><div class="col-md-2">¿PRACTICA?</div><div class="col-md-3">CANTIDAD</div><div class="col-md-4">FRECUENCIA</div>
             </div>
             <div class="row g-2 align-items-center mb-2">
                 <div class="col-md-3"><label class="form-label">ALCOHOL</label></div>
@@ -81,13 +79,10 @@
                 <div class="col-md-4"><input type="text" id="h_coca_freq" class="form-control"></div>
             </div>
 
-            <div class="seccion-titulo">ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
-            <p style="font-size: 10px;">ESCRIBA: EDAD INICIO, EMPRESA, OCUPACIÓN, TIEMPO, RIESGOS Y SI USABA EPP.</p>
-            <textarea id="historia_laboral" class="form-control" rows="4"></textarea>
+            <div class="seccion-titulo">3.2 ANTECEDENTES OCUPACIONALES</div>
+            <textarea id="historia_laboral" class="form-control" rows="4" placeholder="HISTORIA LABORAL COMPLETA..."></textarea>
 
-            <div class="seccion-titulo">ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
-            <p style="font-size: 10px;">INDIQUE CON UNA "X" A LOS RIESGOS QUE ESTUVO EXPUESTO:</p>
-            
+            <div class="seccion-titulo">3.3 RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
             <div class="grid-riesgos">
                 <div><label class="form-label">RUIDO</label><input type="text" id="r_ruido" class="form-control"></div>
                 <div><label class="form-label">RADIACIÓN</label><input type="text" id="r_radiacion" class="form-control"></div>
@@ -113,53 +108,113 @@
                 <input type="text" id="observaciones" class="form-control">
             </div>
 
-            <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR DECLARACIÓN JURADA</button>
+            <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR Y GUARDAR EN NUBE</button>
         </form>
     </div>
 
     <script>
+        const API_URL = "AQUÍ_TU_URL_DE_RENDER/declaraciones/"; 
+
         const dataSalud = [
-            { id: "vista", t: "VISTA", d: "Disminución de la visión, alteraciones del color, Glaucoma, Retinopatía, Ametropía, Pterigión, miopía maligna." },
-            { id: "auditivo", t: "AUDITIVO", d: "Hipoacusia (Sordera), Otitis, Trauma acústico, perforación de membrana timpánica, VÉRTIGO." },
-            { id: "respiratorios", t: "RESPIRATORIOS", d: "Tuberculosis, EPOC, Asma, Bronquitis, Rinitis, faringitis, sinusitis." },
-            { id: "cardio", t: "CARDIO-VASCULARES", d: "Hipertensión arterial, Cardiopatía, Arritmia, Trombosis, Infarto, AVC, Insuficiencia Cardiaca." },
-            { id: "digestivo", t: "ESTOMAGO/HIGADO/PANCREAS", d: "Gastritis, Úlcera, Reflujo, Cirrosis hepática, Hernia de Hiato, Esplenomegalia, Hemorroides, Estreñimiento." },
-            { id: "sangre", t: "SANGRE", d: "Anemia, coagulopatía, Poliglobulia, Otras." },
-            { id: "urinario", t: "GENITO/URINARIO", d: "Insuficiencia renal, Infección urinaria, Cistitis, Anomalía anatómica, Incontinencia, ITS." },
-            { id: "nervioso", t: "SISTEMA NERVIOSO", d: "Epilepsia, Vértigo, Apnea, Accidente cerebrovascular, Migraña, Neurocisticercosis, TEC." },
-            { id: "psiquiatrico", t: "PSIQUIATRICOS MENTALES", d: "Depresión, Ansiedad, Fobias, Psicosis, Trastorno Esquizoide." },
-            { id: "oseo", t: "OSTEOMUSCULARES", d: "Lumbalgia, cervicalgia, escoliosis, Fracturas, Artralgia, Miopatías." },
-            { id: "metabolico", t: "ENDOCRINOLOGICOS METABOLICOS", d: "Diabetes, Hipertiroidismo, Hipotiroidismo, Obesidad, Gota." },
-            { id: "reuma", t: "REUMATOLOGICOS", d: "Artritis reumatoide, LUPUS, etc." },
-            { id: "generales", t: "GENERALES", d: "Cáncer, Adenopatías, Hernias: abdominales, umbilicales, inguinales, crurales." },
-            { id: "piel", t: "DERMATOLOGICAS", d: "Dermatitis de contacto, Psoriasis, Vitíligo, Onicomicosis, hongos." },
-            { id: "infecciones", t: "INFECCIONES", d: "Hepatitis, Tifoidea, Brucelosis, HIV, Parasitosis, CHAGAS, Rubeola, Toxoplasmosis." }
+            { id: "vista", t: "VISTA", d: "Disminución visión, Daltonismo, Glaucoma, Retinopatía, Pterigión, Miopía." },
+            { id: "auditivo", t: "AUDITIVO", d: "Sordera, Otitis, Trauma acústico, Vértigo." },
+            { id: "respiratorios", t: "RESPIRATORIOS", d: "Tuberculosis, EPOC, Asma, Bronquitis, Rinitis." },
+            { id: "cardio", t: "CARDIO-VASCULARES", d: "Presión alta, Arritmia, Trombosis, Infarto, Insuficiencia Cardiaca." },
+            { id: "digestivo", t: "ESTOMAGO/HIGADO", d: "Gastritis, Úlcera, Reflujo, Cirrosis, Hernia, Hemorroides." },
+            { id: "sangre", t: "SANGRE", d: "Anemia, Coagulopatía, Poliglobulia." },
+            { id: "urinario", t: "GENITO/URINARIO", d: "Insuficiencia renal, Infección urinaria, Cistitis, ITS." },
+            { id: "nervioso", t: "SISTEMA NERVIOSO", d: "Epilepsia, Vértigo, Migraña, TEC." },
+            { id: "psiquiatrico", t: "PSIQUIATRICOS", d: "Depresión, Ansiedad, Psicosis." },
+            { id: "oseo", t: "OSTEOMUSCULARES", d: "Lumbalgia, Escoliosis, Fracturas, Artralgia." },
+            { id: "metabolico", t: "METABOLICOS", d: "Diabetes, Tiroides, Obesidad, Gota." },
+            { id: "reuma", t: "REUMATOLOGICOS", d: "Artritis Reumatoide, Lupus." },
+            { id: "generales", t: "GENERALES", d: "Cáncer, Hernias Abdominales." },
+            { id: "piel", t: "DERMATOLOGICAS", d: "Dermatitis, Psoriasis, Vitíligo, Hongos." },
+            { id: "infecciones", t: "INFECCIONES", d: "Hepatitis, Tifoidea, HIV, Chagas." }
         ];
 
         window.onload = () => {
-            document.getElementById('nombre_completo').value = `${localStorage.getItem('temp_apellidos') || ''} ${localStorage.getItem('temp_nombres') || ''}`;
+            document.getElementById('nombre_completo').value = localStorage.getItem('temp_nombres_completos') || "";
             document.getElementById('codigo_id').value = localStorage.getItem('temp_codigo') || "0";
-            
             const cont = document.getElementById('contenedorSalud');
             dataSalud.forEach(p => {
-                cont.innerHTML += `
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">${p.t}</label>
-                        <div class="desc-enfermedad">${p.d}</div>
-                        <select id="${p.id}" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    </div>`;
+                cont.innerHTML += `<div class="col-md-6 mb-3"><label class="form-label">${p.t}</label><div class="desc-enfermedad">${p.d}</div><select id="${p.id}" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>`;
             });
         };
 
-        // Forzar Mayúsculas
         document.body.addEventListener('input', (e) => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') e.target.value = e.target.value.toUpperCase(); });
 
         document.getElementById('formSeccion1').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion1').classList.add('hidden'); document.getElementById('formSeccion2').classList.remove('hidden'); window.scrollTo(0,0); };
         document.getElementById('formSeccion2').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion2').classList.add('hidden'); document.getElementById('formSeccion3').classList.remove('hidden'); window.scrollTo(0,0); };
 
-        document.getElementById('formSeccion3').onsubmit = (e) => {
+        document.getElementById('formSeccion3').onsubmit = async (e) => {
             e.preventDefault();
-            alert("DECLARACIÓN COMPLETADA. DATOS LISTOS PARA GUARDAR EN HISTORIAL_CLINICO_NUBE.");
+            const payload = {
+                paciente_id: parseInt(localStorage.getItem('temp_paciente_id')),
+                edad: parseInt(document.getElementById('edad').value),
+                sexo: document.getElementById('sexo').value,
+                fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+                lugar_nacimiento: document.getElementById('lugar_nacimiento').value,
+                domicilio_av_calle: document.getElementById('domicilio_av_calle').value,
+                domicilio_numero: document.getElementById('domicilio_numero').value,
+                barrio: document.getElementById('barrio').value,
+                ciudad: document.getElementById('ciudad').value,
+                pais: document.getElementById('pais').value,
+                telefono: document.getElementById('telefono').value,
+                estado_civil: document.getElementById('estado_civil').value,
+                profesion_labor: document.getElementById('profesion_labor').value,
+                vista: document.getElementById('vista').value,
+                auditivo: document.getElementById('auditivo').value,
+                respiratorios: document.getElementById('respiratorios').value,
+                cardio: document.getElementById('cardio').value,
+                digestivo: document.getElementById('digestivo').value,
+                sangre: document.getElementById('sangre').value,
+                urinario: document.getElementById('urinario').value,
+                nervioso: document.getElementById('nervioso').value,
+                psiquiatrico: document.getElementById('psiquiatrico').value,
+                oseo: document.getElementById('oseo').value,
+                metabolico: document.getElementById('metabolico').value,
+                reuma: document.getElementById('reuma').value,
+                generales: document.getElementById('generales').value,
+                piel: document.getElementById('piel').value,
+                infecciones: document.getElementById('infecciones').value,
+                alergia_med: document.getElementById('alergia_med').value,
+                alergia_ali: document.getElementById('alergia_ali').value,
+                h_alc_sn: document.getElementById('h_alc_sn').value,
+                h_alc_cant: document.getElementById('h_alc_cant').value,
+                h_alc_freq: document.getElementById('h_alc_freq').value,
+                h_tab_sn: document.getElementById('h_tab_sn').value,
+                h_tab_cant: document.getElementById('h_tab_cant').value,
+                h_tab_freq: document.getElementById('h_tab_freq').value,
+                h_coca_sn: document.getElementById('h_coca_sn').value,
+                h_coca_cant: document.getElementById('h_coca_cant').value,
+                h_coca_freq: document.getElementById('h_coca_freq').value,
+                historia_laboral: document.getElementById('historia_laboral').value,
+                r_ruido: document.getElementById('r_ruido').value,
+                r_radiacion: document.getElementById('r_radiacion').value,
+                r_vibracion: document.getElementById('r_vibracion').value,
+                r_mecanicos: document.getElementById('r_mecanicos').value,
+                r_temperatura: document.getElementById('r_temperatura').value,
+                r_polvo: document.getElementById('r_polvo').value,
+                r_humos: document.getElementById('r_humos').value,
+                r_gases: document.getElementById('r_gases').value,
+                r_metales: document.getElementById('r_metales').value,
+                r_plomo: document.getElementById('r_plomo').value,
+                r_repetitivos: document.getElementById('r_repetitivos').value,
+                r_carga: document.getElementById('r_carga').value,
+                r_psicologico: document.getElementById('r_psicologico').value,
+                r_biologico: document.getElementById('r_biologico').value,
+                r_altura: document.getElementById('r_altura').value,
+                r_confinados: document.getElementById('r_confinados').value,
+                r_otros: document.getElementById('r_otros').value,
+                observaciones: document.getElementById('observaciones').value
+            };
+
+            try {
+                const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                if (res.ok) { alert("GUARDADO EXITOSO"); window.location.href = "final.html"; }
+                else { alert("ERROR AL GUARDAR"); }
+            } catch (e) { alert("ERROR DE CONEXIÓN"); }
         };
     </script>
 </body>
