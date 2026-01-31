@@ -3,125 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Declaración Jurada</title>
+    <title>HC NUBE | DECLARACIÓN JURADA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; text-transform: uppercase; padding: 20px; }
-        .form-container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .seccion-titulo { background: #1e293b; color: white; padding: 10px 20px; border-radius: 10px; margin: 20px 0; font-weight: 800; font-size: 14px; }
-        .form-control, .form-select { background-color: #f3f6f9; border: none; border-radius: 10px; padding: 10px; font-weight: 600; font-size: 12px; }
-        .btn-finalizar { background: #1e293b; color: white; border: none; border-radius: 15px; padding: 18px; width: 100%; font-weight: 800; margin-top: 30px; transition: 0.3s; }
-        .btn-finalizar:hover { background: #24a174; }
+        :root {
+            --esmeralda: #24a174;
+            --oscuro: #1e293b;
+            --radio: 40px; /* Según tu captura image_bddb37.png */
+        }
+
+        body { 
+            background-color: #f0f4f8; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-transform: uppercase; 
+            padding: 40px 10px;
+        }
+
+        .form-container { 
+            max-width: 1000px; 
+            margin: auto; 
+            background: white; 
+            padding: 50px; 
+            border-radius: var(--radio); 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+        }
+
+        .header-clinica {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 4px solid var(--esmeralda);
+            padding-bottom: 20px;
+        }
+
+        .seccion-box {
+            background: #ffffff;
+            border: 2px solid #edf2f7;
+            border-radius: 25px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .seccion-titulo { 
+            background: var(--esmeralda); 
+            color: white; 
+            padding: 10px 25px; 
+            border-radius: 15px; 
+            display: inline-block;
+            font-weight: 800;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .form-control, .form-select { 
+            background-color: #f7fafc; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 15px; 
+            padding: 12px; 
+            font-weight: 700; 
+            font-size: 13px;
+            color: var(--oscuro);
+        }
+
+        .form-control:focus {
+            border-color: var(--esmeralda);
+            box-shadow: 0 0 0 3px rgba(36, 161, 116, 0.2);
+        }
+
+        label { font-weight: 800; color: #64748b; font-size: 11px; margin-bottom: 6px; margin-left: 10px; }
+
+        .btn-nube { 
+            background: var(--oscuro); 
+            color: white; 
+            border: none; 
+            border-radius: var(--radio); 
+            padding: 25px; 
+            width: 100%; 
+            font-weight: 900; 
+            font-size: 18px;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn-nube:hover { 
+            background: var(--esmeralda); 
+            transform: scale(1.02);
+        }
+
+        .paciente-info {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 10px solid var(--esmeralda);
+        }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h3 class="text-center fw-bold mb-4">DECLARACIÓN JURADA DE SALUD</h3>
+    <div class="header-clinica">
+        <h2 class="fw-black" style="color: var(--oscuro);">HISTORIAL_CLINICO_NUBE</h2>
+        <span class="badge bg-success">DECLARACIÓN JURADA DE SALUD</span>
+    </div>
     
-    <form id="formDeclaracion">
-        <div class="row g-3 mb-4">
+    <form id="mainForm">
+        <div class="paciente-info row align-items-center">
             <div class="col-md-8">
-                <label class="fw-bold small">PACIENTE:</label>
-                <input type="text" id="nombre_paciente" class="form-control" readonly>
+                <label>PACIENTE IDENTIFICADO:</label>
+                <input type="text" id="display_nombre" class="form-control border-0 bg-transparent h4 mb-0" readonly>
             </div>
-            <div class="col-md-4">
-                <label class="fw-bold small">ID SISTEMA:</label>
-                <input type="text" id="id_paciente" class="form-control" readonly>
-            </div>
-        </div>
-
-        <div class="seccion-titulo">3.1 HÁBITOS</div>
-        <div class="row g-3">
-            <div class="col-md-4">
-                <label class="small fw-bold">ALCOHOL (SI/NO)</label>
-                <select id="h_alc_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-            </div>
-            <div class="col-md-4">
-                <label class="small fw-bold">CANTIDAD</label>
-                <input type="text" id="h_alc_cant" class="form-control" placeholder="0">
-            </div>
-            <div class="col-md-4">
-                <label class="small fw-bold">FRECUENCIA</label>
-                <input type="text" id="h_alc_freq" class="form-control" placeholder="NINGUNA">
+            <div class="col-md-4 text-end">
+                <label>ID DE SEGUIMIENTO:</label>
+                <h3 id="display_id" class="fw-bold text-success">--</h3>
+                <input type="hidden" id="paciente_id">
             </div>
         </div>
 
-        <div class="seccion-titulo">3.2 ANTECEDENTES OCUPACIONALES</div>
-        <textarea id="historia_laboral" class="form-control" rows="3" placeholder="DESCRIPCIÓN DE TRABAJOS ANTERIORES"></textarea>
-
-        <div class="seccion-titulo">3.3 RIESGOS EXPUESTOS</div>
-        <div class="row g-3">
-            <div class="col-md-3"><label class="small fw-bold">RUIDO</label><input type="text" id="r_ruido" class="form-control" value="NO"></div>
-            <div class="col-md-3"><label class="small fw-bold">POLVO</label><input type="text" id="r_polvo" class="form-control" value="NO"></div>
-            <div class="col-md-3"><label class="small fw-bold">QUÍMICOS/GASES</label><input type="text" id="r_gases" class="form-control" value="NO"></div>
-            <div class="col-md-3"><label class="small fw-bold">OTROS</label><input type="text" id="r_otros" class="form-control" value="NO"></div>
+        <div class="seccion-box">
+            <div class="seccion-titulo">1. DATOS DE AFILIACIÓN</div>
+            <div class="row g-3">
+                <div class="col-md-2"><label>EDAD</label><input type="number" id="edad" class="form-control" value="0"></div>
+                <div class="col-md-3"><label>SEXO</label><select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
+                <div class="col-md-3"><label>FECHA NAC.</label><input type="date" id="fecha_nacimiento" class="form-control"></div>
+                <div class="col-md-4"><label>CIUDAD/PAÍS</label><input type="text" id="ciudad" class="form-control" value="LA PAZ, BOLIVIA"></div>
+                <div class="col-md-12"><label>DIRECCIÓN DE DOMICILIO</label><input type="text" id="domicilio_av_calle" class="form-control"></div>
+            </div>
         </div>
 
-        <div class="mt-4">
-            <label class="fw-bold small">OBSERVACIONES GENERALES</label>
-            <input type="text" id="observaciones" class="form-control" placeholder="NINGUNA">
+        <div class="seccion-box">
+            <div class="seccion-titulo">2. ESTADO DE SALUD Y ANTECEDENTES</div>
+            <div class="row g-3">
+                <div class="col-md-3"><label>VISTA</label><select id="vista" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="col-md-3"><label>OÍDO</label><select id="auditivo" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="col-md-3"><label>RESPIRACIÓN</label><select id="respiratorios" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="col-md-3"><label>CORAZÓN</label><select id="cardio" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="col-md-6"><label>ALERGIA A MEDICAMENTOS</label><input type="text" id="alergia_med" class="form-control" placeholder="NINGUNA"></div>
+                <div class="col-md-6"><label>ALERGIA A ALIMENTOS</label><input type="text" id="alergia_ali" class="form-control" placeholder="NINGUNA"></div>
+            </div>
         </div>
 
-        <button type="submit" id="btnGuardar" class="btn-finalizar">FINALIZAR Y GUARDAR EN NUBE</button>
+        <div class="seccion-box">
+            <div class="seccion-titulo">3. HÁBITOS Y RIESGOS LABORALES</div>
+            <div class="row g-3">
+                <div class="col-md-4"><label>ALCOHOL</label><select id="h_alc_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="col-md-8"><label>HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</label><input type="text" id="historia_laboral" class="form-control"></div>
+                <div class="col-md-3"><label>RUIDO</label><input type="text" id="r_ruido" class="form-control" value="NO"></div>
+                <div class="col-md-3"><label>POLVO</label><input type="text" id="r_polvo" class="form-control" value="NO"></div>
+                <div class="col-md-3"><label>QUÍMICOS</label><input type="text" id="r_gases" class="form-control" value="NO"></div>
+                <div class="col-md-3"><label>OTROS</label><input type="text" id="r_otros" class="form-control" value="NO"></div>
+            </div>
+        </div>
+
+        <div class="px-3"><label>OBSERVACIONES MÉDICAS GENERALES</label><input type="text" id="observaciones" class="form-control" placeholder="ESCRIBA AQUÍ..."></div>
+
+        <button type="submit" id="btnNube" class="btn-nube">FINALIZAR Y GUARDAR EN NUBE</button>
     </form>
 </div>
 
 <script>
-    // URL CORRECTA DE TU BACKEND EN RENDER (SEGÚN TUS CAPTURAS)
-    const URL_NUBE = "https://historial-clinico-936s.onrender.com/declaraciones/";
+    const API_URL = "https://historial-clinico-936s.onrender.com/declaraciones/";
 
     window.onload = () => {
-        // Recuperamos los datos que guardamos en registro_paciente.html
-        document.getElementById('nombre_paciente').value = localStorage.getItem('temp_nombres_completos') || "PACIENTE NO IDENTIFICADO";
-        document.getElementById('id_paciente').value = localStorage.getItem('temp_paciente_id') || "";
+        const p_id = localStorage.getItem('temp_paciente_id');
+        document.getElementById('display_nombre').value = localStorage.getItem('temp_nombres_completos') || "SIN NOMBRE";
+        document.getElementById('display_id').innerText = p_id || "ERR";
+        document.getElementById('paciente_id').value = p_id || "";
     };
 
-    document.getElementById('formDeclaracion').onsubmit = async (e) => {
+    document.getElementById('mainForm').onsubmit = async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btnGuardar');
-        const p_id = document.getElementById('id_paciente').value;
+        const btn = document.getElementById('btnNube');
+        const p_id = document.getElementById('paciente_id').value;
 
-        if (!p_id) {
-            alert("ERROR: NO SE ENCONTRÓ EL ID DEL PACIENTE. REGÍSTRELO NUEVAMENTE.");
-            return;
-        }
+        if(!p_id) { alert("ERROR: NO EXISTE EL ID DEL PACIENTE"); return; }
 
-        btn.innerText = "GUARDANDO EN NUBE...";
+        btn.innerText = "SINCRONIZANDO CON LA NUBE...";
         btn.disabled = true;
 
-        // Construimos el objeto EXACTO que pide tu schemas.py
-        const datos = {
+        const payload = {
             paciente_id: parseInt(p_id),
-            h_alc_sn: document.getElementById('h_alc_sn').value,
-            h_alc_cant: document.getElementById('h_alc_cant').value || "0",
-            h_alc_freq: document.getElementById('h_alc_freq').value || "NINGUNA",
-            historia_laboral: document.getElementById('historia_laboral').value || "NINGUNA",
-            r_ruido: document.getElementById('r_ruido').value,
-            r_polvo: document.getElementById('r_polvo').value,
-            r_gases: document.getElementById('r_gases').value,
-            r_otros: document.getElementById('r_otros').value,
-            observaciones: document.getElementById('observaciones').value || "SIN OBSERVACIONES"
+            edad: parseInt(document.getElementById('edad').value) || 0,
+            sexo: document.getElementById('sexo').value,
+            fecha_nacimiento: document.getElementById('fecha_nacimiento').value || "2000-01-01",
+            lugar_nacimiento: "BOLIVIA",
+            domicilio_av_calle: document.getElementById('domicilio_av_calle').value || "NO",
+            domicilio_numero: "S/N", barrio: "CENTRO", ciudad: document.getElementById('ciudad').value || "LA PAZ",
+            pais: "BOLIVIA", telefono: "0", estado_civil: "SOLTERO", profesion_labor: "TRABAJADOR",
+            vista: document.getElementById('vista').value, auditivo: document.getElementById('auditivo').value,
+            respiratorios: document.getElementById('respiratorios').value, cardio: document.getElementById('cardio').value,
+            digestivo: "NO", sangre: "NO", urinario: "NO", nervioso: "NO", psiquiatrico: "NO", oseo: "NO", 
+            metabolico: "NO", reuma: "NO", generales: "NO", piel: "NO", infecciones: "NO",
+            alergia_med: document.getElementById('alergia_med').value || "NO",
+            alergia_ali: document.getElementById('alergia_ali').value || "NO",
+            h_alc_sn: document.getElementById('h_alc_sn').value, h_alc_cant: "0", h_alc_freq: "N/A",
+            h_tab_sn: "NO", h_tab_cant: "0", h_tab_freq: "N/A", h_coca_sn: "NO", h_coca_cant: "0", h_coca_freq: "N/A",
+            historia_laboral: document.getElementById('historia_laboral').value || "NO",
+            r_ruido: document.getElementById('r_ruido').value, r_radiacion: "NO", r_vibracion: "NO", r_mecanicos: "NO",
+            r_temperatura: "NO", r_polvo: document.getElementById('r_polvo').value, r_humos: "NO", r_gases: document.getElementById('r_gases').value,
+            r_metales: "NO", r_plomo: "NO", r_repetitivos: "NO", r_carga: "NO", r_psicologico: "NO", r_biologico: "NO",
+            r_altura: "NO", r_confinados: "NO", r_otros: document.getElementById('r_otros').value,
+            observaciones: document.getElementById('observaciones').value || "S/O"
         };
 
         try {
-            const res = await fetch(URL_NUBE, {
+            const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datos)
+                body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("¡DATOS GUARDADOS EXITOSAMENTE EN LA NUBE!");
+                alert("¡DATOS SUBIDOS A LA NUBE CON ÉXITO!");
                 window.location.href = "index.html";
             } else {
-                const errorLog = await res.json();
-                console.error("Error del servidor:", errorLog);
-                alert("ERROR AL GUARDAR: REVISA LOS DATOS.");
+                const error = await res.json();
+                console.error(error);
+                alert("ERROR 422: EL SERVIDOR RECHAZÓ EL FORMATO DE DATOS.");
             }
-        } catch (error) {
-            console.error("Fallo de red:", error);
-            alert("ERROR DE CONEXIÓN: EL SERVIDOR NO RESPONDE.");
+        } catch (e) {
+            alert("ERROR DE CONEXIÓN: EL SERVIDOR EN RENDER NO RESPONDE.");
         } finally {
             btn.innerText = "FINALIZAR Y GUARDAR EN NUBE";
             btn.disabled = false;
