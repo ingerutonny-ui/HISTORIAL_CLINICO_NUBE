@@ -26,6 +26,8 @@ def get_declaracion_by_paciente(db: Session, paciente_id: int):
     return db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
 
 def create_declaracion_jurada(db: Session, declaracion: schemas.DeclaracionJuradaCreate):
+    # Al usar **declaracion.dict(), SQLAlchemy mapea todos los campos del PDF 
+    # (domicilio, antecedentes, historia laboral) automáticamente al modelo.
     db_declaracion = models.DeclaracionJurada(**declaracion.dict())
     db.add(db_declaracion)
     db.commit()
