@@ -29,8 +29,8 @@
                 <div class="col-md-4"><label class="form-label">CÓDIGO DE PACIENTE</label><input type="text" id="codigo_id" class="form-control" readonly style="background-color: #f0fdf4; text-align: center;"></div>
                 <div class="col-md-2"><label class="form-label">EDAD</label><input type="number" id="edad" class="form-control" required></div>
                 <div class="col-md-3"><label class="form-label">SEXO</label><select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
-                <div class="col-md-4"><label class="form-label">FECHA DE NACIMIENTO</label><input type="date" id="fecha_nacimiento" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">LUGAR</label><input type="text" id="lugar_nacimiento" class="form-control"></div>
+                <div class="col-md-4"><label class="form-label">FECHA DE NACIMIENTO</label><input type="date" id="fecha_nacimiento" class="form-control" required></div>
+                <div class="col-md-3"><label class="form-label">LUGAR NACIMIENTO</label><input type="text" id="lugar_nacimiento" class="form-control"></div>
                 <div class="col-md-5"><label class="form-label">AV./CALLE</label><input type="text" id="domicilio_av_calle" class="form-control"></div>
                 <div class="col-md-2"><label class="form-label">NÚMERO</label><input type="text" id="domicilio_numero" class="form-control"></div>
                 <div class="col-md-5"><label class="form-label">BARRIO</label><input type="text" id="barrio" class="form-control"></div>
@@ -45,7 +45,7 @@
 
         <form id="formSeccion2" class="hidden">
             <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (SI O NO)</div>
-            <p style="font-size: 11px; font-weight: bold;">LEA CON CUIDADO Y MARQUE SI USTED FUE DIAGNOSTICADO DE:</p>
+            <p style="font-size: 11px; font-weight: bold;">MARQUE SI FUE DIAGNOSTICADO DE:</p>
             <div class="row" id="contenedorSalud"></div>
             <div class="seccion-titulo">ALERGIAS</div>
             <div class="row g-3">
@@ -80,9 +80,9 @@
             </div>
 
             <div class="seccion-titulo">3.2 ANTECEDENTES OCUPACIONALES</div>
-            <textarea id="historia_laboral" class="form-control" rows="4" placeholder="HISTORIA LABORAL COMPLETA..."></textarea>
+            <textarea id="historia_laboral" class="form-control" rows="4" placeholder="SU HISTORIA LABORAL..."></textarea>
 
-            <div class="seccion-titulo">3.3 RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
+            <div class="seccion-titulo">3.3 RIESGOS EXPUESTOS</div>
             <div class="grid-riesgos">
                 <div><label class="form-label">RUIDO</label><input type="text" id="r_ruido" class="form-control"></div>
                 <div><label class="form-label">RADIACIÓN</label><input type="text" id="r_radiacion" class="form-control"></div>
@@ -103,10 +103,7 @@
                 <div><label class="form-label">OTROS</label><input type="text" id="r_otros" class="form-control"></div>
             </div>
 
-            <div class="mt-3">
-                <label class="form-label">OBSERVACIONES</label>
-                <input type="text" id="observaciones" class="form-control">
-            </div>
+            <div class="mt-3"><label class="form-label">OBSERVACIONES</label><input type="text" id="observaciones" class="form-control"></div>
 
             <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR Y GUARDAR EN NUBE</button>
         </form>
@@ -116,25 +113,25 @@
         const API_URL = "https://historial-clinico-936s.onrender.com/declaraciones/";
 
         const dataSalud = [
-            { id: "vista", t: "VISTA", d: "Disminución visión, Daltonismo, Glaucoma, Retinopatía, Pterigión, Miopía." },
-            { id: "auditivo", t: "AUDITIVO", d: "Sordera, Otitis, Trauma acústico, Vértigo." },
-            { id: "respiratorios", t: "RESPIRATORIOS", d: "Tuberculosis, EPOC, Asma, Bronquitis, Rinitis." },
-            { id: "cardio", t: "CARDIO-VASCULARES", d: "Presión alta, Arritmia, Trombosis, Infarto, Insuficiencia Cardiaca." },
-            { id: "digestivo", t: "ESTOMAGO/HIGADO", d: "Gastritis, Úlcera, Reflujo, Cirrosis, Hernia, Hemorroides." },
+            { id: "vista", t: "VISTA", d: "Visión, Daltonismo, Glaucoma, Pterigión." },
+            { id: "auditivo", t: "AUDITIVO", d: "Sordera, Otitis, Vértigo." },
+            { id: "respiratorios", t: "RESPIRATORIOS", d: "Tuberculosis, EPOC, Asma, Bronquitis." },
+            { id: "cardio", t: "CARDIO-VASCULARES", d: "Hipertensión, Arritmia, Infarto." },
+            { id: "digestivo", t: "ESTOMAGO/HIGADO", d: "Gastritis, Úlcera, Reflujo, Cirrosis." },
             { id: "sangre", t: "SANGRE", d: "Anemia, Coagulopatía, Poliglobulia." },
-            { id: "urinario", t: "GENITO/URINARIO", d: "Insuficiencia renal, Infección urinaria, Cistitis, ITS." },
+            { id: "urinario", t: "GENITO/URINARIO", d: "Insuficiencia renal, Infección, ITS." },
             { id: "nervioso", t: "SISTEMA NERVIOSO", d: "Epilepsia, Vértigo, Migraña, TEC." },
             { id: "psiquiatrico", t: "PSIQUIATRICOS", d: "Depresión, Ansiedad, Psicosis." },
-            { id: "oseo", t: "OSTEOMUSCULARES", d: "Lumbalgia, Escoliosis, Fracturas, Artralgia." },
-            { id: "metabolico", t: "METABOLICOS", d: "Diabetes, Tiroides, Obesidad, Gota." },
+            { id: "oseo", t: "OSTEOMUSCULARES", d: "Lumbalgia, Escoliosis, Fracturas." },
+            { id: "metabolico", t: "METABOLICOS", d: "Diabetes, Tiroides, Obesidad." },
             { id: "reuma", t: "REUMATOLOGICOS", d: "Artritis Reumatoide, Lupus." },
-            { id: "generales", t: "GENERALES", d: "Cáncer, Hernias Abdominales." },
-            { id: "piel", t: "DERMATOLOGICAS", d: "Dermatitis, Psoriasis, Vitíligo, Hongos." },
+            { id: "generales", t: "GENERALES", d: "Cáncer, Hernias." },
+            { id: "piel", t: "DERMATOLOGICAS", d: "Dermatitis, Psoriasis, Vitíligo." },
             { id: "infecciones", t: "INFECCIONES", d: "Hepatitis, Tifoidea, HIV, Chagas." }
         ];
 
         window.onload = () => {
-            document.getElementById('nombre_completo').value = localStorage.getItem('temp_nombres_completos') || "";
+            document.getElementById('nombre_completo').value = localStorage.getItem('temp_nombres_completos') || "SIN NOMBRE";
             document.getElementById('codigo_id').value = localStorage.getItem('temp_codigo') || "0";
             const cont = document.getElementById('contenedorSalud');
             dataSalud.forEach(p => {
@@ -149,72 +146,55 @@
 
         document.getElementById('formSeccion3').onsubmit = async (e) => {
             e.preventDefault();
+            
+            const idPaciente = localStorage.getItem('temp_paciente_id');
+            if (!idPaciente || idPaciente === "undefined") {
+                alert("ERROR: NO SE ENCONTRÓ EL ID DEL PACIENTE. REGÍSTRELO NUEVAMENTE.");
+                return;
+            }
+
+            const getV = (id) => document.getElementById(id).value.trim() || "NINGUNO";
+
             const payload = {
-                paciente_id: parseInt(localStorage.getItem('temp_paciente_id')),
-                edad: parseInt(document.getElementById('edad').value),
+                paciente_id: parseInt(idPaciente),
+                edad: parseInt(document.getElementById('edad').value) || 0,
                 sexo: document.getElementById('sexo').value,
-                fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
-                lugar_nacimiento: document.getElementById('lugar_nacimiento').value,
-                domicilio_av_calle: document.getElementById('domicilio_av_calle').value,
-                domicilio_numero: document.getElementById('domicilio_numero').value,
-                barrio: document.getElementById('barrio').value,
-                ciudad: document.getElementById('ciudad').value,
-                pais: document.getElementById('pais').value,
-                telefono: document.getElementById('telefono').value,
-                estado_civil: document.getElementById('estado_civil').value,
-                profesion_labor: document.getElementById('profesion_labor').value,
-                vista: document.getElementById('vista').value,
-                auditivo: document.getElementById('auditivo').value,
-                respiratorios: document.getElementById('respiratorios').value,
-                cardio: document.getElementById('cardio').value,
-                digestivo: document.getElementById('digestivo').value,
-                sangre: document.getElementById('sangre').value,
-                urinario: document.getElementById('urinario').value,
-                nervioso: document.getElementById('nervioso').value,
-                psiquiatrico: document.getElementById('psiquiatrico').value,
-                oseo: document.getElementById('oseo').value,
-                metabolico: document.getElementById('metabolico').value,
-                reuma: document.getElementById('reuma').value,
-                generales: document.getElementById('generales').value,
-                piel: document.getElementById('piel').value,
-                infecciones: document.getElementById('infecciones').value,
-                alergia_med: document.getElementById('alergia_med').value,
-                alergia_ali: document.getElementById('alergia_ali').value,
-                h_alc_sn: document.getElementById('h_alc_sn').value,
-                h_alc_cant: document.getElementById('h_alc_cant').value,
-                h_alc_freq: document.getElementById('h_alc_freq').value,
-                h_tab_sn: document.getElementById('h_tab_sn').value,
-                h_tab_cant: document.getElementById('h_tab_cant').value,
-                h_tab_freq: document.getElementById('h_tab_freq').value,
-                h_coca_sn: document.getElementById('h_coca_sn').value,
-                h_coca_cant: document.getElementById('h_coca_cant').value,
-                h_coca_freq: document.getElementById('h_coca_freq').value,
-                historia_laboral: document.getElementById('historia_laboral').value,
-                r_ruido: document.getElementById('r_ruido').value,
-                r_radiacion: document.getElementById('r_radiacion').value,
-                r_vibracion: document.getElementById('r_vibracion').value,
-                r_mecanicos: document.getElementById('r_mecanicos').value,
-                r_temperatura: document.getElementById('r_temperatura').value,
-                r_polvo: document.getElementById('r_polvo').value,
-                r_humos: document.getElementById('r_humos').value,
-                r_gases: document.getElementById('r_gases').value,
-                r_metales: document.getElementById('r_metales').value,
-                r_plomo: document.getElementById('r_plomo').value,
-                r_repetitivos: document.getElementById('r_repetitivos').value,
-                r_carga: document.getElementById('r_carga').value,
-                r_psicologico: document.getElementById('r_psicologico').value,
-                r_biologico: document.getElementById('r_biologico').value,
-                r_altura: document.getElementById('r_altura').value,
-                r_confinados: document.getElementById('r_confinados').value,
-                r_otros: document.getElementById('r_otros').value,
-                observaciones: document.getElementById('observaciones').value
+                fecha_nacimiento: document.getElementById('fecha_nacimiento').value || "1900-01-01",
+                lugar_nacimiento: getV('lugar_nacimiento'),
+                domicilio_av_calle: getV('domicilio_av_calle'),
+                domicilio_numero: getV('domicilio_numero'),
+                barrio: getV('barrio'),
+                ciudad: getV('ciudad'),
+                pais: getV('pais'),
+                telefono: getV('telefono'),
+                estado_civil: getV('estado_civil'),
+                profesion_labor: getV('profesion_labor'),
+                vista: getV('vista'), auditivo: getV('auditivo'), respiratorios: getV('respiratorios'), cardio: getV('cardio'),
+                digestivo: getV('digestivo'), sangre: getV('sangre'), urinario: getV('urinario'), nervioso: getV('nervioso'),
+                psiquiatrico: getV('psiquiatrico'), oseo: getV('oseo'), metabolico: getV('metabolico'), reuma: getV('reuma'),
+                generales: getV('generales'), piel: getV('piel'), infecciones: getV('infecciones'),
+                alergia_med: getV('alergia_med'), alergia_ali: getV('alergia_ali'),
+                h_alc_sn: getV('h_alc_sn'), h_alc_cant: getV('h_alc_cant'), h_alc_freq: getV('h_alc_freq'),
+                h_tab_sn: getV('h_tab_sn'), h_tab_cant: getV('h_tab_cant'), h_tab_freq: getV('h_tab_freq'),
+                h_coca_sn: getV('h_coca_sn'), h_coca_cant: getV('h_coca_cant'), h_coca_freq: getV('h_coca_freq'),
+                historia_laboral: getV('historia_laboral'),
+                r_ruido: getV('r_ruido'), r_radiacion: getV('r_radiacion'), r_vibracion: getV('r_vibracion'),
+                r_mecanicos: getV('r_mecanicos'), r_temperatura: getV('r_temperatura'), r_polvo: getV('r_polvo'),
+                r_humos: getV('r_humos'), r_gases: getV('r_gases'), r_metales: getV('r_metales'),
+                r_plomo: getV('r_plomo'), r_repetitivos: getV('r_repetitivos'), r_carga: getV('r_carga'),
+                r_psicologico: getV('r_psicologico'), r_biologico: getV('r_biologico'), r_altura: getV('r_altura'),
+                r_confinados: getV('r_confinados'), r_otros: getV('r_otros'), observaciones: getV('observaciones')
             };
 
             try {
-                const res = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (res.ok) { alert("GUARDADO EXITOSO"); window.location.href = "final.html"; }
-                else { alert("ERROR AL GUARDAR"); }
-            } catch (e) { alert("ERROR DE CONEXIÓN"); }
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) { alert("¡ÉXITO! DECLARACIÓN GUARDADA."); window.location.href = "final.html"; }
+                else { alert("ERROR 422: REVISAR CAMPOS O ID DE PACIENTE."); }
+            } catch (e) { alert("ERROR DE CONEXIÓN."); }
         };
     </script>
 </body>
