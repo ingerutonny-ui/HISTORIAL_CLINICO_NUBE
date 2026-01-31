@@ -102,10 +102,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+
                 if (res.ok) {
-                    // PERSISTENCIA: Guardamos para la Declaración Jurada
-                    localStorage.setItem('temp_nombres', inN.value.trim());
-                    localStorage.setItem('temp_apellidos', inA.value.trim());
+                    const data = await res.json();
+                    
+                    // PERSISTENCIA COMPLETA: Aquí se guarda el ID real de la base de datos
+                    localStorage.setItem('temp_paciente_id', data.id);
+                    localStorage.setItem('temp_nombres_completos', inA.value.trim() + " " + inN.value.trim());
                     localStorage.setItem('temp_codigo', codVal.innerText);
                     
                     alert("¡PACIENTE REGISTRADO EXITOSAMENTE!");
@@ -114,7 +117,11 @@
                     const err = await res.json();
                     alert("ERROR: " + (err.detail || "Error en registro"));
                 }
-            } catch (error) { alert("FALLO DE RED"); } finally { btn.innerText = "GUARDAR REGISTRO"; }
+            } catch (error) { 
+                alert("FALLO DE RED AL CONECTAR CON RENDER"); 
+            } finally { 
+                btn.innerText = "GUARDAR REGISTRO"; 
+            }
         };
 
         document.getElementById('btnConsultar').onclick = async () => {
