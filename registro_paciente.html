@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC NUBE | Registro de Paciente</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+    
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-slate-50 flex flex-col items-center justify-center min-h-screen p-4">
+    
+    <a href="enfermera.html" class="mb-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] hover:text-emerald-500 transition-colors flex items-center gap-2">
+        <span>←</span> VOLVER AL MENÚ DE ENFERMERÍA
+    </a>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [formData, setFormData] = useState({ nombres: '', apellidos: '', documento_identidad: '' });
+            const [codigo, setCodigo] = useState('');
+            const [listaPacientes, setListaPacientes] = useState([]);
+            const [mostrarLista, setMostrarLista] = useState(false);
+            const [cargando, setCargando] = useState(false);
+
+            // Generador de Código Automático
+            useEffect(() => {
+                if (formData.nombres && formData.apellidos) {
+                    const iniciales = (formData.nombres[0] + formData.apellidos[0]).toUpperCase();
+                    const num = Math.floor(1000 + Math.random() * 9000);
+                    setCodigo(`${iniciales}${num}`);
+                } else { setCodigo(''); }
+            }, [formData.nombres, formData.apellidos]);
+
+            // Función POST: Registrar y Limpiar
+            const registrar = async (e) => {
+                e.preventDefault();
+                try {
+                    await axios.post('https://historial-clinico-936s.onrender.com/pacientes/', {
+                        ...formData,
+                        codigo_paciente: codigo
+                    });
+                    alert("¡PACIENTE REGISTRADO EXITOSAMENTE!");
+                    // LIMPIEZA DE DATOS
+                    setFormData({ nombres: '', apellidos: '', documento_identidad: '' });
+                    setCodigo('');
+                    if(mostrarLista) consultarPacientes();
+                } catch (err) {
+                    alert("Error: No se pudo conectar con la nube en Render.");
+                }
+            };
+
+            // Función GET: Consultar y Cerrar (Toggle)
+            const consultarPacientes = async () => {
+                if (mostrarLista) { setMostrarLista(false); return; }
+                setCargando(true);
+                try {
+                    const res = await axios.get('https://historial-clinico-936s.onrender.com/pacientes/');
+                    setListaPacientes(res.data);
+                    setMostrarLista(true);
+                } catch (err) {
+                    alert("Error al obtener la lista.");
+                } finally { setCargando(false); }
+            };
+
+            return (
+                <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-[400px] border border-slate-100">
+                    <div className="text-center mb-8">
+                        <span className="text-3xl mb-2 block">📝</span>
+                        <h1 className="text-xl font-bold text-slate-800 uppercase tracking-tighter">Registro de Paciente</h1>
+                        <p className="text-[9px] text-slate-400 uppercase tracking-[0.2em]">Módulo de Enfermería</p>
+                    </div>
+                    
+                    <form onSubmit={registrar} className="space-y-5">
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Nombres</label>
+                            <input type="text" required value={formData.nombres} className="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-sm outline-none focus:border-emerald-400 transition-all"
+                                onChange={e => setFormData({...formData, nombres: e.target.value})} />
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Apellidos</label>
+                            <input type="text" required value={formData.apellidos} className="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-sm outline-none focus:border-emerald-400 transition-all"
+                                onChange={e => setFormData({...formData, apellidos: e.target.value})} />
+                        </div>
+
+                        <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-400 uppercase ml-1">Documento de Identidad</label>
+                            <input type="text" required value={formData.documento_identidad} className="w-full p-3 bg-slate-50 border border-slate-100 rounded-xl text-sm outline-none focus:border-emerald-400 transition-all"
+                                onChange={e => setFormData({...formData, documento_identidad: e.target.value})} />
+                        </div>
+                        
+                        {codigo && (
+                            <div className="p-3 border border-dashed border-emerald-200 rounded-xl text-center bg-emerald-50/30 animate-fade-in">
+                                <p className="text-emerald-600 font-bold text-[10px] tracking-widest uppercase">Código Generado: {codigo}</p>
+                            </div>
+                        )}
+
+                        <button type="submit" className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 shadow-lg shadow-emerald-100 transition-all active:scale-95">
+                            Guardar Registro
+                        </button>
+                    </form>
+
+                    <button onClick={consultarPacientes} className="w-full mt-4 bg-slate-50 text-slate-400 py-3 rounded-2xl font-bold text-[9px] uppercase tracking-widest hover:bg-slate-100 transition-all border border-slate-100">
+                        {cargando ? 'Cargando...' : mostrarLista ? 'Cerrar Lista' : 'Consultar Registros en Nube'}
+                    </button>
+
+                    {mostrarLista && (
+                        <div className="mt-8 border-t border-slate-50 pt-6 animate-fade-in">
+                            <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
+                                {listaPacientes.map((p) => (
+                                    <div key={p.id} className="p-3 bg-white rounded-xl border border-slate-100 flex justify-between items-center hover:shadow-sm transition-shadow">
+                                        <div>
+                                            <p className="text-[10px] font-bold text-slate-700 uppercase">{p.nombres} {p.apellidos}</p>
+                                            <p className="text-[8px] text-slate-400 uppercase">ID: {p.documento_identidad}</p>
+                                        </div>
+                                        <span className="text-[9px] font-mono font-bold text-emerald-500 bg-emerald-50 px-2 py-1 rounded-lg">
+                                            {p.codigo_paciente}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
