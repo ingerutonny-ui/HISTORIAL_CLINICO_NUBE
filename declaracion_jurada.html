@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Declaración Jurada</title>
+    <title>HC NUBE | DECLARACIÓN JURADA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 30px; display: flex; flex-direction: column; align-items: center; }
@@ -22,61 +22,40 @@
 </head>
 <body>
     <div class="form-container">
-        <h1 class="titulo-principal">Declaración Jurada de Salud</h1>
+        <h1 class="titulo-principal">DECLARACIÓN JURADA DE SALUD</h1>
 
         <form id="formSeccion1">
-            <div class="seccion-titulo">1. Afiliación del Trabajador</div>
+            <div class="seccion-titulo">1. AFILIACIÓN DEL TRABAJADOR</div>
             <div class="row row-gap">
                 <div class="col-md-8">
-                    <label class="form-label">Apellidos y Nombres</label>
+                    <label class="form-label">APELLIDOS Y NOMBRES</label>
                     <input type="text" id="nombre_completo" class="form-control readonly-field" readonly>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">Código de Paciente</label>
+                    <label class="form-label">CÓDIGO DE PACIENTE</label>
                     <input type="text" id="codigo_id" class="form-control readonly-field" readonly style="text-align: center;">
                 </div>
             </div>
             <div class="row row-gap">
-                <div class="col-md-2">
-                    <label class="form-label">Edad</label>
-                    <input type="number" id="edad" class="form-control" required>
-                </div>
+                <div class="col-md-2"><label class="form-label">EDAD</label><input type="number" id="edad" class="form-control" required></div>
                 <div class="col-md-3">
-                    <label class="form-label">Sexo</label>
-                    <select id="sexo" class="form-select" required>
-                        <option value="MASCULINO">MASCULINO</option>
-                        <option value="FEMENINO">FEMENINO</option>
-                    </select>
+                    <label class="form-label">SEXO</label>
+                    <select id="sexo" class="form-select" required><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select>
                 </div>
-                <div class="col-md-4">
-                    <label class="form-label">Fecha de Nacimiento</label>
-                    <input type="date" id="fecha_nacimiento" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Lugar de Nacimiento</label>
-                    <input type="text" id="lugar_nacimiento" class="form-control uppercase-input">
-                </div>
+                <div class="col-md-4"><label class="form-label">FECHA DE NACIMIENTO</label><input type="date" id="fecha_nacimiento" class="form-control" required></div>
+                <div class="col-md-3"><label class="form-label">LUGAR DE NACIMIENTO</label><input type="text" id="lugar_nacimiento" class="form-control uppercase-input"></div>
             </div>
             <div class="row row-gap">
-                <div class="col-md-5">
-                    <label class="form-label">Av./Calle</label>
-                    <input type="text" id="domicilio_av_calle" class="form-control uppercase-input">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">Número</label>
-                    <input type="text" id="domicilio_numero" class="form-control">
-                </div>
-                <div class="col-md-5">
-                    <label class="form-label">Barrio / Zona</label>
-                    <input type="text" id="barrio" class="form-control uppercase-input">
-                </div>
+                <div class="col-md-5"><label class="form-label">AV./CALLE</label><input type="text" id="domicilio_av_calle" class="form-control uppercase-input"></div>
+                <div class="col-md-2"><label class="form-label">NÚMERO</label><input type="text" id="domicilio_numero" class="form-control uppercase-input"></div>
+                <div class="col-md-5"><label class="form-label">BARRIO / ZONA</label><input type="text" id="barrio" class="form-control uppercase-input"></div>
             </div>
             <div class="row row-gap">
-                <div class="col-md-3"><label class="form-label">Ciudad</label><input type="text" id="ciudad" class="form-control uppercase-input"></div>
-                <div class="col-md-3"><label class="form-label">País</label><input type="text" id="pais" class="form-control uppercase-input" value="BOLIVIA"></div>
-                <div class="col-md-3"><label class="form-label">Teléfono</label><input type="text" id="telefono" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">CIUDAD</label><input type="text" id="ciudad" class="form-control uppercase-input"></div>
+                <div class="col-md-3"><label class="form-label">PAÍS</label><input type="text" id="pais" class="form-control uppercase-input" value="BOLIVIA"></div>
+                <div class="col-md-3"><label class="form-label">TELÉFONO</label><input type="text" id="telefono" class="form-control"></div>
                 <div class="col-md-3">
-                    <label class="form-label">Estado Civil</label>
+                    <label class="form-label">ESTADO CIVIL</label>
                     <select id="estado_civil" class="form-select">
                         <option value="SOLTERO(A)">SOLTERO(A)</option>
                         <option value="CASADO(A)">CASADO(A)</option>
@@ -86,152 +65,136 @@
                 </div>
             </div>
             <div class="row row-gap">
-                <div class="col-md-12">
-                    <label class="form-label">Profesión o Labor que desempeña</label>
-                    <input type="text" id="profesion_labor" class="form-control uppercase-input">
-                </div>
+                <div class="col-md-12"><label class="form-label">PROFESIÓN O LABOR QUE DESEMPEÑA</label><input type="text" id="profesion_labor" class="form-control uppercase-input"></div>
             </div>
             <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 2: ANTECEDENTES</button>
         </form>
 
         <form id="formSeccion2" class="hidden">
-            <div class="seccion-titulo">2. Antecedentes de Salud (Marque SI o NO)</div>
+            <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (MARQUE SI O NO)</div>
             <p style="font-size: 11px; color: #64748b; margin-bottom: 25px; text-transform: uppercase; font-weight: 700;">POR FAVOR LEA CON CUIDADO Y MARQUE (SI) O (NO) SI USTED FUE DIAGNOSTICADO DE ALGUNA DE LAS ENFERMEDADES MENCIONADAS.</p>
             
             <div class="row">
                 <div class="col-md-6 row-gap">
                     <label class="form-label">1. VISTA</label>
-                    <div class="enfermedad-ejemplo">Disminución de la visión, daltonismo, Glaucoma, Retinopatía, Ametropía, Pterigión, Miopía. [cite: 37]</div>
+                    <div class="enfermedad-ejemplo">DISMINUCIÓN DE LA VISIÓN, DALTONISMO, GLAUCOMA, RETINOPATÍA, AMETROPÍA, PTERIGIÓN, MIOPÍA[cite: 37].</div>
                     <select id="vista" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">2. AUDITIVO</label>
-                    <div class="enfermedad-ejemplo">Sordera, Otitis, Trauma acústico, Perforación timpánica, Vértigo. [cite: 38]</div>
+                    <div class="enfermedad-ejemplo">SORDERA, OTITIS, TRAUMA ACÚSTICO, PERFORACIÓN TIMPÁNICA, VÉRTIGO[cite: 38].</div>
                     <select id="auditivo" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">3. RESPIRATORIOS</label>
-                    <div class="enfermedad-ejemplo">Tuberculosis, EPOC, Asma, Bronquitis, Rinitis, Faringitis, Sinusitis. [cite: 39]</div>
+                    <div class="enfermedad-ejemplo">TUBERCULOSIS, EPOC, ASMA, BRONQUITIS, RINITIS, FARINGITIS, SINUSITIS[cite: 39].</div>
                     <select id="respiratorios" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">4. CARDIO-VASCULARES</label>
-                    <div class="enfermedad-ejemplo">Presión alta, Arritmia, Trombosis, Angina, Infarto, AVC, Insuficiencia cardiaca. [cite: 40, 41]</div>
+                    <div class="enfermedad-ejemplo">PRESIÓN ALTA, ARRITMIA, TROMBOSIS, ANGINA, INFARTO, AVC, INSUFICIENCIA CARDIACA[cite: 40, 41].</div>
                     <select id="cardiovasculares" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">5. ESTÓMAGO / HÍGADO / PÁNCREAS</label>
-                    <div class="enfermedad-ejemplo">Gastritis, Úlcera, Reflujo, Cirrosis, Hernia, Esplenomegalia, Hemorroides. [cite: 42]</div>
+                    <div class="enfermedad-ejemplo">GASTRITIS, ÚLCERA, REFLUJO, CIRROSIS, HERNIA, ESPLENOMEGALIA, HEMORROIDES[cite: 42].</div>
                     <select id="estomago_intestino" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">6. SANGRE</label>
-                    <div class="enfermedad-ejemplo">Anemia, Coagulopatía, Poliglobulia, Otras. [cite: 43]</div>
+                    <div class="enfermedad-ejemplo">ANEMIA, COAGULOPATÍA, POLIGLOBULIA, OTRAS[cite: 43].</div>
                     <select id="sangre" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">7. GENITO / URINARIO</label>
-                    <div class="enfermedad-ejemplo">Insuficiencia renal, Infección urinaria, Cistitis, Anomalía anatómica. [cite: 44]</div>
+                    <div class="enfermedad-ejemplo">INSUFICIENCIA RENAL, INFECCIÓN URINARIA, CISTITIS, ANOMALÍA ANATÓMICA[cite: 44].</div>
                     <select id="genitourinario" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">8. ITS</label>
-                    <div class="enfermedad-ejemplo">Infección de trasmisión sexual, contactos de riesgo. [cite: 45]</div>
+                    <div class="enfermedad-ejemplo">INFECCIÓN DE TRASMISIÓN SEXUAL, CONTACTOS DE RIESGO[cite: 45].</div>
                     <select id="its" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">9. SISTEMA NERVIOSO</label>
-                    <div class="enfermedad-ejemplo">Epilepsia, Vértigo, Apnea, Derrame cerebral, Migraña, Neurocisticercosis, TEC. [cite: 46]</div>
+                    <div class="enfermedad-ejemplo">EPILEPSIA, VÉRTIGO, APNEA, DERRAME CEREBRAL, MIGRAÑA, NEUROCISTICERCOSIS, TEC[cite: 46].</div>
                     <select id="sistema_nervioso" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">10. PSIQUIÁTRICOS / MENTALES</label>
-                    <div class="enfermedad-ejemplo">Depresión, Ansiedad, Fobias, Psicosis, Trastorno Esquizoide. [cite: 46]</div>
+                    <div class="enfermedad-ejemplo">DEPRESIÓN, ANSIEDAD, FOBIAS, PSICOSIS, TRASTORNO ESQUIZOIDE[cite: 46].</div>
                     <select id="psiquiatricos" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">11. OSTEOMUSCULARES</label>
-                    <div class="enfermedad-ejemplo">Lumbalgia, Cervicalgia, Escoliosis, Fracturas, Artralgia, Miopatías. [cite: 49]</div>
+                    <div class="enfermedad-ejemplo">LUMBALGIA, CERVICALGIA, ESCOLIOSIS, FRACTURAS, ARTRALGIA, MIOPATÍAS[cite: 49].</div>
                     <select id="osteomusculares" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">12. ENDOCRINOLÓGICOS / METABÓLICOS</label>
-                    <div class="enfermedad-ejemplo">Diabetes, Hipertiroidismo, Hipotiroidismo, Obesidad, Gota. [cite: 49, 50]</div>
+                    <div class="enfermedad-ejemplo">DIABETES, HIPERTIROIDISMO, HIPOTIROIDISMO, OBESIDAD, GOTA[cite: 49, 50].</div>
                     <select id="endocrinologicos" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">13. REUMATOLÓGICOS</label>
-                    <div class="enfermedad-ejemplo">Artritis reumatoide, Lupus, etc. [cite: 52]</div>
+                    <div class="enfermedad-ejemplo">ARTRITIS REUMATOIDE, LUPUS, ETC[cite: 51].</div>
                     <select id="reumatologicos" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">14. GENERALES</label>
-                    <div class="enfermedad-ejemplo">Cáncer, Adenopatías, Hernias (Abdominales, Umbilicales, Inguinales). [cite: 54]</div>
+                    <div class="enfermedad-ejemplo">CÁNCER, ADENOPATÍAS, HERNIAS (ABDOMINALES, UMBILICALES, INGUINALES)[cite: 54].</div>
                     <select id="generales" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">15. DERMATOLÓGICAS</label>
-                    <div class="enfermedad-ejemplo">Dermatitis, Psoriasis, Vitíligo, Onicomicosis, Hongos. [cite: 55, 56, 57]</div>
+                    <div class="enfermedad-ejemplo">DERMATITIS, PSORIASIS, VITÍLIGO, ONICOMICOSIS, HONGOS[cite: 55, 57].</div>
                     <select id="dermatologicas" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
                 <div class="col-md-6 row-gap">
                     <label class="form-label">16. INFECCIONES</label>
-                    <div class="enfermedad-ejemplo">Hepatitis, Tifoidea, Brucelosis, HIV, Parasitosis, Chagas, Rubeola. [cite: 61, 62]</div>
+                    <div class="enfermedad-ejemplo">HEPATITIS, TIFOIDEA, BRUCELOSIS, HIV, PARASITOSIS, CHAGAS, RUBEOLA[cite: 62].</div>
                     <select id="infecciones" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
                 </div>
             </div>
 
             <div class="seccion-titulo" style="background-color: #fff1f2;">ALERGIAS (DETALLE)</div>
             <div class="row row-gap">
-                <div class="col-md-6">
-                    <label class="form-label">ALERGIAS MEDICAMENTOS [cite: 58]</label>
-                    <input type="text" id="alergia_med" class="form-control uppercase-input" placeholder="DETALLE O PONGA NO">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">ALERGIAS ALIMENTOS [cite: 59]</label>
-                    <input type="text" id="alergia_ali" class="form-control uppercase-input" placeholder="DETALLE O PONGA NO">
-                </div>
+                <div class="col-md-6"><label class="form-label">ALERGIAS MEDICAMENTOS [cite: 58]</label><input type="text" id="alergia_med" class="form-control uppercase-input" placeholder="DETALLE O PONGA NO"></div>
+                <div class="col-md-6"><label class="form-label">ALERGIAS ALIMENTOS [cite: 59]</label><input type="text" id="alergia_ali" class="form-control uppercase-input" placeholder="DETALLE O PONGA NO"></div>
             </div>
             <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 3: LABORAL Y HÁBITOS</button>
         </form>
     </div>
 
     <script>
-        // Carga de datos iniciales
         window.onload = () => {
             document.getElementById('nombre_completo').value = `${localStorage.getItem('temp_apellidos') || ''} ${localStorage.getItem('temp_nombres') || ''}`;
             document.getElementById('codigo_id').value = localStorage.getItem('temp_codigo') || "0";
         };
 
-        // Forzar Mayúsculas en tiempo real
-        document.querySelectorAll('.uppercase-input').forEach(input => {
-            input.addEventListener('input', function() { this.value = this.value.toUpperCase(); });
+        // Forzar Mayúsculas
+        document.body.addEventListener('input', function(e) {
+            if (e.target.classList.contains('uppercase-input') || e.target.tagName === 'INPUT') {
+                e.target.value = e.target.value.toUpperCase();
+            }
         });
 
-        // Navegación Sección 1 -> Sección 2
         document.getElementById('formSeccion1').onsubmit = (e) => {
             e.preventDefault();
             const data1 = {};
-            document.querySelectorAll('#formSeccion1 input, #formSeccion1 select').forEach(el => {
-                data1[el.id] = el.value.toUpperCase();
-            });
+            document.querySelectorAll('#formSeccion1 input, #formSeccion1 select').forEach(el => data1[el.id] = el.value.toUpperCase());
             localStorage.setItem('datos_seccion_1', JSON.stringify(data1));
-            
             document.getElementById('formSeccion1').classList.add('hidden');
             document.getElementById('formSeccion2').classList.remove('hidden');
             window.scrollTo(0, 0);
         };
 
-        // Guardado Sección 2
         document.getElementById('formSeccion2').onsubmit = (e) => {
             e.preventDefault();
             const data2 = {};
-            document.querySelectorAll('#formSeccion2 input, #formSeccion2 select').forEach(el => {
-                data2[el.id] = el.value.toUpperCase();
-            });
+            document.querySelectorAll('#formSeccion2 input, #formSeccion2 select').forEach(el => data2[el.id] = el.value.toUpperCase());
             localStorage.setItem('datos_seccion_2', JSON.stringify(data2));
-            alert("SECCIÓN 2 COMPLETADA. LISTO PARA ANTECEDENTES LABORALES.");
-            // Aquí habilitaremos la Sección 3 en el siguiente paso
+            alert("SECCIÓN 2 GUARDADA CON ÉXITO.");
         };
     </script>
 </body>
