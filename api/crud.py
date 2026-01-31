@@ -1,24 +1,33 @@
 from sqlalchemy.orm import Session
-from . import models
+from . import models, schemas
 
-# Crear un nuevo paciente
-def crear_paciente(db: Session, nombre: str, apellido: str, ci: str, fecha_ingreso: str, codigo: str):
-    nuevo_paciente = models.Paciente(
-        nombre=nombre,
-        apellido=apellido,
-        ci=ci,
-        fecha_ingreso=fecha_ingreso,
-        codigo=codigo
-    )
-    db.add(nuevo_paciente)
+# --- OPERACIONES PARA PACIENTES ---
+def get_paciente(db: Session, paciente_id: int):
+    return db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+
+def get_paciente_by_ci(db: Session, ci: str):
+    return db.query(models.Paciente).filter(models.Paciente.documento_identidad == ci).first()
+
+def get_pacientes(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Paciente).offset(skip).limit(limit).all()
+
+def create_paciente(db: Session, paciente: schemas.PacienteCreate):
+    db_paciente = models.Paciente(**paciente.dict())
+    db.add(db_paciente)
     db.commit()
-    db.refresh(nuevo_paciente)
-    return nuevo_paciente
+    db.refresh(db_paciente)
+    return db_paciente
 
-# Consultar todos los pacientes
-def obtener_pacientes(db: Session):
-    return db.query(models.Paciente).all()
+# --- OPERACIONES PARA DECLARACIÓN JURADA ---
+def get_declaraciones(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.DeclaracionJurada).offset(skip).limit(limit).all()
 
-# Consultar un paciente por CI
-def obtener_paciente_por_ci(db: Session, ci: str):
-    return db.query(models.Paciente).filter(models.Paciente.ci == ci).first()
+def get_declaracion_by_paciente(db: Session, paciente_id: int):
+    return db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
+
+def create_declaracion_jurada(db: Session, declaracion: schemas.DeclaracionJuradaCreate):
+    db_declaracion = models.DeclaracionJurada(**declaracion.dict())
+    db.add(db_declaracion)
+    db.commit()
+    db.refresh(db_declaracion)
+    return db_declaracion
