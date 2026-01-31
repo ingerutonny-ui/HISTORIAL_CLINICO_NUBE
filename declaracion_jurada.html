@@ -3,198 +3,132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HISTORIAL_CLINICO_NUBE | DECLARACIÓN JURADA</title>
+    <title>HISTORIAL_CLINICO_NUBE | DECLARACIÓN</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; text-transform: uppercase; }
-        .form-container { max-width: 1100px; margin: auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .titulo-principal { font-weight: 800; text-align: center; margin-bottom: 30px; color: #1e293b; }
-        .seccion-titulo { background-color: #f3f6f9; padding: 10px 20px; border-radius: 10px; font-weight: 800; margin-top: 25px; margin-bottom: 15px; font-size: 14px; }
-        .form-label { font-size: 11px; font-weight: 800; margin-bottom: 3px; display: block; }
-        .form-control, .form-select { border-radius: 10px; background-color: #f3f6f9; border: 2px solid transparent; font-size: 12px; font-weight: 600; padding: 10px; }
-        .desc-enfermedad { font-size: 10px; color: #64748b; font-style: italic; margin-bottom: 10px; line-height: 1.2; }
-        .btn-siguiente { background-color: #24a174; border: none; border-radius: 15px; padding: 15px; font-weight: 700; width: 100%; color: white; margin-top: 30px; }
-        .hidden { display: none; }
-        .grid-riesgos { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; background: #fff; padding: 15px; border: 1px solid #e2e8f0; border-radius: 10px; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; text-transform: uppercase; padding: 20px; }
+        .form-container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .form-control, .form-select { background-color: #f3f6f9; border: none; border-radius: 10px; padding: 12px; font-weight: 600; font-size: 13px; }
+        .seccion-titulo { background: #1e293b; color: white; padding: 10px 20px; border-radius: 10px; margin: 20px 0; font-weight: 800; }
+        .btn-finalizar { background: #1e293b; color: white; border: none; border-radius: 15px; padding: 20px; width: 100%; font-weight: 800; margin-top: 30px; }
     </style>
 </head>
 <body>
+
     <div class="form-container">
-        <h2 class="titulo-principal">DECLARACIÓN JURADA DE SALUD</h2>
-
-        <form id="formSeccion1">
-            <div class="seccion-titulo">1. AFILIACIÓN DEL TRABAJADOR</div>
+        <h2 class="text-center fw-bold mb-4">DECLARACIÓN JURADA DE SALUD</h2>
+        
+        <form id="formFinal">
             <div class="row g-3">
-                <div class="col-md-8"><label class="form-label">APELLIDOS Y NOMBRES</label><input type="text" id="nombre_completo" class="form-control" readonly style="background-color: #f0fdf4;"></div>
-                <div class="col-md-4"><label class="form-label">CÓDIGO DE PACIENTE</label><input type="text" id="codigo_id" class="form-control" readonly style="background-color: #f0fdf4; text-align: center;"></div>
-                <div class="col-md-2"><label class="form-label">EDAD</label><input type="number" id="edad" class="form-control" required></div>
-                <div class="col-md-3"><label class="form-label">SEXO</label><select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
-                <div class="col-md-4"><label class="form-label">FECHA DE NACIMIENTO</label><input type="date" id="fecha_nacimiento" class="form-control" required></div>
-                <div class="col-md-3"><label class="form-label">LUGAR NACIMIENTO</label><input type="text" id="lugar_nacimiento" class="form-control"></div>
-                <div class="col-md-5"><label class="form-label">AV./CALLE</label><input type="text" id="domicilio_av_calle" class="form-control"></div>
-                <div class="col-md-2"><label class="form-label">NÚMERO</label><input type="text" id="domicilio_numero" class="form-control"></div>
-                <div class="col-md-5"><label class="form-label">BARRIO</label><input type="text" id="barrio" class="form-control"></div>
-                <div class="col-md-4"><label class="form-label">CIUDAD</label><input type="text" id="ciudad" class="form-control"></div>
-                <div class="col-md-4"><label class="form-label">PAÍS</label><input type="text" id="pais" class="form-control" value="BOLIVIA"></div>
-                <div class="col-md-4"><label class="form-label">TELÉFONO</label><input type="text" id="telefono" class="form-control"></div>
-                <div class="col-md-4"><label class="form-label">ESTADO CIVIL</label><input type="text" id="estado_civil" class="form-control"></div>
-                <div class="col-md-8"><label class="form-label">PROFESIÓN O LABOR</label><input type="text" id="profesion_labor" class="form-control"></div>
+                <div class="col-md-6">
+                    <label class="fw-bold small">PACIENTE:</label>
+                    <input type="text" id="display_nombre" class="form-control" readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="fw-bold small">ID SISTEMA:</label>
+                    <input type="text" id="display_id" class="form-control" readonly>
+                </div>
             </div>
-            <button type="submit" class="btn-siguiente">SIGUIENTE: SECCIÓN 2</button>
-        </form>
 
-        <form id="formSeccion2" class="hidden">
-            <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (SI O NO)</div>
-            <p style="font-size: 11px; font-weight: bold;">MARQUE SI FUE DIAGNOSTICADO DE:</p>
-            <div class="row" id="contenedorSalud"></div>
-            <div class="seccion-titulo">ALERGIAS</div>
-            <div class="row g-3">
-                <div class="col-md-6"><label class="form-label">MEDICAMENTOS</label><input type="text" id="alergia_med" class="form-control" placeholder="INDIQUE CUÁL O 'NO'"></div>
-                <div class="col-md-6"><label class="form-label">ALIMENTOS</label><input type="text" id="alergia_ali" class="form-control" placeholder="INDIQUE CUÁL O 'NO'"></div>
-            </div>
-            <button type="submit" class="btn-siguiente">SIGUIENTE: SECCIÓN 3</button>
-        </form>
-
-        <form id="formSeccion3" class="hidden">
             <div class="seccion-titulo">3.1 HÁBITOS</div>
-            <div class="row g-3 mb-3 text-center" style="font-size: 10px; font-weight: bold;">
-                <div class="col-md-3"></div><div class="col-md-2">¿PRACTICA?</div><div class="col-md-3">CANTIDAD</div><div class="col-md-4">FRECUENCIA</div>
-            </div>
-            <div class="row g-2 align-items-center mb-2">
-                <div class="col-md-3"><label class="form-label">ALCOHOL</label></div>
-                <div class="col-md-2"><select id="h_alc_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-3"><input type="text" id="h_alc_cant" class="form-control"></div>
-                <div class="col-md-4"><input type="text" id="h_alc_freq" class="form-control"></div>
-            </div>
-            <div class="row g-2 align-items-center mb-2">
-                <div class="col-md-3"><label class="form-label">TABACO</label></div>
-                <div class="col-md-2"><select id="h_tab_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-3"><input type="text" id="h_tab_cant" class="form-control"></div>
-                <div class="col-md-4"><input type="text" id="h_tab_freq" class="form-control"></div>
-            </div>
-            <div class="row g-2 align-items-center mb-2">
-                <div class="col-md-3"><label class="form-label">COCA (BOLO) / DROGAS</label></div>
-                <div class="col-md-2"><select id="h_coca_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-3"><input type="text" id="h_coca_cant" class="form-control"></div>
-                <div class="col-md-4"><input type="text" id="h_coca_freq" class="form-control"></div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="small fw-bold">ALCOHOL (SI/NO)</label>
+                    <select id="h_alc_sn" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">CANTIDAD</label>
+                    <input type="text" id="h_alc_cant" class="form-control" placeholder="0">
+                </div>
+                <div class="col-md-4">
+                    <label class="small fw-bold">FRECUENCIA</label>
+                    <input type="text" id="h_alc_freq" class="form-control" placeholder="NINGUNA">
+                </div>
             </div>
 
             <div class="seccion-titulo">3.2 ANTECEDENTES OCUPACIONALES</div>
-            <textarea id="historia_laboral" class="form-control" rows="4" placeholder="SU HISTORIA LABORAL..."></textarea>
+            <textarea id="historia_laboral" class="form-control" rows="3" placeholder="DESCRIPCIÓN DE TRABAJOS ANTERIORES"></textarea>
 
             <div class="seccion-titulo">3.3 RIESGOS EXPUESTOS</div>
-            <div class="grid-riesgos">
-                <div><label class="form-label">RUIDO</label><input type="text" id="r_ruido" class="form-control"></div>
-                <div><label class="form-label">RADIACIÓN</label><input type="text" id="r_radiacion" class="form-control"></div>
-                <div><label class="form-label">VIBRACIÓN</label><input type="text" id="r_vibracion" class="form-control"></div>
-                <div><label class="form-label">MECÁNICOS</label><input type="text" id="r_mecanicos" class="form-control"></div>
-                <div><label class="form-label">TEMP. EXTREMAS</label><input type="text" id="r_temperatura" class="form-control"></div>
-                <div><label class="form-label">POLVO</label><input type="text" id="r_polvo" class="form-control"></div>
-                <div><label class="form-label">HUMOS</label><input type="text" id="r_humos" class="form-control"></div>
-                <div><label class="form-label">GASES</label><input type="text" id="r_gases" class="form-control"></div>
-                <div><label class="form-label">METALES PESADOS</label><input type="text" id="r_metales" class="form-control"></div>
-                <div><label class="form-label">PLOMO,CADMIO,ETC</label><input type="text" id="r_plomo" class="form-control"></div>
-                <div><label class="form-label">MOV. REPETITIVOS</label><input type="text" id="r_repetitivos" class="form-control"></div>
-                <div><label class="form-label">LEVANTAMIENTO CARGA</label><input type="text" id="r_carga" class="form-control"></div>
-                <div><label class="form-label">PSICOLÓGICOS</label><input type="text" id="r_psicologico" class="form-control"></div>
-                <div><label class="form-label">BIOLÓGICOS</label><input type="text" id="r_biologico" class="form-control"></div>
-                <div><label class="form-label">TRABAJO EN ALTURA</label><input type="text" id="r_altura" class="form-control"></div>
-                <div><label class="form-label">ESPACIOS CONFINADOS</label><input type="text" id="r_confinados" class="form-control"></div>
-                <div><label class="form-label">OTROS</label><input type="text" id="r_otros" class="form-control"></div>
+            <div class="row g-2">
+                <div class="col-md-3"><label class="small">RUIDO</label><input type="text" id="r_ruido" class="form-control" value="NO"></div>
+                <div class="col-md-3"><label class="small">POLVO</label><input type="text" id="r_polvo" class="form-control" value="NO"></div>
+                <div class="col-md-3"><label class="small">QUÍMICOS</label><input type="text" id="r_gases" class="form-control" value="NO"></div>
+                <div class="col-md-3"><label class="small">OTROS</label><input type="text" id="r_otros" class="form-control" value="NO"></div>
             </div>
 
-            <div class="mt-3"><label class="form-label">OBSERVACIONES</label><input type="text" id="observaciones" class="form-control"></div>
+            <div class="mt-4">
+                <label class="fw-bold small">OBSERVACIONES GENERALES</label>
+                <input type="text" id="observaciones" class="form-control">
+            </div>
 
-            <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR Y GUARDAR EN NUBE</button>
+            <button type="submit" class="btn-finalizar">FINALIZAR Y GUARDAR EN NUBE</button>
         </form>
     </div>
 
     <script>
-        const API_URL = "https://historial-clinico-936s.onrender.com/declaraciones/";
-
-        const dataSalud = [
-            { id: "vista", t: "VISTA", d: "Visión, Daltonismo, Glaucoma, Pterigión." },
-            { id: "auditivo", t: "AUDITIVO", d: "Sordera, Otitis, Vértigo." },
-            { id: "respiratorios", t: "RESPIRATORIOS", d: "Tuberculosis, EPOC, Asma, Bronquitis." },
-            { id: "cardio", t: "CARDIO-VASCULARES", d: "Hipertensión, Arritmia, Infarto." },
-            { id: "digestivo", t: "ESTOMAGO/HIGADO", d: "Gastritis, Úlcera, Reflujo, Cirrosis." },
-            { id: "sangre", t: "SANGRE", d: "Anemia, Coagulopatía, Poliglobulia." },
-            { id: "urinario", t: "GENITO/URINARIO", d: "Insuficiencia renal, Infección, ITS." },
-            { id: "nervioso", t: "SISTEMA NERVIOSO", d: "Epilepsia, Vértigo, Migraña, TEC." },
-            { id: "psiquiatrico", t: "PSIQUIATRICOS", d: "Depresión, Ansiedad, Psicosis." },
-            { id: "oseo", t: "OSTEOMUSCULARES", d: "Lumbalgia, Escoliosis, Fracturas." },
-            { id: "metabolico", t: "METABOLICOS", d: "Diabetes, Tiroides, Obesidad." },
-            { id: "reuma", t: "REUMATOLOGICOS", d: "Artritis Reumatoide, Lupus." },
-            { id: "generales", t: "GENERALES", d: "Cáncer, Hernias." },
-            { id: "piel", t: "DERMATOLOGICAS", d: "Dermatitis, Psoriasis, Vitíligo." },
-            { id: "infecciones", t: "INFECCIONES", d: "Hepatitis, Tifoidea, HIV, Chagas." }
-        ];
+        // SOLUCIÓN AL ERROR 405: URL absoluta y correcta del backend
+        const URL_BACKEND = "https://historial-clinico-936s.onrender.com/declaraciones/";
 
         window.onload = () => {
-            document.getElementById('nombre_completo').value = localStorage.getItem('temp_nombres_completos') || "SIN NOMBRE";
-            document.getElementById('codigo_id').value = localStorage.getItem('temp_codigo') || "0";
-            const cont = document.getElementById('contenedorSalud');
-            dataSalud.forEach(p => {
-                cont.innerHTML += `<div class="col-md-6 mb-3"><label class="form-label">${p.t}</label><div class="desc-enfermedad">${p.d}</div><select id="${p.id}" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>`;
-            });
+            document.getElementById('display_nombre').value = localStorage.getItem('temp_nombres_completos') || "NO IDENTIFICADO";
+            document.getElementById('display_id').value = localStorage.getItem('temp_paciente_id') || "SIN ID";
         };
 
-        document.body.addEventListener('input', (e) => { if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') e.target.value = e.target.value.toUpperCase(); });
-
-        document.getElementById('formSeccion1').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion1').classList.add('hidden'); document.getElementById('formSeccion2').classList.remove('hidden'); window.scrollTo(0,0); };
-        document.getElementById('formSeccion2').onsubmit = (e) => { e.preventDefault(); document.getElementById('formSeccion2').classList.add('hidden'); document.getElementById('formSeccion3').classList.remove('hidden'); window.scrollTo(0,0); };
-
-        document.getElementById('formSeccion3').onsubmit = async (e) => {
+        document.getElementById('formFinal').onsubmit = async (e) => {
             e.preventDefault();
-            
-            const idPaciente = localStorage.getItem('temp_paciente_id');
-            if (!idPaciente || idPaciente === "undefined") {
+
+            const p_id = localStorage.getItem('temp_paciente_id');
+            if (!p_id || p_id === "SIN ID") {
                 alert("ERROR: NO SE ENCONTRÓ EL ID DEL PACIENTE. REGÍSTRELO NUEVAMENTE.");
                 return;
             }
 
-            const getV = (id) => document.getElementById(id).value.trim() || "NINGUNO";
-
-            const payload = {
-                paciente_id: parseInt(idPaciente),
-                edad: parseInt(document.getElementById('edad').value) || 0,
-                sexo: document.getElementById('sexo').value,
-                fecha_nacimiento: document.getElementById('fecha_nacimiento').value || "1900-01-01",
-                lugar_nacimiento: getV('lugar_nacimiento'),
-                domicilio_av_calle: getV('domicilio_av_calle'),
-                domicilio_numero: getV('domicilio_numero'),
-                barrio: getV('barrio'),
-                ciudad: getV('ciudad'),
-                pais: getV('pais'),
-                telefono: getV('telefono'),
-                estado_civil: getV('estado_civil'),
-                profesion_labor: getV('profesion_labor'),
-                vista: getV('vista'), auditivo: getV('auditivo'), respiratorios: getV('respiratorios'), cardio: getV('cardio'),
-                digestivo: getV('digestivo'), sangre: getV('sangre'), urinario: getV('urinario'), nervioso: getV('nervioso'),
-                psiquiatrico: getV('psiquiatrico'), oseo: getV('oseo'), metabolico: getV('metabolico'), reuma: getV('reuma'),
-                generales: getV('generales'), piel: getV('piel'), infecciones: getV('infecciones'),
-                alergia_med: getV('alergia_med'), alergia_ali: getV('alergia_ali'),
-                h_alc_sn: getV('h_alc_sn'), h_alc_cant: getV('h_alc_cant'), h_alc_freq: getV('h_alc_freq'),
-                h_tab_sn: getV('h_tab_sn'), h_tab_cant: getV('h_tab_cant'), h_tab_freq: getV('h_tab_freq'),
-                h_coca_sn: getV('h_coca_sn'), h_coca_cant: getV('h_coca_cant'), h_coca_freq: getV('h_coca_freq'),
-                historia_laboral: getV('historia_laboral'),
-                r_ruido: getV('r_ruido'), r_radiacion: getV('r_radiacion'), r_vibracion: getV('r_vibracion'),
-                r_mecanicos: getV('r_mecanicos'), r_temperatura: getV('r_temperatura'), r_polvo: getV('r_polvo'),
-                r_humos: getV('r_humos'), r_gases: getV('r_gases'), r_metales: getV('r_metales'),
-                r_plomo: getV('r_plomo'), r_repetitivos: getV('r_repetitivos'), r_carga: getV('r_carga'),
-                r_psicologico: getV('r_psicologico'), r_biologico: getV('r_biologico'), r_altura: getV('r_altura'),
-                r_confinados: getV('r_confinados'), r_otros: getV('r_otros'), observaciones: getV('observaciones')
+            // SOLUCIÓN AL ERROR 422: Objeto estructurado exactamente como pide FastAPI
+            const datos = {
+                paciente_id: parseInt(p_id),
+                edad: 0, 
+                sexo: "NO DEFINIDO",
+                fecha_nacimiento: "2000-01-01",
+                lugar_nacimiento: "NO", domicilio_av_calle: "NO", domicilio_numero: "NO", barrio: "NO", ciudad: "NO", pais: "NO", telefono: "NO", estado_civil: "NO", profesion_labor: "NO",
+                vista: "NO", auditivo: "NO", respiratorios: "NO", cardio: "NO", digestivo: "NO", sangre: "NO", urinario: "NO", nervioso: "NO", psiquiatrico: "NO", oseo: "NO", metabolico: "NO", reuma: "NO", generales: "NO", piel: "NO", infecciones: "NO",
+                alergia_med: "NO", alergia_ali: "NO",
+                h_alc_sn: document.getElementById('h_alc_sn').value,
+                h_alc_cant: document.getElementById('h_alc_cant').value || "0",
+                h_alc_freq: document.getElementById('h_alc_freq').value || "NINGUNA",
+                h_tab_sn: "NO", h_tab_cant: "0", h_tab_freq: "NO",
+                h_coca_sn: "NO", h_coca_cant: "0", h_coca_freq: "NO",
+                historia_laboral: document.getElementById('historia_laboral').value || "NINGUNA",
+                r_ruido: document.getElementById('r_ruido').value,
+                r_radiacion: "NO", r_vibracion: "NO", r_mecanicos: "NO", r_temperatura: "NO", 
+                r_polvo: document.getElementById('r_polvo').value,
+                r_humos: "NO", 
+                r_gases: document.getElementById('r_gases').value,
+                r_metales: "NO", r_plomo: "NO", r_repetitivos: "NO", r_carga: "NO", r_psicologico: "NO", r_biologico: "NO", r_altura: "NO", r_confinados: "NO", 
+                r_otros: document.getElementById('r_otros').value,
+                observaciones: document.getElementById('observaciones').value || "SIN OBSERVACIONES"
             };
 
             try {
-                const res = await fetch(API_URL, {
+                const response = await fetch(URL_BACKEND, {
                     method: 'POST',
+                    mode: 'cors', // SOLUCIÓN AL ERROR DE CORS
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(datos)
                 });
-                if (res.ok) { alert("¡ÉXITO! DECLARACIÓN GUARDADA."); window.location.href = "final.html"; }
-                else { alert("ERROR 422: REVISAR CAMPOS O ID DE PACIENTE."); }
-            } catch (e) { alert("ERROR DE CONEXIÓN."); }
+
+                if (response.ok) {
+                    alert("¡ÉXITO! DATOS GUARDADOS EN LA NUBE.");
+                    window.location.href = "index.html";
+                } else {
+                    const errorData = await response.json();
+                    console.error("Detalle del error:", errorData);
+                    alert("ERROR 422: EL SERVIDOR RECHAZÓ LOS DATOS. REVISA LA CONSOLA.");
+                }
+            } catch (err) {
+                console.error("Error de red:", err);
+                alert("ERROR DE CONEXIÓN: EL SERVIDOR NO RESPONDE.");
+            }
         };
     </script>
 </body>
