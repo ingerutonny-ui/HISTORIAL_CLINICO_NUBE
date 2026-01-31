@@ -12,7 +12,8 @@ def get_pacientes(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Paciente).offset(skip).limit(limit).all()
 
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
-    db_paciente = models.Paciente(**paciente.dict())
+    # Convertimos el esquema a diccionario para insertar en la base de datos
+    db_paciente = models.Paciente(**paciente.model_dump())
     db.add(db_paciente)
     db.commit()
     db.refresh(db_paciente)
@@ -26,9 +27,9 @@ def get_declaracion_by_paciente(db: Session, paciente_id: int):
     return db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
 
 def create_declaracion_jurada(db: Session, declaracion: schemas.DeclaracionJuradaCreate):
-    # Al usar **declaracion.dict(), SQLAlchemy mapea todos los campos del PDF 
-    # (domicilio, antecedentes, historia laboral) automáticamente al modelo.
-    db_declaracion = models.DeclaracionJurada(**declaracion.dict())
+    # Usamos model_dump() (que reemplaza al antiguo .dict()) para capturar 
+    # los 17 riesgos, hábitos e historia laboral de un solo golpe.
+    db_declaracion = models.DeclaracionJurada(**declaracion.model_dump())
     db.add(db_declaracion)
     db.commit()
     db.refresh(db_declaracion)
