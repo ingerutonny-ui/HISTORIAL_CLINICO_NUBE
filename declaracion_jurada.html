@@ -11,18 +11,7 @@
         .titulo-principal { font-weight: 800; color: #1e293b; font-size: 24px; text-transform: uppercase; text-align: center; margin-bottom: 30px; }
         .seccion-titulo { background-color: #f3f6f9; color: #1e293b; padding: 12px 20px; border-radius: 15px; font-weight: 800; font-size: 13px; margin-top: 30px; margin-bottom: 20px; text-transform: uppercase; }
         .form-label { font-size: 11px; font-weight: 800; color: #1e293b; text-transform: uppercase; margin-bottom: 2px; }
-        
-        /* Ajuste para que el texto largo no se corte */
-        .enfermedad-ejemplo { 
-            font-size: 10px; 
-            color: #64748b; 
-            margin-bottom: 12px; 
-            line-height: 1.4; 
-            font-style: italic; 
-            text-transform: uppercase;
-            min-height: 30px; /* Espacio para que el texto respire */
-        }
-
+        .enfermedad-ejemplo { font-size: 10px; color: #64748b; margin-bottom: 12px; line-height: 1.4; font-style: italic; text-transform: uppercase; min-height: 30px; }
         .form-control, .form-select { border-radius: 15px; background-color: #f3f6f9; border: 2px solid transparent; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 13px; transition: 0.3s; width: 100%; }
         .form-select:focus, .form-control:focus { border-color: #24a174; background-color: white; outline: none; }
         .readonly-field { background-color: #f0fdf4; color: #24a174; border: 1px dashed #d1eadd; cursor: not-allowed; }
@@ -85,116 +74,101 @@
             <div class="seccion-titulo">2. ANTECEDENTES DE SALUD (MARQUE SI O NO)</div>
             <p style="font-size: 11px; color: #64748b; margin-bottom: 25px; text-transform: uppercase; font-weight: 700;">POR FAVOR LEA CON CUIDADO Y MARQUE (SI) O (NO) SI USTED FUE DIAGNOSTICADO DE ALGUNA DE LAS ENFERMEDADES MENCIONADAS.</p>
             
-            <div class="row">
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">1. VISTA</label>
-                    <div class="enfermedad-ejemplo">DISMINUCIÓN DE LA VISIÓN, ALTERACIONES DE LA PERCEPCIÓN DE COLORES (DALTONISMO O DISCROMATOPSIAS), GLAUCOMA, RETINOPATÍA, AMETROPÍA, PTERIGIÓN, DESPRENDIMIENTO DE RETINA, MIOPÍA MALIGNA.</div>
-                    <select id="vista" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
+            <div class="row" id="contenedorPreguntasSalud">
                 </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">2. AUDITIVO</label>
-                    <div class="enfermedad-ejemplo">HIPOACUSIA (SORDERA), OTITIS, TRAUMA ACÚSTICO, PERFORACIÓN DE MEMBRANA TIMPÁNICA, VÉRTIGO.</div>
-                    <select id="auditivo" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">3. RESPIRATORIOS</label>
-                    <div class="enfermedad-ejemplo">TUBERCULOSIS, ENFERMEDAD PULMONAR OBSTRUCTIVA CRÓNICA (EPOC), ASMA, BRONQUITIS, RINITIS, FARINGITIS, SINUSITIS.</div>
-                    <select id="respiratorios" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">4. CARDIO-VASCULARES</label>
-                    <div class="enfermedad-ejemplo">HIPERTENSIÓN ARTERIAL (PRESIÓN ALTA), CARDIOPATÍA, ARRITMIA CARDIACA, TROMBOSIS, ANGINA, INFARTO DE MIOCARDIO, ACCIDENTE VASCULO CEREBRAL, INSUFICIENCIA CARDIACA CONGESTIVA.</div>
-                    <select id="cardiovasculares" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">5. ESTÓMAGO / HÍGADO / PÁNCREAS</label>
-                    <div class="enfermedad-ejemplo">GASTRITIS, ÚLCERA, REFLUJO GASTRO ESOFÁGICO, CIRROSIS HEPÁTICA, HERNIA DE HIATO, ESPLENOMEGALIA, HEMORROIDES, ESTREÑIMIENTO.</div>
-                    <select id="estomago_intestino" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">6. SANGRE</label>
-                    <div class="enfermedad-ejemplo">ANEMIA, COAGULOPATÍA, POLIGLOBULIA, OTRAS.</div>
-                    <select id="sangre" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">7. GENITO / URINARIO</label>
-                    <div class="enfermedad-ejemplo">INSUFICIENCIA RENAL CRÓNICA, INFECCIÓN TRACTO URINARIO, CISTITIS, ANOMALÍA ANATÓMICA DEL TRACTO URINARIO, INCONTINENCIA URINARIA.</div>
-                    <select id="genitourinario" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">8. ITS</label>
-                    <div class="enfermedad-ejemplo">ITS (INFECCIÓN DE TRASMISIÓN SEXUAL), CONTACTOS DE RIESGO.</div>
-                    <select id="its" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">9. SISTEMA NERVIOSO</label>
-                    <div class="enfermedad-ejemplo">EPILEPSIA, VÉRTIGO, APNEA, ACCIDENTE CEREBROVASCULAR (DERRAME CEREBRAL), MIGRAÑA, NEUROCISTICERCOSIS, TEC (TRAUMATISMO CRÁNEO ENCEFÁLICO).</div>
-                    <select id="sistema_nervioso" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">10. PSIQUIÁTRICOS / MENTALES</label>
-                    <div class="enfermedad-ejemplo">DEPRESIÓN, ANSIEDAD, FOBIAS, PSICOSIS, TRASTORNO ESQUIZOIDE.</div>
-                    <select id="psiquiatricos" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">11. OSTEOMUSCULARES</label>
-                    <div class="enfermedad-ejemplo">LUMBALGIA, CERVICALGIA, ESCOLIOSIS, FRACTURAS, ARTRALGIA (DOLOR EN ARTICULACIONES), MIOPATÍAS (DOLOR EN LOS MÚSCULOS).</div>
-                    <select id="osteomusculares" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">12. ENDOCRINOLÓGICOS / METABÓLICOS</label>
-                    <div class="enfermedad-ejemplo">DIABETES, HIPERTIROIDISMO, HIPOTIROIDISMO, OBESIDAD, GOTA.</div>
-                    <select id="endocrinologicos" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">13. REUMATOLÓGICOS</label>
-                    <div class="enfermedad-ejemplo">ARTRITIS REUMATOIDE, LUPUS, ETC.</div>
-                    <select id="reumatologicos" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">14. GENERALES</label>
-                    <div class="enfermedad-ejemplo">CÁNCER, ADENOPATÍAS, HERNIAS: ABDOMINALES, UMBILICALES, INGUINALES, CRURALES.</div>
-                    <select id="generales" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">15. DERMATOLÓGICAS</label>
-                    <div class="enfermedad-ejemplo">DERMATITIS DE CONTACTO, PSORIASIS, VITÍLIGO, ONICOMICOSIS, DERMATITIS POR HONGOS.</div>
-                    <select id="dermatologicas" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-                <div class="col-md-6 row-gap">
-                    <label class="form-label">16. INFECCIONES</label>
-                    <div class="enfermedad-ejemplo">HEPATITIS, TIFOIDEA, BRUCELOSIS, HIV, PARASITOSIS, CHAGAS, RUBEOLA, TOXOPLASMOSIS.</div>
-                    <select id="infecciones" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
-                </div>
-            </div>
 
-            <div class="seccion-titulo" style="background-color: #fff1f2;">ALERGIAS (MARQUE SI O NO Y DETALLE)</div>
+            <div class="seccion-titulo" style="background-color: #fff1f2;">ALERGIAS</div>
             <div class="row row-gap">
                 <div class="col-md-6"><label class="form-label">ALERGIAS MEDICAMENTOS</label><input type="text" id="alergia_med" class="form-control" placeholder="DETALLE O PONGA NO"></div>
                 <div class="col-md-6"><label class="form-label">ALERGIAS ALIMENTOS</label><input type="text" id="alergia_ali" class="form-control" placeholder="DETALLE O PONGA NO"></div>
             </div>
             <button type="submit" class="btn-siguiente">PASAR A SECCIÓN 3: LABORAL Y HÁBITOS</button>
         </form>
+
+        <form id="formSeccion3" class="hidden">
+            <div class="seccion-titulo">3.1 HÁBITOS (SI/NO, CANTIDAD, FRECUENCIA)</div>
+            <div class="row row-gap">
+                <div class="col-md-4">
+                    <label class="form-label">ALCOHOL</label>
+                    <input type="text" id="habito_alcohol" class="form-control" placeholder="SI/NO - CANTIDAD - FRECUENCIA">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">TABACO</label>
+                    <input type="text" id="habito_tabaco" class="form-control" placeholder="SI/NO - CANTIDAD - FRECUENCIA">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">DROGAS / COCA (BOLO)</label>
+                    <input type="text" id="habito_coca" class="form-control" placeholder="SI/NO - CANTIDAD - FRECUENCIA">
+                </div>
+            </div>
+
+            <div class="seccion-titulo">3.2 ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
+            <p class="enfermedad-ejemplo" style="margin-bottom: 10px;">ESCRIBA: EDAD INICIO, EMPRESA, OCUPACIÓN, TIEMPO Y RIESGOS.</p>
+            <div class="row row-gap">
+                <div class="col-md-12">
+                    <textarea id="antecedentes_ocupacionales" class="form-control" rows="5" placeholder="EJ: 18 AÑOS - EMPRESA X - ARQUITECTO - 2 AÑOS - POLVO, RUIDO"></textarea>
+                </div>
+            </div>
+
+            <div class="seccion-titulo">3.3 ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
+            <div class="row row-gap">
+                <div class="col-md-3"><label class="form-label">FÍSICOS (RUIDO, RADIACIÓN)</label><input type="text" id="riesgo_fisico" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">QUÍMICOS (POLVO, HUMOS)</label><input type="text" id="riesgo_quimico" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">ERGONÓMICOS (POSTURAS)</label><input type="text" id="riesgo_ergonomico" class="form-control"></div>
+                <div class="col-md-3"><label class="form-label">BIOLÓGICOS / OTROS</label><input type="text" id="riesgo_biologico" class="form-control"></div>
+            </div>
+
+            <div class="row row-gap">
+                <div class="col-md-12"><label class="form-label">OBSERVACIONES ADICIONALES</label><input type="text" id="observaciones_finales" class="form-control"></div>
+            </div>
+
+            <button type="submit" class="btn-siguiente" style="background-color: #1e293b;">FINALIZAR Y ENVIAR A HISTORIAL_CLINICO_NUBE</button>
+        </form>
     </div>
 
     <script>
+        const preguntas = [
+            { id: "vista", titulo: "1. VISTA", desc: "DISMINUCIÓN VISIÓN, DALTONISMO, GLAUCOMA, RETINOPATÍA, AMETROPÍA, PTERIGIÓN, MIOPÍA." },
+            { id: "auditivo", titulo: "2. AUDITIVO", desc: "SORDERA, OTITIS, TRAUMA ACÚSTICO, PERFORACIÓN TIMPÁNICA, VÉRTIGO." },
+            { id: "respiratorios", titulo: "3. RESPIRATORIOS", desc: "TUBERCULOSIS, EPOC, ASMA, BRONQUITIS, RINITIS, FARINGITIS, SINUSITIS." },
+            { id: "cardiovasculares", titulo: "4. CARDIO-VASCULARES", desc: "PRESIÓN ALTA, ARRITMIA, TROMBOSIS, ANGINA, INFARTO, AVC, INSUFICIENCIA CARDIACA." },
+            { id: "estomago", titulo: "5. ESTÓMAGO / HÍGADO / PÁNCREAS", desc: "GASTRITIS, ÚLCERA, REFLUJO, CIRROSIS, HERNIA, ESPLENOMEGALIA, HEMORROIDES." },
+            { id: "sangre", titulo: "6. SANGRE", desc: "ANEMIA, COAGULOPATÍA, POLIGLOBULIA, OTRAS." },
+            { id: "genitourinario", titulo: "7. GENITO / URINARIO", desc: "INSUFICIENCIA RENAL, INFECCIÓN URINARIA, CISTITIS, ANOMALÍA ANATÓMICA." },
+            { id: "its", titulo: "8. ITS", desc: "ITS, CONTACTOS DE RIESGO." },
+            { id: "sistema_nervioso", titulo: "9. SISTEMA NERVIOSO", desc: "EPILEPSIA, VÉRTIGO, APNEA, DERRAME CEREBRAL, MIGRAÑA, TEC." },
+            { id: "psiquiatricos", titulo: "10. PSIQUIÁTRICOS / MENTALES", desc: "DEPRESIÓN, ANSIEDAD, FOBIAS, PSICOSIS, TRASTORNO ESQUIZOIDE." },
+            { id: "osteomusculares", titulo: "11. OSTEOMUSCULARES", desc: "LUMBALGIA, CERVICALGIA, ESCOLIOSIS, FRACTURAS, ARTRALGIA, MIOPATÍAS." },
+            { id: "endocrinologicos", titulo: "12. ENDOCRINOLÓGICOS / METABÓLICOS", desc: "DIABETES, HIPERTIROIDISMO, HIPOTIROIDISMO, OBESIDAD, GOTA." },
+            { id: "reumatologicos", titulo: "13. REUMATOLÓGICOS", desc: "ARTRITIS REUMATOIDE, LUPUS, ETC." },
+            { id: "generales", titulo: "14. GENERALES", desc: "CÁNCER, ADENOPATÍAS, HERNIAS: ABDOMINALES, UMBILICALES, INGUINALES." },
+            { id: "dermatologicas", titulo: "15. DERMATOLÓGICAS", desc: "DERMATITIS, PSORIASIS, VITÍLIGO, ONICOMICOSIS, HONGOS." },
+            { id: "infecciones", titulo: "16. INFECCIONES", desc: "HEPATITIS, TIFOIDEA, BRUCELOSIS, HIV, PARASITOSIS, CHAGAS, RUBEOLA." }
+        ];
+
         window.onload = () => {
             document.getElementById('nombre_completo').value = `${localStorage.getItem('temp_apellidos') || ''} ${localStorage.getItem('temp_nombres') || ''}`;
             document.getElementById('codigo_id').value = localStorage.getItem('temp_codigo') || "0";
+            
+            const contenedor = document.getElementById('contenedorPreguntasSalud');
+            preguntas.forEach(p => {
+                contenedor.innerHTML += `
+                    <div class="col-md-6 row-gap">
+                        <label class="form-label">${p.titulo}</label>
+                        <div class="enfermedad-ejemplo">${p.desc}</div>
+                        <select id="${p.id}" class="form-select"><option value="NO">NO</option><option value="SI">SI (X)</option></select>
+                    </div>`;
+            });
         };
 
-        // Escuchar cambios en CUALQUIER input para forzar MAYÚSCULAS
-        document.body.addEventListener('input', function(e) {
-            if (e.target.tagName === 'INPUT') {
+        document.body.addEventListener('input', (e) => { 
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
                 e.target.value = e.target.value.toUpperCase();
             }
         });
 
         document.getElementById('formSeccion1').onsubmit = (e) => {
             e.preventDefault();
-            const data1 = {};
-            document.querySelectorAll('#formSeccion1 input, #formSeccion1 select').forEach(el => data1[el.id] = el.value.toUpperCase());
-            localStorage.setItem('datos_seccion_1', JSON.stringify(data1));
             document.getElementById('formSeccion1').classList.add('hidden');
             document.getElementById('formSeccion2').classList.remove('hidden');
             window.scrollTo(0, 0);
@@ -202,10 +176,14 @@
 
         document.getElementById('formSeccion2').onsubmit = (e) => {
             e.preventDefault();
-            const data2 = {};
-            document.querySelectorAll('#formSeccion2 input, #formSeccion2 select').forEach(el => data2[el.id] = el.value.toUpperCase());
-            localStorage.setItem('datos_seccion_2', JSON.stringify(data2));
-            alert("SECCIÓN 2 GUARDADA CORRECTAMENTE. VAMOS A LA SECCIÓN 3.");
+            document.getElementById('formSeccion2').classList.add('hidden');
+            document.getElementById('formSeccion3').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        };
+
+        document.getElementById('formSeccion3').onsubmit = async (e) => {
+            e.preventDefault();
+            alert("DECLARACIÓN COMPLETADA CON ÉXITO. LISTO PARA INTEGRAR CON EL SERVIDOR.");
         };
     </script>
 </body>
