@@ -3,117 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DECLARACIÓN JURADA - HISTORIAL CLÍNICO</title>
+    <title>HC NUBE | Declaración Jurada</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background:#f4f7fa; font-family:'Segoe UI',sans-serif; padding:20px; }
-        .form-card { background:white; padding:30px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.05); max-width:800px; margin:auto; }
-        .section-title { background:#2d6df6; color:white; padding:10px 20px; border-radius:10px; margin:25px 0 15px 0; font-size:16px; font-weight:700; }
-        .form-label { font-size:12px; font-weight:700; color:#7a869a; text-transform:uppercase; }
-        .form-control, .form-select { border-radius:10px; background:#f8f9fa; border:1px solid #e0e0e0; }
-        .btn-save { background:#2d6df6; border:none; padding:15px; border-radius:12px; font-weight:700; width:100%; color:white; margin-top:30px; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .form-container { max-width: 900px; width: 100%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
+        
+        .header-section { text-align: center; margin-bottom: 30px; }
+        .titulo-principal { font-weight: 800; color: #1e293b; font-size: 26px; text-transform: uppercase; margin: 0; }
+        .subtitulo { color: #b0bac9; font-size: 12px; font-weight: 700; letter-spacing: 2px; }
+        
+        .seccion-titulo { background-color: #f3f6f9; color: #1e293b; padding: 10px 20px; border-radius: 15px; font-weight: 800; font-size: 13px; margin-top: 30px; margin-bottom: 20px; text-transform: uppercase; }
+        
+        .form-label { font-size: 10px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; }
+        
+        /* Inputs elegantes y bloqueo de edición para datos ya existentes */
+        .form-control { border-radius: 15px; background-color: #f3f6f9; border: none; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 13px; }
+        .readonly-field { background-color: #eef2f7; color: #24a174; cursor: not-allowed; border: 1px solid #d1eadd; }
+
+        .row-gap { margin-bottom: 15px; }
     </style>
 </head>
 <body>
-    <div class="form-card">
-        <h2 class="text-center" style="font-weight:800; color:#1a2b4b;">DECLARACIÓN JURADA DE SALUD</h2>
-        <p class="text-center text-muted small">HISTORIAL CLÍNICO NUBE</p>
+    <div class="form-container">
+        <div class="header-section">
+            <h1 class="titulo-principal">Declaración Jurada de Salud</h1>
+            <p class="subtitulo">Historial Clínico Nube | Módulo de Enfermería</p>
+        </div>
 
+        <div class="seccion-titulo">1. Afiliación del Trabajador</div>
+        
         <form id="formDeclaracion">
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="form-label">ID DEL PACIENTE (Sistema)</label>
-                    <input type="number" id="paciente_id" class="form-control" placeholder="Ej: 1" required>
+            <div class="row row-gap">
+                <div class="col-md-8">
+                    <label class="form-label">Apellidos y Nombres</label>
+                    <input type="text" id="nombre_completo" class="form-control readonly-field" readonly>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Código de Paciente</label>
+                    <input type="text" id="codigo_id" class="form-control readonly-field" readonly>
                 </div>
             </div>
 
-            <div class="section-title">1. ANTECEDENTES PATOLÓGICOS (Detalle si aplica)</div>
-            <div class="row g-3">
-                <div class="col-md-6"><label class="form-label">Vista</label><input type="text" id="vista" class="form-control"></div>
-                <div class="col-md-6"><label class="form-label">Auditivo</label><input type="text" id="auditivo" class="form-control"></div>
-                <div class="col-md-6"><label class="form-label">Respiratorios</label><input type="text" id="respiratorios" class="form-control"></div>
-                <div class="col-md-6"><label class="form-label">Cardiovasculares</label><input type="text" id="cardiovasculares" class="form-control"></div>
-                <div class="col-md-6"><label class="form-label">Digestivos</label><input type="text" id="digestivos" class="form-control"></div>
-                <div class="col-md-6"><label class="form-label">Sistema Nervioso</label><input type="text" id="sistema_nervioso" class="form-control"></div>
+            <div class="row row-gap">
+                <div class="col-md-2">
+                    <label class="form-label">Edad</label>
+                    <input type="number" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sexo</label>
+                    <select class="form-control" required>
+                        <option value="">SELECCIONE</option>
+                        <option value="MASCULINO">MASCULINO</option>
+                        <option value="FEMENINO">FEMENINO</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Fecha de Nacimiento</label>
+                    <input type="date" class="form-control" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Lugar</label>
+                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
             </div>
-
-            <div class="section-title">2. ALERGIAS E INFECCIONES</div>
-            <div class="row g-3">
-                <div class="col-md-12"><label class="form-label">Alergias a Medicamentos</label><input type="text" id="alergias_medicamentos" class="form-control"></div>
-                <div class="col-md-6"><label class="form-label">¿Chagas?</label><select id="chagas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="col-md-6"><label class="form-label">¿Hepatitis?</label><select id="hepatitis" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            
+            <div class="text-center mt-5">
+                <p style="color:#b0bac9; font-size: 11px; font-weight: 700;">LA SECCIÓN DE ANTECEDENTES SE ACTIVARÁ MAÑANA</p>
             </div>
-
-            <div class="section-title">3. HÁBITOS</div>
-            <div class="row g-3">
-                <div class="col-md-3"><label class="form-label">Alcohol</label><input type="text" id="alcohol" class="form-control" placeholder="Cant/Frec"></div>
-                <div class="col-md-3"><label class="form-label">Tabaco</label><input type="text" id="tabaco" class="form-control" placeholder="Cant/Frec"></div>
-                <div class="col-md-3"><label class="form-label">Drogas</label><input type="text" id="drogas" class="form-control"></div>
-                <div class="col-md-3"><label class="form-label">Coca (Bolo)</label><input type="text" id="coca_bolo" class="form-control"></div>
-            </div>
-
-            <div class="section-title">4. ANTECEDENTES OCUPACIONALES</div>
-            <div class="row g-3">
-                <div class="col-md-4"><label class="form-label">Edad inicio trabajo</label><input type="number" id="edad_inicio_trabajo" class="form-control"></div>
-                <div class="col-md-8"><label class="form-label">Empresa Actual</label><input type="text" id="empresa_actual" class="form-control"></div>
-                <div class="col-md-6"><label class="form-label">Ocupación</label><input type="text" id="ocupacion_actual" class="form-control"></div>
-                <div class="col-md-6"><label class="form-label">Riesgos Expuestos</label><input type="text" id="riesgos_expuestos" class="form-control" placeholder="Ruido, Polvo, etc."></div>
-            </div>
-
-            <button type="submit" id="btnGuardar" class="btn-save">GUARDAR DECLARACIÓN JURADA</button>
         </form>
     </div>
 
     <script>
-        const API_URL = "https://historial-clinico-936s.onrender.com/declaraciones/";
-
-        document.getElementById('formDeclaracion').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnGuardar');
-            btn.innerText = "PROCESANDO...";
-            btn.disabled = true;
-
-            const datos = {
-                paciente_id: parseInt(document.getElementById('paciente_id').value),
-                vista: document.getElementById('vista').value,
-                auditivo: document.getElementById('auditivo').value,
-                respiratorios: document.getElementById('respiratorios').value,
-                cardiovasculares: document.getElementById('cardiovasculares').value,
-                digestivos: document.getElementById('digestivos').value,
-                sistema_nervioso: document.getElementById('sistema_nervioso').value,
-                alergias_medicamentos: document.getElementById('alergias_medicamentos').value,
-                chagas: document.getElementById('chagas').value,
-                hepatitis: document.getElementById('hepatitis').value,
-                alcohol: document.getElementById('alcohol').value,
-                tabaco: document.getElementById('tabaco').value,
-                drogas: document.getElementById('drogas').value,
-                coca_bolo: document.getElementById('coca_bolo').value,
-                edad_inicio_trabajo: parseInt(document.getElementById('edad_inicio_trabajo').value) || 0,
-                empresa_actual: document.getElementById('empresa_actual').value,
-                ocupacion_actual: document.getElementById('ocupacion_actual').value,
-                riesgos_expuestos: document.getElementById('riesgos_expuestos').value
-            };
-
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datos)
-                });
-
-                if (res.ok) {
-                    alert("¡DECLARACIÓN JURADA GUARDADA CORRECTAMENTE!");
-                    location.reload();
-                } else {
-                    const err = await res.json();
-                    alert("ERROR: " + (err.detail || "Verifique los datos"));
-                }
-            } catch (error) {
-                alert("FALLO DE CONEXIÓN CON EL SERVIDOR");
-            } finally {
-                btn.innerText = "GUARDAR DECLARACIÓN JURADA";
-                btn.disabled = false;
-            }
+        // Lógica para recuperar datos del paciente recién registrado (simulada por ahora)
+        window.onload = () => {
+            // Esto lo conectaremos con el almacenamiento local o la nube en el siguiente paso
+            document.getElementById('nombre_completo').value = "CARGANDO DATOS...";
+            document.getElementById('codigo_id').value = "---";
         };
     </script>
 </body>
