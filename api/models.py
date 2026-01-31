@@ -21,58 +21,56 @@ class DeclaracionJurada(Base):
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     fecha_creacion = Column(DateTime(timezone=True), server_default=func.now())
 
-    # --- SECCIÓN 1: DATOS COMPLEMENTARIOS (Pág. 1 PDF) ---
-    domicilio_av_calle = Column(String, nullable=True) [cite: 16]
-    domicilio_numero = Column(String, nullable=True) [cite: 17]
-    barrio = Column(String, nullable=True) [cite: 21]
-    ciudad = Column(String, nullable=True) [cite: 18]
-    pais = Column(String, nullable=True) [cite: 19]
-    profesion_labor = Column(String, nullable=True) [cite: 20]
-    telefono = Column(String, nullable=True) [cite: 22]
-    estado_civil = Column(String, nullable=True) [cite: 23]
+    # --- SECCIÓN 1: DATOS COMPLEMENTARIOS ---
+    domicilio_av_calle = Column(String, nullable=True)
+    domicilio_numero = Column(String, nullable=True)
+    barrio = Column(String, nullable=True)
+    ciudad = Column(String, nullable=True)
+    pais = Column(String, nullable=True)
+    profesion_labor = Column(String, nullable=True)
+    telefono = Column(String, nullable=True)
+    estado_civil = Column(String, nullable=True)
 
-    # --- SECCIÓN 2: ANTECEDENTES PATOLÓGICOS (Checklist Pág. 1) ---
-    vista = Column(Text, nullable=True) [cite: 25, 37]
-    auditivo = Column(Text, nullable=True) [cite: 26, 38]
-    respiratorios = Column(Text, nullable=True) [cite: 27, 39]
-    cardiovasculares = Column(Text, nullable=True) [cite: 28, 40]
-    estomago_intestino = Column(Text, nullable=True) [cite: 29, 42]
-    sangre = Column(Text, nullable=True) [cite: 29, 43]
-    genitourinario = Column(Text, nullable=True) [cite: 30, 44]
-    sistema_nervioso = Column(Text, nullable=True) [cite: 31, 46]
-    psiquiatricos_mentales = Column(Text, nullable=True) [cite: 32, 33]
-    osteomusculares = Column(Text, nullable=True) [cite: 47, 49]
-    endocrinos_metabolicos = Column(Text, nullable=True) [cite: 48, 50]
-    reumatologicos = Column(Text, nullable=True) [cite: 52]
-    dermatologicos = Column(Text, nullable=True) [cite: 56]
-    generales_cancer_hernias = Column(Text, nullable=True) [cite: 53, 54]
+    # --- SECCIÓN 2: ANTECEDENTES PATOLÓGICOS ---
+    vista = Column(Text, nullable=True)
+    auditivo = Column(Text, nullable=True)
+    respiratorios = Column(Text, nullable=True)
+    cardiovasculares = Column(Text, nullable=True)
+    estomago_intestino = Column(Text, nullable=True)
+    sangre = Column(Text, nullable=True)
+    genitourinario = Column(Text, nullable=True)
+    sistema_nervioso = Column(Text, nullable=True)
+    psiquiatricos_mentales = Column(Text, nullable=True)
+    osteomusculares = Column(Text, nullable=True)
+    endocrinos_metabolicos = Column(Text, nullable=True)
+    reumatologicos = Column(Text, nullable=True)
+    dermatologicos = Column(Text, nullable=True)
+    generales_cancer_hernias = Column(Text, nullable=True)
 
-    # --- ALERGIAS E INFECCIONES ---
-    alergias_medicamentos = Column(Text, nullable=True) [cite: 58, 60]
-    alergias_alimentos = Column(Text, nullable=True) [cite: 59, 60]
-    infecciones_detalle = Column(Text, nullable=True) [cite: 61, 62] # Chagas, Hepatitis, etc.
+    # ALERGIAS E INFECCIONES
+    alergias_medicamentos = Column(Text, nullable=True)
+    alergias_alimentos = Column(Text, nullable=True)
+    infecciones_detalle = Column(Text, nullable=True)
     
-    # --- ANTECEDENTES PERSONALES Y CIRUGÍAS (Pág. 2) ---
-    cirugias = Column(Text, nullable=True) [cite: 63, 64]
-    accidentes_trabajo = Column(Text, nullable=True) [cite: 65, 66]
-    accidentes_particulares = Column(Text, nullable=True) [cite: 68, 69]
-    medicamentos_uso_actual = Column(Text, nullable=True) [cite: 70, 71]
-    grupo_sanguineo = Column(String, nullable=True) [cite: 73]
-    deportes = Column(Text, nullable=True) [cite: 75, 76]
+    # --- SECCIÓN 3: PERSONALES, HÁBITOS Y LABORAL ---
+    cirugias = Column(Text, nullable=True)
+    accidentes_trabajo = Column(Text, nullable=True)
+    accidentes_particulares = Column(Text, nullable=True)
+    medicamentos_uso_actual = Column(Text, nullable=True)
+    grupo_sanguineo = Column(String, nullable=True)
+    deportes = Column(Text, nullable=True)
     
-    # --- HÁBITOS ---
-    alcohol = Column(String, nullable=True) [cite: 82]
-    tabaco = Column(String, nullable=True) [cite: 83]
-    drogas = Column(String, nullable=True) [cite: 84]
-    coca_bolo = Column(String, nullable=True) [cite: 85, 86]
+    alcohol = Column(String, nullable=True)
+    tabaco = Column(String, nullable=True)
+    drogas = Column(String, nullable=True)
+    coca_bolo = Column(String, nullable=True)
     
-    # --- HISTORIA LABORAL Y RIESGOS ---
-    edad_inicio_trabajo = Column(Integer, nullable=True) [cite: 90]
-    historia_laboral_detalle = Column(Text, nullable=True) [cite: 88, 89] # Empresas, cargos, tiempos
-    riesgos_expuestos = Column(Text, nullable=True) # Ruido, Radiación, Químicos, etc. [cite: 91, 92]
-    uso_epp = Column(String, nullable=True) [cite: 90]
+    edad_inicio_trabajo = Column(Integer, nullable=True)
+    historia_laboral_detalle = Column(Text, nullable=True)
+    riesgos_expuestos = Column(Text, nullable=True)
+    uso_epp = Column(String, nullable=True)
 
     # --- CIERRE ---
-    observaciones = Column(Text, nullable=True) [cite: 120]
+    observaciones = Column(Text, nullable=True)
     
     paciente = relationship("Paciente", back_populates="declaraciones")
