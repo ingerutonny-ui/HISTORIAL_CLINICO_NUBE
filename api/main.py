@@ -5,7 +5,7 @@ from typing import List
 from . import models, schemas, crud
 from .database import engine, SessionLocal
 
-# Crea las tablas en la base de datos (incluyendo la nueva de declaraciones)
+# Crea las tablas en la base de datos (se actualizará con los campos del PDF)
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -49,8 +49,10 @@ def read_declaraciones(db: Session = Depends(get_db)):
 
 @app.post("/declaraciones/", response_model=schemas.DeclaracionJurada)
 def create_declaracion(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
-    # Opcional: Verificar si el paciente existe antes de crear la declaración
+    # Verificamos si el paciente existe antes de permitir el guardado de la declaración
     db_paciente = crud.get_paciente(db, paciente_id=declaracion.paciente_id)
     if not db_paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    
+    # Aquí se guardan todos los datos: complementarios, salud y laborales del PDF
     return crud.create_declaracion_jurada(db=db, declaracion=declaracion)
