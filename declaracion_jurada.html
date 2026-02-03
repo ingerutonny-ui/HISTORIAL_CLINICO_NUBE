@@ -7,13 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
-        
-        /* Contenedor idéntico al de Registro */
         .jurada-container { max-width: 900px; width: 100%; background: white; padding: 50px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
         
-        .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-top: 20px; display: block; text-align: left; margin-left: 10px; letter-spacing: 1px; }
+        .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-top: 22px; display: block; text-align: left; margin-left: 10px; letter-spacing: 1px; }
         
-        /* CUADROS PLOMO CLARO (Igual a tu código de registro) */
+        /* CUADROS PLOMO CLARO CON SEPARACIÓN */
         .form-control, .form-select { 
             border-radius: 18px; 
             background-color: #f3f6f9; 
@@ -22,116 +20,89 @@
             font-weight: 600; 
             color: #1e293b; 
             text-transform: uppercase;
-            transition: 0.3s;
+            margin-top: 8px; /* Separación de la etiqueta */
         }
         .form-control:focus { background-color: #ffffff; border-color: #24a174; box-shadow: none; }
 
-        /* Estilo para los campos que NO SE TOCAN (Nombre y Código) */
         .readonly-field { border: 2px dashed #d1eadd; background-color: #f9fdfc; color: #24a174; font-weight: 800; }
 
-        .btn-siguiente { background-color: #24a174; border: none; border-radius: 20px; padding: 20px; font-weight: 700; width: 100%; color: white; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); }
+        .btn-accion { background-color: #24a174; border: none; border-radius: 20px; padding: 20px; font-weight: 700; width: 100%; color: white; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-volver { background-color: #f1f5f9; color: #b0bac9; border: none; border-radius: 20px; padding: 15px; font-weight: 700; width: 100%; margin-top: 15px; text-transform: uppercase; font-size: 11px; }
+
+        .step-content { display: none; }
+        .step-active { display: block; }
         
-        .header-icon { margin-bottom: 20px; }
-        .seccion-titulo { color: #1e293b; font-weight: 800; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
+        .seccion-titulo { color: #1e293b; font-weight: 800; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
         .step-tag { font-size: 10px; background: #f1f5f9; padding: 5px 12px; border-radius: 10px; color: #b0bac9; }
     </style>
 </head>
 <body>
 
     <div class="jurada-container">
-        <div class="text-center">
-            <div class="header-icon"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="45" alt="icon"></div>
-            <h2 style="font-weight:800; color:#1e293b; font-size: 24px; margin-bottom: 0;">DECLARACIÓN JURADA</h2>
-            <p style="color:#b0bac9; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 40px;">PASO 1: INFORMACIÓN PERSONAL</p>
+        <div class="text-center mb-5">
+            <h2 style="font-weight:800; color:#1e293b; font-size: 24px;">DECLARACIÓN JURADA</h2>
+            <p id="indicadorPaso" style="color:#b0bac9; font-size: 11px; font-weight: 700; letter-spacing: 1.5px;">PARTE 1: AFILIACIÓN</p>
         </div>
 
-        <div class="seccion-titulo">
-            <span>1. AFILIACIÓN DEL TRABAJADOR</span>
-            <span class="step-tag">SECCIÓN 1 / 3</span>
-        </div>
-
-        <form id="formJurada">
-            <div class="row">
-                <div class="col-md-8">
-                    <label class="label-main form-label">APELLIDOS Y NOMBRES (REGISTRADO)</label>
-                    <input type="text" id="nombre_paciente" class="form-control readonly-field" readonly>
+        <form id="formUnificado">
+            <div id="paso1" class="step-content step-active">
+                <div class="seccion-titulo"><span>1. DATOS DEL TRABAJADOR</span><span class="step-tag">1 / 3</span></div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <label class="form-label">Apellidos y Nombres</label>
+                        <input type="text" id="nombre_paciente" class="form-control readonly-field" readonly>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Código</label>
+                        <input type="text" id="codigo_paciente" class="form-control readonly-field text-center" readonly>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label class="label-main form-label">CÓDIGO PACIENTE</label>
-                    <input type="text" id="codigo_paciente" class="form-control readonly-field text-center" readonly>
+                <div class="row">
+                    <div class="col-md-3"><label class="form-label">Edad</label><input type="number" name="edad" class="form-control"></div>
+                    <div class="col-md-3"><label class="form-label">Sexo</label><select name="sexo" class="form-select"><option>MASCULINO</option><option>FEMENINO</option></select></div>
+                    <div class="col-md-6"><label class="form-label">Fecha Nacimiento</label><input type="date" name="fecha_nac" class="form-control"></div>
                 </div>
+                <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente Sección</button>
             </div>
 
-            <div class="row">
-                <div class="col-md-3">
-                    <label class="form-label">EDAD</label>
-                    <input type="number" class="form-control" required>
+            <div id="paso2" class="step-content">
+                <div class="seccion-titulo"><span>2. EVALUACIÓN POR SISTEMAS</span><span class="step-tag">2 / 3</span></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Vista</label><input type="text" name="vista" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">Respiratorios</label><input type="text" name="respiratorios" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">Digestivos</label><input type="text" name="digestivos" class="form-control" placeholder="NINGUNO">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Auditivo</label><input type="text" name="auditivo" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">Cardiovasculares</label><input type="text" name="cardio" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">Osteomusculares</label><input type="text" name="osteo" class="form-control" placeholder="NINGUNO">
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="form-label">SEXO</label>
-                    <select class="form-select">
-                        <option value="M">MASCULINO</option>
-                        <option value="F">FEMENINO</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">FECHA NAC.</label>
-                    <input type="date" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">LUGAR NAC.</label>
-                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
+                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos</button>
+                <button type="button" onclick="cambiarPaso(1)" class="btn-volver">Regresar</button>
             </div>
 
-            <div class="row">
-                <div class="col-md-6">
-                    <label class="form-label">DOMICILIO (AV./CALLE)</label>
-                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">N° CASA</label>
-                    <input type="text" class="form-control">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">ZONA / BARRIO</label>
-                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
+            <div id="paso3" class="step-content">
+                <div class="seccion-titulo"><span>3. HÁBITOS Y VIDA LABORAL</span><span class="step-tag">3 / 3</span></div>
+                <button type="submit" class="btn-accion">Finalizar y Guardar en Nube</button>
+                <button type="button" onclick="cambiarPaso(2)" class="btn-volver">Regresar</button>
             </div>
-
-            <div class="row">
-                <div class="col-md-3">
-                    <label class="form-label">CIUDAD</label>
-                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">PAÍS</label>
-                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">TELÉFONO / CELULAR</label>
-                    <input type="text" class="form-control">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">ESTADO CIVIL</label>
-                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
-            </div>
-
-            <button type="submit" class="btn-siguiente">GUARDAR Y CONTINUAR</button>
         </form>
     </div>
 
     <script>
         window.onload = () => {
-            // RECUPERACIÓN: Usamos exactamente las mismas claves que tu código guarda
-            const nom = localStorage.getItem('temp_nombres') || "";
-            const ape = localStorage.getItem('temp_apellidos') || "";
-            const cod = localStorage.getItem('temp_codigo') || "SIN CÓDIGO";
-
-            document.getElementById('nombre_paciente').value = (nom + " " + ape).trim();
-            document.getElementById('codigo_paciente').value = cod;
+            document.getElementById('nombre_paciente').value = localStorage.getItem('temp_nombres') + " " + localStorage.getItem('temp_apellidos');
+            document.getElementById('codigo_paciente').value = localStorage.getItem('temp_codigo');
         };
+
+        function cambiarPaso(p) {
+            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('step-active'));
+            document.getElementById('paso' + p).classList.add('step-active');
+            const titulos = ["", "PARTE 1: AFILIACIÓN", "PARTE 2: ANTECEDENTES", "PARTE 3: HÁBITOS"];
+            document.getElementById('indicadorPaso').innerText = titulos[p];
+        }
     </script>
 </body>
 </html>
