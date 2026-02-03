@@ -9,16 +9,25 @@ class Paciente(Base):
     apellidos = Column(String)
     documento_identidad = Column(String, unique=True, index=True)
     codigo_paciente = Column(String, unique=True)
-    # Relación con las declaraciones juradas
+    
     declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
 
 class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_juradas"
-    
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    
-    # --- ANTECEDENTES PATOLÓGICOS (Campos de texto para detallar) ---
+
+    # --- SECCIÓN 1: AFILIACIÓN DEL TRABAJADOR ---
+    edad = Column(Integer, nullable=True)
+    sexo = Column(String, nullable=True)
+    lugar_nacimiento = Column(String, nullable=True)
+    fecha_nacimiento = Column(String, nullable=True)
+    estado_civil = Column(String, nullable=True)
+    domicilio = Column(String, nullable=True)
+    telefono = Column(String, nullable=True)
+    profesion_oficio = Column(String, nullable=True)
+
+    # --- SECCIÓN 2: ANTECEDENTES PATOLÓGICOS (Texto para detalles) ---
     vista = Column(Text, nullable=True)
     auditivo = Column(Text, nullable=True)
     respiratorios = Column(Text, nullable=True)
@@ -29,32 +38,26 @@ class DeclaracionJurada(Base):
     osteomusculares = Column(Text, nullable=True)
     endocrinos = Column(Text, nullable=True)
     dermatologicos = Column(Text, nullable=True)
-    
-    # --- ALERGIAS E INFECCIONES ---
     alergias_medicamentos = Column(Text, nullable=True)
-    chagas = Column(String, nullable=True) # SI / NO
-    hepatitis = Column(String, nullable=True) # SI / NO
+    chagas = Column(Text, nullable=True)
+    otros_antecedentes = Column(Text, nullable=True)
+
+    # --- SECCIÓN 3: HISTORIA LABORAL Y HÁBITOS ---
+    # Hábitos
+    fuma = Column(Boolean, default=False)
+    fuma_detalle = Column(String, nullable=True)
+    bebe = Column(Boolean, default=False)
+    bebe_detalle = Column(String, nullable=True)
+    drogas = Column(Boolean, default=False)
+    drogas_detalle = Column(String, nullable=True)
+    bolo_coca = Column(Boolean, default=False)
+    bolo_coca_detalle = Column(String, nullable=True)
     
-    # --- ANTECEDENTES PERSONALES ---
-    cirugias = Column(Text, nullable=True)
-    accidentes_trabajo = Column(Text, nullable=True)
-    accidentes_particulares = Column(Text, nullable=True)
-    medicamentos_uso_actual = Column(Text, nullable=True)
-    grupo_sanguineo = Column(String, nullable=True)
-    deportes = Column(Text, nullable=True)
-    
-    # --- HÁBITOS (Consumo y Frecuencia) ---
-    alcohol = Column(String, nullable=True)
-    tabaco = Column(String, nullable=True)
-    drogas = Column(String, nullable=True)
-    coca_bolo = Column(String, nullable=True)
-    
-    # --- HISTORIA LABORAL ---
-    edad_inicio_trabajo = Column(Integer, nullable=True)
+    # Historia Laboral
+    edad_inicio_laboral = Column(Integer, nullable=True)
     empresa_actual = Column(String, nullable=True)
-    ocupacion_actual = Column(String, nullable=True)
-    tiempo_trabajo = Column(String, nullable=True)
-    riesgos_expuestos = Column(Text, nullable=True) # Ruido, Polvo, etc.
-    uso_epp = Column(String, nullable=True) # SI / NO
+    riesgos_expuestos = Column(Text, nullable=True) # Ruido, Polvo, Gases, etc.
+    uso_epp = Column(Boolean, default=False)
+    epp_detalle = Column(String, nullable=True)
 
     paciente = relationship("Paciente", back_populates="declaraciones")
