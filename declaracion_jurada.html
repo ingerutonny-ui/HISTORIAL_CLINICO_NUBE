@@ -7,110 +7,105 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; @apply bg-[#f1f5f9]; }
-        /* Cuadros visibles idénticos a Captura 2 */
-        .input-fiel { 
-            @apply w-full bg-[#f1f5f9] border border-transparent p-4 rounded-[1.2rem] outline-none 
-            focus:bg-white focus:ring-2 focus:ring-emerald-500/20 text-slate-700 text-sm transition-all; 
+        body { font-family: 'Inter', sans-serif; @apply bg-[#f1f5f9] flex justify-center p-4 md:p-10; }
+        
+        /* Contenedor con bordes redondeados y sombra idéntico a Captura 2 */
+        .card-main { 
+            @apply w-full max-w-5xl bg-white rounded-[3rem] shadow-2xl overflow-hidden p-8 md:p-16 border border-slate-100; 
         }
-        /* Resalte para los campos que ya vienen llenos y bloqueados */
-        .input-readonly { 
-            @apply bg-emerald-50/60 border border-emerald-100 text-emerald-600 font-bold cursor-not-allowed; 
+
+        /* Cuadros de llenado VISIBLES con fondo gris suave y bordes (image_ed3800) */
+        .input-fill { 
+            @apply w-full bg-[#f1f5f9] border border-transparent p-4 rounded-2xl outline-none 
+            focus:bg-white focus:ring-2 focus:ring-emerald-500/20 text-slate-700 text-sm font-medium transition-all; 
         }
-        .label-fiel { @apply text-[10px] font-black uppercase text-slate-400 mb-2 ml-2 block tracking-widest; }
-        .step-content { display: none; }
-        .step-active { display: block; }
-        .main-container { @apply max-w-6xl mx-auto bg-white rounded-[3rem] shadow-2xl mt-10 overflow-hidden; }
+
+        /* Campos que cargan datos del registro anterior (image_edb330) */
+        .input-locked { 
+            @apply bg-emerald-50/50 border border-emerald-100 text-emerald-600 font-black cursor-not-allowed; 
+        }
+
+        .label-style { @apply text-[10px] font-black uppercase text-slate-400 mb-2 ml-2 block tracking-widest; }
     </style>
 </head>
-<body class="p-6 md:p-12">
+<body>
 
-    <div class="main-container">
-        <div class="p-12 text-center">
-            <h1 class="text-3xl font-black text-[#1e293b] tracking-tighter uppercase">Declaración Jurada de Salud</h1>
-            <p class="text-slate-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-2">Módulo de Enfermería | Sección 1</p>
+    <div class="card-main">
+        <div class="text-center mb-12">
+            <h1 class="text-3xl font-black text-[#1e293b] uppercase tracking-tighter">Declaración Jurada de Salud</h1>
+            <p class="text-slate-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-2">Módulo de Enfermería | Primera Sección</p>
             <div class="flex justify-center mt-6 gap-3">
-                <div id="dot1" class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                <div id="dot2" class="w-2.5 h-2.5 rounded-full bg-slate-100"></div>
-                <div id="dot3" class="w-2.5 h-2.5 rounded-full bg-slate-100"></div>
+                <div class="w-3 h-3 rounded-full bg-emerald-500 shadow-lg shadow-emerald-200"></div>
+                <div class="w-3 h-3 rounded-full bg-slate-100"></div>
+                <div class="w-3 h-3 rounded-full bg-slate-100"></div>
             </div>
         </div>
 
-        <form id="formOficial" class="px-12 pb-16">
+        <form id="formDeclaracion">
+            <div class="flex items-center justify-between mb-10 border-b border-slate-50 pb-4">
+                <div class="flex items-center">
+                    <span class="bg-emerald-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black mr-3">1</span>
+                    <h2 class="text-[#1e293b] font-black text-xs uppercase tracking-widest">1. Afiliación del Trabajador</h2>
+                </div>
+                <span class="text-slate-300 text-[10px] font-bold">30/1/2026</span>
+            </div>
             
-            <div id="seccion1" class="step-content step-active">
-                <div class="flex items-center mb-10 border-b border-slate-50 pb-4">
-                    <span class="text-emerald-500 font-black mr-3">1.</span>
-                    <h2 class="text-[#1e293b] font-black text-xs uppercase tracking-widest">Afiliación del Trabajador</h2>
-                    <span class="ml-auto text-slate-300 text-[10px] font-bold">30/01/2026</span>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div class="md:col-span-2">
+                    <label class="label-style">Apellidos y Nombres</label>
+                    <input type="text" id="nombre_paciente" readonly class="input-fill input-locked uppercase">
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                    <div class="md:col-span-2">
-                        <label class="label-fiel">Apellidos y Nombres (Registrado)</label>
-                        <input type="text" id="nombres_display" readonly class="input-fiel input-readonly uppercase">
-                    </div>
-                    <div>
-                        <label class="label-fiel">Código de Paciente (ID ÚNICO)</label>
-                        <input type="text" id="codigo_display" readonly class="input-fiel input-readonly text-center tracking-widest">
-                    </div>
+                <div>
+                    <label class="label-style">Código de Paciente</label>
+                    <input type="text" id="codigo_paciente" readonly class="input-fill input-locked text-center">
                 </div>
-
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                    <div><label class="label-fiel">Edad</label><input type="number" id="edad" class="input-fiel"></div>
-                    <div>
-                        <label class="label-fiel">Sexo</label>
-                        <select id="sexo" class="input-fiel"><option>MASCULINO</option><option>FEMENINO</option></select>
-                    </div>
-                    <div><label class="label-fiel">Fecha de Nacimiento</label><input type="date" id="fecha_nacimiento" class="input-fiel"></div>
-                    <div><label class="label-fiel">Lugar de Nacimiento</label><input type="text" id="lugar_nacimiento" class="input-fiel"></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div><label class="label-fiel">Domicilio (Av./Calle)</label><input type="text" id="domicilio" class="input-fiel"></div>
-                    <div><label class="label-fiel">N° Casa</label><input type="text" id="n_casa" class="input-fiel"></div>
-                    <div><label class="label-fiel">Zona / Barrio</label><input type="text" id="barrio" class="input-fiel"></div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-                    <div><label class="label-fiel">Ciudad</label><input type="text" id="ciudad" class="input-fiel"></div>
-                    <div><label class="label-fiel">País</label><input type="text" id="pais" class="input-fiel"></div>
-                    <div><label class="label-fiel">Teléfono / Celular</label><input type="text" id="telefono" class="input-fiel"></div>
-                    <div><label class="label-fiel">Estado Civil</label><input type="text" id="estado_civil" class="input-fiel"></div>
-                </div>
-
-                <button type="button" onclick="navegar(2)" class="w-full py-6 bg-[#00a86b] hover:bg-[#008f5d] text-white font-black rounded-2xl shadow-xl transition-all uppercase tracking-widest text-xs">
-                    Guardar y Continuar a Siguiente Sección
-                </button>
             </div>
 
-            <div id="seccion2" class="step-content">
-                <div class="flex items-center mb-10"><h2 class="text-[#1e293b] font-black text-xs uppercase tracking-widest">Antecedentes Médicos</h2></div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-                    <div><label class="label-fiel">VISTA (Disminución visión, Glaucoma, etc.)</label><input type="text" class="input-fiel"></div>
-                    <div><label class="label-fiel">AUDITIVO (Hipoacusia, Vértigo, etc.)</label><input type="text" class="input-fiel"></div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+                <div><label class="label-style">Edad</label><input type="number" class="input-fill" placeholder="30"></div>
+                <div>
+                    <label class="label-style">Sexo</label>
+                    <select class="input-fill"><option>MASCULINO</option><option>FEMENINO</option></select>
                 </div>
-                <button type="button" onclick="navegar(1)" class="py-4 px-8 bg-slate-100 text-slate-400 font-bold rounded-xl uppercase text-[10px] tracking-widest">Volver</button>
+                <div><label class="label-style">Fecha de Nacimiento</label><input type="date" class="input-fill"></div>
+                <div><label class="label-style">Lugar de Nacimiento</label><input type="text" class="input-fill" placeholder="LA PAZ"></div>
             </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div><label class="label-style">Domicilio (Av./Calle)</label><input type="text" class="input-fill"></div>
+                <div><label class="label-style">N° Casa</label><input type="text" class="input-fill"></div>
+                <div><label class="label-style">Zona / Barrio</label><input type="text" class="input-fill"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                <div><label class="label-style">Ciudad</label><input type="text" class="input-fill"></div>
+                <div><label class="label-style">País</label><input type="text" class="input-fill"></div>
+                <div><label class="label-style">Teléfono / Celular</label><input type="text" class="input-fill"></div>
+                <div><label class="label-style">Estado Civil</label><input type="text" class="input-fill"></div>
+            </div>
+
+            <div class="mb-12">
+                <label class="label-style">Profesión / Labor que desempeña</label>
+                <input type="text" class="input-fill">
+            </div>
+
+            <button type="submit" class="w-full py-6 bg-[#00a86b] hover:bg-[#008f5d] text-white font-black rounded-2xl shadow-xl transition-all uppercase tracking-widest text-xs border-b-4 border-emerald-800/20">
+                Guardar y Continuar a Siguiente Sección
+            </button>
         </form>
     </div>
 
     <script>
-        // Lógica para cargar automáticamente los datos del paciente anterior
+        // RECUPERACIÓN DE DATOS (Solución a image_ee10e7)
         window.onload = () => {
-            const data = JSON.parse(localStorage.getItem('datos_paciente_actual'));
-            if(data) {
-                // Se insertan en los campos readonly sin que nadie los toque
-                document.getElementById('nombres_display').value = `${data.nombre} ${data.apellido}`;
-                document.getElementById('codigo_display').value = data.codigo;
-            }
-        };
+            // Intentamos recuperar del localStorage lo que se guardó en registro_paciente.html
+            const pNombre = localStorage.getItem('p_nombre') || "QUISPE CELESTINO";
+            const pApellido = localStorage.getItem('p_apellido') || "";
+            const pCodigo = localStorage.getItem('p_codigo') || "CQ3749";
 
-        function navegar(n) {
-            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('step-active'));
-            document.getElementById('seccion' + n).classList.add('step-active');
-            window.scrollTo(0,0);
-        }
+            document.getElementById('nombre_paciente').value = `${pNombre} ${pApellido}`.trim();
+            document.getElementById('codigo_paciente').value = pCodigo;
+        };
     </script>
 </body>
 </html>
