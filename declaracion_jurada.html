@@ -13,12 +13,13 @@
         .form-control, .form-select { border-radius: 15px; background-color: #f3f6f9; border: 2px solid transparent; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; margin-top: 8px; font-size: 13px; }
         .form-control:focus, .form-select:focus { background-color: #ffffff; border-color: #24a174; box-shadow: none; }
         
-        .readonly-field { border: 2px dashed #d1eadd; background-color: #f9fdfc; color: #24a174; font-weight: 800; }
-        .btn-accion { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; }
+        .readonly-field { border: 2px dashed #d1eadd !important; background-color: #f9fdfc !important; color: #24a174 !important; font-weight: 800; }
+        .btn-accion { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-accion:hover { background-color: #1e855f; }
         .btn-volver { background-color: #f1f5f9; color: #b0bac9; border: none; border-radius: 20px; padding: 12px; font-weight: 700; width: 100%; margin-top: 15px; text-transform: uppercase; font-size: 10px; }
 
         .step-content { display: none; }
-        .step-active { display: block; }
+        .step-active { display: block !important; }
         .seccion-titulo { color: #1e293b; font-weight: 800; font-size: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
         .step-tag { font-size: 9px; background: #f0fdf4; padding: 4px 10px; border-radius: 8px; color: #24a174; font-weight: 800; }
         .sub-header { font-size: 11px; font-weight: 800; color: #24a174; margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; border-left: 4px solid #24a174; padding-left: 10px; }
@@ -41,9 +42,9 @@
                     <div class="col-md-4"><label class="form-label">CODIGO GENERADO</label><input type="text" id="p_codigo" class="form-control readonly-field text-center" readonly></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><label class="form-label">1. Edad</label><input type="number" name="edad" class="form-control" required></div>
+                    <div class="col-md-2"><label class="form-label">1. Edad</label><input type="number" name="edad" class="form-control"></div>
                     <div class="col-md-2"><label class="form-label">2. Sexo</label><select name="sexo" class="form-select"><option>MASCULINO</option><option>FEMENINO</option></select></div>
-                    <div class="col-md-4"><label class="form-label">3. Fecha Nacimiento</label><input type="date" name="fecha_nac" class="form-control" required></div>
+                    <div class="col-md-4"><label class="form-label">3. Fecha Nacimiento</label><input type="date" name="fecha_nac" class="form-control"></div>
                     <div class="col-md-4"><label class="form-label">4. Lugar Nacimiento</label><input type="text" name="lugar_nac" class="form-control"></div>
                 </div>
                 <div class="row">
@@ -159,26 +160,35 @@
     </div>
 
     <script>
-        window.onload = () => {
-            // CARGA DE DATOS DESDE LOCALSTORAGE USANDO LAS CLAVES CORRECTAS
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carga de datos segura
             const nom = localStorage.getItem('temp_nombres') || "";
             const ape = localStorage.getItem('temp_apellidos') || "";
-            document.getElementById('p_nombre').value = (nom + " " + ape).trim();
-            document.getElementById('p_ci').value = localStorage.getItem('temp_ci') || "";
-            document.getElementById('p_codigo').value = localStorage.getItem('temp_codigo') || "";
-        };
+            const ci = localStorage.getItem('temp_ci') || "NO DATA";
+            const cod = localStorage.getItem('temp_codigo') || "NO DATA";
+
+            document.getElementById('p_nombre').value = nom + " " + ape;
+            document.getElementById('p_ci').value = ci;
+            document.getElementById('p_codigo').value = cod;
+        });
 
         function cambiarPaso(p) {
-            document.querySelectorAll('.step-content').forEach(s => s.classList.remove('step-active'));
-            document.getElementById('paso' + p).classList.add('step-active');
-            const titulos = ["", "SECCIÓN 1: FILIACIÓN", "SECCIÓN 2: ANTECEDENTES", "SECCIÓN 3: HÁBITOS Y RIESGOS"];
+            // Ocultar todos
+            const secciones = document.querySelectorAll('.step-content');
+            secciones.forEach(s => s.classList.remove('step-active'));
+            
+            // Mostrar el elegido
+            const activa = document.getElementById('paso' + p);
+            if(activa) activa.classList.add('step-active');
+
+            const titulos = ["", "PARTE 1: FILIACIÓN", "PARTE 2: ANTECEDENTES", "PARTE 3: HÁBITOS Y RIESGOS"];
             document.getElementById('indicadorPaso').innerText = titulos[p];
             window.scrollTo(0,0);
         }
 
         document.getElementById('formMaster').onsubmit = async (e) => {
             e.preventDefault();
-            alert("Guardando historial completo en la nube...");
+            alert("Sincronizando con la nube...");
         };
     </script>
 </body>
