@@ -1,9 +1,0 @@
-flask
-cloudinary
-fpdf2
-sqlalchemy
-pydantic
-gunicorn
-psycopg2-binary
-fastapi
-uvicorn
