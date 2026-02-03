@@ -4,111 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HC NUBE | Declaración Jurada</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; @apply bg-[#f1f5f9] flex justify-center p-4 md:p-10; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
         
-        /* Contenedor principal con sombra y bordes curvos */
-        .card-container { 
-            @apply w-full max-w-5xl bg-white rounded-[3rem] shadow-2xl overflow-hidden p-8 md:p-14 border border-slate-100; 
+        /* Contenedor idéntico al de Registro */
+        .jurada-container { max-width: 900px; width: 100%; background: white; padding: 50px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
+        
+        .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-top: 20px; display: block; text-align: left; margin-left: 10px; letter-spacing: 1px; }
+        
+        /* CUADROS PLOMO CLARO (Igual a tu código de registro) */
+        .form-control, .form-select { 
+            border-radius: 18px; 
+            background-color: #f3f6f9; 
+            border: 2px solid transparent; 
+            padding: 15px; 
+            font-weight: 600; 
+            color: #1e293b; 
+            text-transform: uppercase;
+            transition: 0.3s;
         }
+        .form-control:focus { background-color: #ffffff; border-color: #24a174; box-shadow: none; }
 
-        /* CUADROS DE LLENADO: Color plomo claro, bordes visibles y separación */
-        .input-field { 
-            @apply w-full bg-[#f1f5f9] border border-slate-200 p-4 rounded-2xl outline-none mt-2
-            focus:bg-white focus:ring-2 focus:ring-emerald-500/20 text-slate-700 text-sm font-medium transition-all; 
-        }
+        /* Estilo para los campos que NO SE TOCAN (Nombre y Código) */
+        .readonly-field { border: 2px dashed #d1eadd; background-color: #f9fdfc; color: #24a174; font-weight: 800; }
 
-        /* Campos bloqueados (Nombre y Código) con resalte verde suave */
-        .input-locked { 
-            @apply bg-emerald-50/60 border-emerald-100 text-emerald-600 font-black cursor-not-allowed; 
-        }
-
-        /* Etiquetas con separación del cuadro */
-        .label-main { @apply text-[10px] font-black uppercase text-slate-400 ml-2 block tracking-widest; }
+        .btn-siguiente { background-color: #24a174; border: none; border-radius: 20px; padding: 20px; font-weight: 700; width: 100%; color: white; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); }
+        
+        .header-icon { margin-bottom: 20px; }
+        .seccion-titulo { color: #1e293b; font-weight: 800; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 30px; display: flex; align-items: center; justify-content: space-between; }
+        .step-tag { font-size: 10px; background: #f1f5f9; padding: 5px 12px; border-radius: 10px; color: #b0bac9; }
     </style>
 </head>
 <body>
 
-    <div class="card-container">
-        <div class="text-center mb-12">
-            <h1 class="text-3xl font-black text-[#1e293b] uppercase tracking-tighter">Declaración Jurada de Salud</h1>
-            <p class="text-slate-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-2">Módulo de Enfermería | Primera Sección</p>
-            <div class="flex justify-center mt-6 gap-3">
-                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-slate-100"></div>
-                <div class="w-2.5 h-2.5 rounded-full bg-slate-100"></div>
-            </div>
+    <div class="jurada-container">
+        <div class="text-center">
+            <div class="header-icon"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="45" alt="icon"></div>
+            <h2 style="font-weight:800; color:#1e293b; font-size: 24px; margin-bottom: 0;">DECLARACIÓN JURADA</h2>
+            <p style="color:#b0bac9; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 40px;">PASO 1: INFORMACIÓN PERSONAL</p>
         </div>
 
-        <form id="formDeclaracion">
-            <div class="flex items-center justify-between mb-10 border-b border-slate-50 pb-6">
-                <div class="flex items-center">
-                    <span class="bg-emerald-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black mr-3">1</span>
-                    <h2 class="text-[#1e293b] font-black text-xs uppercase tracking-widest">1. Afiliación del Trabajador</h2>
+        <div class="seccion-titulo">
+            <span>1. AFILIACIÓN DEL TRABAJADOR</span>
+            <span class="step-tag">SECCIÓN 1 / 3</span>
+        </div>
+
+        <form id="formJurada">
+            <div class="row">
+                <div class="col-md-8">
+                    <label class="label-main form-label">APELLIDOS Y NOMBRES (REGISTRADO)</label>
+                    <input type="text" id="nombre_paciente" class="form-control readonly-field" readonly>
                 </div>
-                <span class="text-slate-300 text-[10px] font-bold uppercase">Gestión 2026</span>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <div class="md:col-span-2">
-                    <label class="label-main">Apellidos y Nombres (Registrado)</label>
-                    <input type="text" id="nombre_paciente" readonly class="input-field input-locked uppercase">
-                </div>
-                <div>
-                    <label class="label-main">Código de Paciente</label>
-                    <input type="text" id="codigo_paciente" readonly class="input-field input-locked text-center">
+                <div class="col-md-4">
+                    <label class="label-main form-label">CÓDIGO PACIENTE</label>
+                    <input type="text" id="codigo_paciente" class="form-control readonly-field text-center" readonly>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                <div>
-                    <label class="label-main">Edad</label>
-                    <input type="number" class="input-field" placeholder="Ej: 30">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">EDAD</label>
+                    <input type="number" class="form-control" required>
                 </div>
-                <div>
-                    <label class="label-main">Sexo</label>
-                    <select class="input-field"><option>MASCULINO</option><option>FEMENINO</option></select>
+                <div class="col-md-3">
+                    <label class="form-label">SEXO</label>
+                    <select class="form-select">
+                        <option value="M">MASCULINO</option>
+                        <option value="F">FEMENINO</option>
+                    </select>
                 </div>
-                <div>
-                    <label class="label-main">Fecha Nacimiento</label>
-                    <input type="date" class="input-field">
+                <div class="col-md-3">
+                    <label class="form-label">FECHA NAC.</label>
+                    <input type="date" class="form-control" required>
                 </div>
-                <div>
-                    <label class="label-main">Lugar Nacimiento</label>
-                    <input type="text" class="input-field" placeholder="Ciudad">
+                <div class="col-md-3">
+                    <label class="form-label">LUGAR NAC.</label>
+                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div><label class="label-main">Domicilio (Av./Calle)</label><input type="text" class="input-field"></div>
-                <div><label class="label-main">N° Casa</label><input type="text" class="input-field"></div>
-                <div><label class="label-main">Zona / Barrio</label><input type="text" class="input-field"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <label class="form-label">DOMICILIO (AV./CALLE)</label>
+                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">N° CASA</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">ZONA / BARRIO</label>
+                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-                <div><label class="label-main">Ciudad</label><input type="text" class="input-field"></div>
-                <div><label class="label-main">País</label><input type="text" class="input-field"></div>
-                <div><label class="label-main">Teléfono / Celular</label><input type="text" class="input-field"></div>
-                <div><label class="label-main">Estado Civil</label><input type="text" class="input-field"></div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">CIUDAD</label>
+                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">PAÍS</label>
+                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">TELÉFONO / CELULAR</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">ESTADO CIVIL</label>
+                    <input type="text" class="form-control" oninput="this.value = this.value.toUpperCase()">
+                </div>
             </div>
 
-            <button type="submit" class="w-full py-6 bg-[#00a86b] hover:bg-[#008f5d] text-white font-black rounded-2xl shadow-xl transition-all uppercase tracking-widest text-xs">
-                Guardar y Continuar a Siguiente Sección
-            </button>
+            <button type="submit" class="btn-siguiente">GUARDAR Y CONTINUAR</button>
         </form>
     </div>
 
     <script>
-        // Carga automática de datos del paciente registrado (image_eda04b)
         window.onload = () => {
-            // Datos de ejemplo basados en tu captura image_ee9065
-            const pNombre = localStorage.getItem('p_nombre') || "QUISPE CELESTINO";
-            const pCodigo = localStorage.getItem('p_codigo') || "CQ3749";
+            // RECUPERACIÓN: Usamos exactamente las mismas claves que tu código guarda
+            const nom = localStorage.getItem('temp_nombres') || "";
+            const ape = localStorage.getItem('temp_apellidos') || "";
+            const cod = localStorage.getItem('temp_codigo') || "SIN CÓDIGO";
 
-            document.getElementById('nombre_paciente').value = pNombre;
-            document.getElementById('codigo_paciente').value = pCodigo;
+            document.getElementById('nombre_paciente').value = (nom + " " + ape).trim();
+            document.getElementById('codigo_paciente').value = cod;
         };
     </script>
 </body>
