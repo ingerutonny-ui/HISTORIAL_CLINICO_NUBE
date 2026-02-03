@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 
-# --- ESQUEMAS PARA PACIENTE ---
+#--- ESQUEMAS PARA PACIENTE ---
 class PacienteBase(BaseModel):
     nombres: str
     apellidos: str
@@ -16,9 +16,21 @@ class Paciente(PacienteBase):
     class Config:
         from_attributes = True
 
-# --- ESQUEMAS PARA DECLARACIÓN JURADA ---
+#--- ESQUEMAS PARA DECLARACIÓN JURADA ---
 class DeclaracionJuradaBase(BaseModel):
     paciente_id: int
+    
+    # Sección 1: Afiliación
+    edad: Optional[int] = None
+    sexo: Optional[str] = None
+    lugar_nacimiento: Optional[str] = None
+    fecha_nacimiento: Optional[str] = None
+    estado_civil: Optional[str] = None
+    domicilio: Optional[str] = None
+    telefono: Optional[str] = None
+    profesion_oficio: Optional[str] = None
+
+    # Sección 2: Antecedentes Patológicos
     vista: Optional[str] = None
     auditivo: Optional[str] = None
     respiratorios: Optional[str] = None
@@ -31,23 +43,22 @@ class DeclaracionJuradaBase(BaseModel):
     dermatologicos: Optional[str] = None
     alergias_medicamentos: Optional[str] = None
     chagas: Optional[str] = None
-    hepatitis: Optional[str] = None
-    cirugias: Optional[str] = None
-    accidentes_trabajo: Optional[str] = None
-    accidentes_particulares: Optional[str] = None
-    medicamentos_uso_actual: Optional[str] = None
-    grupo_sanguineo: Optional[str] = None
-    deportes: Optional[str] = None
-    alcohol: Optional[str] = None
-    tabaco: Optional[str] = None
-    drogas: Optional[str] = None
-    coca_bolo: Optional[str] = None
-    edad_inicio_trabajo: Optional[int] = None
+    otros_antecedentes: Optional[str] = None
+
+    # Sección 3: Historia Laboral y Hábitos
+    fuma: Optional[bool] = False
+    fuma_detalle: Optional[str] = None
+    bebe: Optional[bool] = False
+    bebe_detalle: Optional[str] = None
+    drogas: Optional[bool] = False
+    drogas_detalle: Optional[str] = None
+    bolo_coca: Optional[bool] = False
+    bolo_coca_detalle: Optional[str] = None
+    edad_inicio_laboral: Optional[int] = None
     empresa_actual: Optional[str] = None
-    ocupacion_actual: Optional[str] = None
-    tiempo_trabajo: Optional[str] = None
     riesgos_expuestos: Optional[str] = None
-    uso_epp: Optional[str] = None
+    uso_epp: Optional[bool] = False
+    epp_detalle: Optional[str] = None
 
 class DeclaracionJuradaCreate(DeclaracionJuradaBase):
     pass
