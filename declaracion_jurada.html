@@ -7,25 +7,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
-        .jurada-container { max-width: 900px; width: 100%; background: white; padding: 50px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
+        .jurada-container { max-width: 950px; width: 100%; background: white; padding: 50px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
         
+        /* ESTILO SECCIÓN 1 (VALIDADO) */
         .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-top: 22px; display: block; text-align: left; margin-left: 10px; letter-spacing: 1px; }
-        
-        /* CUADROS PLOMO CLARO CON SEPARACIÓN */
-        .form-control, .form-select { 
-            border-radius: 18px; 
-            background-color: #f3f6f9; 
-            border: 2px solid transparent; 
-            padding: 15px; 
-            font-weight: 600; 
-            color: #1e293b; 
-            text-transform: uppercase;
-            margin-top: 8px; /* Separación de la etiqueta */
-        }
-        .form-control:focus { background-color: #ffffff; border-color: #24a174; box-shadow: none; }
-
+        .form-control, .form-select { border-radius: 18px; background-color: #f3f6f9; border: 2px solid transparent; padding: 15px; font-weight: 600; color: #1e293b; text-transform: uppercase; margin-top: 8px; }
+        .form-control:focus, .form-select:focus { background-color: #ffffff; border-color: #24a174; box-shadow: none; }
         .readonly-field { border: 2px dashed #d1eadd; background-color: #f9fdfc; color: #24a174; font-weight: 800; }
 
+        /* BOTONES */
         .btn-accion { background-color: #24a174; border: none; border-radius: 20px; padding: 20px; font-weight: 700; width: 100%; color: white; margin-top: 40px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-volver { background-color: #f1f5f9; color: #b0bac9; border: none; border-radius: 20px; padding: 15px; font-weight: 700; width: 100%; margin-top: 15px; text-transform: uppercase; font-size: 11px; }
 
@@ -34,13 +24,16 @@
         
         .seccion-titulo { color: #1e293b; font-weight: 800; font-size: 18px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 25px; display: flex; align-items: center; justify-content: space-between; }
         .step-tag { font-size: 10px; background: #f1f5f9; padding: 5px 12px; border-radius: 10px; color: #b0bac9; }
+        
+        /* TEXTO DESPLEGABLE LARGO */
+        .select-largo { font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="jurada-container">
         <div class="text-center mb-5">
-            <h2 style="font-weight:800; color:#1e293b; font-size: 24px;">DECLARACIÓN JURADA</h2>
+            <h2 style="font-weight:800; color:#1e293b; font-size: 24px;">DECLARACIÓN JURADA DE SALUD</h2>
             <p id="indicadorPaso" style="color:#b0bac9; font-size: 11px; font-weight: 700; letter-spacing: 1.5px;">PARTE 1: AFILIACIÓN</p>
         </div>
 
@@ -62,30 +55,92 @@
                     <div class="col-md-3"><label class="form-label">Sexo</label><select name="sexo" class="form-select"><option>MASCULINO</option><option>FEMENINO</option></select></div>
                     <div class="col-md-6"><label class="form-label">Fecha Nacimiento</label><input type="date" name="fecha_nac" class="form-control"></div>
                 </div>
-                <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente Sección</button>
+                <div class="row">
+                    <div class="col-md-4"><label class="form-label">Lugar Nacimiento</label><input type="text" name="lugar_nac" class="form-control"></div>
+                    <div class="col-md-8"><label class="form-label">Domicilio Actual</label><input type="text" name="domicilio" class="form-control"></div>
+                </div>
+                <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente: Evaluación Médica</button>
             </div>
 
             <div id="paso2" class="step-content">
-                <div class="seccion-titulo"><span>2. EVALUACIÓN POR SISTEMAS</span><span class="step-tag">2 / 3</span></div>
+                <div class="seccion-titulo"><span>2. ANTECEDENTES PATOLÓGICOS</span><span class="step-tag">2 / 3</span></div>
+                <p class="text-muted small mb-4" style="font-weight: 600;">Seleccione el estado de cada sistema. Si elige "OTRO", especifique en el cuadro siguiente.</p>
+                
                 <div class="row">
                     <div class="col-md-6">
-                        <label class="form-label">Vista</label><input type="text" name="vista" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">Respiratorios</label><input type="text" name="respiratorios" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">Digestivos</label><input type="text" name="digestivos" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">VISTA (Disminución visión, Glaucoma, Retinopatía, Ametropía, Pterigión)</label>
+                        <select name="vista" class="form-select select-largo">
+                            <option value="NORMAL">NORMAL / NINGUNO</option>
+                            <option value="GLAUCOMA">GLAUCOMA</option>
+                            <option value="AMETROPIA">AMETROPÍA (USA LENTES)</option>
+                            <option value="PTERIGION">PTERIGIÓN</option>
+                            <option value="OTRO">OTRO (ESPECIFICAR)</option>
+                        </select>
+
+                        <label class="form-label">RESPIRATORIOS (TBC, EPOC, Asma, Bronquitis, Rinitis, Faringitis)</label>
+                        <select name="respiratorios" class="form-select select-largo">
+                            <option value="NORMAL">NORMAL / NINGUNO</option>
+                            <option value="TBC">TBC (TUBERCULOSIS)</option>
+                            <option value="ASMA">ASMA / BRONQUITIS</option>
+                            <option value="RINITIS">RINITIS / FARINGITIS</option>
+                            <option value="OTRO">OTRO (ESPECIFICAR)</option>
+                        </select>
+
+                        <label class="form-label">DIGESTIVOS (Gastritis, Úlcera, Reflujo, Cirrosis, Hernias, Hemorroides)</label>
+                        <select name="digestivos" class="form-select select-largo">
+                            <option value="NORMAL">NORMAL / NINGUNO</option>
+                            <option value="GASTRITIS">GASTRITIS / ÚLCERA</option>
+                            <option value="REFLUJO">REFLUJO / HERNIA</option>
+                            <option value="HEMORROIDES">HEMORROIDES</option>
+                            <option value="OTRO">OTRO (ESPECIFICAR)</option>
+                        </select>
                     </div>
+
                     <div class="col-md-6">
-                        <label class="form-label">Auditivo</label><input type="text" name="auditivo" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">Cardiovasculares</label><input type="text" name="cardio" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">Osteomusculares</label><input type="text" name="osteo" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">AUDITIVO (Hipoacusia, Otitis, Trauma acústico, Perforación, Vértigo)</label>
+                        <select name="auditivo" class="form-select select-largo">
+                            <option value="NORMAL">NORMAL / NINGUNO</option>
+                            <option value="HIPOACUSIA">HIPOACUSIA (SORDERA)</option>
+                            <option value="VERTIGO">VÉRTIGO / EQUILIBRIO</option>
+                            <option value="OTITIS">OTITIS CRÓNICA</option>
+                            <option value="OTRO">OTRO (ESPECIFICAR)</option>
+                        </select>
+
+                        <label class="form-label">CARDIO-VASCULARES (HTA, Angina, Infarto, Arritmia, Insuficiencia)</label>
+                        <select name="cardio" class="form-select select-largo">
+                            <option value="NORMAL">NORMAL / NINGUNO</option>
+                            <option value="HTA">HTA (HIPERTENSIÓN)</option>
+                            <option value="ARRITMIA">ARRITMIA / INFARTO</option>
+                            <option value="INSUFICIENCIA">INSUFICIENCIA VENOSA</option>
+                            <option value="OTRO">OTRO (ESPECIFICAR)</option>
+                        </select>
+
+                        <label class="form-label">SISTEMA NERVIOSO/MENTAL (Epilepsia, Vértigo, Migraña, Ansiedad)</label>
+                        <select name="nervioso" class="form-select select-largo">
+                            <option value="NORMAL">NORMAL / NINGUNO</option>
+                            <option value="EPILEPSIA">EPILEPSIA</option>
+                            <option value="MIGRAÑA">MIGRAÑA CRÓNICA</option>
+                            <option value="ANSIEDAD">ANSIEDAD / DEPRESIÓN</option>
+                            <option value="OTRO">OTRO (ESPECIFICAR)</option>
+                        </select>
                     </div>
                 </div>
-                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos</button>
-                <button type="button" onclick="cambiarPaso(1)" class="btn-volver">Regresar</button>
+
+                <label class="form-label">OBSERVACIONES / DETALLES ADICIONALES</label>
+                <textarea name="observaciones_med" class="form-control" rows="2" placeholder="ESCRIBA AQUÍ SI ELIGIÓ 'OTRO'"></textarea>
+
+                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos y Riesgos</button>
+                <button type="button" onclick="cambiarPaso(1)" class="btn-volver">Regresar a Afiliación</button>
             </div>
 
             <div id="paso3" class="step-content">
                 <div class="seccion-titulo"><span>3. HÁBITOS Y VIDA LABORAL</span><span class="step-tag">3 / 3</span></div>
-                <button type="submit" class="btn-accion">Finalizar y Guardar en Nube</button>
+                <div class="row">
+                    <div class="col-md-4"><label class="form-label">Alcohol</label><input type="text" name="alcohol" class="form-control" placeholder="CANTIDAD/FREC."></div>
+                    <div class="col-md-4"><label class="form-label">Tabaco</label><input type="text" name="tabaco" class="form-control" placeholder="CANTIDAD/FREC."></div>
+                    <div class="col-md-4"><label class="form-label">Drogas</label><input type="text" name="drogas" class="form-control" placeholder="TIPO/FREC."></div>
+                </div>
+                <button type="submit" class="btn-accion">Finalizar y Guardar en Nube 💾</button>
                 <button type="button" onclick="cambiarPaso(2)" class="btn-volver">Regresar</button>
             </div>
         </form>
@@ -93,15 +148,18 @@
 
     <script>
         window.onload = () => {
-            document.getElementById('nombre_paciente').value = localStorage.getItem('temp_nombres') + " " + localStorage.getItem('temp_apellidos');
-            document.getElementById('codigo_paciente').value = localStorage.getItem('temp_codigo');
+            const nom = localStorage.getItem('temp_nombres') || "";
+            const ape = localStorage.getItem('temp_apellidos') || "";
+            document.getElementById('nombre_paciente').value = (nom + " " + ape).trim();
+            document.getElementById('codigo_paciente').value = localStorage.getItem('temp_codigo') || "---";
         };
 
         function cambiarPaso(p) {
             document.querySelectorAll('.step-content').forEach(s => s.classList.remove('step-active'));
             document.getElementById('paso' + p).classList.add('step-active');
-            const titulos = ["", "PARTE 1: AFILIACIÓN", "PARTE 2: ANTECEDENTES", "PARTE 3: HÁBITOS"];
+            const titulos = ["", "PARTE 1: AFILIACIÓN", "PARTE 2: EVALUACIÓN MÉDICA", "PARTE 3: HÁBITOS"];
             document.getElementById('indicadorPaso').innerText = titulos[p];
+            window.scrollTo(0,0);
         }
     </script>
 </body>
