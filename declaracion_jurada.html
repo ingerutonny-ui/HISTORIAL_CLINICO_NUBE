@@ -4,145 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HC NUBE | Declaración Jurada</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 30px; display: flex; flex-direction: column; align-items: center; }
-        .form-container { max-width: 900px; width: 100%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
-        
-        .header-section { text-align: center; margin-bottom: 30px; }
-        .titulo-principal { font-weight: 800; color: #1e293b; font-size: 24px; text-transform: uppercase; margin: 0; letter-spacing: -0.5px; }
-        .subtitulo { color: #b0bac9; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-        
-        .seccion-titulo { background-color: #f3f6f9; color: #1e293b; padding: 12px 20px; border-radius: 15px; font-weight: 800; font-size: 13px; margin-top: 30px; margin-bottom: 20px; text-transform: uppercase; display: flex; justify-content: space-between; }
-        
-        .form-label { font-size: 10px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-bottom: 5px; margin-left: 5px; display: block; }
-        
-        .form-control, .form-select { border-radius: 15px; background-color: #f3f6f9; border: none; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 13px; }
-        .form-control:focus { background-color: #ebf0f5; box-shadow: none; outline: none; }
-
-        .readonly-field { background-color: #f0fdf4; color: #24a174; border: 1px dashed #d1eadd; cursor: not-allowed; }
-
-        .btn-siguiente { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 40px; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); text-transform: uppercase; letter-spacing: 1px; }
-        
-        .row-gap { margin-bottom: 20px; }
+        .input-medico { @apply w-full border-b border-slate-300 outline-none focus:border-emerald-500 bg-transparent text-sm py-1 font-semibold; }
+        .label-medico { @apply text-[10px] font-black uppercase text-slate-500 block mb-1; }
+        .card-seccion { @apply bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 mb-6; }
     </style>
 </head>
-<body>
-    <div class="form-container">
-        <div class="header-section">
-            <h1 class="titulo-principal">Declaración Jurada de Salud</h1>
-            <p class="subtitulo">Módulo de Enfermería | Primera Sección</p>
+<body class="bg-slate-50 min-h-screen p-4 pb-20">
+
+    <div class="max-w-5xl mx-auto">
+        <div class="bg-white p-8 rounded-[2rem] shadow-xl mb-8 flex justify-between items-center border-b-4 border-emerald-500">
+            <div>
+                <h1 class="text-2xl font-black text-slate-800 uppercase tracking-tighter">Declaración Jurada de Salud</h1>
+                <p class="text-emerald-600 text-[10px] font-bold tracking-[0.3em]">HISTORIAL_CLINICO_NUBE</p>
+            </div>
+            <div class="text-right">
+                <p id="fecha-actual" class="text-sm font-bold text-slate-700"></p>
+            </div>
         </div>
 
-        <form id="formParte1">
-            <div class="seccion-titulo">
-                <span>1. Afiliación del Trabajador</span>
-                <span id="fecha_hoy" style="color: #b0bac9;"></span>
-            </div>
+        <form id="formDeclaracion">
             
-            <div class="row row-gap">
-                <div class="col-md-8">
-                    <label class="form-label">Apellidos y Nombres</label>
-                    <input type="text" id="nombre_completo" class="form-control readonly-field" readonly>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Código de Paciente</label>
-                    <input type="text" id="codigo_id" class="form-control readonly-field" readonly style="text-align: center; font-size: 16px;">
-                </div>
-            </div>
-
-            <div class="row row-gap">
-                <div class="col-md-2">
-                    <label class="form-label">Edad</label>
-                    <input type="number" id="edad" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Sexo</label>
-                    <select id="sexo" class="form-select" required>
-                        <option value="">SELECCIONE</option>
-                        <option value="MASCULINO">MASCULINO</option>
-                        <option value="FEMENINO">FEMENINO</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">Fecha de Nacimiento</label>
-                    <input type="date" id="fecha_nacimiento" class="form-control" required>
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Lugar de Nacimiento</label>
-                    <input type="text" id="lugar_nacimiento" class="form-control" oninput="this.value = this.value.toUpperCase()">
+            <div class="card-seccion">
+                <h2 class="text-emerald-500 font-black text-xs uppercase mb-6 tracking-widest">1. Afiliación del Trabajador</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2">
+                        <label class="label-medico">Apellidos y Nombres</label>
+                        <input type="text" id="nombres" required class="input-medico text-lg">
+                    </div>
+                    <div>
+                        <label class="label-medico">Cédula de Identidad (CI)</label>
+                        <input type="text" id="documento_identidad" required class="input-medico text-lg">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="label-medico">Edad</label><input type="number" id="edad" class="input-medico"></div>
+                        <div>
+                            <label class="label-medico">Sexo</label>
+                            <select id="sexo" class="input-medico">
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div><label class="label-medico">Lugar de Nacimiento</label><input type="text" id="lugar_nacimiento" class="input-medico"></div>
+                    <div><label class="label-medico">Fecha de Nacimiento</label><input type="date" id="fecha_nacimiento" class="input-medico"></div>
+                    <div class="md:col-span-2"><label class="label-medico">Domicilio</label><input type="text" id="domicilio" class="input-medico"></div>
+                    <div><label class="label-medico">Teléfono</label><input type="text" id="telefono" class="input-medico"></div>
+                    <div><label class="label-medico">Estado Civil</label><input type="text" id="estado_civil" class="input-medico"></div>
+                    <div class="md:col-span-2"><label class="label-medico">Profesión / Oficio</label><input type="text" id="profesion_oficio" class="input-medico"></div>
                 </div>
             </div>
 
-            <div class="row row-gap">
-                <div class="col-md-5">
-                    <label class="form-label">Domicilio (Av./Calle)</label>
-                    <input type="text" id="domicilio" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label">N° Casa</label>
-                    <input type="text" id="n_casa" class="form-control">
-                </div>
-                <div class="col-md-5">
-                    <label class="form-label">Zona / Barrio</label>
-                    <input type="text" id="zona" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
-            </div>
-
-            <div class="row row-gap">
-                <div class="col-md-3">
-                    <label class="form-label">Ciudad</label>
-                    <input type="text" id="ciudad" class="form-control" oninput="this.value = this.value.toUpperCase()">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">País</label>
-                    <input type="text" id="pais" class="form-control" value="BOLIVIA" oninput="this.value = this.value.toUpperCase()">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Teléfono / Celular</label>
-                    <input type="text" id="telefono" class="form-control">
-                </div>
-                <div class="col-md-3">
-                    <label class="form-label">Estado Civil</label>
-                    <select id="estado_civil" class="form-select">
-                        <option value="SOLTERO(A)">SOLTERO(A)</option>
-                        <option value="CASADO(A)">CASADO(A)</option>
-                        <option value="DIVORCIADO(A)">DIVORCIADO(A)</option>
-                        <option value="VIUDO(A)">VIUDO(A)</option>
-                    </select>
+            <div class="card-seccion">
+                <h2 class="text-emerald-500 font-black text-xs uppercase mb-6 tracking-widest">2. Antecedentes Patológicos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-4">
+                    <div><label class="label-medico">Vista</label><input type="text" id="vista" class="input-medico"></div>
+                    <div><label class="label-medico">Auditivo</label><input type="text" id="auditivo" class="input-medico"></div>
+                    <div><label class="label-medico">Respiratorios</label><input type="text" id="respiratorios" class="input-medico"></div>
+                    <div><label class="label-medico">Cardiovasculares</label><input type="text" id="cardiovasculares" class="input-medico"></div>
+                    <div><label class="label-medico">Digestivos</label><input type="text" id="digestivos" class="input-medico"></div>
+                    <div><label class="label-medico">Genitourinario</label><input type="text" id="genitourinario" class="input-medico"></div>
+                    <div><label class="label-medico">Sistema Nervioso</label><input type="text" id="sistema_nervioso" class="input-medico"></div>
+                    <div><label class="label-medico">Osteomusculares</label><input type="text" id="osteomusculares" class="input-medico"></div>
+                    <div><label class="label-medico">Endocrinos</label><input type="text" id="endocrinos" class="input-medico"></div>
+                    <div><label class="label-medico">Dermatológicos</label><input type="text" id="dermatologicos" class="input-medico"></div>
+                    <div class="md:col-span-2"><label class="label-medico">Alergias / Chagas / Otros</label><input type="text" id="alergias_medicamentos" class="input-medico"></div>
                 </div>
             </div>
 
-            <div class="row row-gap">
-                <div class="col-md-12">
-                    <label class="form-label">Profesión / Labor que desempeña</label>
-                    <input type="text" id="profesion" class="form-control" oninput="this.value = this.value.toUpperCase()">
+            <div class="card-seccion">
+                <h2 class="text-emerald-500 font-black text-xs uppercase mb-6 tracking-widest">3. Historia Laboral y Hábitos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-xl">
+                        <label class="text-[10px] font-bold uppercase">¿Fuma?</label>
+                        <input type="checkbox" id="fuma" class="w-5 h-5 accent-emerald-500">
+                        <input type="text" id="fuma_detalle" placeholder="¿Cuánto?" class="flex-1 bg-transparent border-b border-slate-200 outline-none text-xs">
+                    </div>
+                    <div class="flex items-center gap-3 bg-slate-50 p-3 rounded-xl">
+                        <label class="text-[10px] font-bold uppercase">¿Bebe?</label>
+                        <input type="checkbox" id="bebe" class="w-5 h-5 accent-emerald-500">
+                        <input type="text" id="bebe_detalle" placeholder="¿Frecuencia?" class="flex-1 bg-transparent border-b border-slate-200 outline-none text-xs">
+                    </div>
+                    <div><label class="label-medico">Edad Inicio Laboral</label><input type="number" id="edad_inicio_laboral" class="input-medico"></div>
+                    <div><label class="label-medico">Empresa Actual</label><input type="text" id="empresa_actual" class="input-medico"></div>
+                    <div class="md:col-span-2"><label class="label-medico">Riesgos Expuestos (Polvo, Ruido, etc.)</label><input type="text" id="riesgos_expuestos" class="input-medico"></div>
                 </div>
             </div>
 
-            <button type="submit" class="btn-siguiente">Guardar y continuar a siguiente sección</button>
+            <button type="submit" class="w-full py-6 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-3xl shadow-xl transition-all uppercase tracking-widest active:scale-95">
+                Guardar Registro Médico 💾
+            </button>
         </form>
     </div>
 
     <script>
-        // Cargar datos automáticamente al abrir
-        window.onload = () => {
-            document.getElementById('fecha_hoy').innerText = new Date().toLocaleDateString();
-            
-            // Intentar recuperar del registro anterior
-            const nombres = localStorage.getItem('temp_nombres') || "PACIENTE";
-            const apellidos = localStorage.getItem('temp_apellidos') || "NUEVO";
-            const codigo = localStorage.getItem('temp_codigo') || "S/C";
+        const API_URL = "https://historial-clinico-936s.onrender.com";
+        document.getElementById('fecha-actual').innerText = new Date().toLocaleDateString();
 
-            document.getElementById('nombre_completo').value = `${apellidos} ${nombres}`;
-            document.getElementById('codigo_id').value = codigo;
-        };
-
-        document.getElementById('formParte1').onsubmit = (e) => {
+        document.getElementById('formDeclaracion').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert("SECCIÓN 1 GUARDADA LOCALMENTE. MAÑANA CONTINUAREMOS CON LOS ANTECEDENTES.");
-            // Aquí guardaremos en la base de datos mañana junto con la parte 2
-        };
+            try {
+                // 1. Crear Paciente
+                const resPac = await fetch(`${API_URL}/pacientes/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        nombres: document.getElementById('nombres').value,
+                        apellidos: "",
+                        documento_identidad: document.getElementById('documento_identidad').value,
+                        codigo_paciente: "PAC-" + Date.now()
+                    })
+                });
+                const paciente = await resPac.json();
+
+                // 2. Crear Declaración
+                await fetch(`${API_URL}/declaraciones/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        paciente_id: paciente.id,
+                        edad: parseInt(document.getElementById('edad').value) || 0,
+                        sexo: document.getElementById('sexo').value,
+                        lugar_nacimiento: document.getElementById('lugar_nacimiento').value,
+                        fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+                        estado_civil: document.getElementById('estado_civil').value,
+                        domicilio: document.getElementById('domicilio').value,
+                        telefono: document.getElementById('telefono').value,
+                        profesion_oficio: document.getElementById('profesion_oficio').value,
+                        vista: document.getElementById('vista').value,
+                        auditivo: document.getElementById('auditivo').value,
+                        respiratorios: document.getElementById('respiratorios').value,
+                        cardiovasculares: document.getElementById('cardiovasculares').value,
+                        digestivos: document.getElementById('digestivos').value,
+                        genitourinario: document.getElementById('genitourinario').value,
+                        sistema_nervioso: document.getElementById('sistema_nervioso').value,
+                        osteomusculares: document.getElementById('osteomusculares').value,
+                        endocrinos: document.getElementById('endocrinos').value,
+                        dermatologicos: document.getElementById('dermatologicos').value,
+                        alergias_medicamentos: document.getElementById('alergias_medicamentos').value,
+                        fuma: document.getElementById('fuma').checked,
+                        fuma_detalle: document.getElementById('fuma_detalle').value,
+                        bebe: document.getElementById('bebe').checked,
+                        bebe_detalle: document.getElementById('bebe_detalle').value,
+                        edad_inicio_laboral: parseInt(document.getElementById('edad_inicio_laboral').value) || 0,
+                        empresa_actual: document.getElementById('empresa_actual').value,
+                        riesgos_expuestos: document.getElementById('riesgos_expuestos').value
+                    })
+                });
+                alert("✅ Guardado exitosamente");
+            } catch (err) {
+                alert("❌ Error de conexión");
+            }
+        });
     </script>
 </body>
 </html>
