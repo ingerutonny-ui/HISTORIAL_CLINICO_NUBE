@@ -36,9 +36,9 @@
             <div id="paso1" class="step-content step-active">
                 <div class="seccion-titulo"><span>I. FILIACIÓN DEL TRABAJADOR</span><span class="step-tag">1 / 3</span></div>
                 <div class="row">
-                    <div class="col-md-5"><label class="form-label">Apellidos y Nombres</label><input type="text" id="p_nombre" class="form-control readonly-field" readonly></div>
-                    <div class="col-md-3"><label class="form-label">Documento de Identidad</label><input type="text" id="p_ci" class="form-control readonly-field text-center" readonly></div>
-                    <div class="col-md-4"><label class="form-label">Código Generado</label><input type="text" id="p_codigo" class="form-control readonly-field text-center" readonly></div>
+                    <div class="col-md-5"><label class="form-label">APELLIDOS Y NOMBRES</label><input type="text" id="p_nombre" class="form-control readonly-field" readonly></div>
+                    <div class="col-md-3"><label class="form-label">DOCUMENTO DE IDENTIDAD</label><input type="text" id="p_ci" class="form-control readonly-field text-center" readonly></div>
+                    <div class="col-md-4"><label class="form-label">CODIGO GENERADO</label><input type="text" id="p_codigo" class="form-control readonly-field text-center" readonly></div>
                 </div>
                 <div class="row">
                     <div class="col-md-2"><label class="form-label">1. Edad</label><input type="number" name="edad" class="form-control" required></div>
@@ -160,9 +160,12 @@
 
     <script>
         window.onload = () => {
-            document.getElementById('p_nombre').value = localStorage.getItem('temp_nombres') + " " + localStorage.getItem('temp_apellidos');
-            document.getElementById('p_ci').value = localStorage.getItem('temp_ci');
-            document.getElementById('p_codigo').value = localStorage.getItem('temp_codigo');
+            // CARGA DE DATOS DESDE LOCALSTORAGE USANDO LAS CLAVES CORRECTAS
+            const nom = localStorage.getItem('temp_nombres') || "";
+            const ape = localStorage.getItem('temp_apellidos') || "";
+            document.getElementById('p_nombre').value = (nom + " " + ape).trim();
+            document.getElementById('p_ci').value = localStorage.getItem('temp_ci') || "";
+            document.getElementById('p_codigo').value = localStorage.getItem('temp_codigo') || "";
         };
 
         function cambiarPaso(p) {
