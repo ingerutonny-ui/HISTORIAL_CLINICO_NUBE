@@ -9,22 +9,21 @@
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; }
         .jurada-container { max-width: 1000px; width: 100%; background: white; padding: 50px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); }
         
-        /* CUADROS PLOMO CLARO Y ETIQUETAS SEPARADAS */
         .form-label { font-size: 10px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-top: 18px; display: block; text-align: left; margin-left: 10px; letter-spacing: 0.5px; }
         .form-control, .form-select { border-radius: 15px; background-color: #f3f6f9; border: 2px solid transparent; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; margin-top: 8px; font-size: 13px; }
         .form-control:focus, .form-select:focus { background-color: #ffffff; border-color: #24a174; box-shadow: none; }
         
-        /* CAMPOS QUE VIENEN DEL PRIMER FORMULARIO */
         .readonly-field { border: 2px dashed #d1eadd; background-color: #f9fdfc; color: #24a174; font-weight: 800; }
-
         .btn-accion { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-volver { background-color: #f1f5f9; color: #b0bac9; border: none; border-radius: 20px; padding: 12px; font-weight: 700; width: 100%; margin-top: 15px; text-transform: uppercase; font-size: 10px; }
 
         .step-content { display: none; }
         .step-active { display: block; }
-        
         .seccion-titulo { color: #1e293b; font-weight: 800; font-size: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
         .step-tag { font-size: 9px; background: #f0fdf4; padding: 4px 10px; border-radius: 8px; color: #24a174; font-weight: 800; }
+        
+        /* Estilo para las subsecciones de la parte 3 */
+        .sub-header { font-size: 11px; font-weight: 800; color: #24a174; margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; border-left: 4px solid #24a174; padding-left: 10px; }
     </style>
 </head>
 <body>
@@ -38,37 +37,22 @@
         <form id="formMaster">
             <div id="paso1" class="step-content step-active">
                 <div class="seccion-titulo"><span>I. DATOS DEL PACIENTE</span><span class="step-tag">1 / 3</span></div>
-                
                 <div class="row">
                     <div class="col-md-5"><label class="form-label">Apellidos y Nombres</label><input type="text" id="p_nombre" class="form-control readonly-field" readonly></div>
                     <div class="col-md-3"><label class="form-label">Carnet de Identidad</label><input type="text" id="p_ci" class="form-control readonly-field text-center" readonly></div>
                     <div class="col-md-4"><label class="form-label">Código Generado</label><input type="text" id="p_codigo" class="form-control readonly-field text-center" readonly></div>
                 </div>
-
                 <div class="row">
-                    <div class="col-md-2"><label class="form-label">Edad</label><input type="number" name="edad" class="form-control" required></div>
-                    <div class="col-md-3"><label class="form-label">Sexo</label><select name="sexo" class="form-select"><option>MASCULINO</option><option>FEMENINO</option></select></div>
-                    <div class="col-md-3"><label class="form-label">Fecha Nacimiento</label><input type="date" name="fecha_nac" class="form-control" required></div>
-                    <div class="col-md-4"><label class="form-label">Lugar de Nacimiento</label><input type="text" name="lugar_nac" class="form-control"></div>
+                    <div class="col-md-2"><label class="form-label">Edad</label><input type="number" name="edad" class="form-control"></div>
+                    <div class="col-md-2"><label class="form-label">Sexo</label><select name="sexo" class="form-select"><option>M</option><option>F</option></select></div>
+                    <div class="col-md-4"><label class="form-label">Fecha Nac.</label><input type="date" name="fecha_nac" class="form-control"></div>
+                    <div class="col-md-4"><label class="form-label">Lugar Nac.</label><input type="text" name="lugar_nac" class="form-control"></div>
                 </div>
-
                 <div class="row">
-                    <div class="col-md-5"><label class="form-label">Domicilio (Av./Calle)</label><input type="text" name="domicilio" class="form-control"></div>
-                    <div class="col-md-2"><label class="form-label">N° Casa</label><input type="text" name="n_casa" class="form-control"></div>
-                    <div class="col-md-5"><label class="form-label">Zona / Barrio</label><input type="text" name="barrio" class="form-control"></div>
-                </div>
-
-                <div class="row">
+                    <div class="col-md-6"><label class="form-label">Domicilio</label><input type="text" name="domicilio" class="form-control"></div>
+                    <div class="col-md-3"><label class="form-label">Zona</label><input type="text" name="zona" class="form-control"></div>
                     <div class="col-md-3"><label class="form-label">Ciudad</label><input type="text" name="ciudad" class="form-control"></div>
-                    <div class="col-md-3"><label class="form-label">País</label><input type="text" name="pais" class="form-control"></div>
-                    <div class="col-md-3"><label class="form-label">Teléfono / Celular</label><input type="text" name="telf" class="form-control"></div>
-                    <div class="col-md-3"><label class="form-label">Estado Civil</label><select name="civil" class="form-select"><option>SOLTERO/A</option><option>CASADO/A</option><option>DIVORCIADO/A</option><option>VIUDO/A</option></select></div>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-12"><label class="form-label">Profesión / Labor Actual</label><input type="text" name="labor" class="form-control"></div>
-                </div>
-
                 <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente: Evaluación Médica</button>
             </div>
 
@@ -76,44 +60,92 @@
                 <div class="seccion-titulo"><span>II. ANTECEDENTES PATOLÓGICOS</span><span class="step-tag">2 / 3</span></div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label class="form-label">VISTA (Glaucoma, Lentes)</label><input type="text" name="s_vista" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">AUDITIVO (Sordera, Vértigo)</label><input type="text" name="s_auditivo" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">RESPIRATORIOS (Asma, TBC)</label><input type="text" name="s_respira" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">CARDIOVASCULARES (HTA, Arritmia)</label><input type="text" name="s_cardio" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">DIGESTIVOS (Gastritis, Hernia)</label><input type="text" name="s_digesta" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">NERVIOSO/MENTAL (Epilepsia)</label><input type="text" name="s_nervio" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">URINARIO (Cálculos, Cistitis)</label><input type="text" name="s_urina" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">GENITALES (Quistes, Próstata)</label><input type="text" name="s_genital" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">OSTEOMUSCULARES (Fracturas)</label><input type="text" name="s_osteo" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">PIEL (Alergias, Hongos)</label><input type="text" name="s_piel" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">INFECCIOSAS (Chagas, VIH)</label><input type="text" name="s_infecto" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">VISTA</label><input type="text" name="s_vista" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">AUDITIVO</label><input type="text" name="s_auditivo" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">RESPIRATORIOS</label><input type="text" name="s_respira" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">CARDIOVASCULARES</label><input type="text" name="s_cardio" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">DIGESTIVOS</label><input type="text" name="s_digesta" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">NERVIOSO/MENTAL</label><input type="text" name="s_nervio" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">URINARIO</label><input type="text" name="s_urina" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">GENITALES</label><input type="text" name="s_genital" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">OSTEOMUSCULARES</label><input type="text" name="s_osteo" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">PIEL</label><input type="text" name="s_piel" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">INFECCIOSAS</label><input type="text" name="s_infecto" class="form-control" placeholder="NORMAL">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">SANGUÍNEOS (Anemia)</label><input type="text" name="s_sangre" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">ENDOCRINOS (Diabetes)</label><input type="text" name="s_endo" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">ALERGIAS MEDICAMENTOSAS</label><input type="text" name="s_alergia" class="form-control" placeholder="NINGUNA">
-                        <label class="form-label">CIRUGÍAS PREVIAS</label><input type="text" name="s_cirugia" class="form-control" placeholder="NINGUNA">
+                        <label class="form-label">SANGUÍNEOS</label><input type="text" name="s_sangre" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">ENDOCRINOS</label><input type="text" name="s_endo" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">ALERGIAS</label><input type="text" name="s_alergia" class="form-control" placeholder="NINGUNA">
+                        <label class="form-label">CIRUGÍAS</label><input type="text" name="s_cirugia" class="form-control" placeholder="NINGUNA">
                         <label class="form-label">HOSPITALIZACIONES</label><input type="text" name="s_hospi" class="form-control" placeholder="NINGUNA">
-                        <label class="form-label">ACCIDENTES DE TRABAJO</label><input type="text" name="s_acc_lab" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">ACCIDENTES LABORALES</label><input type="text" name="s_acc_lab" class="form-control" placeholder="NINGUNO">
                         <label class="form-label">ACCIDENTES COMUNES</label><input type="text" name="s_acc_com" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">VACUNAS RECIBIDAS</label><input type="text" name="s_vacuna" class="form-control" placeholder="NINGUNA">
+                        <label class="form-label">VACUNAS</label><input type="text" name="s_vacuna" class="form-control" placeholder="NINGUNA">
                         <label class="form-label">MEDICAMENTOS ACTUALES</label><input type="text" name="s_medica" class="form-control" placeholder="NINGUNO">
                         <label class="form-label">ANTECEDENTES FAMILIARES</label><input type="text" name="s_fam" class="form-control" placeholder="NINGUNO">
                         <label class="form-label">OBSERVACIONES</label><input type="text" name="s_obs" class="form-control" placeholder="NINGUNA">
                     </div>
                 </div>
-                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos</button>
+                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos y Riesgos</button>
                 <button type="button" onclick="cambiarPaso(1)" class="btn-volver">Regresar</button>
             </div>
 
             <div id="paso3" class="step-content">
-                <div class="seccion-titulo"><span>III. HÁBITOS Y RIESGOS</span><span class="step-tag">3 / 3</span></div>
-                <div class="row">
-                    <div class="col-md-4"><label class="form-label">Alcohol</label><input type="text" name="alc" class="form-control"></div>
-                    <div class="col-md-4"><label class="form-label">Tabaco</label><input type="text" name="tab" class="form-control"></div>
-                    <div class="col-md-4"><label class="form-label">Drogas/Coca</label><input type="text" name="dro" class="form-control"></div>
+                <div class="seccion-titulo"><span>III. HÁBITOS Y VIDA LABORAL</span><span class="step-tag">3 / 3</span></div>
+                
+                <div class="sub-header">Hábitos Personales</div>
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <label class="form-label">¿Fuma?</label>
+                        <select name="fuma_si_no" class="form-select"><option>NO</option><option>SI</option></select>
+                        <input type="text" name="fuma_detalle" class="form-control mt-1" placeholder="Cant./Frecuencia">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">¿Bebe Alcohol?</label>
+                        <select name="bebe_si_no" class="form-select"><option>NO</option><option>SI</option></select>
+                        <input type="text" name="bebe_detalle" class="form-control mt-1" placeholder="Cant./Frecuencia">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">¿Consume Drogas?</label>
+                        <select name="droga_si_no" class="form-select"><option>NO</option><option>SI</option></select>
+                        <input type="text" name="droga_detalle" class="form-control mt-1" placeholder="Tipo/Frecuencia">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">¿Medicamentos?</label>
+                        <select name="med_si_no" class="form-select"><option>NO</option><option>SI</option></select>
+                        <input type="text" name="med_detalle" class="form-control mt-1" placeholder="¿Cuáles?">
+                    </div>
                 </div>
-                <button type="submit" class="btn-accion">Guardar Historial Completo en Nube 💾</button>
+
+                <div class="sub-header">Antecedentes Ocupacionales</div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="form-label">Historial de Trabajo Anterior</label>
+                        <textarea name="ant_ocupacional" class="form-control" rows="3" placeholder="Edad inicio: 18, Empresa: ABC, Ocupación: Obrero, Tiempo: 2 años, Riesgos: Ruido, EPP: Casco y tapones."></textarea>
+                    </div>
+                </div>
+
+                <div class="sub-header">Antecedentes de Riesgo (Exposición Actual)</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Físicos</label>
+                        <input type="text" name="riesgo_fisico" class="form-control" placeholder="Ruido, Calor, Radiación, Vibración">
+                        <label class="form-label">Químicos</label>
+                        <input type="text" name="riesgo_quimico" class="form-control" placeholder="Polvos, Humos, Gases, Vapores">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Ergonómicos</label>
+                        <input type="text" name="riesgo_ergo" class="form-control" placeholder="Posturas, Carga pesada, Mov. Repetitivos">
+                        <label class="form-label">Psicología Laboral</label>
+                        <input type="text" name="riesgo_psico" class="form-control" placeholder="Estrés, Turnos nocturnos, Carga mental">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label">Observaciones de Riesgo</label>
+                        <input type="text" name="riesgo_obs" class="form-control" placeholder="Especifique otros detalles relevantes aquí">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-accion">Finalizar y Guardar Historial 💾</button>
                 <button type="button" onclick="cambiarPaso(2)" class="btn-volver">Regresar</button>
             </div>
         </form>
@@ -121,17 +153,24 @@
 
     <script>
         window.onload = () => {
-            // JALAMOS LOS DATOS DEL FORMULARIO DE REGISTRO
             document.getElementById('p_nombre').value = localStorage.getItem('temp_nombres') + " " + localStorage.getItem('temp_apellidos');
-            document.getElementById('p_ci').value = localStorage.getItem('temp_ci'); // CAMPO CARNET
+            document.getElementById('p_ci').value = localStorage.getItem('temp_ci');
             document.getElementById('p_codigo').value = localStorage.getItem('temp_codigo');
         };
 
         function cambiarPaso(p) {
             document.querySelectorAll('.step-content').forEach(s => s.classList.remove('step-active'));
             document.getElementById('paso' + p).classList.add('step-active');
+            const titulos = ["", "SECCIÓN 1: FILIACIÓN", "SECCIÓN 2: ANTECEDENTES", "SECCIÓN 3: HÁBITOS Y RIESGOS"];
+            document.getElementById('indicadorPaso').innerText = titulos[p];
             window.scrollTo(0,0);
         }
+
+        document.getElementById('formMaster').onsubmit = async (e) => {
+            e.preventDefault();
+            // Lógica de envío a Render...
+            alert("Guardando historial completo...");
+        };
     </script>
 </body>
 </html>
