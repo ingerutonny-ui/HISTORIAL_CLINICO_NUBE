@@ -3,14 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from . import models, schemas, crud
-from .database import engine, SessionLocal
+from .database import SessionLocal, engine
 
-# Crea las tablas en la base de datos (incluyendo la nueva de declaraciones)
+# Crear tablas en la base de datos si no existen
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
-# Configuración de CORS para permitir conexión desde GitHub Pages
+# Configuración de CORS para permitir conexión desde el Frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,9 +28,10 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"status": "Servidor HISTORIAL_CLINICO_NUBE activo"}
+    return {"status": "Servidor HISTORIAL_CLINICO_NUBE activo y profesional"}
 
-# --- RUTAS DE PACIENTES ---
+#--- RUTAS DE PACIENTES ---
+
 @app.get("/pacientes", response_model=List[schemas.Paciente])
 def read_pacientes(db: Session = Depends(get_db)):
     return crud.get_pacientes(db)
@@ -42,15 +43,13 @@ def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_
         raise HTTPException(status_code=400, detail="Documento de identidad ya registrado")
     return crud.create_paciente(db=db, paciente=paciente)
 
-# --- RUTAS DE DECLARACIÓN JURADA ---
+#--- RUTAS DE DECLARACIÓN JURADA ---
+
 @app.get("/declaraciones", response_model=List[schemas.DeclaracionJurada])
 def read_declaraciones(db: Session = Depends(get_db)):
     return crud.get_declaraciones(db)
 
 @app.post("/declaraciones/", response_model=schemas.DeclaracionJurada)
 def create_declaracion(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
-    # Opcional: Verificar si el paciente existe antes de crear la declaración
-    db_paciente = crud.get_paciente(db, paciente_id=declaracion.paciente_id)
-    if not db_paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    # El método crud ya maneja todos los nuevos campos automáticamente
     return crud.create_declaracion_jurada(db=db, declaracion=declaracion)
