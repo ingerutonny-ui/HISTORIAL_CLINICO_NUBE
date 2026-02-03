@@ -9,101 +9,105 @@
     <style>
         body { font-family: 'Inter', sans-serif; @apply bg-[#f1f5f9] flex justify-center p-4 md:p-10; }
         
-        /* Contenedor con bordes redondeados y sombra idéntico a Captura 2 */
-        .card-main { 
-            @apply w-full max-w-5xl bg-white rounded-[3rem] shadow-2xl overflow-hidden p-8 md:p-16 border border-slate-100; 
+        /* Contenedor principal con sombra y bordes curvos */
+        .card-container { 
+            @apply w-full max-w-5xl bg-white rounded-[3rem] shadow-2xl overflow-hidden p-8 md:p-14 border border-slate-100; 
         }
 
-        /* Cuadros de llenado VISIBLES con fondo gris suave y bordes (image_ed3800) */
-        .input-fill { 
-            @apply w-full bg-[#f1f5f9] border border-transparent p-4 rounded-2xl outline-none 
+        /* CUADROS DE LLENADO: Color plomo claro, bordes visibles y separación */
+        .input-field { 
+            @apply w-full bg-[#f1f5f9] border border-slate-200 p-4 rounded-2xl outline-none mt-2
             focus:bg-white focus:ring-2 focus:ring-emerald-500/20 text-slate-700 text-sm font-medium transition-all; 
         }
 
-        /* Campos que cargan datos del registro anterior (image_edb330) */
+        /* Campos bloqueados (Nombre y Código) con resalte verde suave */
         .input-locked { 
-            @apply bg-emerald-50/50 border border-emerald-100 text-emerald-600 font-black cursor-not-allowed; 
+            @apply bg-emerald-50/60 border-emerald-100 text-emerald-600 font-black cursor-not-allowed; 
         }
 
-        .label-style { @apply text-[10px] font-black uppercase text-slate-400 mb-2 ml-2 block tracking-widest; }
+        /* Etiquetas con separación del cuadro */
+        .label-main { @apply text-[10px] font-black uppercase text-slate-400 ml-2 block tracking-widest; }
     </style>
 </head>
 <body>
 
-    <div class="card-main">
+    <div class="card-container">
         <div class="text-center mb-12">
             <h1 class="text-3xl font-black text-[#1e293b] uppercase tracking-tighter">Declaración Jurada de Salud</h1>
             <p class="text-slate-400 text-[10px] font-bold tracking-[0.4em] uppercase mt-2">Módulo de Enfermería | Primera Sección</p>
             <div class="flex justify-center mt-6 gap-3">
-                <div class="w-3 h-3 rounded-full bg-emerald-500 shadow-lg shadow-emerald-200"></div>
-                <div class="w-3 h-3 rounded-full bg-slate-100"></div>
-                <div class="w-3 h-3 rounded-full bg-slate-100"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-slate-100"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-slate-100"></div>
             </div>
         </div>
 
         <form id="formDeclaracion">
-            <div class="flex items-center justify-between mb-10 border-b border-slate-50 pb-4">
+            <div class="flex items-center justify-between mb-10 border-b border-slate-50 pb-6">
                 <div class="flex items-center">
                     <span class="bg-emerald-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black mr-3">1</span>
                     <h2 class="text-[#1e293b] font-black text-xs uppercase tracking-widest">1. Afiliación del Trabajador</h2>
                 </div>
-                <span class="text-slate-300 text-[10px] font-bold">30/1/2026</span>
+                <span class="text-slate-300 text-[10px] font-bold uppercase">Gestión 2026</span>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
                 <div class="md:col-span-2">
-                    <label class="label-style">Apellidos y Nombres</label>
-                    <input type="text" id="nombre_paciente" readonly class="input-fill input-locked uppercase">
+                    <label class="label-main">Apellidos y Nombres (Registrado)</label>
+                    <input type="text" id="nombre_paciente" readonly class="input-field input-locked uppercase">
                 </div>
                 <div>
-                    <label class="label-style">Código de Paciente</label>
-                    <input type="text" id="codigo_paciente" readonly class="input-fill input-locked text-center">
+                    <label class="label-main">Código de Paciente</label>
+                    <input type="text" id="codigo_paciente" readonly class="input-field input-locked text-center">
                 </div>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-                <div><label class="label-style">Edad</label><input type="number" class="input-fill" placeholder="30"></div>
                 <div>
-                    <label class="label-style">Sexo</label>
-                    <select class="input-fill"><option>MASCULINO</option><option>FEMENINO</option></select>
+                    <label class="label-main">Edad</label>
+                    <input type="number" class="input-field" placeholder="Ej: 30">
                 </div>
-                <div><label class="label-style">Fecha de Nacimiento</label><input type="date" class="input-fill"></div>
-                <div><label class="label-style">Lugar de Nacimiento</label><input type="text" class="input-fill" placeholder="LA PAZ"></div>
+                <div>
+                    <label class="label-main">Sexo</label>
+                    <select class="input-field"><option>MASCULINO</option><option>FEMENINO</option></select>
+                </div>
+                <div>
+                    <label class="label-main">Fecha Nacimiento</label>
+                    <input type="date" class="input-field">
+                </div>
+                <div>
+                    <label class="label-main">Lugar Nacimiento</label>
+                    <input type="text" class="input-field" placeholder="Ciudad">
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div><label class="label-style">Domicilio (Av./Calle)</label><input type="text" class="input-fill"></div>
-                <div><label class="label-style">N° Casa</label><input type="text" class="input-fill"></div>
-                <div><label class="label-style">Zona / Barrio</label><input type="text" class="input-fill"></div>
+                <div><label class="label-main">Domicilio (Av./Calle)</label><input type="text" class="input-field"></div>
+                <div><label class="label-main">N° Casa</label><input type="text" class="input-field"></div>
+                <div><label class="label-main">Zona / Barrio</label><input type="text" class="input-field"></div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                <div><label class="label-style">Ciudad</label><input type="text" class="input-fill"></div>
-                <div><label class="label-style">País</label><input type="text" class="input-fill"></div>
-                <div><label class="label-style">Teléfono / Celular</label><input type="text" class="input-fill"></div>
-                <div><label class="label-style">Estado Civil</label><input type="text" class="input-fill"></div>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div><label class="label-main">Ciudad</label><input type="text" class="input-field"></div>
+                <div><label class="label-main">País</label><input type="text" class="input-field"></div>
+                <div><label class="label-main">Teléfono / Celular</label><input type="text" class="input-field"></div>
+                <div><label class="label-main">Estado Civil</label><input type="text" class="input-field"></div>
             </div>
 
-            <div class="mb-12">
-                <label class="label-style">Profesión / Labor que desempeña</label>
-                <input type="text" class="input-fill">
-            </div>
-
-            <button type="submit" class="w-full py-6 bg-[#00a86b] hover:bg-[#008f5d] text-white font-black rounded-2xl shadow-xl transition-all uppercase tracking-widest text-xs border-b-4 border-emerald-800/20">
+            <button type="submit" class="w-full py-6 bg-[#00a86b] hover:bg-[#008f5d] text-white font-black rounded-2xl shadow-xl transition-all uppercase tracking-widest text-xs">
                 Guardar y Continuar a Siguiente Sección
             </button>
         </form>
     </div>
 
     <script>
-        // RECUPERACIÓN DE DATOS (Solución a image_ee10e7)
+        // Carga automática de datos del paciente registrado (image_eda04b)
         window.onload = () => {
-            // Intentamos recuperar del localStorage lo que se guardó en registro_paciente.html
+            // Datos de ejemplo basados en tu captura image_ee9065
             const pNombre = localStorage.getItem('p_nombre') || "QUISPE CELESTINO";
-            const pApellido = localStorage.getItem('p_apellido') || "";
             const pCodigo = localStorage.getItem('p_codigo') || "CQ3749";
 
-            document.getElementById('nombre_paciente').value = `${pNombre} ${pApellido}`.trim();
+            document.getElementById('nombre_paciente').value = pNombre;
             document.getElementById('codigo_paciente').value = pCodigo;
         };
     </script>
