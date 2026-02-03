@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC NUBE | Menú Enfermería</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+</head>
+<body class="bg-slate-950 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <a href="index.html" class="mb-10 text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] hover:text-blue-400 transition-colors">
+        ← Volver al Portal Principal
+    </a>
+
+    <div class="text-center">
+        <h1 class="text-emerald-500 text-2xl font-bold uppercase tracking-tighter mb-1">Área de Enfermería</h1>
+        <p class="text-slate-500 text-[9px] uppercase tracking-[0.3em] mb-12">Seleccione la tarea a realizar</p>
+
+        <div class="flex flex-col gap-4 w-64">
+            <button onclick="location.href='registro_paciente.html'" class="py-6 bg-slate-900 rounded-2xl border border-slate-800 hover:border-emerald-500 transition-all group">
+                <span class="block text-2xl mb-1 group-hover:scale-110 transition-transform">📝</span>
+                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Registro de Paciente</span>
+            </button>
+
+            <button class="py-6 bg-slate-900/50 rounded-2xl border border-slate-800 opacity-60 cursor-not-allowed flex flex-col items-center">
+                <span class="block text-2xl mb-1">📋</span>
+                <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest text-center">Especialidad<br>(Próximamente)</span>
+            </button>
+        </div>
+    </div>
+</body>
+</html>
