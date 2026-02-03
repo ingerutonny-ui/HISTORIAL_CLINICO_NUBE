@@ -21,8 +21,6 @@
         .step-active { display: block; }
         .seccion-titulo { color: #1e293b; font-weight: 800; font-size: 16px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
         .step-tag { font-size: 9px; background: #f0fdf4; padding: 4px 10px; border-radius: 8px; color: #24a174; font-weight: 800; }
-        
-        /* Estilo para las subsecciones de la parte 3 */
         .sub-header { font-size: 11px; font-weight: 800; color: #24a174; margin-top: 30px; margin-bottom: 10px; text-transform: uppercase; border-left: 4px solid #24a174; padding-left: 10px; }
     </style>
 </head>
@@ -36,54 +34,63 @@
 
         <form id="formMaster">
             <div id="paso1" class="step-content step-active">
-                <div class="seccion-titulo"><span>I. DATOS DEL PACIENTE</span><span class="step-tag">1 / 3</span></div>
+                <div class="seccion-titulo"><span>I. FILIACIÓN DEL TRABAJADOR</span><span class="step-tag">1 / 3</span></div>
                 <div class="row">
                     <div class="col-md-5"><label class="form-label">Apellidos y Nombres</label><input type="text" id="p_nombre" class="form-control readonly-field" readonly></div>
                     <div class="col-md-3"><label class="form-label">Carnet de Identidad</label><input type="text" id="p_ci" class="form-control readonly-field text-center" readonly></div>
                     <div class="col-md-4"><label class="form-label">Código Generado</label><input type="text" id="p_codigo" class="form-control readonly-field text-center" readonly></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><label class="form-label">Edad</label><input type="number" name="edad" class="form-control"></div>
-                    <div class="col-md-2"><label class="form-label">Sexo</label><select name="sexo" class="form-select"><option>M</option><option>F</option></select></div>
-                    <div class="col-md-4"><label class="form-label">Fecha Nac.</label><input type="date" name="fecha_nac" class="form-control"></div>
-                    <div class="col-md-4"><label class="form-label">Lugar Nac.</label><input type="text" name="lugar_nac" class="form-control"></div>
+                    <div class="col-md-2"><label class="form-label">1. Edad</label><input type="number" name="edad" class="form-control" required></div>
+                    <div class="col-md-2"><label class="form-label">2. Sexo</label><select name="sexo" class="form-select"><option>MASCULINO</option><option>FEMENINO</option></select></div>
+                    <div class="col-md-4"><label class="form-label">3. Fecha Nacimiento</label><input type="date" name="fecha_nac" class="form-control" required></div>
+                    <div class="col-md-4"><label class="form-label">4. Lugar Nacimiento</label><input type="text" name="lugar_nac" class="form-control"></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6"><label class="form-label">Domicilio</label><input type="text" name="domicilio" class="form-control"></div>
-                    <div class="col-md-3"><label class="form-label">Zona</label><input type="text" name="zona" class="form-control"></div>
-                    <div class="col-md-3"><label class="form-label">Ciudad</label><input type="text" name="ciudad" class="form-control"></div>
+                    <div class="col-md-5"><label class="form-label">5. Domicilio (Av./Calle)</label><input type="text" name="domicilio" class="form-control"></div>
+                    <div class="col-md-2"><label class="form-label">6. N° Casa</label><input type="text" name="n_casa" class="form-control"></div>
+                    <div class="col-md-5"><label class="form-label">7. Zona / Barrio</label><input type="text" name="barrio" class="form-control"></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3"><label class="form-label">8. Ciudad</label><input type="text" name="ciudad" class="form-control"></div>
+                    <div class="col-md-3"><label class="form-label">9. País</label><input type="text" name="pais" class="form-control"></div>
+                    <div class="col-md-3"><label class="form-label">10. Teléfono / Celular</label><input type="text" name="telf" class="form-control"></div>
+                    <div class="col-md-3"><label class="form-label">11. Estado Civil</label><select name="civil" class="form-select"><option>SOLTERO/A</option><option>CASADO/A</option><option>DIVORCIADO/A</option><option>VIUDO/A</option></select></div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12"><label class="form-label">12. Profesión / Labor que desempeña actualmente</label><input type="text" name="labor" class="form-control"></div>
                 </div>
                 <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente: Evaluación Médica</button>
             </div>
 
             <div id="paso2" class="step-content">
-                <div class="seccion-titulo"><span>II. ANTECEDENTES PATOLÓGICOS</span><span class="step-tag">2 / 3</span></div>
+                <div class="seccion-titulo"><span>II. ANTECEDENTES PATOLÓGICOS (POR SISTEMAS)</span><span class="step-tag">2 / 3</span></div>
                 <div class="row">
                     <div class="col-md-6">
-                        <label class="form-label">VISTA</label><input type="text" name="s_vista" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">AUDITIVO</label><input type="text" name="s_auditivo" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">RESPIRATORIOS</label><input type="text" name="s_respira" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">CARDIOVASCULARES</label><input type="text" name="s_cardio" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">DIGESTIVOS</label><input type="text" name="s_digesta" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">NERVIOSO/MENTAL</label><input type="text" name="s_nervio" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">URINARIO</label><input type="text" name="s_urina" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">GENITALES</label><input type="text" name="s_genital" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">OSTEOMUSCULARES</label><input type="text" name="s_osteo" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">PIEL</label><input type="text" name="s_piel" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">INFECCIOSAS</label><input type="text" name="s_infecto" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">1. VISTA (Disminución visión, Glaucoma, Retinopatía, Lentes)</label><input type="text" name="s_vista" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">2. AUDITIVO (Hipoacusia, Otitis, Vértigo, Perforación)</label><input type="text" name="s_auditivo" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">3. RESPIRATORIOS (TBC, EPOC, Asma, Bronquitis, Rinitis)</label><input type="text" name="s_respira" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">4. CARDIOVASCULARES (HTA, Arritmia, Infarto, Soplos)</label><input type="text" name="s_cardio" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">5. DIGESTIVOS (Gastritis, Úlcera, Hernias, Hemorroides)</label><input type="text" name="s_digesta" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">6. NERVIOSO/MENTAL (Epilepsia, Ansiedad, Migraña)</label><input type="text" name="s_nervio" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">7. URINARIO (Cálculos, Cistitis, Insuficiencia Renal)</label><input type="text" name="s_urina" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">8. GENITALES (Próstata, Quistes, ITS, Ciclo Menstrual)</label><input type="text" name="s_genital" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">9. OSTEOMUSCULARES (Fracturas, Escoliosis, Artritis)</label><input type="text" name="s_osteo" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">10. PIEL (Acné, Hongos, Alergias, Dermatitis)</label><input type="text" name="s_piel" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">11. INFECCIOSAS (Hepatitis, Chagas, VIH, Malaria)</label><input type="text" name="s_infecto" class="form-control" placeholder="NORMAL">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">SANGUÍNEOS</label><input type="text" name="s_sangre" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">ENDOCRINOS</label><input type="text" name="s_endo" class="form-control" placeholder="NORMAL">
-                        <label class="form-label">ALERGIAS</label><input type="text" name="s_alergia" class="form-control" placeholder="NINGUNA">
-                        <label class="form-label">CIRUGÍAS</label><input type="text" name="s_cirugia" class="form-control" placeholder="NINGUNA">
-                        <label class="form-label">HOSPITALIZACIONES</label><input type="text" name="s_hospi" class="form-control" placeholder="NINGUNA">
-                        <label class="form-label">ACCIDENTES LABORALES</label><input type="text" name="s_acc_lab" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">ACCIDENTES COMUNES</label><input type="text" name="s_acc_com" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">VACUNAS</label><input type="text" name="s_vacuna" class="form-control" placeholder="NINGUNA">
-                        <label class="form-label">MEDICAMENTOS ACTUALES</label><input type="text" name="s_medica" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">ANTECEDENTES FAMILIARES</label><input type="text" name="s_fam" class="form-control" placeholder="NINGUNO">
-                        <label class="form-label">OBSERVACIONES</label><input type="text" name="s_obs" class="form-control" placeholder="NINGUNA">
+                        <label class="form-label">12. SANGUÍNEOS (Anemia, Coagulación, Leucemia)</label><input type="text" name="s_sangre" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">13. ENDOCRINOS (Diabetes, Tiroides, Obesidad)</label><input type="text" name="s_endo" class="form-control" placeholder="NORMAL">
+                        <label class="form-label">14. ALERGIAS (Medicamentos, Alimentos, Sustancias)</label><input type="text" name="s_alergia" class="form-control" placeholder="NINGUNA">
+                        <label class="form-label">15. CIRUGÍAS ANTERIORES (Cuáles/Cuándo)</label><input type="text" name="s_cirugia" class="form-control" placeholder="NINGUNA">
+                        <label class="form-label">16. HOSPITALIZACIONES (Motivo)</label><input type="text" name="s_hospi" class="form-control" placeholder="NINGUNA">
+                        <label class="form-label">17. ACCIDENTES LABORALES (Detalle)</label><input type="text" name="s_acc_lab" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">18. ACCIDENTES COMUNES (Detalle)</label><input type="text" name="s_acc_com" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">19. VACUNAS (Esquema completo? Cuáles?)</label><input type="text" name="s_vacuna" class="form-control" placeholder="NINGUNA">
+                        <label class="form-label">20. MEDICACIÓN ACTUAL (Qué toma?)</label><input type="text" name="s_medica" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">21. ANTECEDENTES FAMILIARES (Diabetes, HTA, Cáncer)</label><input type="text" name="s_fam" class="form-control" placeholder="NINGUNO">
+                        <label class="form-label">22. OTRAS OBSERVACIONES MÉDICAS</label><input type="text" name="s_obs" class="form-control" placeholder="NINGUNA">
                     </div>
                 </div>
                 <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos y Riesgos</button>
@@ -168,8 +175,7 @@
 
         document.getElementById('formMaster').onsubmit = async (e) => {
             e.preventDefault();
-            // Lógica de envío a Render...
-            alert("Guardando historial completo...");
+            alert("Guardando historial completo en la nube...");
         };
     </script>
 </body>
