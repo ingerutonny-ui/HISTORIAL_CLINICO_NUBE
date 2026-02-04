@@ -39,7 +39,7 @@
             <label class="form-label">DOCUMENTO DE IDENTIDAD</label>
             <input type="text" id="ci" class="form-control" required autocomplete="off">
             <div id="codigo_contenedor">CÓDIGO GENERADO: <span id="codigo_val"></span></div>
-            <button type="submit" id="btnRegistrar" class="btn-registrar">REGISTRO FINAL NUBE</button>
+            <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR REGISTRO FINAL</button>
             <button type="button" id="btnConsultar" class="btn-consultar">CONSULTAR REGISTROS EN NUBE</button>
         </form>
     </div>
@@ -72,7 +72,7 @@
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegistrar');
-            btn.innerText = "ENVIANDO DATOS...";
+            btn.innerText = "PROCESANDO...";
             btn.disabled = true;
             
             const payload = { 
@@ -83,30 +83,29 @@
             };
 
             try {
-                // SOLUCIÓN: URL FIJA SIN BARRA DIAGONAL
                 const res = await fetch(API_DESTINO, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
 
-                const dataServer = await res.json();
-
                 if (res.ok) {
+                    const dataServer = await res.json();
                     localStorage.setItem('paciente_id', dataServer.id); 
                     localStorage.setItem('paciente_nombre', payload.nombres + " " + payload.apellidos);
                     localStorage.setItem('paciente_ci', payload.documento_identidad);
                     localStorage.setItem('paciente_codigo', payload.codigo_paciente);
                     
-                    alert("¡PACIENTE REGISTRADO!");
+                    alert("¡PACIENTE REGISTRADO CORRECTAMENTE!");
                     window.location.href = "declaracion_jurada_p1.html"; 
                 } else {
-                    alert("ERROR: " + (dataServer.detail || "Verificar datos"));
+                    const errorData = await res.json();
+                    alert("ERROR: " + (errorData.detail || "Verificar datos"));
                 }
             } catch (error) { 
-                alert("RECARGUE LA PÁGINA CON CTRL+F5"); 
+                alert("REINTENTE CON CTRL+F5"); 
             } finally { 
-                btn.innerText = "REGISTRO FINAL NUBE"; 
+                btn.innerText = "GUARDAR REGISTRO FINAL"; 
                 btn.disabled = false;
             }
         };
