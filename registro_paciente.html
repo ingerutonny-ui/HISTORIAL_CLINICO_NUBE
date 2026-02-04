@@ -83,8 +83,8 @@
             };
 
             try {
-                // RUTA CORREGIDA: Sin barra diagonal final
-                const res = await fetch(`${API_BASE}/pacientes`, {
+                // RUTA CORREGIDA: Se asegura la dirección exacta /pacientes/ para el backend
+                const res = await fetch(`${API_BASE}/pacientes/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -93,7 +93,6 @@
                 const dataServer = await res.json();
 
                 if (res.ok) {
-                    // ALMACENAMIENTO PARA ARRASTRE A P1
                     localStorage.setItem('paciente_id', dataServer.id); 
                     localStorage.setItem('paciente_nombre', payload.nombres + " " + payload.apellidos);
                     localStorage.setItem('paciente_ci', payload.documento_identidad);
@@ -117,7 +116,7 @@
             seccion.style.display = 'block';
             lista.innerHTML = '<p class="text-muted small text-center">Buscando en Render...</p>';
             try {
-                const res = await fetch(`${API_BASE}/pacientes`);
+                const res = await fetch(`${API_BASE}/pacientes/`);
                 const data = await res.json();
                 lista.innerHTML = data.map(p => `
                     <div class="paciente-fila">
