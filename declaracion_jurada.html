@@ -182,7 +182,6 @@
             e.preventDefault();
             const btn = document.getElementById('btnFinalizar');
             
-            // Cartel de espera profesional
             btn.innerText = "REGISTRO NUEVO ESPERE CONFIRMACION...!!";
             btn.disabled = true;
             btn.style.backgroundColor = "#b0bac9";
@@ -190,12 +189,12 @@
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
             
-            // Añadimos los datos de identificación obligatorios
             data.codigo_paciente = localStorage.getItem('temp_codigo');
             data.documento_identidad = localStorage.getItem('temp_ci');
 
             try {
-                const res = await fetch(`${API_BASE}/declaracion/`, {
+                // CORRECCIÓN: La ruta correcta es /declaraciones/ según tu Backend
+                const res = await fetch(`${API_BASE}/declaraciones/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -203,7 +202,7 @@
 
                 if (res.ok) {
                     alert("✅ ¡HISTORIAL CLÍNICO GUARDADO CORRECTAMENTE EN LA NUBE!");
-                    localStorage.clear(); // Limpiamos para el siguiente paciente
+                    localStorage.clear();
                     window.location.href = "index.html";
                 } else {
                     const error = await res.json();
@@ -213,7 +212,7 @@
                     btn.style.backgroundColor = "#24a174";
                 }
             } catch (err) {
-                alert("⚠️ FALLO DE CONEXIÓN. El servidor de $7 está procesando mucha información. Reintente en un momento.");
+                alert("⚠️ FALLO DE CONEXIÓN. Reintente en un momento.");
                 btn.innerText = "Finalizar y Guardar Historial 💾";
                 btn.disabled = false;
                 btn.style.backgroundColor = "#24a174";
