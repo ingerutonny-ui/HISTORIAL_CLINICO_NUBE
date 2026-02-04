@@ -153,34 +153,26 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn-accion">Finalizar y Guardar Historial 💾</button>
+                <button type="submit" id="btnFinalizar" class="btn-accion">Finalizar y Guardar Historial 💾</button>
                 <button type="button" onclick="cambiarPaso(2)" class="btn-volver">Regresar</button>
             </div>
         </form>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Carga de datos segura
-            const nom = localStorage.getItem('temp_nombres') || "";
-            const ape = localStorage.getItem('temp_apellidos') || "";
-            const ci = localStorage.getItem('temp_ci') || "NO DATA";
-            const cod = localStorage.getItem('temp_codigo') || "NO DATA";
+        const API_BASE = 'https://historial-clinico-936s.onrender.com';
 
-            document.getElementById('p_nombre').value = nom + " " + ape;
-            document.getElementById('p_ci').value = ci;
-            document.getElementById('p_codigo').value = cod;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('p_nombre').value = (localStorage.getItem('temp_nombres') || "") + " " + (localStorage.getItem('temp_apellidos') || "");
+            document.getElementById('p_ci').value = localStorage.getItem('temp_ci') || "NO DATA";
+            document.getElementById('p_codigo').value = localStorage.getItem('temp_codigo') || "NO DATA";
         });
 
         function cambiarPaso(p) {
-            // Ocultar todos
             const secciones = document.querySelectorAll('.step-content');
             secciones.forEach(s => s.classList.remove('step-active'));
-            
-            // Mostrar el elegido
             const activa = document.getElementById('paso' + p);
             if(activa) activa.classList.add('step-active');
-
             const titulos = ["", "PARTE 1: FILIACIÓN", "PARTE 2: ANTECEDENTES", "PARTE 3: HÁBITOS Y RIESGOS"];
             document.getElementById('indicadorPaso').innerText = titulos[p];
             window.scrollTo(0,0);
@@ -188,7 +180,44 @@
 
         document.getElementById('formMaster').onsubmit = async (e) => {
             e.preventDefault();
-            alert("Sincronizando con la nube...");
+            const btn = document.getElementById('btnFinalizar');
+            
+            // Cartel de espera profesional
+            btn.innerText = "REGISTRO NUEVO ESPERE CONFIRMACION...!!";
+            btn.disabled = true;
+            btn.style.backgroundColor = "#b0bac9";
+
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Añadimos los datos de identificación obligatorios
+            data.codigo_paciente = localStorage.getItem('temp_codigo');
+            data.documento_identidad = localStorage.getItem('temp_ci');
+
+            try {
+                const res = await fetch(`${API_BASE}/declaracion/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    alert("✅ ¡HISTORIAL CLÍNICO GUARDADO CORRECTAMENTE EN LA NUBE!");
+                    localStorage.clear(); // Limpiamos para el siguiente paciente
+                    window.location.href = "index.html";
+                } else {
+                    const error = await res.json();
+                    alert("❌ ERROR AL GUARDAR: " + (error.detail || "Verifique los datos"));
+                    btn.innerText = "Finalizar y Guardar Historial 💾";
+                    btn.disabled = false;
+                    btn.style.backgroundColor = "#24a174";
+                }
+            } catch (err) {
+                alert("⚠️ FALLO DE CONEXIÓN. El servidor de $7 está procesando mucha información. Reintente en un momento.");
+                btn.innerText = "Finalizar y Guardar Historial 💾";
+                btn.disabled = false;
+                btn.style.backgroundColor = "#24a174";
+            }
         };
     </script>
 </body>
