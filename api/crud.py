@@ -3,6 +3,7 @@ from . import models, schemas
 
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
     try:
+        # Usamos model_dump() para convertir los datos del schema a diccionario
         db_paciente = models.Paciente(**paciente.model_dump())
         db.add(db_paciente)
         db.commit()
