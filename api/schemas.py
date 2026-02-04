@@ -4,7 +4,7 @@ from typing import Optional, List
 class PacienteBase(BaseModel):
     nombres: str
     apellidos: str
-    documento_identidad: str
+    ci: str  # Cambio a "ci"
     codigo_paciente: str
 
 class PacienteCreate(PacienteBase):
