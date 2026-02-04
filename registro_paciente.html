@@ -39,7 +39,7 @@
             <label class="form-label">DOCUMENTO DE IDENTIDAD</label>
             <input type="text" id="ci" class="form-control" required autocomplete="off">
             <div id="codigo_contenedor">CÓDIGO GENERADO: <span id="codigo_val"></span></div>
-            <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR REGISTRO</button>
+            <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR EN NUBE REAL</button>
             <button type="button" id="btnConsultar" class="btn-consultar">CONSULTAR REGISTROS EN NUBE</button>
         </form>
     </div>
@@ -72,7 +72,7 @@
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegistrar');
-            btn.innerText = "ENVIANDO A LA NUBE...";
+            btn.innerText = "PROCESANDO REGISTRO...";
             btn.disabled = true;
             
             const payload = { 
@@ -83,8 +83,8 @@
             };
 
             try {
-                // SOLUCIÓN: Ruta exacta sin barra diagonal final para evitar el error 404
-                const res = await fetch(`${API_BASE}/pacientes`, {
+                // SOLUCIÓN FINAL: URL forzada sin barra diagonal al final
+                const res = await fetch('https://historial-clinico-936s.onrender.com/pacientes', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -98,15 +98,15 @@
                     localStorage.setItem('paciente_ci', payload.documento_identidad);
                     localStorage.setItem('paciente_codigo', payload.codigo_paciente);
                     
-                    alert("¡PACIENTE REGISTRADO!");
+                    alert("¡PACIENTE REGISTRADO CORRECTAMENTE!");
                     window.location.href = "declaracion_jurada_p1.html"; 
                 } else {
-                    alert("ERROR DEL SERVIDOR: " + (dataServer.detail || "Verificar datos"));
+                    alert("ERROR: " + (dataServer.detail || "Verificar datos"));
                 }
             } catch (error) { 
-                alert("CONEXIÓN FALLIDA. RECARGA CON CTRL+F5."); 
+                alert("CONEXIÓN FALLIDA. REINTENTA CON CTRL+F5."); 
             } finally { 
-                btn.innerText = "GUARDAR REGISTRO"; 
+                btn.innerText = "GUARDAR EN NUBE REAL"; 
                 btn.disabled = false;
             }
         };
@@ -116,7 +116,7 @@
             seccion.style.display = 'block';
             lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
             try {
-                const res = await fetch(`${API_BASE}/pacientes`);
+                const res = await fetch('https://historial-clinico-936s.onrender.com/pacientes');
                 const data = await res.json();
                 lista.innerHTML = data.map(p => `
                     <div class="paciente-fila">
