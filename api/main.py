@@ -5,7 +5,7 @@ from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# ESTO ASEGURA QUE LAS TABLAS SE CREEN SI NO EXISTEN
+# Sincronización de tablas al arrancar
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
@@ -27,7 +27,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"status": "Servidor Funcionando - Tablas Sincronizadas"}
+    return {"status": "Servidor Activo - Conexión SSL Verificada"}
 
 @app.post("/pacientes", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
@@ -39,11 +39,7 @@ def read_pacientes(db: Session = Depends(get_db)):
 
 @app.post("/declaraciones/p1", response_model=schemas.DeclaracionJurada)
 def save_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
-    try:
-        return crud.create_declaracion_p1(db=db, declaracion=declaracion)
-    except Exception as e:
-        # Esto nos dirá en los Logs de Render exactamente qué falló
-        raise HTTPException(status_code=500, detail=str(e))
+    return crud.create_declaracion_p1(db=db, declaracion=declaracion)
 
 @app.get("/declaraciones/p1", response_model=List[schemas.DeclaracionJurada])
 def read_declaraciones_p1(db: Session = Depends(get_db)):
