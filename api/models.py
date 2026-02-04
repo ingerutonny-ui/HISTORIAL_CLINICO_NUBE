@@ -7,10 +7,9 @@ class Paciente(Base):
     id = Column(Integer, primary_key=True, index=True)
     nombres = Column(String)
     apellidos = Column(String)
-    cedula = Column(String, unique=True, index=True)
+    documento_identidad = Column(String, unique=True, index=True)
     codigo_paciente = Column(String, unique=True)
     
-    # Relación con la declaración
     declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
 
 class DeclaracionJurada(Base):
@@ -18,7 +17,6 @@ class DeclaracionJurada(Base):
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     
-    # Campos obligatorios para la Parte 1: Filiación
     edad = Column(String) 
     sexo = Column(String)
     fecha_nacimiento = Column(String)
