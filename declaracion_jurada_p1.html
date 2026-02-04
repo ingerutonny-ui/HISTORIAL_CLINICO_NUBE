@@ -27,6 +27,9 @@
         label { font-size: 10px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; margin-left: 5px; }
         input, select { background: var(--input-bg); border: none; padding: 12px; border-radius: 15px; font-size: 13px; font-weight: 600; text-transform: uppercase; color: #334155; outline: none; }
         
+        /* Placeholder color plomo claro (fantasma) */
+        input::placeholder { color: #cbd5e1; font-weight: 400; }
+
         .btn-submit { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 20px; font-size: 14px; transition: 0.3s; }
         .btn-submit:hover { filter: brightness(1.1); transform: translateY(-2px); }
     </style>
@@ -45,14 +48,14 @@
     </div>
 
     <div class="top-info">
-        <div class="info-box"><label>APELLIDOS Y NOMBRES</label><span id="display_nombre">---</span></div>
-        <div class="info-box"><label>DOCUMENTO DE IDENTIDAD</label><span id="display_ci">---</span></div>
-        <div class="info-box"><label>CÓDIGO GENERADO</label><span id="display_codigo">---</span></div>
+        <div class="info-box"><label>APELLIDOS Y NOMBRES</label><span id="display_nombre">CARGANDO...</span></div>
+        <div class="info-box"><label>DOCUMENTO DE IDENTIDAD</label><span id="display_ci">CARGANDO...</span></div>
+        <div class="info-box"><label>CÓDIGO GENERADO</label><span id="display_codigo">CARGANDO...</span></div>
     </div>
 
     <form id="formFiliacion">
         <div class="grid">
-            <div class="campo"><label>1. EDAD</label><input type="number" id="edad" required></div>
+            <div class="campo"><label>1. EDAD</label><input type="number" id="edad" placeholder="EJ. 25" required></div>
             <div class="campo">
                 <label>2. SEXO</label>
                 <select id="sexo">
@@ -60,16 +63,16 @@
                     <option value="FEMENINO">FEMENINO</option>
                 </select>
             </div>
-            <div class="campo"><label>3. FECHA NACIMIENTO</label><input type="date" id="fecha_nacimiento"></div>
-            <div class="campo"><label>4. LUGAR NACIMIENTO</label><input type="text" id="lugar_nacimiento"></div>
+            <div class="campo"><label>3. FECHA NACIMIENTO</label><input type="date" id="fecha_nacimiento" required></div>
+            <div class="campo"><label>4. LUGAR NACIMIENTO</label><input type="text" id="lugar_nacimiento" placeholder="EJ. LA PAZ" required></div>
             
-            <div class="campo" style="grid-column: span 2;"><label>5. DOMICILIO</label><input type="text" id="domicilio"></div>
-            <div class="campo"><label>6. N° CASA</label><input type="text" id="n_casa"></div>
-            <div class="campo"><label>7. ZONA / BARRIO</label><input type="text" id="zona"></div>
+            <div class="campo" style="grid-column: span 2;"><label>5. DOMICILIO</label><input type="text" id="domicilio" placeholder="EJ. AV. PRINCIPAL #123" required></div>
+            <div class="campo"><label>6. N° CASA</label><input type="text" id="n_casa" placeholder="S/N"></div>
+            <div class="campo"><label>7. ZONA / BARRIO</label><input type="text" id="zona" placeholder="EJ. SOPOCACHI" required></div>
 
-            <div class="campo"><label>8. CIUDAD</label><input type="text" id="ciudad"></div>
+            <div class="campo"><label>8. CIUDAD</label><input type="text" id="ciudad" placeholder="EJ. EL ALTO" required></div>
             <div class="campo"><label>9. PAÍS</label><input type="text" id="pais" value="BOLIVIA"></div>
-            <div class="campo"><label>10. TELÉFONO</label><input type="text" id="telefono"></div>
+            <div class="campo"><label>10. TELÉFONO</label><input type="text" id="telefono" placeholder="EJ. 70000000" required></div>
             <div class="campo">
                 <label>11. ESTADO CIVIL</label>
                 <select id="estado_civil">
@@ -80,7 +83,7 @@
                 </select>
             </div>
 
-            <div class="campo full"><label>12. PROFESIÓN / LABOR</label><input type="text" id="profesion"></div>
+            <div class="campo full"><label>12. PROFESIÓN / LABOR</label><input type="text" id="profesion" placeholder="EJ. ESTUDIANTE / OBRERO" required></div>
         </div>
 
         <button type="submit" class="btn-submit">SIGUIENTE: ANTECEDENTES</button>
@@ -97,8 +100,16 @@
 
     document.getElementById('formFiliacion').addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        const pacienteId = localStorage.getItem('paciente_id');
+        
+        if (!pacienteId) {
+            alert("ERROR: NO SE ENCONTRÓ EL ID DEL PACIENTE. REGISTRE AL PACIENTE NUEVAMENTE.");
+            return;
+        }
+
         const data = {
-            paciente_id: parseInt(localStorage.getItem('paciente_id')) || 0,
+            paciente_id: parseInt(pacienteId),
             edad: parseInt(document.getElementById('edad').value),
             sexo: document.getElementById('sexo').value,
             lugar_nacimiento: document.getElementById('lugar_nacimiento').value,
@@ -110,16 +121,23 @@
         };
 
         try {
-            const res = await fetch('https://historial-clinico-936s.onrender.com/declaraciones/p1', {
+            // RUTA CORREGIDA: Se añadió "/" final para asegurar compatibilidad con Render
+            const res = await fetch('https://historial-clinico-936s.onrender.com/declaraciones/p1/', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
+            
             if(res.ok) {
-                alert("✓ SECCIÓN 1 GUARDADA EXITOSAMENTE");
+                alert("✓ SECCIÓN 1 GUARDADA EXITOSAMENTE EN LA NUBE");
                 window.location.href = "declaracion_jurada_p2.html";
+            } else {
+                const errorData = await res.json();
+                alert("ERROR DEL SERVIDOR: " + (errorData.detail || "DATOS INVÁLIDOS"));
             }
-        } catch (err) { alert("ERROR AL GUARDAR"); }
+        } catch (err) { 
+            alert("EL SERVIDOR ESTÁ DESPERTANDO. POR FAVOR, INTENTA UNA VEZ MÁS."); 
+        }
     });
 </script>
 </body>
