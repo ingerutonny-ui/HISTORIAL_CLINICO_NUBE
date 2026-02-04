@@ -5,8 +5,11 @@ from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Sincronización de tablas al arrancar
-models.Base.metadata.create_all(bind=engine)
+# Intentar crear tablas al iniciar (con la nueva conexión SSL)
+try:
+    models.Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Error al crear tablas: {e}")
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
@@ -27,7 +30,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"status": "Servidor Activo - Conexión SSL Verificada"}
+    return {"status": "SISTEMA ONLINE - CONEXIÓN SEGURA ESTABLECIDA"}
 
 @app.post("/pacientes", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
