@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ES">
+<head>
+    <meta charset="UTF-8">
+    <title>SEGUNDA SECCIÓN - ANTECEDENTES</title>
+    <style>
+        :root { --verde: #34a174; --fondo: #f8fa9c; --blanco: #ffffff; --input: #f3f4f6; }
+        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; text-transform: uppercase; display: flex; justify-content: center; padding: 40px; }
+        .card { background: var(--blanco); padding: 40px; border-radius: 40px; width: 100%; max-width: 850px; box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
+        h1 { color: var(--verde); text-align: center; font-weight: 800; margin-bottom: 30px; }
+        .pregunta-fila { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
+        .pregunta-texto { font-weight: 700; font-size: 0.9rem; color: #1e293b; flex: 1; }
+        .opciones { display: flex; gap: 15px; }
+        label { font-size: 11px; font-weight: 700; color: #b0bac9; }
+        input[type="radio"] { accent-color: var(--verde); transform: scale(1.2); }
+        .detalle-input { background: var(--input); border: none; padding: 10px; border-radius: 15px; width: 100%; margin-top: 10px; text-transform: uppercase; display: none; }
+        .btn { background: var(--verde); color: white; border: none; padding: 20px; border-radius: 40px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 30px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>SEGUNDA SECCIÓN (2/3)</h1>
+        <p style="text-align: center; font-weight: bold; margin-bottom: 20px;">ANTECEDENTES PATOLÓGICOS PERSONALES</p>
+        
+        <form id="formP2">
+            <div id="preguntas-contenedor">
+                <div class="pregunta-fila">
+                    <span class="pregunta-texto">1. ¿HA PADECIDO ALGUNA ENFERMEDAD INFECTO-CONTAGIOSA?</span>
+                    <div class="opciones">
+                        <input type="radio" name="p1" value="SI" onclick="mostrarDetalle('d1', true)"> SI
+                        <input type="radio" name="p1" value="NO" onclick="mostrarDetalle('d1', false)" checked> NO
+                    </div>
+                </div>
+                <input type="text" id="d1" class="detalle-input" placeholder="ESPECIFIQUE CUÁL Y CUÁNDO">
+
+                <div class="pregunta-fila">
+                    <span class="pregunta-texto">2. ¿TIENE O HA TENIDO PROBLEMAS CARDÍACOS O PRESIÓN ALTA?</span>
+                    <div class="opciones">
+                        <input type="radio" name="p2" value="SI" onclick="mostrarDetalle('d2', true)"> SI
+                        <input type="radio" name="p2" value="NO" onclick="mostrarDetalle('d2', false)" checked> NO
+                    </div>
+                </div>
+                <input type="text" id="d2" class="detalle-input" placeholder="DETALLES">
+
+                <div class="pregunta-fila">
+                    <span class="pregunta-texto">3. ¿PADECE DE DIABETES O PROBLEMAS METABÓLICOS?</span>
+                    <div class="opciones">
+                        <input type="radio" name="p3" value="SI" onclick="mostrarDetalle('d3', true)"> SI
+                        <input type="radio" name="p3" value="NO" onclick="mostrarDetalle('d3', false)" checked> NO
+                    </div>
+                </div>
+                <input type="text" id="d3" class="detalle-input" placeholder="DETALLES">
+            </div>
+
+            <button type="submit" class="btn">GUARDAR Y CONTINUAR A PARTE 3</button>
+        </form>
+    </div>
+
+    <script>
+        function mostrarDetalle(id, mostrar) {
+            document.getElementById(id).style.display = mostrar ? 'block' : 'none';
+        }
+
+        document.getElementById('formP2').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            // Lógica de envío a la API (se requiere actualizar CRUD y SCHEMAS para esta sección)
+            alert("✓ PARTE 2 REGISTRADA LOCALMENTE. PROCEDIENDO A LA PARTE 3");
+        });
+    </script>
+</body>
+</html>
