@@ -12,7 +12,7 @@
         .form-control, .form-select { border-radius: 15px; background-color: #f3f6f9; border: 2px solid transparent; padding: 12px; font-weight: 600; color: #1e293b; text-transform: uppercase; margin-top: 8px; font-size: 13px; }
         .form-control:focus, .form-select:focus { background-color: #ffffff; border-color: #24a174; box-shadow: none; }
         .readonly-field { border: 2px dashed #d1eadd !important; background-color: #f9fdfc !important; color: #24a174 !important; font-weight: 800; }
-        .btn-accion { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-accion { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; cursor: pointer; }
         .btn-accion:hover { background-color: #1e855f; }
         .step-content { display: none; }
         .step-active { display: block !important; }
@@ -43,18 +43,18 @@
                     <div class="col-md-3"><label class="form-label">Lugar Nacimiento</label><input type="text" name="lugar_nacimiento" class="form-control" value="BOLIVIA"></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-4"><label class="form-label">Estado Civil</label><select name="estado_civil" class="form-select"><option>SOLTERO/A</option><option>CASADO/A</option></select></div>
+                    <div class="col-md-4"><label class="form-label">Estado Civil</label><select name="estado_civil" class="form-select"><option>SOLTERO/A</option><option>CASADO/A</option><option>DIVORCIADO/A</option><option>VIUDO/A</option></select></div>
                     <div class="col-md-4"><label class="form-label">Domicilio</label><input type="text" name="domicilio" class="form-control" value="CONOCIDO"></div>
                     <div class="col-md-4"><label class="form-label">Teléfono</label><input type="text" name="telefono" class="form-control" value="0"></div>
                 </div>
                 <div class="row">
                     <div class="col-md-12"><label class="form-label">Profesión u Oficio</label><input type="text" name="profesion_oficio" class="form-control" value="TRABAJADOR"></div>
                 </div>
-                <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente: Antecedentes</button>
+                <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente Paso</button>
             </div>
 
             <div id="paso2" class="step-content">
-                <div class="seccion-titulo"><span>II. ANTECEDENTES PATOLÓGICOS</span><span class="step-tag">2 / 3</span></div>
+                <div class="seccion-titulo"><span>II. ANTECEDENTES MÉDICOS</span><span class="step-tag">2 / 3</span></div>
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label">VISTA</label><input type="text" name="vista" class="form-control" value="NORMAL">
@@ -62,59 +62,61 @@
                         <label class="form-label">RESPIRATORIOS</label><input type="text" name="respiratorios" class="form-control" value="NORMAL">
                         <label class="form-label">CARDIOVASCULARES</label><input type="text" name="cardiovasculares" class="form-control" value="NORMAL">
                         <label class="form-label">DIGESTIVOS</label><input type="text" name="digestivos" class="form-control" value="NORMAL">
-                        <label class="form-label">GENITOURINARIO</label><input type="text" name="genitourinario" class="form-control" value="NORMAL">
+                        <label class="form-label">SISTEMA NERVIOSO</label><input type="text" name="sistema_nervioso" class="form-control" value="NORMAL">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">SISTEMA NERVIOSO</label><input type="text" name="sistema_nervioso" class="form-control" value="NORMAL">
+                        <label class="form-label">GENITOURINARIO</label><input type="text" name="genitourinario" class="form-control" value="NORMAL">
                         <label class="form-label">OSTEOMUSCULARES</label><input type="text" name="osteomusculares" class="form-control" value="NORMAL">
                         <label class="form-label">ENDOCRINOS</label><input type="text" name="endocrinos" class="form-control" value="NORMAL">
                         <label class="form-label">DERMATOLÓGICOS</label><input type="text" name="dermatologicos" class="form-control" value="NORMAL">
                         <label class="form-label">ALERGIAS / MEDICAMENTOS</label><input type="text" name="alergias_medicamentos" class="form-control" value="NINGUNA">
                         <label class="form-label">CHAGAS</label><input type="text" name="chagas" class="form-control" value="NEGATIVO">
                     </div>
-                    <div class="col-12">
-                        <label class="form-label">OTROS ANTECEDENTES</label><input type="text" name="otros_antecedentes" class="form-control" value="NINGUNO">
-                    </div>
+                    <div class="col-12"><label class="form-label">OTROS ANTECEDENTES</label><input type="text" name="otros_antecedentes" class="form-control" value="NINGUNO"></div>
                 </div>
-                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos y Laboral</button>
+                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente Paso</button>
             </div>
 
             <div id="paso3" class="step-content">
-                <div class="seccion-titulo"><span>III. HISTORIA LABORAL Y HÁBITOS</span><span class="step-tag">3 / 3</span></div>
+                <div class="seccion-titulo"><span>III. HÁBITOS Y ANTECEDENTES LABORALES</span><span class="step-tag">3 / 3</span></div>
+                
+                <h6 style="font-size: 11px; font-weight: 800; color: #24a174; margin-top: 15px;">1. HÁBITOS</h6>
                 <div class="row">
                     <div class="col-md-6">
-                        <label class="form-label">¿FUMA?</label>
-                        <select name="fuma" class="form-select"><option value="false">NO</option><option value="true">SI</option></select>
-                        <input type="text" name="fuma_detalle" class="form-control mt-1" placeholder="Detalle">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">¿BEBE?</label>
+                        <label class="form-label">ALCOHOL (BEBE)</label>
                         <select name="bebe" class="form-select"><option value="false">NO</option><option value="true">SI</option></select>
-                        <input type="text" name="bebe_detalle" class="form-control mt-1" placeholder="Detalle">
+                        <input type="text" name="bebe_detalle" class="form-control mt-1" placeholder="CANTIDAD / FRECUENCIA">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">¿DROGAS?</label>
+                        <label class="form-label">TABACO (FUMA)</label>
+                        <select name="fuma" class="form-select"><option value="false">NO</option><option value="true">SI</option></select>
+                        <input type="text" name="fuma_detalle" class="form-control mt-1" placeholder="CANTIDAD / FRECUENCIA">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">DROGAS</label>
                         <select name="drogas" class="form-select"><option value="false">NO</option><option value="true">SI</option></select>
-                        <input type="text" name="drogas_detalle" class="form-control mt-1" placeholder="Detalle">
+                        <input type="text" name="drogas_detalle" class="form-control mt-1" placeholder="¿CUÁLES?">
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">¿BOLO DE COCA?</label>
+                        <label class="form-label">COCA (BOLO) / COQUEAR</label>
                         <select name="bolo_coca" class="form-select"><option value="false">NO</option><option value="true">SI</option></select>
-                        <input type="text" name="bolo_coca_detalle" class="form-control mt-1" placeholder="Detalle">
+                        <input type="text" name="bolo_coca_detalle" class="form-control mt-1" placeholder="FRECUENCIA">
                     </div>
                 </div>
-                <hr>
+
+                <h6 style="font-size: 11px; font-weight: 800; color: #24a174; margin-top: 25px;">2. ANTECEDENTES OCUPACIONALES</h6>
                 <div class="row">
-                    <div class="col-md-4"><label class="form-label">Edad inicio laboral</label><input type="number" name="edad_inicio_laboral" class="form-control" value="18"></div>
-                    <div class="col-md-8"><label class="form-label">Empresa Actual</label><input type="text" name="empresa_actual" class="form-control" value="EMPRESA"></div>
-                    <div class="col-md-12"><label class="form-label">Riesgos Expuestos</label><input type="text" name="riesgos_expuestos" class="form-control" value="NINGUNO"></div>
+                    <div class="col-md-3"><label class="form-label">EDAD QUE INICIÓ</label><input type="number" name="edad_inicio_laboral" class="form-control" value="18"></div>
+                    <div class="col-md-9"><label class="form-label">EMPRESA ACTUAL</label><input type="text" name="empresa_actual" class="form-control" value="EMPRESA S.A."></div>
+                    <div class="col-md-12"><label class="form-label">RIESGOS EXPUESTOS (RUIDO, POLVO, ETC.)</label><input type="text" name="riesgos_expuestos" class="form-control" value="NINGUNO"></div>
                     <div class="col-md-4">
-                        <label class="form-label">¿Usa EPP?</label>
+                        <label class="form-label">¿UTILIZA EPP?</label>
                         <select name="uso_epp" class="form-select"><option value="false">NO</option><option value="true">SI</option></select>
                     </div>
-                    <div class="col-md-8"><label class="form-label">Detalle EPP</label><input type="text" name="epp_detalle" class="form-control" value="NINGUNO"></div>
+                    <div class="col-md-8"><label class="form-label">DETALLE DE EQUIPO DE PROTECCIÓN</label><input type="text" name="epp_detalle" class="form-control" value="NINGUNO"></div>
                 </div>
-                <button type="submit" id="btnFinalizar" class="btn-accion">FINALIZAR Y GUARDAR HISTORIAL 💾</button>
+
+                <button type="submit" id="btnFinalizar" class="btn-accion">GUARDAR HISTORIAL EN LA NUBE 💾</button>
             </div>
         </form>
     </div>
@@ -123,8 +125,8 @@
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
 
         document.addEventListener('DOMContentLoaded', () => {
-            const id = localStorage.getItem('temp_id');
-            if(!id) { alert("Error: No hay ID de paciente. Regrese al registro."); window.location.href="registro_paciente.html"; }
+            const pid = localStorage.getItem('temp_id');
+            if(!pid) { alert("ERROR: NO SE ENCONTRÓ EL PACIENTE ID. REGISTRELO DE NUEVO."); window.location.href="registro_paciente.html"; return; }
             
             document.getElementById('p_nombre').value = (localStorage.getItem('temp_nombres') || "") + " " + (localStorage.getItem('temp_apellidos') || "");
             document.getElementById('p_ci').value = localStorage.getItem('temp_ci') || "";
@@ -135,78 +137,75 @@
             document.querySelectorAll('.step-content').forEach(s => s.classList.remove('step-active'));
             document.getElementById('paso' + p).classList.add('step-active');
             window.scrollTo(0,0);
-            const ind = document.getElementById('indicadorPaso');
-            if(p===1) ind.innerText = "PARTE 1: FILIACIÓN";
-            if(p===2) ind.innerText = "PARTE 2: ANTECEDENTES";
-            if(p===3) ind.innerText = "PARTE 3: HISTORIA LABORAL";
+            document.getElementById('indicadorPaso').innerText = p === 1 ? "PARTE 1: FILIACIÓN" : p === 2 ? "PARTE 2: ANTECEDENTES" : "PARTE 3: HISTORIA LABORAL";
         }
 
         document.getElementById('formMaster').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnFinalizar');
-            btn.innerText = "GUARDANDO EN NUBE..."; btn.disabled = true;
+            btn.innerText = "ESPERE... GUARDANDO..."; btn.disabled = true;
 
-            const formData = new FormData(e.target);
-            const rawData = Object.fromEntries(formData.entries());
+            const f = new FormData(e.target);
+            const r = Object.fromEntries(f.entries());
 
-            // AJUSTE PARA EL BACKEND (Mismos nombres que schemas.py)
-            const payload = {
+            // ENVÍO AL BACKEND SEGÚN SCHEMAS.PY
+            const body = {
                 paciente_id: parseInt(localStorage.getItem('temp_id')),
-                edad: parseInt(rawData.edad) || 0,
-                sexo: rawData.sexo,
-                lugar_nacimiento: rawData.lugar_nacimiento,
-                fecha_nacimiento: rawData.fecha_nacimiento,
-                estado_civil: rawData.estado_civil,
-                domicilio: rawData.domicilio,
-                telefono: rawData.telefono,
-                profesion_oficio: rawData.profesion_oficio,
-                vista: rawData.vista,
-                auditivo: rawData.auditivo,
-                respiratorios: rawData.respiratorios,
-                cardiovasculares: rawData.cardiovasculares,
-                digestivos: rawData.digestivos,
-                genitourinario: rawData.genitourinario,
-                sistema_nervioso: rawData.sistema_nervioso,
-                osteomusculares: rawData.osteomusculares,
-                endocrinos: rawData.endocrinos,
-                dermatologicos: rawData.dermatologicos,
-                alergias_medicamentos: rawData.alergias_medicamentos,
-                chagas: rawData.chagas,
-                otros_antecedentes: rawData.otros_antecedentes,
-                fuma: rawData.fuma === "true",
-                fuma_detalle: rawData.fuma_detalle || "NINGUNO",
-                bebe: rawData.bebe === "true",
-                bebe_detalle: rawData.bebe_detalle || "NINGUNO",
-                drogas: rawData.drogas === "true",
-                drogas_detalle: rawData.drogas_detalle || "NINGUNO",
-                bolo_coca: rawData.bolo_coca === "true",
-                bolo_coca_detalle: rawData.bolo_coca_detalle || "NINGUNO",
-                edad_inicio_laboral: parseInt(rawData.edad_inicio_laboral) || 0,
-                empresa_actual: rawData.empresa_actual,
-                riesgos_expuestos: rawData.riesgos_expuestos,
-                uso_epp: rawData.uso_epp === "true",
-                epp_detalle: rawData.epp_detalle
+                edad: parseInt(r.edad) || 0,
+                sexo: r.sexo,
+                lugar_nacimiento: r.lugar_nacimiento,
+                fecha_nacimiento: r.fecha_nacimiento,
+                estado_civil: r.estado_civil,
+                domicilio: r.domicilio,
+                telefono: r.telefono,
+                profesion_oficio: r.profesion_oficio,
+                vista: r.vista,
+                auditivo: r.auditivo,
+                respiratorios: r.respiratorios,
+                cardiovasculares: r.cardiovasculares,
+                digestivos: r.digestivos,
+                genitourinario: r.genitourinario,
+                sistema_nervioso: r.sistema_nervioso,
+                osteomusculares: r.osteomusculares,
+                endocrinos: r.endocrinos,
+                dermatologicos: r.dermatologicos,
+                alergias_medicamentos: r.alergias_medicamentos,
+                chagas: r.chagas,
+                otros_antecedentes: r.otros_antecedentes,
+                fuma: r.fuma === "true",
+                fuma_detalle: r.fuma_detalle || "NINGUNO",
+                bebe: r.bebe === "true",
+                bebe_detalle: r.bebe_detalle || "NINGUNO",
+                drogas: r.drogas === "true",
+                drogas_detalle: r.drogas_detalle || "NINGUNO",
+                bolo_coca: r.bolo_coca === "true",
+                bolo_coca_detalle: r.bolo_coca_detalle || "NINGUNO",
+                edad_inicio_laboral: parseInt(r.edad_inicio_laboral) || 0,
+                empresa_actual: r.empresa_actual,
+                riesgos_expuestos: r.riesgos_expuestos,
+                uso_epp: r.uso_epp === "true",
+                epp_detalle: r.epp_detalle
             };
 
             try {
                 const res = await fetch(`${API_BASE}/declaraciones/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(body)
                 });
 
                 if (res.ok) {
-                    alert("✅ HISTORIAL GUARDADO EXITOSAMENTE");
+                    alert("✅ ÉXITO: EL HISTORIAL SE GUARDÓ EN RENDER.");
                     localStorage.clear();
                     window.location.href = "index.html";
                 } else {
-                    const err = await res.json();
-                    alert("❌ ERROR: " + JSON.stringify(err.detail));
+                    const error = await res.json();
+                    alert("❌ ERROR: " + JSON.stringify(error.detail));
                 }
             } catch (err) {
-                alert("⚠️ ERROR DE CONEXIÓN: Reintente, el servidor Render está despertando.");
+                alert("⚠️ FALLO DE CONEXIÓN: Reintente, el servidor puede estar cargando.");
             } finally {
-                btn.innerText = "FINALIZAR Y GUARDAR HISTORIAL 💾";
+                btn.innerText = "GUARDAR HISTORIAL EN LA NUBE 💾";
                 btn.disabled = false;
             }
         };
