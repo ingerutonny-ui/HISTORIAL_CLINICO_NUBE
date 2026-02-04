@@ -1,18 +1,15 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
 models.Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -24,16 +21,6 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/")
-def read_root():
-    return {"status": "Servidor Limpio - Listo para Parte 1"}
-
-# RUTAS PACIENTES
-@app.post("/pacientes/", response_model=schemas.Paciente)
-def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    return crud.create_paciente(db=db, paciente=paciente)
-
-# RUTA DECLARACIÓN JURADA - PARTE 1
 @app.post("/declaraciones/p1", response_model=schemas.DeclaracionJurada)
-def create_declaracion_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
-    return crud.create_declaracion_jurada_p1(db=db, declaracion=declaracion)
+def save_declaracion_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
+    return crud.create_declaracion_p1(db=db, declaracion=declaracion)
