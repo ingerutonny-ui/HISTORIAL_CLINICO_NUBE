@@ -22,16 +22,14 @@
     </style>
 </head>
 <body>
-
     <div class="jurada-container">
         <div class="text-center mb-4">
             <h2 style="font-weight:800; color:#1e293b; font-size: 22px;">DECLARACIÓN JURADA DE SALUD</h2>
             <p id="indicadorPaso" style="color:#b0bac9; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;">PARTE 1: FILIACIÓN</p>
         </div>
-
         <form id="formMaster">
             <div id="paso1" class="step-content step-active">
-                <div class="seccion-titulo"><span>I. FILIACIÓN DEL TRABAJADOR</span><span class="step-tag">1 / 3</span></div>
+                <div class="seccion-titulo"><span>I. FILIACIÓN</span><span class="step-tag">1 / 3</span></div>
                 <div class="row">
                     <div class="col-md-5"><label class="form-label">APELLIDOS Y NOMBRES</label><input type="text" id="p_nombre" class="form-control readonly-field" readonly></div>
                     <div class="col-md-3"><label class="form-label">DOCUMENTO DE IDENTIDAD</label><input type="text" id="p_ci" class="form-control readonly-field text-center" readonly></div>
@@ -52,12 +50,12 @@
                     <div class="col-md-3"><label class="form-label">8. Ciudad</label><input type="text" name="ciudad" class="form-control" value="CIUDAD"></div>
                     <div class="col-md-3"><label class="form-label">9. País</label><input type="text" name="pais" class="form-control" value="BOLIVIA"></div>
                     <div class="col-md-3"><label class="form-label">10. Teléfono</label><input type="text" name="telf" class="form-control" value="0000000"></div>
-                    <div class="col-md-3"><label class="form-label">11. Estado Civil</label><select name="civil" class="form-select"><option>SOLTERO/A</option><option>CASADO/A</option><option>DIVORCIADO/A</option><option>VIUDO/A</option></select></div>
+                    <div class="col-md-3"><label class="form-label">11. Estado Civil</label><select name="civil" class="form-select"><option>SOLTERO/A</option><option>CASADO/A</option></select></div>
                 </div>
                 <div class="row">
                     <div class="col-md-12"><label class="form-label">12. Profesión / Labor</label><input type="text" name="labor" class="form-control" value="TRABAJADOR"></div>
                 </div>
-                <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente: Antecedentes</button>
+                <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente</button>
             </div>
 
             <div id="paso2" class="step-content">
@@ -90,7 +88,7 @@
                         <label class="form-label">OBSERVACIONES</label><input type="text" name="s_obs" class="form-control" value="NINGUNA">
                     </div>
                 </div>
-                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos y Riesgos</button>
+                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente</button>
             </div>
 
             <div id="paso3" class="step-content">
@@ -122,8 +120,8 @@
                     <div class="col-md-6"><label class="form-label">Químicos</label><input type="text" name="riesgo_quimico" class="form-control" value="NINGUNO"></div>
                     <div class="col-md-6"><label class="form-label">Ergonómicos</label><input type="text" name="riesgo_ergo" class="form-control" value="NINGUNO"></div>
                     <div class="col-md-6"><label class="form-label">Psicosociales</label><input type="text" name="riesgo_psico" class="form-control" value="NINGUNO"></div>
-                    <div class="col-md-12"><label class="form-label">Antecedentes Ocupacionales</label><textarea name="ant_ocupacional" class="form-control">NINGUNO</textarea></div>
-                    <div class="col-md-12"><label class="form-label">Observaciones Riesgo</label><input type="text" name="riesgo_obs" class="form-control" value="NINGUNA"></div>
+                    <div class="col-md-12"><label class="form-label">Ant. Ocupacionales</label><textarea name="ant_ocupacional" class="form-control">NINGUNO</textarea></div>
+                    <div class="col-md-12"><label class="form-label">Obs. Riesgo</label><input type="text" name="riesgo_obs" class="form-control" value="NINGUNA"></div>
                 </div>
                 <button type="submit" id="btnFinalizar" class="btn-accion">Finalizar y Guardar Historial 💾</button>
             </div>
@@ -155,14 +153,12 @@
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
 
-            // Si el usuario borró el valor por defecto y lo dejó vacío, reponerlo para el Backend
-            for (let key in data) {
-                if (!data[key]) data[key] = "NORMAL";
-            }
+            // Auto-rellenado de vacíos
+            for (let key in data) { if (!data[key]) data[key] = "NINGUNA"; }
 
             data.edad = parseInt(data.edad) || 0;
-            data.codigo_paciente = localStorage.getItem('temp_codigo');
-            data.documento_identidad = localStorage.getItem('temp_ci');
+            // OBLIGATORIO: Usar el ID numérico capturado
+            data.paciente_id = parseInt(localStorage.getItem('temp_id')); 
 
             try {
                 const res = await fetch(`${API_BASE}/declaraciones/`, {
