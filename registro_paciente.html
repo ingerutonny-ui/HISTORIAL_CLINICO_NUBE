@@ -36,7 +36,7 @@
             <input type="text" id="nombres" class="form-control" required autocomplete="off">
             <label class="form-label">APELLIDOS</label>
             <input type="text" id="apellidos" class="form-control" required autocomplete="off">
-            <label class="form-label">DOCUMENTO DE IDENTIDAD</label>
+            <label class="form-label">DOCUMENTO DE IDENTIDAD (CI)</label>
             <input type="text" id="ci" class="form-control" required autocomplete="off">
             <div id="codigo_contenedor">CÓDIGO GENERADO: <span id="codigo_val"></span></div>
             <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR REGISTRO FINAL</button>
@@ -51,7 +51,7 @@
     </div>
 
     <script>
-        const API_DESTINO = 'https://historial-clinico-936s.onrender.com/pacientes';
+        const API_DESTINO = 'https://historial-clinico-936s.onrender.com/pacientes/';
         document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos'), inCI = document.getElementById('ci'), codCont = document.getElementById('codigo_contenedor'), codVal = document.getElementById('codigo_val');
@@ -78,7 +78,7 @@
             const payload = { 
                 nombres: inN.value.trim(), 
                 apellidos: inA.value.trim(), 
-                documento_identidad: inCI.value.trim(), 
+                ci: inCI.value.trim(), // Cambio clave aquí: de documento_identidad a ci
                 codigo_paciente: codVal.innerText 
             };
 
@@ -93,14 +93,14 @@
                     const dataServer = await res.json();
                     localStorage.setItem('paciente_id', dataServer.id); 
                     localStorage.setItem('paciente_nombre', payload.nombres + " " + payload.apellidos);
-                    localStorage.setItem('paciente_ci', payload.documento_identidad);
+                    localStorage.setItem('paciente_ci', payload.ci);
                     localStorage.setItem('paciente_codigo', payload.codigo_paciente);
                     
                     alert("¡PACIENTE REGISTRADO CORRECTAMENTE!");
                     window.location.href = "declaracion_jurada_p1.html"; 
                 } else {
-                    const errorData = await res.json();
-                    alert("ERROR: " + (errorData.detail || "Verificar datos"));
+                    const errorData = await response.json();
+                    alert("ERROR: " + JSON.stringify(errorData.detail));
                 }
             } catch (error) { 
                 alert("REINTENTE CON CTRL+F5"); 
