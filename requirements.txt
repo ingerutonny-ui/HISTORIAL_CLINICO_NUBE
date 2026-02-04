@@ -1,9 +1,7 @@
-flask
-cloudinary
-fpdf2
-sqlalchemy
-pydantic
-gunicorn
-psycopg2-binary
 fastapi
 uvicorn
+sqlalchemy
+psycopg2-binary
+pydantic
+fpdf2
+cloudinary
