@@ -10,15 +10,17 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
-# Configuración para ignorar barras diagonales al final
-app.router.redirect_slashes = False
-
+# CONFIGURACIÓN DE CORS (CORREGIDO PARA EVITAR BLOQUEOS)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"],  # Permite peticiones desde cualquier origen (GitHub Pages, Local, etc.)
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite todos los métodos (POST, GET, OPTIONS, etc.)
+    allow_headers=["*"],  # Permite todos los encabezados
 )
+
+# Configuración para ignorar barras diagonales al final
+app.router.redirect_slashes = False
 
 def get_db():
     db = SessionLocal()
@@ -29,7 +31,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"status": "Servidor Activo - Rutas de Pacientes y Declaraciones Listas"}
+    return {"status": "Servidor Activo - CORS Liberado"}
 
 # --- RUTAS PARA PACIENTES ---
 @app.post("/pacientes", response_model=schemas.Paciente)
