@@ -3,18 +3,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Render inyecta DATABASE_URL directamente desde el panel de Environment
-DATABASE_URL = os.getenv("DATABASE_URL")
+# URL de tu base de datos en Render
+SQLALCHEMY_DATABASE_URL = "postgresql://historial_clinico_nube_user:Y0yL3U0N56j0qS0u5hL936M2yK6vS9rX@dpg-cub9o093967s73d1u83g-a.oregon-postgres.render.com/historial_clinico_nube"
 
-# Si la URL empieza con postgres://, SQLAlchemy requiere cambiarla a postgresql://
-if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
-
-# Creamos el motor con SSL (obligatorio para bases de datos en Render)
-engine = create_engine(
-    DATABASE_URL, 
-    connect_args={"sslmode": "require"}
-)
-
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 Base = declarative_base()
