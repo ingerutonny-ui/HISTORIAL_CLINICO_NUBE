@@ -34,24 +34,30 @@ def get_db():
 def read_root():
     return {"status": "ONLINE", "database": "CONNECTED"}
 
-@app.post("/pacientes", response_model=schemas.Paciente)
+@app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     try:
         return crud.create_paciente(db=db, paciente=paciente)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/pacientes", response_model=List[schemas.Paciente])
+@app.get("/pacientes/", response_model=List[schemas.Paciente])
 def read_pacientes(db: Session = Depends(get_db)):
-    return db.query(models.Paciente).all()
+    try:
+        return db.query(models.Paciente).all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/declaraciones/p1", response_model=schemas.DeclaracionJurada)
+@app.post("/declaraciones/p1/", response_model=schemas.DeclaracionJurada)
 def save_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
     try:
         return crud.create_declaracion_p1(db=db, declaracion=declaracion)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/declaraciones/p1", response_model=List[schemas.DeclaracionJurada])
+@app.get("/declaraciones/p1/", response_model=List[schemas.DeclaracionJurada])
 def read_declaraciones_p1(db: Session = Depends(get_db)):
-    return db.query(models.DeclaracionJurada).all()
+    try:
+        return db.query(models.DeclaracionJurada).all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
