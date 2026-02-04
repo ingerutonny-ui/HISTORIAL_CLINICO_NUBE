@@ -5,12 +5,10 @@ from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Crear tablas en la base de datos si no existen
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
-# Configuración de CORS para permitir conexión desde el Frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,28 +26,14 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"status": "Servidor HISTORIAL_CLINICO_NUBE activo y profesional"}
+    return {"status": "Servidor Limpio - Listo para Parte 1"}
 
-#--- RUTAS DE PACIENTES ---
-
-@app.get("/pacientes", response_model=List[schemas.Paciente])
-def read_pacientes(db: Session = Depends(get_db)):
-    return crud.get_pacientes(db)
-
+# RUTAS PACIENTES
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    db_paciente = crud.get_paciente_by_ci(db, ci=paciente.documento_identidad)
-    if db_paciente:
-        raise HTTPException(status_code=400, detail="Documento de identidad ya registrado")
     return crud.create_paciente(db=db, paciente=paciente)
 
-#--- RUTAS DE DECLARACIÓN JURADA ---
-
-@app.get("/declaraciones", response_model=List[schemas.DeclaracionJurada])
-def read_declaraciones(db: Session = Depends(get_db)):
-    return crud.get_declaraciones(db)
-
-@app.post("/declaraciones/", response_model=schemas.DeclaracionJurada)
-def create_declaracion(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
-    # El método crud ya maneja todos los nuevos campos automáticamente
-    return crud.create_declaracion_jurada(db=db, declaracion=declaracion)
+# RUTA DECLARACIÓN JURADA - PARTE 1
+@app.post("/declaraciones/p1", response_model=schemas.DeclaracionJurada)
+def create_declaracion_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
+    return crud.create_declaracion_jurada_p1(db=db, declaracion=declaracion)
