@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -9,6 +9,7 @@ class Paciente(Base):
     apellidos = Column(String)
     cedula = Column(String, unique=True, index=True)
     codigo_paciente = Column(String, unique=True)
+    
     # Relación con la declaración
     declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
 
@@ -17,7 +18,7 @@ class DeclaracionJurada(Base):
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     
-    # Columnas que el error decía que faltaban
+    # Campos obligatorios para la Parte 1: Filiación
     edad = Column(String) 
     sexo = Column(String)
     fecha_nacimiento = Column(String)
