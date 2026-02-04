@@ -7,7 +7,7 @@ class Paciente(Base):
     id = Column(Integer, primary_key=True, index=True)
     nombres = Column(String)
     apellidos = Column(String)
-    documento_identidad = Column(String, unique=True, index=True)
+    ci = Column(String, unique=True, index=True) # Cambio realizado aquí
     codigo_paciente = Column(String, unique=True)
     
     declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
