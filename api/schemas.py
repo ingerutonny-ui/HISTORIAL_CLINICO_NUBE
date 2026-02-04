@@ -1,6 +1,19 @@
 from pydantic import BaseModel
 from typing import Optional
 
+# Esquemas para Pacientes (Necesarios para el Registro)
+class PacienteCreate(BaseModel):
+    nombres: str
+    apellidos: str
+    documento_identidad: str
+    codigo_paciente: str
+
+class Paciente(PacienteCreate):
+    id: int
+    class Config:
+        from_attributes = True
+
+# Esquemas para Declaración Jurada
 class DeclaracionJuradaCreate(BaseModel):
     paciente_id: int
     edad: Optional[int] = None
