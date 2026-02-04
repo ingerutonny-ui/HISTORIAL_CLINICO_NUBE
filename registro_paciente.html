@@ -72,7 +72,7 @@
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegistrar');
-            btn.innerText = "CONECTANDO con NUBE...";
+            btn.innerText = "CONECTANDO CON NUBE...";
             btn.disabled = true;
             
             const payload = { 
@@ -83,7 +83,8 @@
             };
 
             try {
-                const res = await fetch(`${API_BASE}/pacientes/`, {
+                // RUTA CORREGIDA: Sin barra diagonal final
+                const res = await fetch(`${API_BASE}/pacientes`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -92,7 +93,7 @@
                 const dataServer = await res.json();
 
                 if (res.ok) {
-                    // ESTANDARIZACIÓN DE NOMBRES PARA COMPATIBILIDAD TOTAL
+                    // ALMACENAMIENTO PARA ARRASTRE A P1
                     localStorage.setItem('paciente_id', dataServer.id); 
                     localStorage.setItem('paciente_nombre', payload.nombres + " " + payload.apellidos);
                     localStorage.setItem('paciente_ci', payload.documento_identidad);
