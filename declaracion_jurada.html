@@ -70,7 +70,7 @@
                         <label class="form-label">ENDOCRINOS</label><input type="text" name="endocrinos" class="form-control" value="NORMAL">
                         <label class="form-label">DERMATOLÓGICOS</label><input type="text" name="dermatologicos" class="form-control" value="NORMAL">
                         <label class="form-label">ALERGIAS / MEDICAMENTOS</label><input type="text" name="alergias_medicamentos" class="form-control" value="NINGUNA">
-                        <label class="form-label">CHAGAS</label><input type="text" name="chagas" class="form-control" value="NEGATIVO">
+                        <label class="form-label">CHAGAS / OTROS</label><input type="text" name="chagas" class="form-control" value="NEGATIVO">
                     </div>
                     <div class="col-md-12"><label class="form-label">Otros Antecedentes</label><input type="text" name="otros_antecedentes" class="form-control" value="NINGUNO"></div>
                 </div>
@@ -82,32 +82,32 @@
                 <div class="row">
                     <div class="col-md-3">
                         <label class="form-label">¿Fuma?</label>
-                        <select id="fuma_bool" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                        <select id="fuma_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
                         <input type="text" name="fuma_detalle" class="form-control mt-1" placeholder="Detalle">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">¿Bebe?</label>
-                        <select id="bebe_bool" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                        <select id="bebe_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
                         <input type="text" name="bebe_detalle" class="form-control mt-1" placeholder="Detalle">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">¿Drogas?</label>
-                        <select id="drogas_bool" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                        <select id="drogas_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
                         <input type="text" name="drogas_detalle" class="form-control mt-1" placeholder="Detalle">
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">¿Bolo Coca?</label>
-                        <select id="bolo_bool" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                        <select id="bolo_coca_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
                         <input type="text" name="bolo_coca_detalle" class="form-control mt-1" placeholder="Detalle">
                     </div>
                 </div>
                 <div class="row mt-4">
                     <div class="col-md-6"><label class="form-label">Edad Inicio Laboral</label><input type="number" name="edad_inicio_laboral" class="form-control" value="18"></div>
                     <div class="col-md-6"><label class="form-label">Empresa Actual</label><input type="text" name="empresa_actual" class="form-control" value="PARTICULAR"></div>
-                    <div class="col-md-12"><label class="form-label">Riesgos Expuestos</label><textarea name="riesgos_expuestos" class="form-control">NINGUNO</textarea></div>
+                    <div class="col-md-12"><label class="form-label">Riesgos Expuestos (Ruido, Polvo, etc.)</label><textarea name="riesgos_expuestos" class="form-control">NINGUNO</textarea></div>
                     <div class="col-md-4">
                         <label class="form-label">¿Usa EPP?</label>
-                        <select id="epp_bool" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                        <select id="uso_epp_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
                     </div>
                     <div class="col-md-8"><label class="form-label">Detalle EPP</label><input type="text" name="epp_detalle" class="form-control" value="NINGUNO"></div>
                 </div>
@@ -139,13 +139,13 @@
         document.getElementById('formMaster').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnFinalizar');
-            btn.innerText = "GUARDANDO...!";
+            btn.innerText = "GUARDANDO EN POSTGRESQL...";
             btn.disabled = true;
 
             const formData = new FormData(e.target);
             const raw = Object.fromEntries(formData.entries());
 
-            // MAPEADO MANUAL PARA ASEGURAR TIPOS DE DATOS Y NOMBRES DE MODELS.PY
+            // CONSTRUCCIÓN DEL PAYLOAD CON NOMBRES EXACTOS DE MODELS.PY
             const payload = {
                 paciente_id: parseInt(localStorage.getItem('temp_id')),
                 edad: parseInt(raw.edad) || 0,
@@ -168,19 +168,19 @@
                 dermatologicos: raw.dermatologicos,
                 alergias_medicamentos: raw.alergias_medicamentos,
                 chagas: raw.chagas,
-                otros_antecedentes: raw.otros_antecedentes,
-                fuma: document.getElementById('fuma_bool').value === "SI",
+                otros_antecedentes: raw.otros_antecedentes || "NINGUNO",
+                fuma: document.getElementById('fuma_sel').value === "SI",
                 fuma_detalle: raw.fuma_detalle || "NINGUNO",
-                bebe: document.getElementById('bebe_bool').value === "SI",
+                bebe: document.getElementById('bebe_sel').value === "SI",
                 bebe_detalle: raw.bebe_detalle || "NINGUNO",
-                drogas: document.getElementById('drogas_bool').value === "SI",
+                drogas: document.getElementById('drogas_sel').value === "SI",
                 drogas_detalle: raw.drogas_detalle || "NINGUNO",
-                bolo_coca: document.getElementById('bolo_bool').value === "SI",
+                bolo_coca: document.getElementById('bolo_coca_sel').value === "SI",
                 bolo_coca_detalle: raw.bolo_coca_detalle || "NINGUNO",
                 edad_inicio_laboral: parseInt(raw.edad_inicio_laboral) || 0,
                 empresa_actual: raw.empresa_actual,
                 riesgos_expuestos: raw.riesgos_expuestos,
-                uso_epp: document.getElementById('epp_bool').value === "SI",
+                uso_epp: document.getElementById('uso_epp_sel').value === "SI",
                 epp_detalle: raw.epp_detalle || "NINGUNO"
             };
 
@@ -197,12 +197,12 @@
                     window.location.href = "index.html";
                 } else {
                     const error = await res.json();
-                    alert("❌ ERROR: " + JSON.stringify(error.detail));
+                    alert("❌ ERROR DE VALIDACIÓN: " + JSON.stringify(error.detail));
                     btn.innerText = "Finalizar y Guardar Historial 💾";
                     btn.disabled = false;
                 }
             } catch (err) {
-                alert("⚠️ FALLO DE RED. REINTENTE.");
+                alert("⚠️ FALLO DE CONEXIÓN. REVISE SI RENDER ESTÁ ACTIVO.");
                 btn.disabled = false;
                 btn.innerText = "Finalizar y Guardar Historial 💾";
             }
