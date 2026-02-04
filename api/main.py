@@ -10,17 +10,14 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
-# CONFIGURACIÓN DE CORS (CORREGIDO PARA EVITAR BLOQUEOS)
+# CONFIGURACIÓN DE CORS: Totalmente abierta para evitar bloqueos del navegador
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite peticiones desde cualquier origen (GitHub Pages, Local, etc.)
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Permite todos los métodos (POST, GET, OPTIONS, etc.)
-    allow_headers=["*"],  # Permite todos los encabezados
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-
-# Configuración para ignorar barras diagonales al final
-app.router.redirect_slashes = False
 
 def get_db():
     db = SessionLocal()
@@ -31,10 +28,11 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"status": "Servidor Activo - CORS Liberado"}
+    return {"status": "Servidor Activo - Proyecto en la Nube"}
 
-# --- RUTAS PARA PACIENTES ---
+# --- RUTAS PARA PACIENTES (Acepta con y sin /) ---
 @app.post("/pacientes", response_model=schemas.Paciente)
+@app.post("/pacientes/", response_model=schemas.Paciente, include_in_schema=False)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     return crud.create_paciente(db=db, paciente=paciente)
 
@@ -42,8 +40,9 @@ def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_
 def read_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
-# --- RUTAS PARA DECLARACIONES ---
+# --- RUTAS PARA DECLARACIONES (Acepta con y sin /) ---
 @app.post("/declaraciones/p1", response_model=schemas.DeclaracionJurada)
+@app.post("/declaraciones/p1/", response_model=schemas.DeclaracionJurada, include_in_schema=False)
 def save_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
     return crud.create_declaracion_p1(db=db, declaracion=declaracion)
 
