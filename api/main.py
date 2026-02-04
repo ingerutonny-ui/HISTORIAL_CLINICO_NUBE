@@ -5,7 +5,6 @@ from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Intentar crear/actualizar tablas al iniciar
 try:
     models.Base.metadata.create_all(bind=engine)
     print("Base de datos conectada y tablas verificadas.")
@@ -14,7 +13,6 @@ except Exception as e:
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
-# CORS abierto para que GitHub Pages no sea bloqueado
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -52,5 +50,12 @@ def read_pacientes(db: Session = Depends(get_db)):
 def save_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
     try:
         return crud.create_declaracion_p1(db=db, declaracion=declaracion)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/declaraciones/p2/", response_model=schemas.AntecedentesP2)
+def save_p2(antecedentes: schemas.AntecedentesP2Create, db: Session = Depends(get_db)):
+    try:
+        return crud.create_antecedentes_p2(db=db, antecedentes=antecedentes)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
