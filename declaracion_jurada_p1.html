@@ -27,11 +27,11 @@
         label { font-size: 10px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; margin-left: 5px; }
         input, select { background: var(--input-bg); border: none; padding: 12px; border-radius: 15px; font-size: 13px; font-weight: 600; text-transform: uppercase; color: #334155; outline: none; }
         
-        /* Placeholder color plomo claro (fantasma) */
         input::placeholder { color: #cbd5e1; font-weight: 400; }
 
         .btn-submit { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 20px; font-size: 14px; transition: 0.3s; }
         .btn-submit:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -86,57 +86,65 @@
             <div class="campo full"><label>12. PROFESIÓN / LABOR</label><input type="text" id="profesion" placeholder="EJ. ESTUDIANTE / OBRERO" required></div>
         </div>
 
-        <button type="submit" class="btn-submit">SIGUIENTE: ANTECEDENTES</button>
+        <button type="submit" id="btnSiguiente" class="btn-submit">GUARDAR Y CONTINUAR A ANTECEDENTES</button>
     </form>
 </div>
 
 <script>
-    // Recuperar datos del localStorage (del formulario anterior)
+    const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p1';
+
     window.onload = () => {
-        document.getElementById('display_nombre').innerText = localStorage.getItem('paciente_nombre') || 'NO DATA';
-        document.getElementById('display_ci').innerText = localStorage.getItem('paciente_ci') || 'NO DATA';
-        document.getElementById('display_codigo').innerText = localStorage.getItem('paciente_codigo') || 'NO DATA';
+        document.getElementById('display_nombre').innerText = localStorage.getItem('paciente_nombre') || 'SIN DATOS';
+        document.getElementById('display_ci').innerText = localStorage.getItem('paciente_ci') || 'SIN DATOS';
+        document.getElementById('display_codigo').innerText = localStorage.getItem('paciente_codigo') || 'SIN DATOS';
     };
 
     document.getElementById('formFiliacion').addEventListener('submit', async (e) => {
         e.preventDefault();
-        
+        const btn = document.getElementById('btnSiguiente');
         const pacienteId = localStorage.getItem('paciente_id');
         
         if (!pacienteId) {
-            alert("ERROR: NO SE ENCONTRÓ EL ID DEL PACIENTE. REGISTRE AL PACIENTE NUEVAMENTE.");
+            alert("ERROR: NO HAY UN PACIENTE ACTIVO. POR FAVOR REGÍSTRELO PRIMERO.");
+            window.location.href = "registro_paciente.html";
             return;
         }
+
+        btn.innerText = "GUARDANDO EN NUBE...";
+        btn.disabled = true;
 
         const data = {
             paciente_id: parseInt(pacienteId),
             edad: parseInt(document.getElementById('edad').value),
             sexo: document.getElementById('sexo').value,
-            lugar_nacimiento: document.getElementById('lugar_nacimiento').value,
+            lugar_nacimiento: document.getElementById('lugar_nacimiento').value.toUpperCase(),
             fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
             estado_civil: document.getElementById('estado_civil').value,
-            domicilio: `${document.getElementById('domicilio').value}, ${document.getElementById('zona').value}`,
+            domicilio: `${document.getElementById('domicilio').value}, ${document.getElementById('zona').value}`.toUpperCase(),
             telefono: document.getElementById('telefono').value,
-            profesion_oficio: document.getElementById('profesion').value
+            profesion_oficio: document.getElementById('profesion').value.toUpperCase()
         };
 
         try {
-            // RUTA CORREGIDA: Se añadió "/" final para asegurar compatibilidad con Render
-            const res = await fetch('https://historial-clinico-936s.onrender.com/declaraciones/p1/', {
+            const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
             
             if(res.ok) {
-                alert("✓ SECCIÓN 1 GUARDADA EXITOSAMENTE EN LA NUBE");
+                alert("✓ FILIACIÓN GUARDADA CORRECTAMENTE");
                 window.location.href = "declaracion_jurada_p2.html";
             } else {
                 const errorData = await res.json();
-                alert("ERROR DEL SERVIDOR: " + (errorData.detail || "DATOS INVÁLIDOS"));
+                alert("ERROR AL GUARDAR: " + (errorData.detail || "REVISE LOS CAMPOS"));
+                btn.disabled = false;
+                btn.innerText = "GUARDAR Y CONTINUAR A ANTECEDENTES";
             }
         } catch (err) { 
-            alert("EL SERVIDOR ESTÁ DESPERTANDO. POR FAVOR, INTENTA UNA VEZ MÁS."); 
+            alert("CONEXIÓN LENTA. POR FAVOR INTENTE DE NUEVO."); 
+            btn.disabled = false;
+            btn.innerText = "GUARDAR Y CONTINUAR A ANTECEDENTES";
         }
     });
 </script>
