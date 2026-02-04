@@ -39,7 +39,7 @@
             <label class="form-label">DOCUMENTO DE IDENTIDAD</label>
             <input type="text" id="ci" class="form-control" required autocomplete="off">
             <div id="codigo_contenedor">CÓDIGO GENERADO: <span id="codigo_val"></span></div>
-            <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR EN NUBE REAL</button>
+            <button type="submit" id="btnRegistrar" class="btn-registrar">REGISTRAR EN NUBE CORREGIDA</button>
             <button type="button" id="btnConsultar" class="btn-consultar">CONSULTAR REGISTROS EN NUBE</button>
         </form>
     </div>
@@ -51,7 +51,7 @@
     </div>
 
     <script>
-        const API_BASE = 'https://historial-clinico-936s.onrender.com';
+        const API_URL = 'https://historial-clinico-936s.onrender.com/pacientes';
         document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos'), inCI = document.getElementById('ci'), codCont = document.getElementById('codigo_contenedor'), codVal = document.getElementById('codigo_val');
@@ -72,7 +72,7 @@
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegistrar');
-            btn.innerText = "PROCESANDO REGISTRO...";
+            btn.innerText = "CONECTANDO...";
             btn.disabled = true;
             
             const payload = { 
@@ -83,8 +83,8 @@
             };
 
             try {
-                // SOLUCIÓN FINAL: URL forzada sin barra diagonal al final
-                const res = await fetch('https://historial-clinico-936s.onrender.com/pacientes', {
+                // RUTA SIN BARRA FINAL OBLIGATORIA
+                const res = await fetch(API_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -98,15 +98,15 @@
                     localStorage.setItem('paciente_ci', payload.documento_identidad);
                     localStorage.setItem('paciente_codigo', payload.codigo_paciente);
                     
-                    alert("¡PACIENTE REGISTRADO CORRECTAMENTE!");
+                    alert("¡ÉXITO: PACIENTE REGISTRADO!");
                     window.location.href = "declaracion_jurada_p1.html"; 
                 } else {
                     alert("ERROR: " + (dataServer.detail || "Verificar datos"));
                 }
             } catch (error) { 
-                alert("CONEXIÓN FALLIDA. REINTENTA CON CTRL+F5."); 
+                alert("SIN CONEXIÓN. RECARGUE CON CTRL+F5."); 
             } finally { 
-                btn.innerText = "GUARDAR EN NUBE REAL"; 
+                btn.innerText = "REGISTRAR EN NUBE CORREGIDA"; 
                 btn.disabled = false;
             }
         };
@@ -116,7 +116,7 @@
             seccion.style.display = 'block';
             lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
             try {
-                const res = await fetch('https://historial-clinico-936s.onrender.com/pacientes');
+                const res = await fetch(API_URL);
                 const data = await res.json();
                 lista.innerHTML = data.map(p => `
                     <div class="paciente-fila">
