@@ -9,8 +9,6 @@ class Paciente(Base):
     apellidos = Column(String)
     documento_identidad = Column(String, unique=True, index=True)
     codigo_paciente = Column(String, unique=True)
-    
-    # Relación con declaraciones
     declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
 
 class DeclaracionJurada(Base):
@@ -18,7 +16,7 @@ class DeclaracionJurada(Base):
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
 
-    # --- SECCIÓN 1: AFILIACIÓN DEL TRABAJADOR ---
+    # SECCIÓN 1: AFILIACIÓN
     edad = Column(Integer, nullable=True)
     sexo = Column(String, nullable=True)
     lugar_nacimiento = Column(String, nullable=True)
