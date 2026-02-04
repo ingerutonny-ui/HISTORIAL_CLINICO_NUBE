@@ -83,8 +83,8 @@
             };
 
             try {
-                // RUTA CORREGIDA: Se asegura la dirección exacta /pacientes/ para el backend
-                const res = await fetch(`${API_BASE}/pacientes/`, {
+                // RUTA CORREGIDA: Sin barra diagonal al final para coincidir con el Backend
+                const res = await fetch(`${API_BASE}/pacientes`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -98,13 +98,13 @@
                     localStorage.setItem('paciente_ci', payload.documento_identidad);
                     localStorage.setItem('paciente_codigo', payload.codigo_paciente);
                     
-                    alert("¡PACIENTE REGISTRADO Y GUARDADO EN NUBE!");
+                    alert("¡PACIENTE REGISTRADO!");
                     window.location.href = "declaracion_jurada_p1.html"; 
                 } else {
                     alert("ERROR: " + (dataServer.detail || "Error en el servidor"));
                 }
             } catch (error) { 
-                alert("EL SERVIDOR ESTÁ DESPERTANDO. POR FAVOR, INTENTA UNA VEZ MÁS."); 
+                alert("ERROR DE CONEXIÓN. REVISA QUE EL SERVIDOR ESTÉ LIVE."); 
             } finally { 
                 btn.innerText = "GUARDAR REGISTRO"; 
                 btn.disabled = false;
@@ -114,9 +114,10 @@
         document.getElementById('btnConsultar').onclick = async () => {
             const lista = document.getElementById('listaContenido'), seccion = document.getElementById('seccionLista');
             seccion.style.display = 'block';
-            lista.innerHTML = '<p class="text-muted small text-center">Buscando en Render...</p>';
+            lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
             try {
-                const res = await fetch(`${API_BASE}/pacientes/`);
+                // RUTA CORREGIDA: Sin barra diagonal
+                const res = await fetch(`${API_BASE}/pacientes`);
                 const data = await res.json();
                 lista.innerHTML = data.map(p => `
                     <div class="paciente-fila">
