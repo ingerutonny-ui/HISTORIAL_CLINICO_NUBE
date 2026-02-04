@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ES">
+<head>
+    <meta charset="UTF-8">
+    <title>PRIMERA SECCIÓN - DJ</title>
+    <style>
+        :root { --verde: #34a174; --fondo: #f8fa9c; --blanco: #ffffff; --input-bg: #f3f4f6; }
+        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; text-transform: uppercase; display: flex; justify-content: center; padding: 40px; }
+        .card { background: var(--blanco); padding: 40px; border-radius: 40px; width: 100%; max-width: 850px; box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
+        h1 { color: var(--verde); text-align: center; font-weight: 800; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .campo { display: flex; flex-direction: column; }
+        label { font-size: 11px; font-weight: 700; color: #b0bac9; margin-bottom: 5px; margin-left: 10px; }
+        input, select { background: var(--input-bg); border: none; padding: 15px; border-radius: 20px; font-weight: 600; text-transform: uppercase; outline: none; }
+        .btn { background: var(--verde); color: white; border: none; padding: 20px; border-radius: 40px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 30px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>PRIMERA SECCIÓN</h1>
+        <form id="formP1">
+            <div class="grid">
+                <div class="campo"><label>ID PACIENTE</label><input type="number" id="paciente_id" required></div>
+                <div class="campo"><label>EDAD</label><input type="number" id="edad"></div>
+                <div class="campo"><label>SEXO</label><select id="sexo"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
+                <div class="campo"><label>LUGAR NACIMIENTO</label><input type="text" id="lugar_nacimiento"></div>
+                <div class="campo"><label>FECHA NACIMIENTO</label><input type="date" id="fecha_nacimiento"></div>
+                <div class="campo"><label>ESTADO CIVIL</label><input type="text" id="estado_civil"></div>
+                <div class="campo"><label>DOMICILIO</label><input type="text" id="domicilio"></div>
+                <div class="campo"><label>TELÉFONO</label><input type="text" id="telefono"></div>
+            </div>
+            <button type="submit" class="btn">GUARDAR Y CONTINUAR</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById('formP1').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                paciente_id: parseInt(document.getElementById('paciente_id').value),
+                edad: parseInt(document.getElementById('edad').value) || null,
+                sexo: document.getElementById('sexo').value,
+                lugar_nacimiento: document.getElementById('lugar_nacimiento').value,
+                fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
+                estado_civil: document.getElementById('estado_civil').value,
+                domicilio: document.getElementById('domicilio').value,
+                telefono: document.getElementById('telefono').value
+            };
+            try {
+                const res = await fetch('https://historial-clinico-936s.onrender.com/declaraciones/p1', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+                if(res.ok) alert("✓ GUARDADO EXITOSO EN RENDER");
+                else alert("X ERROR: VERIFICA EL ID DEL PACIENTE");
+            } catch (err) { alert("X ERROR DE CONEXIÓN"); }
+        });
+    </script>
+</body>
+</html>
