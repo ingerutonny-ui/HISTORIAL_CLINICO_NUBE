@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -7,23 +7,28 @@ class Paciente(Base):
     id = Column(Integer, primary_key=True, index=True)
     nombres = Column(String)
     apellidos = Column(String)
-    documento_identidad = Column(String, unique=True, index=True)
+    cedula = Column(String, unique=True, index=True)
     codigo_paciente = Column(String, unique=True)
+    # Relación con la declaración
     declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
 
 class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_juradas"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-
-    # SECCIÓN 1: AFILIACIÓN
-    edad = Column(Integer, nullable=True)
-    sexo = Column(String, nullable=True)
-    lugar_nacimiento = Column(String, nullable=True)
-    fecha_nacimiento = Column(String, nullable=True)
-    estado_civil = Column(String, nullable=True)
-    domicilio = Column(String, nullable=True)
-    telefono = Column(String, nullable=True)
-    profesion_oficio = Column(String, nullable=True)
+    
+    # Columnas que el error decía que faltaban
+    edad = Column(String) 
+    sexo = Column(String)
+    fecha_nacimiento = Column(String)
+    lugar_nacimiento = Column(String)
+    domicilio = Column(String)
+    n_casa = Column(String)
+    zona_barrio = Column(String)
+    ciudad = Column(String)
+    pais = Column(String)
+    telefono = Column(String)
+    estado_civil = Column(String)
+    profesion_oficio = Column(String)
 
     paciente = relationship("Paciente", back_populates="declaraciones")
