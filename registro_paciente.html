@@ -72,7 +72,7 @@
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegistrar');
-            btn.innerText = "CONECTANDO CON NUBE...";
+            btn.innerText = "ENVIANDO A LA NUBE...";
             btn.disabled = true;
             
             const payload = { 
@@ -83,7 +83,7 @@
             };
 
             try {
-                // RUTA CORREGIDA: Sin barra diagonal al final para coincidir con el Backend
+                // SOLUCIÓN: Ruta exacta sin barra diagonal final para evitar el error 404
                 const res = await fetch(`${API_BASE}/pacientes`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -101,10 +101,10 @@
                     alert("¡PACIENTE REGISTRADO!");
                     window.location.href = "declaracion_jurada_p1.html"; 
                 } else {
-                    alert("ERROR: " + (dataServer.detail || "Error en el servidor"));
+                    alert("ERROR DEL SERVIDOR: " + (dataServer.detail || "Verificar datos"));
                 }
             } catch (error) { 
-                alert("ERROR DE CONEXIÓN. REVISA QUE EL SERVIDOR ESTÉ LIVE."); 
+                alert("CONEXIÓN FALLIDA. RECARGA CON CTRL+F5."); 
             } finally { 
                 btn.innerText = "GUARDAR REGISTRO"; 
                 btn.disabled = false;
@@ -116,7 +116,6 @@
             seccion.style.display = 'block';
             lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
             try {
-                // RUTA CORREGIDA: Sin barra diagonal
                 const res = await fetch(`${API_BASE}/pacientes`);
                 const data = await res.json();
                 lista.innerHTML = data.map(p => `
