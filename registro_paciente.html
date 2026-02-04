@@ -72,7 +72,7 @@
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegistrar');
-            btn.innerText = "CONECTANDO CON NUBE...";
+            btn.innerText = "CONECTANDO con NUBE...";
             btn.disabled = true;
             
             const payload = { 
@@ -92,12 +92,11 @@
                 const dataServer = await res.json();
 
                 if (res.ok) {
-                    // GUARDAMOS EL ID NUMÉRICO DEVUELTO POR EL BACKEND
-                    localStorage.setItem('temp_id', dataServer.id); 
-                    localStorage.setItem('temp_nombres', payload.nombres);
-                    localStorage.setItem('temp_apellidos', payload.apellidos);
-                    localStorage.setItem('temp_ci', payload.documento_identidad);
-                    localStorage.setItem('temp_codigo', payload.codigo_paciente);
+                    // ESTANDARIZACIÓN DE NOMBRES PARA COMPATIBILIDAD TOTAL
+                    localStorage.setItem('paciente_id', dataServer.id); 
+                    localStorage.setItem('paciente_nombre', payload.nombres + " " + payload.apellidos);
+                    localStorage.setItem('paciente_ci', payload.documento_identidad);
+                    localStorage.setItem('paciente_codigo', payload.codigo_paciente);
                     
                     alert("¡PACIENTE REGISTRADO Y GUARDADO EN NUBE!");
                     window.location.href = "declaracion_jurada_p1.html"; 
