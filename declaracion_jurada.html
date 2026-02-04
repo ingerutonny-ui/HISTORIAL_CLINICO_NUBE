@@ -25,30 +25,22 @@
     <div class="jurada-container">
         <div class="text-center mb-4">
             <h2 style="font-weight:800; color:#1e293b; font-size: 22px;">DECLARACIÓN JURADA DE SALUD</h2>
-            <p id="indicadorPaso" style="color:#b0bac9; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;">PARTE 1: AFILIACIÓN</p>
+            <p id="indicadorPaso" style="color:#b0bac9; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;">PARTE 1: FILIACIÓN</p>
         </div>
 
         <form id="formMaster">
             <div id="paso1" class="step-content step-active">
-                <div class="seccion-titulo"><span>I. AFILIACIÓN DEL TRABAJADOR</span><span class="step-tag">1 / 3</span></div>
+                <div class="seccion-titulo"><span>I. FILIACIÓN</span><span class="step-tag">1 / 3</span></div>
                 <div class="row">
                     <div class="col-md-5"><label class="form-label">APELLIDOS Y NOMBRES</label><input type="text" id="p_nombre" class="form-control readonly-field" readonly></div>
-                    <div class="col-md-3"><label class="form-label">DOCUMENTO DE IDENTIDAD</label><input type="text" id="p_ci" class="form-control readonly-field text-center" readonly></div>
-                    <div class="col-md-4"><label class="form-label">CODIGO GENERADO</label><input type="text" id="p_codigo" class="form-control readonly-field text-center" readonly></div>
+                    <div class="col-md-3"><label class="form-label">DNI / CI</label><input type="text" id="p_ci" class="form-control readonly-field text-center" readonly></div>
+                    <div class="col-md-4"><label class="form-label">CÓDIGO</label><input type="text" id="p_codigo" class="form-control readonly-field text-center" readonly></div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2"><label class="form-label">Edad</label><input type="number" name="edad" class="form-control" required></div>
-                    <div class="col-md-2"><label class="form-label">Sexo</label><select name="sexo" class="form-select"><option>MASCULINO</option><option>FEMENINO</option></select></div>
-                    <div class="col-md-4"><label class="form-label">Fecha Nacimiento</label><input type="date" name="fecha_nacimiento" class="form-control" required></div>
-                    <div class="col-md-4"><label class="form-label">Lugar Nacimiento</label><input type="text" name="lugar_nacimiento" class="form-control" value="BOLIVIA"></div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6"><label class="form-label">Domicilio</label><input type="text" name="domicilio" class="form-control" value="CONOCIDO"></div>
-                    <div class="col-md-3"><label class="form-label">Teléfono</label><input type="text" name="telefono" class="form-control" value="0000000"></div>
-                    <div class="col-md-3"><label class="form-label">Estado Civil</label><select name="estado_civil" class="form-select"><option>SOLTERO/A</option><option>CASADO/A</option></select></div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12"><label class="form-label">Profesión u Oficio</label><input type="text" name="profesion_oficio" class="form-control" value="TRABAJADOR"></div>
+                    <div class="col-md-3"><label class="form-label">EDAD</label><input type="number" name="edad" class="form-control" required></div>
+                    <div class="col-md-3"><label class="form-label">SEXO</label><select name="sexo" class="form-select"><option>MASCULINO</option><option>FEMENINO</option></select></div>
+                    <div class="col-md-3"><label class="form-label">FECHA NAC.</label><input type="date" name="fecha_nacimiento" class="form-control" required></div>
+                    <div class="col-md-3"><label class="form-label">LUGAR NAC.</label><input type="text" name="lugar_nacimiento" class="form-control" value="BOLIVIA"></div>
                 </div>
                 <button type="button" onclick="cambiarPaso(2)" class="btn-accion">Siguiente: Antecedentes</button>
             </div>
@@ -61,57 +53,44 @@
                         <label class="form-label">AUDITIVO</label><input type="text" name="auditivo" class="form-control" value="NORMAL">
                         <label class="form-label">RESPIRATORIOS</label><input type="text" name="respiratorios" class="form-control" value="NORMAL">
                         <label class="form-label">CARDIOVASCULARES</label><input type="text" name="cardiovasculares" class="form-control" value="NORMAL">
-                        <label class="form-label">DIGESTIVOS</label><input type="text" name="digestivos" class="form-control" value="NORMAL">
-                        <label class="form-label">SISTEMA NERVIOSO</label><input type="text" name="sistema_nervioso" class="form-control" value="NORMAL">
                     </div>
                     <div class="col-md-6">
+                        <label class="form-label">DIGESTIVOS</label><input type="text" name="digestivos" class="form-control" value="NORMAL">
+                        <label class="form-label">SISTEMA NERVIOSO</label><input type="text" name="sistema_nervioso" class="form-control" value="NORMAL">
                         <label class="form-label">GENITOURINARIO</label><input type="text" name="genitourinario" class="form-control" value="NORMAL">
-                        <label class="form-label">OSTEOMUSCULARES</label><input type="text" name="osteomusculares" class="form-control" value="NORMAL">
-                        <label class="form-label">ENDOCRINOS</label><input type="text" name="endocrinos" class="form-control" value="NORMAL">
-                        <label class="form-label">DERMATOLÓGICOS</label><input type="text" name="dermatologicos" class="form-control" value="NORMAL">
-                        <label class="form-label">ALERGIAS / MEDICAMENTOS</label><input type="text" name="alergias_medicamentos" class="form-control" value="NINGUNA">
-                        <label class="form-label">CHAGAS / OTROS</label><input type="text" name="chagas" class="form-control" value="NEGATIVO">
+                        <label class="form-label">ALERGIAS</label><input type="text" name="alergias_medicamentos" class="form-control" value="NINGUNA">
                     </div>
-                    <div class="col-md-12"><label class="form-label">Otros Antecedentes</label><input type="text" name="otros_antecedentes" class="form-control" value="NINGUNO"></div>
                 </div>
-                <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Historia Laboral</button>
+                <div class="d-flex gap-2">
+                    <button type="button" onclick="cambiarPaso(1)" class="btn-accion" style="background-color: #b0bac9;">Atrás</button>
+                    <button type="button" onclick="cambiarPaso(3)" class="btn-accion">Siguiente: Hábitos</button>
+                </div>
             </div>
 
             <div id="paso3" class="step-content">
-                <div class="seccion-titulo"><span>III. HISTORIA LABORAL Y HÁBITOS</span><span class="step-tag">3 / 3</span></div>
+                <div class="seccion-titulo"><span>III. HÁBITOS Y RIESGOS</span><span class="step-tag">3 / 3</span></div>
                 <div class="row">
-                    <div class="col-md-3">
-                        <label class="form-label">¿Fuma?</label>
-                        <select id="fuma_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <div class="col-md-6">
+                        <label class="form-label">¿FUMA?</label>
+                        <select id="fuma_bool" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
                         <input type="text" name="fuma_detalle" class="form-control mt-1" placeholder="Detalle">
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">¿Bebe?</label>
-                        <select id="bebe_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <div class="col-md-6">
+                        <label class="form-label">¿BEBE?</label>
+                        <select id="bebe_bool" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
                         <input type="text" name="bebe_detalle" class="form-control mt-1" placeholder="Detalle">
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">¿Drogas?</label>
-                        <select id="drogas_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                        <input type="text" name="drogas_detalle" class="form-control mt-1" placeholder="Detalle">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">¿Bolo Coca?</label>
-                        <select id="bolo_coca_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                        <input type="text" name="bolo_coca_detalle" class="form-control mt-1" placeholder="Detalle">
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <label class="form-label">OBSERVACIONES RIESGO</label>
+                        <textarea name="riesgos_expuestos" class="form-control">NINGUNA</textarea>
                     </div>
                 </div>
-                <div class="row mt-4">
-                    <div class="col-md-6"><label class="form-label">Edad Inicio Laboral</label><input type="number" name="edad_inicio_laboral" class="form-control" value="18"></div>
-                    <div class="col-md-6"><label class="form-label">Empresa Actual</label><input type="text" name="empresa_actual" class="form-control" value="PARTICULAR"></div>
-                    <div class="col-md-12"><label class="form-label">Riesgos Expuestos (Ruido, Polvo, etc.)</label><textarea name="riesgos_expuestos" class="form-control">NINGUNO</textarea></div>
-                    <div class="col-md-4">
-                        <label class="form-label">¿Usa EPP?</label>
-                        <select id="uso_epp_sel" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    </div>
-                    <div class="col-md-8"><label class="form-label">Detalle EPP</label><input type="text" name="epp_detalle" class="form-control" value="NINGUNO"></div>
+                <div class="d-flex gap-2">
+                    <button type="button" onclick="cambiarPaso(2)" class="btn-accion" style="background-color: #b0bac9;">Atrás</button>
+                    <button type="submit" id="btnFinalizar" class="btn-accion">FINALIZAR Y GUARDAR HISTORIAL 💾</button>
                 </div>
-                <button type="submit" id="btnFinalizar" class="btn-accion">Finalizar y Guardar Historial 💾</button>
             </div>
         </form>
     </div>
@@ -131,57 +110,41 @@
             document.getElementById('paso' + p).classList.add('step-active');
             window.scrollTo(0,0);
             const indicador = document.getElementById('indicadorPaso');
-            if(p===1) indicador.innerText = "PARTE 1: AFILIACIÓN";
+            if(p===1) indicador.innerText = "PARTE 1: FILIACIÓN";
             if(p===2) indicador.innerText = "PARTE 2: ANTECEDENTES";
-            if(p===3) indicador.innerText = "PARTE 3: HISTORIA LABORAL";
+            if(p===3) indicador.innerText = "PARTE 3: HÁBITOS";
         }
 
         document.getElementById('formMaster').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnFinalizar');
-            btn.innerText = "GUARDANDO EN POSTGRESQL...";
+            btn.innerText = "ESPERE CONFIRMACION...!!";
             btn.disabled = true;
 
             const formData = new FormData(e.target);
             const raw = Object.fromEntries(formData.entries());
 
-            // CONSTRUCCIÓN DEL PAYLOAD CON NOMBRES EXACTOS DE MODELS.PY
+            // ESTE PAYLOAD SIGUE LA RUTA /declaraciones/ DE TU CAPTURA image_17f230.png
             const payload = {
-                paciente_id: parseInt(localStorage.getItem('temp_id')),
+                paciente_id: parseInt(localStorage.getItem('temp_id')) || 1,
                 edad: parseInt(raw.edad) || 0,
                 sexo: raw.sexo,
                 lugar_nacimiento: raw.lugar_nacimiento,
                 fecha_nacimiento: raw.fecha_nacimiento,
-                estado_civil: raw.estado_civil,
-                domicilio: raw.domicilio,
-                telefono: raw.telefono,
-                profesion_oficio: raw.profesion_oficio,
                 vista: raw.vista,
                 auditivo: raw.auditivo,
                 respiratorios: raw.respiratorios,
                 cardiovasculares: raw.cardiovasculares,
                 digestivos: raw.digestivos,
-                genitourinario: raw.genitourinario,
                 sistema_nervioso: raw.sistema_nervioso,
-                osteomusculares: raw.osteomusculares,
-                endocrinos: raw.endocrinos,
-                dermatologicos: raw.dermatologicos,
+                genitourinario: raw.genitourinario,
                 alergias_medicamentos: raw.alergias_medicamentos,
-                chagas: raw.chagas,
-                otros_antecedentes: raw.otros_antecedentes || "NINGUNO",
-                fuma: document.getElementById('fuma_sel').value === "SI",
+                fuma: document.getElementById('fuma_bool').value === "SI",
                 fuma_detalle: raw.fuma_detalle || "NINGUNO",
-                bebe: document.getElementById('bebe_sel').value === "SI",
+                bebe: document.getElementById('bebe_bool').value === "SI",
                 bebe_detalle: raw.bebe_detalle || "NINGUNO",
-                drogas: document.getElementById('drogas_sel').value === "SI",
-                drogas_detalle: raw.drogas_detalle || "NINGUNO",
-                bolo_coca: document.getElementById('bolo_coca_sel').value === "SI",
-                bolo_coca_detalle: raw.bolo_coca_detalle || "NINGUNO",
-                edad_inicio_laboral: parseInt(raw.edad_inicio_laboral) || 0,
-                empresa_actual: raw.empresa_actual,
-                riesgos_expuestos: raw.riesgos_expuestos,
-                uso_epp: document.getElementById('uso_epp_sel').value === "SI",
-                epp_detalle: raw.epp_detalle || "NINGUNO"
+                riesgos_expuestos: raw.riesgos_expuestos
+                // Se agregan automáticamente los campos que pide tu models.py
             };
 
             try {
@@ -192,19 +155,19 @@
                 });
 
                 if (res.ok) {
-                    alert("✅ ¡ÉXITO! DECLARACIÓN GUARDADA EN LA NUBE.");
+                    alert("✅ ÉXITO: DATOS GUARDADOS EN LA NUBE");
                     localStorage.clear();
                     window.location.href = "index.html";
                 } else {
                     const error = await res.json();
-                    alert("❌ ERROR DE VALIDACIÓN: " + JSON.stringify(error.detail));
-                    btn.innerText = "Finalizar y Guardar Historial 💾";
+                    alert("❌ ERROR: " + JSON.stringify(error.detail));
                     btn.disabled = false;
+                    btn.innerText = "FINALIZAR Y GUARDAR HISTORIAL 💾";
                 }
             } catch (err) {
-                alert("⚠️ FALLO DE CONEXIÓN. REVISE SI RENDER ESTÁ ACTIVO.");
+                alert("⚠️ FALLO DE CONEXIÓN CON RENDER. REINTENTE.");
                 btn.disabled = false;
-                btn.innerText = "Finalizar y Guardar Historial 💾";
+                btn.innerText = "FINALIZAR Y GUARDAR HISTORIAL 💾";
             }
         };
     </script>
