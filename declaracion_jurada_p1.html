@@ -49,13 +49,13 @@
 
     <div class="top-info">
         <div class="info-box"><label>APELLIDOS Y NOMBRES</label><span id="display_nombre">CARGANDO...</span></div>
-        <div class="info-box"><label>DOCUMENTO DE IDENTIDAD</label><span id="display_ci">CARGANDO...</span></div>
+        <div class="info-box"><label>DOCUMENTO DE IDENTIDAD (CI)</label><span id="display_ci">CARGANDO...</span></div>
         <div class="info-box"><label>CÓDIGO GENERADO</label><span id="display_codigo">CARGANDO...</span></div>
     </div>
 
     <form id="formFiliacion">
         <div class="grid">
-            <div class="campo"><label>1. EDAD</label><input type="number" id="edad" placeholder="EJ. 25" required></div>
+            <div class="campo"><label>1. EDAD</label><input type="text" id="edad" placeholder="EJ. 25" required></div>
             <div class="campo">
                 <label>2. SEXO</label>
                 <select id="sexo">
@@ -66,8 +66,8 @@
             <div class="campo"><label>3. FECHA NACIMIENTO</label><input type="date" id="fecha_nacimiento" required></div>
             <div class="campo"><label>4. LUGAR NACIMIENTO</label><input type="text" id="lugar_nacimiento" placeholder="EJ. LA PAZ" required></div>
             
-            <div class="campo" style="grid-column: span 2;"><label>5. DOMICILIO</label><input type="text" id="domicilio" placeholder="EJ. AV. PRINCIPAL #123" required></div>
-            <div class="campo"><label>6. N° CASA</label><input type="text" id="n_casa" placeholder="S/N"></div>
+            <div class="campo" style="grid-column: span 2;"><label>5. DOMICILIO</label><input type="text" id="domicilio" placeholder="EJ. AV. PRINCIPAL" required></div>
+            <div class="campo"><label>6. N° CASA</label><input type="text" id="n_casa" placeholder="S/N" value="S/N"></div>
             <div class="campo"><label>7. ZONA / BARRIO</label><input type="text" id="zona" placeholder="EJ. SOPOCACHI" required></div>
 
             <div class="campo"><label>8. CIUDAD</label><input type="text" id="ciudad" placeholder="EJ. EL ALTO" required></div>
@@ -91,7 +91,7 @@
 </div>
 
 <script>
-    const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p1';
+    const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p1/';
 
     window.onload = () => {
         document.getElementById('display_nombre').innerText = localStorage.getItem('paciente_nombre') || 'SIN DATOS';
@@ -105,7 +105,7 @@
         const pacienteId = localStorage.getItem('paciente_id');
         
         if (!pacienteId) {
-            alert("ERROR: NO HAY UN PACIENTE ACTIVO. POR FAVOR REGÍSTRELO PRIMERO.");
+            alert("ERROR: NO HAY UN PACIENTE ACTIVO.");
             window.location.href = "registro_paciente.html";
             return;
         }
@@ -113,15 +113,20 @@
         btn.innerText = "GUARDANDO EN NUBE...";
         btn.disabled = true;
 
+        // Capturamos TODOS los campos requeridos por el backend
         const data = {
             paciente_id: parseInt(pacienteId),
-            edad: parseInt(document.getElementById('edad').value),
+            edad: document.getElementById('edad').value,
             sexo: document.getElementById('sexo').value,
-            lugar_nacimiento: document.getElementById('lugar_nacimiento').value.toUpperCase(),
             fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
-            estado_civil: document.getElementById('estado_civil').value,
-            domicilio: `${document.getElementById('domicilio').value}, ${document.getElementById('zona').value}`.toUpperCase(),
+            lugar_nacimiento: document.getElementById('lugar_nacimiento').value.toUpperCase(),
+            domicilio: document.getElementById('domicilio').value.toUpperCase(),
+            n_casa: document.getElementById('n_casa').value.toUpperCase(),
+            zona_barrio: document.getElementById('zona').value.toUpperCase(),
+            ciudad: document.getElementById('ciudad').value.toUpperCase(),
+            pais: document.getElementById('pais').value.toUpperCase(),
             telefono: document.getElementById('telefono').value,
+            estado_civil: document.getElementById('estado_civil').value,
             profesion_oficio: document.getElementById('profesion').value.toUpperCase()
         };
 
@@ -137,12 +142,13 @@
                 window.location.href = "declaracion_jurada_p2.html";
             } else {
                 const errorData = await res.json();
-                alert("ERROR AL GUARDAR: " + (errorData.detail || "REVISE LOS CAMPOS"));
-                btn.disabled = false;
-                btn.innerText = "GUARDAR Y CONTINUAR A ANTECEDENTES";
+                // Mostramos el error detallado para saber exactamente qué campo falta
+                console.log("Errores detectados:", errorData.detail);
+                alert("ERROR DE VALIDACIÓN: REVISE QUE TODOS LOS CAMPOS ESTÉN LLENOS.");
             }
         } catch (err) { 
-            alert("CONEXIÓN LENTA. POR FAVOR INTENTE DE NUEVO."); 
+            alert("ERROR DE RED: REINTENTE CON CTRL+F5"); 
+        } finally {
             btn.disabled = false;
             btn.innerText = "GUARDAR Y CONTINUAR A ANTECEDENTES";
         }
