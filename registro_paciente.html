@@ -34,15 +34,11 @@
         <form id="formRegistro">
             <label class="form-label">NOMBRES</label>
             <input type="text" id="nombres" class="form-control" required autocomplete="off">
-            
             <label class="form-label">APELLIDOS</label>
             <input type="text" id="apellidos" class="form-control" required autocomplete="off">
-            
             <label class="form-label">DOCUMENTO DE IDENTIDAD</label>
             <input type="text" id="ci" class="form-control" required autocomplete="off">
-            
             <div id="codigo_contenedor">CÓDIGO GENERADO: <span id="codigo_val"></span></div>
-            
             <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR REGISTRO</button>
             <button type="button" id="btnConsultar" class="btn-consultar">CONSULTAR REGISTROS EN NUBE</button>
         </form>
@@ -56,7 +52,6 @@
 
     <script>
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
-        
         document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
         const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos'), inCI = document.getElementById('ci'), codCont = document.getElementById('codigo_contenedor'), codVal = document.getElementById('codigo_val');
@@ -94,18 +89,20 @@
                     body: JSON.stringify(payload)
                 });
 
+                const dataServer = await res.json();
+
                 if (res.ok) {
-                    // CORRECCIÓN: Guardamos TODOS los datos necesarios para la Declaración Jurada
+                    // AQUÍ ESTÁ LA CLAVE: Guardamos el ID que nos devuelve el servidor
+                    localStorage.setItem('temp_id', dataServer.id); 
                     localStorage.setItem('temp_nombres', payload.nombres);
                     localStorage.setItem('temp_apellidos', payload.apellidos);
-                    localStorage.setItem('temp_ci', payload.documento_identidad); // <--- ESTO FALTABA
+                    localStorage.setItem('temp_ci', payload.documento_identidad);
                     localStorage.setItem('temp_codigo', payload.codigo_paciente);
                     
                     alert("¡PACIENTE REGISTRADO Y GUARDADO EN NUBE!");
                     window.location.href = "declaracion_jurada.html"; 
                 } else {
-                    const err = await res.json();
-                    alert("ERROR: " + (err.detail || "Error en el servidor"));
+                    alert("ERROR: " + (dataServer.detail || "Error en el servidor"));
                 }
             } catch (error) { 
                 alert("EL SERVIDOR ESTÁ DESPERTANDO. POR FAVOR, INTENTA UNA VEZ MÁS."); 
