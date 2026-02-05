@@ -85,7 +85,8 @@
 </div>
 
 <script>
-    const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p1';
+    // URL CORREGIDA PARA QUE COINCIDA CON TU BACKEND (Asegúrate de tener esta ruta en main.py)
+    const API_URL = 'https://historial-clinico-936s.onrender.com/filiacion/';
 
     window.onload = () => {
         const id = localStorage.getItem('paciente_id');
@@ -104,17 +105,17 @@
         const btn = document.getElementById('btnSiguiente');
         const pacienteId = localStorage.getItem('paciente_id');
         
-        btn.innerText = "ENVIANDO DATOS A LA NUBE...";
+        btn.innerText = "ENVIANDO DATOS...";
         btn.disabled = true;
 
         const val = (id, def = "S/D") => {
-            const value = document.getElementById(id).value.trim();
-            return value === "" ? def : value.toUpperCase();
+            const el = document.getElementById(id);
+            return el && el.value.trim() !== "" ? el.value.trim().toUpperCase() : def;
         };
 
         const data = {
             paciente_id: parseInt(pacienteId),
-            edad: parseInt(val('edad', '0')),
+            edad: parseInt(document.getElementById('edad').value) || 0,
             sexo: document.getElementById('sexo').value,
             fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
             lugar_nacimiento: val('lugar_nacimiento'),
@@ -136,14 +137,14 @@
             });
             
             if(res.ok) {
-                alert("✓ FILIACIÓN MÉDICA GUARDADA CON ÉXITO");
+                alert("✓ FILIACIÓN GUARDADA CON ÉXITO");
                 window.location.href = "declaracion_jurada_p2.html";
             } else {
                 const errorData = await res.json();
-                alert("ERROR DE NUBE: " + JSON.stringify(errorData.detail));
+                alert("ERROR: " + (errorData.detail || "Verifique los datos"));
             }
         } catch (err) { 
-            alert("FALLO DE CONEXIÓN A RENDER. REINTENTE."); 
+            alert("ERROR DE CONEXIÓN AL SERVIDOR."); 
         } finally {
             btn.disabled = false;
             btn.innerText = "GUARDAR Y CONTINUAR A ANTECEDENTES";
