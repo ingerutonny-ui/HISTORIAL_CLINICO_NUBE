@@ -39,12 +39,12 @@
     <div class="registro-container">
         <div class="mb-2"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="40" alt="icon"></div>
         <h2 style="font-weight:800; color:#1e293b; font-size: 20px; margin-bottom: 0;">GESTIÓN DE PACIENTES</h2>
-        <p style="color:#b0bac9; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;">NUBE PROYECTO HISTORIAL</p>
+        <p style="color:#b0bac9; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;">SISTEMA DE HISTORIAL CLÍNICO</p>
         <p id="fechaActual" class="fecha-texto"></p>
         
         <label class="form-label" style="color: #24a174;">BUSCAR POR CÓDIGO MAESTRO</label>
         <div class="grupo-busqueda">
-            <input type="text" id="inputBuscar" class="form-control" placeholder="EJ: SA1234">
+            <input type="text" id="inputBuscar" class="form-control" placeholder="EJ: RA4798">
             <button type="button" class="btn-buscar" onclick="buscarPaciente()">BUSCAR</button>
         </div>
 
@@ -52,13 +52,13 @@
 
         <form id="formRegistro">
             <label class="form-label">NOMBRES</label>
-            <input type="text" id="nombres" class="form-control" required>
+            <input type="text" id="nombres" class="form-control" required autocomplete="off">
             
             <label class="form-label">APELLIDOS</label>
-            <input type="text" id="apellidos" class="form-control" required>
+            <input type="text" id="apellidos" class="form-control" required autocomplete="off">
             
             <label class="form-label">DOCUMENTO DE IDENTIDAD (CI)</label>
-            <input type="text" id="ci" class="form-control" required>
+            <input type="text" id="ci" class="form-control" required autocomplete="off">
             
             <div id="codigo_contenedor">CÓDIGO: <span id="codigo_val">---</span></div>
 
@@ -67,7 +67,7 @@
             <button type="button" id="btnEliminar" class="btn-main btn-eliminar" onclick="eliminarPaciente()">ELIMINAR PACIENTE PERMANENTEMENTE</button>
             
             <button type="button" id="btnConsultar" class="btn-consultar">MOSTRAR TODOS LOS REGISTROS</button>
-            <button type="button" id="btnLimpiar" class="btn-consultar" onclick="limpiarFormulario()" style="color: #ef4444;">LIMPIAR / NUEVO</button>
+            <button type="button" id="btnLimpiar" class="btn-consultar" onclick="limpiarFormulario()" style="color: #ef4444;">LIMPIAR / NUEVO PACIENTE</button>
         </form>
     </div>
 
@@ -90,7 +90,15 @@
               btnEdi = document.getElementById('btnEditar'),
               btnEli = document.getElementById('btnEliminar');
 
-        // Generador de Código automático para nuevos
+        // Función Maestra para sincronizar el LocalStorage
+        function actualizarMemoriaLocal(data) {
+            localStorage.clear(); // Limpieza profunda antes de escribir
+            localStorage.setItem('paciente_id', data.id);
+            localStorage.setItem('paciente_nombre', data.nombres + " " + data.apellidos);
+            localStorage.setItem('paciente_ci', data.ci);
+            localStorage.setItem('paciente_codigo', data.codigo_paciente);
+        }
+
         function genCod() {
             if(inN.value.trim() && inA.value.trim() && btnReg.style.display !== 'none') {
                 const initials = (inN.value[0] || "") + (inA.value[0] || "");
@@ -108,9 +116,9 @@
             btnEdi.style.display = 'none';
             btnEli.style.display = 'none';
             inBuscar.value = "";
+            localStorage.clear();
         }
 
-        // --- FUNCIÓN BUSCAR ---
         async function buscarPaciente() {
             const codigo = inBuscar.value.trim().toUpperCase();
             if(!codigo) return alert("INGRESE UN CÓDIGO");
@@ -124,7 +132,8 @@
                     inCI.value = p.ci;
                     codVal.innerText = p.codigo_paciente;
                     
-                    // Ajustar botones
+                    actualizarMemoriaLocal(p); // Sincroniza memoria con el paciente buscado
+
                     btnReg.style.display = 'none';
                     btnEdi.style.display = 'block';
                     btnEli.style.display = 'block';
@@ -134,13 +143,17 @@
             } catch (e) { alert("ERROR DE CONEXIÓN"); }
         }
 
-        // --- FUNCIÓN CREAR (EXISTENTE) ---
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             btnReg.innerText = "PROCESANDO...";
             btnReg.disabled = true;
             
-            const payload = { nombres: inN.value.trim(), apellidos: inA.value.trim(), ci: inCI.value.trim(), codigo_paciente: codVal.innerText };
+            const payload = { 
+                nombres: inN.value.trim(), 
+                apellidos: inA.value.trim(), 
+                ci: inCI.value.trim(), 
+                codigo_paciente: codVal.innerText 
+            };
 
             try {
                 const res = await fetch(API_BASE, {
@@ -150,20 +163,19 @@
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    localStorage.setItem('paciente_id', data.id);
-                    alert("¡REGISTRADO! PROCEDIENDO A DECLARACIÓN P1");
+                    actualizarMemoriaLocal(data); // Asegura que Ruben sea el único en memoria
+                    alert("¡PACIENTE REGISTRADO! PASANDO A DECLARACIÓN JURADA.");
                     window.location.href = "declaracion_jurada_p1.html";
-                } else { alert("ERROR AL CREAR"); }
-            } catch (error) { alert("ERROR DE RED"); }
+                } else { alert("ERROR AL CREAR REGISTRO"); }
+            } catch (error) { alert("FALLO DE CONEXIÓN A LA NUBE"); }
             finally { btnReg.innerText = "GUARDAR NUEVO REGISTRO"; btnReg.disabled = false; }
         };
 
-        // --- FUNCIÓN EDITAR ---
         async function editarPaciente() {
             const codigo = codVal.innerText;
             const payload = { nombres: inN.value.trim(), apellidos: inA.value.trim(), ci: inCI.value.trim(), codigo_paciente: codigo };
 
-            if(!confirm(`¿CONFIRMA LOS CAMBIOS PARA EL CÓDIGO ${codigo}?`)) return;
+            if(!confirm(`¿ESTÁ SEGURO DE ACTUALIZAR LOS DATOS DE ${codigo}?`)) return;
 
             try {
                 const res = await fetch(`${API_BASE}${codigo}`, {
@@ -172,31 +184,30 @@
                     body: JSON.stringify(payload)
                 });
                 if(res.ok) {
+                    const data = await res.json();
+                    actualizarMemoriaLocal(data); 
                     alert("DATOS ACTUALIZADOS CORRECTAMENTE");
-                    buscarPaciente(); 
                 }
             } catch (e) { alert("ERROR AL EDITAR"); }
         }
 
-        // --- FUNCIÓN ELIMINAR ---
         async function eliminarPaciente() {
             const codigo = codVal.innerText;
-            if(!confirm(`⚠️ ADVERTENCIA: ¿REALMENTE DESEA ELIMINAR AL PACIENTE ${codigo}? ESTA ACCIÓN NO SE PUEDE DESHACER.`)) return;
+            if(!confirm(`⚠️ ELIMINARÁ PERMANENTEMENTE AL PACIENTE ${codigo}. ¿CONTINUAR?`)) return;
 
             try {
                 const res = await fetch(`${API_BASE}${codigo}`, { method: 'DELETE' });
                 if(res.ok) {
-                    alert("PACIENTE ELIMINADO DE LA NUBE");
+                    alert("PACIENTE ELIMINADO");
                     limpiarFormulario();
                 }
             } catch (e) { alert("ERROR AL ELIMINAR"); }
         }
 
-        // --- FUNCIÓN MOSTRAR TODOS ---
         document.getElementById('btnConsultar').onclick = async () => {
             const lista = document.getElementById('listaContenido'), seccion = document.getElementById('seccionLista');
             seccion.style.display = 'block';
-            lista.innerHTML = '<p class="text-muted small">CARGANDO...</p>';
+            lista.innerHTML = '<p class="text-muted small">CONECTANDO A RENDER...</p>';
             try {
                 const res = await fetch(API_BASE);
                 const data = await res.json();
@@ -205,7 +216,7 @@
                         <span class="paciente-nombre">${p.nombres} ${p.apellidos}</span>
                         <span class="paciente-id-box">${p.codigo_paciente}</span>
                     </div>`).join('');
-            } catch (e) { alert("ERROR AL CONSULTAR"); }
+            } catch (e) { alert("ERROR AL OBTENER LISTADO"); }
         };
     </script>
 </body>
