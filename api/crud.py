@@ -67,3 +67,20 @@ def create_habitos_p3(db: Session, habitos: schemas.HabitosRiesgosP3Create):
     except Exception as e:
         db.rollback()
         raise e
+
+# --- NUEVA FUNCIÓN PARA EL VISOR ---
+def get_historial_completo(db: Session, paciente_id: int):
+    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    if not paciente:
+        return None
+    
+    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
+    antecedentes = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
+    habitos = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
+    
+    return {
+        "paciente": paciente,
+        "filiacion": filiacion,
+        "antecedentes": antecedentes,
+        "habitos": habitos
+    }
