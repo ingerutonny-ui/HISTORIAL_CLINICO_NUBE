@@ -59,3 +59,10 @@ def save_p2(antecedentes: schemas.AntecedentesP2Create, db: Session = Depends(ge
         return crud.create_antecedentes_p2(db=db, antecedentes=antecedentes)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/declaraciones/p3/", response_model=schemas.HabitosRiesgosP3)
+def save_p3(habitos: schemas.HabitosRiesgosP3Create, db: Session = Depends(get_db)):
+    try:
+        return crud.create_habitos_p3(db=db, habitos=habitos)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
