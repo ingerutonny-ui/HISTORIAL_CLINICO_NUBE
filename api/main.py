@@ -34,7 +34,7 @@ def get_db():
 def read_root():
     return {"status": "ONLINE", "database": "CONNECTED"}
 
-# --- RUTAS DE PACIENTES (EXTENDIDAS) ---
+# --- RUTAS DE PACIENTES ---
 
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
@@ -57,106 +57,63 @@ def read_paciente_por_codigo(codigo: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return db_paciente
 
-@app.put("/pacientes/{codigo}", response_model=schemas.Paciente)
-def update_paciente(codigo: str, paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    db_paciente = crud.update_paciente(db, codigo=codigo, datos_actualizados=paciente)
-    if db_paciente is None:
-        raise HTTPException(status_code=404, detail="No se pudo actualizar: Paciente no encontrado")
-    return db_paciente
-
-@app.delete("/pacientes/{codigo}")
-def delete_paciente(codigo: str, db: Session = Depends(get_db)):
-    success = crud.delete_paciente(db, codigo=codigo)
-    if not success:
-        raise HTTPException(status_code=404, detail="No se pudo eliminar: Paciente no encontrado")
-    return {"message": f"Paciente {codigo} eliminado exitosamente"}
-
-# --- RUTAS DE DECLARACIONES (GUARDADO) ---
-
-@app.post("/declaraciones/p1/", response_model=schemas.DeclaracionJurada)
-def save_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
-    try:
-        return crud.create_declaracion_p1(db=db, declaracion=declaracion)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/declaraciones/p2/", response_model=schemas.AntecedentesP2)
-def save_p2(antecedentes: schemas.AntecedentesP2Create, db: Session = Depends(get_db)):
-    try:
-        return crud.create_antecedentes_p2(db=db, antecedentes=antecedentes)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/declaraciones/p3/", response_model=schemas.HabitosRiesgosP3)
-def save_p3(habitos: schemas.HabitosRiesgosP3Create, db: Session = Depends(get_db)):
-    try:
-        return crud.create_habitos_p3(db=db, habitos=habitos)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-# --- RUTA DE CONSULTA INTEGRAL Y GENERACIÓN DE PDF ---
-
-@app.get("/historial-completo/{paciente_id}", response_model=schemas.HistorialCompleto)
-def get_historial_completo(paciente_id: int, db: Session = Depends(get_db)):
-    historial = crud.get_historial_completo(db, paciente_id=paciente_id)
-    if not historial:
-        raise HTTPException(status_code=404, detail="Historial no encontrado")
-    return historial
+# --- RUTA DE GENERACIÓN DE PDF CORREGIDA ---
 
 @app.get("/generar-pdf/{paciente_id}")
 def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
-    historial = crud.get_historial_completo(db, paciente_id=paciente_id)
-    if not historial:
-        raise HTTPException(status_code=404, detail="Historial no encontrado")
+    try:
+        historial = crud.get_historial_completo(db, paciente_id=paciente_id)
+        if not historial:
+            raise HTTPException(status_code=404, detail="Historial no encontrado")
 
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial", "B", 16)
-    
-    # Encabezado
-    pdf.cell(0, 10, "DECLARACION JURADA DE SALUD", ln=True, align="C")
-    pdf.set_font("Arial", "", 10)
-    pdf.cell(0, 10, "PROYECTO: HISTORIAL_CLINICO_NUBE", ln=True, align="C")
-    pdf.ln(5)
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Helvetica", "B", 16)
+        
+        # Encabezado
+        pdf.cell(0, 10, "DECLARACION JURADA DE SALUD", ln=True, align="C")
+        pdf.set_font("Helvetica", "", 10)
+        pdf.cell(0, 10, "PROYECTO: HISTORIAL_CLINICO_NUBE", ln=True, align="C")
+        pdf.ln(5)
 
-    # Datos Personales (P1)
-    pdf.set_fill_color(200, 220, 255)
-    pdf.cell(0, 8, "1. AFILIACION DEL TRABAJADOR", ln=True, fill=True)
-    pdf.set_font("Arial", "", 9)
-    p = historial["paciente"]
-    d1 = historial["declaracion"]
-    
-    pdf.cell(0, 7, f"Nombre Completo: {p.nombres} {p.apellidos}", ln=True)
-    pdf.cell(90, 7, f"CI: {p.ci}", ln=0)
-    pdf.cell(0, 7, f"Edad: {d1.edad if d1 else 'N/A'}", ln=True)
-    pdf.cell(90, 7, f"Sexo: {d1.sexo if d1 else 'N/A'}", ln=0)
-    pdf.cell(0, 7, f"Profesion: {d1.profesion_oficio if d1 else 'N/A'}", ln=True)
-    pdf.ln(5)
+        # Sección 1: Datos Personales
+        pdf.set_fill_color(200, 220, 255)
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.cell(0, 8, " 1. AFILIACION DEL TRABAJADOR", ln=True, fill=True)
+        pdf.set_font("Helvetica", "", 9)
+        
+        p = historial["paciente"]
+        d1 = historial.get("declaracion")
+        
+        pdf.cell(0, 7, f"Nombre Completo: {p.nombres} {p.apellidos}", ln=True)
+        pdf.cell(90, 7, f"CI: {p.ci}", ln=0)
+        pdf.cell(0, 7, f"Edad: {d1.edad if d1 else 'N/A'}", ln=True)
+        pdf.cell(90, 7, f"Sexo: {d1.sexo if d1 else 'N/A'}", ln=0)
+        pdf.cell(0, 7, f"Profesion: {d1.profesion_oficio if d1 else 'N/A'}", ln=True)
+        pdf.ln(5)
 
-    # Antecedentes (P2)
-    pdf.set_fill_color(230, 230, 230)
-    pdf.cell(0, 8, "2. ANTECEDENTES PATOLOGICOS", ln=True, fill=True)
-    # Aquí se pueden iterar los campos p1..p22 si existen datos
-    pdf.cell(0, 7, "Revisar registro digital para detalle de indicadores p1-p22.", ln=True)
-    pdf.ln(5)
+        # Sección 2: Vista de Antecedentes
+        pdf.set_fill_color(230, 230, 230)
+        pdf.set_font("Helvetica", "B", 10)
+        pdf.cell(0, 8, " 2. RESUMEN DE ANTECEDENTES", ln=True, fill=True)
+        pdf.set_font("Helvetica", "", 9)
+        pdf.multi_cell(0, 7, "El paciente declara haber sido informado sobre la importancia de la veracidad en sus antecedentes patologicos.")
+        pdf.ln(5)
 
-    # Hábitos (P3)
-    pdf.set_fill_color(230, 230, 230)
-    pdf.cell(0, 8, "3. HABITOS Y RIESGOS", ln=True, fill=True)
-    h3 = historial["habitos_riesgos"]
-    if h3:
-        pdf.cell(0, 7, f"Fuma: {h3.fuma} ({h3.fuma_det})", ln=True)
-        pdf.cell(0, 7, f"Bebe: {h3.bebe} ({h3.bebe_det})", ln=True)
-        pdf.cell(0, 7, f"Riesgos Fisicos: {h3.r_fisico}", ln=True)
+        # Firma
+        pdf.ln(20)
+        pdf.cell(0, 10, "__________________________", ln=True, align="C")
+        pdf.cell(0, 5, "FIRMA DEL TRABAJADOR", ln=True, align="C")
 
-    # Generar salida
-    pdf_output = io.BytesIO()
-    pdf_str = pdf.output(dest='S')
-    pdf_output.write(pdf_str)
-    pdf_output.seek(0)
-
-    return Response(
-        content=pdf_output.getvalue(),
-        media_type="application/pdf",
-        headers={"Content-Disposition": f"inline; filename=Historial_{p.codigo_paciente}.pdf"}
-    )
+        # Exportar PDF a Bytes
+        pdf_bytes = pdf.output()
+        
+        return Response(
+            content=pdf_bytes,
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"inline; filename=Historial_{p.codigo_paciente}.pdf"}
+        )
+        
+    except Exception as e:
+        print(f"Error generando PDF: {e}")
+        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
