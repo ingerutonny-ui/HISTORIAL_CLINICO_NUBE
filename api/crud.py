@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
 
+# --- GESTIÓN DE PACIENTES ---
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
     try:
         db_paciente = models.Paciente(**paciente.model_dump())
@@ -12,7 +13,6 @@ def create_paciente(db: Session, paciente: schemas.PacienteCreate):
         db.rollback()
         raise e
 
-# --- NUEVAS FUNCIONES DE GESTIÓN ---
 def get_paciente_by_codigo(db: Session, codigo: str):
     return db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
 
@@ -34,41 +34,71 @@ def delete_paciente(db: Session, codigo: str):
         return True
     return False
 
-# --- FUNCIONES DE DECLARACIONES EXISTENTES ---
-def create_declaracion_p1(db: Session, declaracion: schemas.DeclaracionJuradaCreate):
+# --- GESTIÓN DE FILIACIÓN (PARTE 1) ---
+def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
-        db_declaracion = models.DeclaracionJurada(**declaracion.model_dump())
-        db.add(db_declaracion)
+        # Verificar si ya existe para actualizar o crear nuevo
+        db_filiacion = db.query(models.DeclaracionJurada).filter(
+            models.DeclaracionJurada.paciente_id == filiacion.paciente_id
+        ).first()
+        
+        if db_filiacion:
+            for key, value in filiacion.model_dump().items():
+                setattr(db_filiacion, key, value)
+        else:
+            db_filiacion = models.DeclaracionJurada(**filiacion.model_dump())
+            db.add(db_filiacion)
+            
         db.commit()
-        db.refresh(db_declaracion)
-        return db_declaracion
+        db.refresh(db_filiacion)
+        return db_filiacion
     except Exception as e:
         db.rollback()
         raise e
 
-def create_antecedentes_p2(db: Session, antecedentes: schemas.AntecedentesP2Create):
+# --- GESTIÓN DE ANTECEDENTES (PARTE 2) ---
+def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     try:
-        db_antecedentes = models.AntecedentesP2(**antecedentes.model_dump())
-        db.add(db_antecedentes)
+        db_ant = db.query(models.AntecedentesP2).filter(
+            models.AntecedentesP2.paciente_id == antecedentes.paciente_id
+        ).first()
+        
+        if db_ant:
+            for key, value in antecedentes.model_dump().items():
+                setattr(db_ant, key, value)
+        else:
+            db_ant = models.AntecedentesP2(**antecedentes.model_dump())
+            db.add(db_ant)
+            
         db.commit()
-        db.refresh(db_antecedentes)
-        return db_antecedentes
+        db.refresh(db_ant)
+        return db_ant
     except Exception as e:
         db.rollback()
         raise e
 
-def create_habitos_p3(db: Session, habitos: schemas.HabitosRiesgosP3Create):
+# --- GESTIÓN DE HÁBITOS (PARTE 3) ---
+def create_habitos(db: Session, habitos: schemas.HabitosCreate):
     try:
-        db_habitos = models.HabitosRiesgosP3(**habitos.model_dump())
-        db.add(db_habitos)
+        db_hab = db.query(models.HabitosRiesgosP3).filter(
+            models.HabitosRiesgosP3.paciente_id == habitos.paciente_id
+        ).first()
+        
+        if db_hab:
+            for key, value in habitos.model_dump().items():
+                setattr(db_hab, key, value)
+        else:
+            db_hab = models.HabitosRiesgosP3(**habitos.model_dump())
+            db.add(db_hab)
+            
         db.commit()
-        db.refresh(db_habitos)
-        return db_habitos
+        db.refresh(db_hab)
+        return db_hab
     except Exception as e:
         db.rollback()
         raise e
 
-# --- NUEVA FUNCIÓN PARA EL VISOR ---
+# --- OBTENCIÓN DE HISTORIAL COMPLETO ---
 def get_historial_completo(db: Session, paciente_id: int):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if not paciente:
