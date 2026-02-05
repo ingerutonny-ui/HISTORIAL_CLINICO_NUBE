@@ -13,6 +13,8 @@ class Paciente(Base):
     declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
     # Relación con la nueva tabla de antecedentes
     antecedentes = relationship("AntecedentesP2", back_populates="paciente")
+    # Relación con la tercera sección
+    habitos_riesgos = relationship("HabitosRiesgosP3", back_populates="paciente")
 
 class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_juradas"
@@ -68,3 +70,34 @@ class AntecedentesP2(Base):
     p22 = Column(String); d22 = Column(String)
 
     paciente = relationship("Paciente", back_populates="antecedentes")
+
+# ============================================================
+# INICIO DE LA TERCERA SECCIÓN - HÁBITOS Y RIESGOS
+# ============================================================
+
+class HabitosRiesgosP3(Base):
+    __tablename__ = "habitos_riesgos_p3"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
+
+    # Hábitos Personales
+    fuma = Column(String)
+    fuma_det = Column(String)
+    bebe = Column(String)
+    bebe_det = Column(String)
+    drogas = Column(String)
+    drogas_det = Column(String)
+    meds = Column(String)
+    meds_det = Column(String)
+
+    # Antecedentes Ocupacionales
+    historial_lab = Column(String)
+
+    # Antecedentes de Riesgo
+    r_fisico = Column(String)
+    r_ergonomico = Column(String)
+    r_quimico = Column(String)
+    r_psico = Column(String)
+    r_obs = Column(String)
+
+    paciente = relationship("Paciente", back_populates="habitos_riesgos")
