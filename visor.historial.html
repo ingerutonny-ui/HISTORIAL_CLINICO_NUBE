@@ -3,135 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISOR MAESTRO | HC NUBE</title>
+    <title>Visor de Historial</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f1f5f9; font-family: 'Segoe UI', sans-serif; padding: 20px; text-transform: uppercase; }
-        .reporte { max-width: 850px; margin: auto; background: white; padding: 50px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .header { border-bottom: 4px solid #24a174; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
-        h1 { margin: 0; color: #1e293b; font-size: 22px; font-weight: 800; }
-        .seccion { margin-top: 25px; border: 1px solid #e2e8f0; padding: 20px; border-radius: 15px; background: #ffffff; }
-        .titulo-s { background: #f0fdf4; padding: 5px 15px; font-weight: 800; color: #24a174; font-size: 11px; border-radius: 8px; display: inline-block; margin-bottom: 15px; letter-spacing: 1px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-        .label { font-size: 10px; color: #94a3b8; font-weight: 700; margin-bottom: 4px; }
-        .valor { font-size: 12px; font-weight: 700; color: #1e293b; }
-        .btn-print { background: #1e293b; color: white; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 12px; transition: 0.3s; margin-bottom: 20px; }
-        .btn-print:hover { background: #334155; transform: translateY(-2px); }
-        @media print { .no-print { display: none; } body { padding: 0; background: white; } .reporte { box-shadow: none; border: none; width: 100%; max-width: 100%; } }
+        body { background-color: #f1f5f9; font-family: 'Segoe UI', sans-serif; padding: 30px; text-transform: uppercase; }
+        .visor-card { max-width: 600px; margin: auto; background: white; border-radius: 30px; padding: 40px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .info-box { background: #f8fafc; border-radius: 20px; padding: 20px; margin-bottom: 25px; border-left: 5px solid #3b82f6; }
+        .label { font-size: 10px; color: #64748b; font-weight: 800; }
+        .valor { font-size: 18px; color: #1e293b; font-weight: 700; }
+        .btn-full { width: 100%; padding: 18px; border-radius: 20px; font-weight: 800; border: none; margin-bottom: 12px; transition: 0.3s; }
+        .btn-historial { background: #3b82f6; color: white; font-size: 16px; }
+        .btn-edit { background: #f59e0b; color: white; }
+        .btn-delete { background: #fee2e2; color: #ef4444; font-size: 11px; }
     </style>
 </head>
 <body>
-
-    <div class="text-center no-print">
-        <button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR REPORTE COMPLETO</button>
-        <button class="btn-print" style="background: #64748b;" onclick="history.back()">⬅️ VOLVER</button>
-    </div>
-
-    <div class="reporte" id="contenidoReporte">
-        <div class="header">
-            <div>
-                <h1>HISTORIAL CLÍNICO INDIVIDUAL</h1>
-                <p style="font-size: 11px; color: #94a3b8; margin: 5px 0; font-weight: 700;">PROYECTO: HISTORIAL_CLINICO_NUBE</p>
-            </div>
-            <div style="text-align: right;">
-                <div class="label">ID SISTEMA</div>
-                <div id="v_id" class="valor" style="color:#24a174; font-size: 18px;">---</div>
-            </div>
-        </div>
-
-        <div class="seccion">
-            <span class="titulo-s">I. DATOS DE FILIACIÓN (P1)</span>
-            <div class="grid">
-                <div><div class="label">PACIENTE</div><div id="v_nom" class="valor">---</div></div>
-                <div><div class="label">CÓDIGO MAESTRO</div><div id="v_cod" class="valor">---</div></div>
-                <div><div class="label">DOCUMENTO (CI)</div><div id="v_ci" class="valor">---</div></div>
-                <div><div class="label">EDAD</div><div id="v_edad" class="valor">---</div></div>
-                <div><div class="label">SEXO</div><div id="v_sexo" class="valor">---</div></div>
-                <div><div class="label">PROFESIÓN</div><div id="v_prof" class="valor">---</div></div>
-                <div class="col-span-3"><div class="label">DOMICILIO</div><div id="v_dom" class="valor">---</div></div>
+    <div class="visor-card">
+        <h4 class="text-center mb-4" style="font-weight: 800;">EXPEDIENTE DEL PACIENTE</h4>
+        
+        <div class="info-box">
+            <div class="label">NOMBRE COMPLETO</div>
+            <div id="disp_nombre" class="valor">CARGANDO...</div>
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="label">CÓDIGO MAESTRO</div>
+                    <div id="disp_codigo" class="valor" style="color:#24a174;">---</div>
+                </div>
+                <div class="col-6">
+                    <div class="label">DOCUMENTO CI</div>
+                    <div id="disp_ci" class="valor">---</div>
+                </div>
             </div>
         </div>
 
-        <div class="seccion">
-            <span class="titulo-s">II. ANTECEDENTES PATOLÓGICOS (P2)</span>
-            <div id="contenedor_p2" style="font-size: 11px; line-height: 1.6;">
-                <p class="text-muted">CARGANDO ANTECEDENTES...</p>
-            </div>
-        </div>
-
-        <div class="seccion">
-            <span class="titulo-s">III. HÁBITOS Y RIESGOS (P3)</span>
-            <div class="grid">
-                <div><div class="label">FUMA</div><div id="v_fuma" class="valor">---</div></div>
-                <div><div class="label">BEBE</div><div id="v_bebe" class="valor">---</div></div>
-                <div><div class="label">DROGAS</div><div id="v_drogas" class="valor">---</div></div>
-                <div class="col-span-2"><div class="label">HISTORIAL LABORAL</div><div id="v_lab" class="valor">---</div></div>
-                <div><div class="label">RIESGOS</div><div id="v_riesgos" class="valor">---</div></div>
-            </div>
-        </div>
+        <button class="btn-full btn-historial" onclick="verPDF()">📄 VER HISTORIAL CLÍNICO COMPLETO</button>
+        <button class="btn-full btn-edit" onclick="habilitarEdicion()">MODIFICAR DATOS BÁSICOS</button>
+        <button class="btn-full btn-delete" onclick="eliminar()">ELIMINAR ESTE EXPEDIENTE</button>
+        
+        <a href="registro_paciente.html" class="d-block text-center mt-3 text-muted" style="font-size: 10px; font-weight: 800; text-decoration: none;">VOLVER A GESTIÓN</a>
     </div>
 
     <script>
-        const API_BASE = "https://historial-clinico-936s.onrender.com/historial-completo/";
         const params = new URLSearchParams(window.location.search);
-        const pacienteId = params.get('id');
+        const pacienteId = params.get('id') || localStorage.getItem('paciente_id');
+        const API = 'https://historial-clinico-936s.onrender.com/pacientes/';
 
-        async function cargarHistorial() {
-            if (!pacienteId) {
-                alert("ID de paciente no proporcionado");
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE}${pacienteId}`);
-                if (!response.ok) throw new Error("No se encontró el historial");
-                
-                const data = await response.json();
-
-                // Llenar Datos Paciente
-                document.getElementById('v_id').innerText = data.paciente.id;
-                document.getElementById('v_nom').innerText = `${data.paciente.nombres} ${data.paciente.apellidos}`;
-                document.getElementById('v_cod').innerText = data.paciente.codigo_paciente;
-                document.getElementById('v_ci').innerText = data.paciente.ci;
-
-                // Llenar P1
-                if (data.filiacion) {
-                    document.getElementById('v_edad').innerText = data.filiacion.edad;
-                    document.getElementById('v_sexo').innerText = data.filiacion.sexo;
-                    document.getElementById('v_prof').innerText = data.filiacion.profesion_oficio;
-                    document.getElementById('v_dom').innerText = `${data.filiacion.domicilio} - ${data.filiacion.ciudad}`;
-                }
-
-                // Llenar P2 (Solo los positivos)
-                if (data.antecedentes) {
-                    let p2Html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">';
-                    let encontrados = 0;
-                    for (let i = 1; i <= 22; i++) {
-                        if (data.antecedentes[`p${i}`] === "SI") {
-                            p2Html += `<div><b style="color:#ef4444;">[SI]</b> INDICADOR ${i}: ${data.antecedentes[`d${i}`]}</div>`;
-                            encontrados++;
-                        }
-                    }
-                    p2Html += '</div>';
-                    document.getElementById('contenedor_p2').innerHTML = encontrados > 0 ? p2Html : "EL PACIENTE NO DECLARÓ ANTECEDENTES PATOLÓGICOS.";
-                }
-
-                // Llenar P3
-                if (data.habitos) {
-                    document.getElementById('v_fuma').innerText = `${data.habitos.fuma} (${data.habitos.fuma_det})`;
-                    document.getElementById('v_bebe').innerText = `${data.habitos.bebe} (${data.habitos.bebe_det})`;
-                    document.getElementById('v_drogas').innerText = `${data.habitos.drogas} (${data.habitos.drogas_det})`;
-                    document.getElementById('v_lab').innerText = data.habitos.historial_lab;
-                    document.getElementById('v_riesgos').innerText = `Fis: ${data.habitos.r_fisico} / Qui: ${data.habitos.r_quimico}`;
-                }
-
-            } catch (error) {
-                console.error(error);
-                document.body.innerHTML = `<div class="alert alert-danger m-5">Error: No se pudo cargar la información del servidor.</div>`;
+        async function cargarDatos() {
+            if(!pacienteId) return window.location.href = "registro_paciente.html";
+            const res = await fetch(`${API}id/${pacienteId}`);
+            if(res.ok) {
+                const p = await res.json();
+                document.getElementById('disp_nombre').innerText = `${p.nombres} ${p.apellidos}`;
+                document.getElementById('disp_codigo').innerText = p.codigo_paciente;
+                document.getElementById('disp_ci').innerText = p.ci;
             }
         }
 
-        window.onload = cargarHistorial;
+        function verPDF() { alert("Generando vista previa del historial..."); }
+        
+        async function eliminar() {
+            if(confirm("¿BORRAR TODO EL HISTORIAL DE ESTE PACIENTE?")) {
+                const cod = document.getElementById('disp_codigo').innerText;
+                await fetch(`${API}${cod}`, { method: 'DELETE' });
+                window.location.href = "registro_paciente.html";
+            }
+        }
+
+        window.onload = cargarDatos;
     </script>
 </body>
 </html>
