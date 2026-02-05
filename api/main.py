@@ -1,9 +1,11 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
+import io
+from fpdf import FPDF
 
 try:
     models.Base.metadata.create_all(bind=engine)
@@ -92,14 +94,69 @@ def save_p3(habitos: schemas.HabitosRiesgosP3Create, db: Session = Depends(get_d
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# --- RUTA DE CONSULTA INTEGRAL (PARA EL VISOR DE HISTORIAL) ---
+# --- RUTA DE CONSULTA INTEGRAL Y GENERACIÓN DE PDF ---
 
 @app.get("/historial-completo/{paciente_id}", response_model=schemas.HistorialCompleto)
 def get_historial_completo(paciente_id: int, db: Session = Depends(get_db)):
-    """
-    Recupera el objeto integral que contiene Paciente, P1, P2 y P3.
-    """
     historial = crud.get_historial_completo(db, paciente_id=paciente_id)
     if not historial:
         raise HTTPException(status_code=404, detail="Historial no encontrado")
     return historial
+
+@app.get("/generar-pdf/{paciente_id}")
+def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
+    historial = crud.get_historial_completo(db, paciente_id=paciente_id)
+    if not historial:
+        raise HTTPException(status_code=404, detail="Historial no encontrado")
+
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", "B", 16)
+    
+    # Encabezado
+    pdf.cell(0, 10, "DECLARACION JURADA DE SALUD", ln=True, align="C")
+    pdf.set_font("Arial", "", 10)
+    pdf.cell(0, 10, "PROYECTO: HISTORIAL_CLINICO_NUBE", ln=True, align="C")
+    pdf.ln(5)
+
+    # Datos Personales (P1)
+    pdf.set_fill_color(200, 220, 255)
+    pdf.cell(0, 8, "1. AFILIACION DEL TRABAJADOR", ln=True, fill=True)
+    pdf.set_font("Arial", "", 9)
+    p = historial["paciente"]
+    d1 = historial["declaracion"]
+    
+    pdf.cell(0, 7, f"Nombre Completo: {p.nombres} {p.apellidos}", ln=True)
+    pdf.cell(90, 7, f"CI: {p.ci}", ln=0)
+    pdf.cell(0, 7, f"Edad: {d1.edad if d1 else 'N/A'}", ln=True)
+    pdf.cell(90, 7, f"Sexo: {d1.sexo if d1 else 'N/A'}", ln=0)
+    pdf.cell(0, 7, f"Profesion: {d1.profesion_oficio if d1 else 'N/A'}", ln=True)
+    pdf.ln(5)
+
+    # Antecedentes (P2)
+    pdf.set_fill_color(230, 230, 230)
+    pdf.cell(0, 8, "2. ANTECEDENTES PATOLOGICOS", ln=True, fill=True)
+    # Aquí se pueden iterar los campos p1..p22 si existen datos
+    pdf.cell(0, 7, "Revisar registro digital para detalle de indicadores p1-p22.", ln=True)
+    pdf.ln(5)
+
+    # Hábitos (P3)
+    pdf.set_fill_color(230, 230, 230)
+    pdf.cell(0, 8, "3. HABITOS Y RIESGOS", ln=True, fill=True)
+    h3 = historial["habitos_riesgos"]
+    if h3:
+        pdf.cell(0, 7, f"Fuma: {h3.fuma} ({h3.fuma_det})", ln=True)
+        pdf.cell(0, 7, f"Bebe: {h3.bebe} ({h3.bebe_det})", ln=True)
+        pdf.cell(0, 7, f"Riesgos Fisicos: {h3.r_fisico}", ln=True)
+
+    # Generar salida
+    pdf_output = io.BytesIO()
+    pdf_str = pdf.output(dest='S')
+    pdf_output.write(pdf_str)
+    pdf_output.seek(0)
+
+    return Response(
+        content=pdf_output.getvalue(),
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"inline; filename=Historial_{p.codigo_paciente}.pdf"}
+    )
