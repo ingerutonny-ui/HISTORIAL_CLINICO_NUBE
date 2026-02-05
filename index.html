@@ -49,21 +49,20 @@
             </div>
         </div>
 
-        <div class="mt-12 flex flex-col items-center">
+        <div class="mt-14 flex justify-center">
             <button onclick="location.href='visor_historial.html'"
-                class="px-12 py-4 bg-slate-900 rounded-2xl border border-slate-800 hover:border-blue-500 hover:bg-blue-900/10 transition-all duration-500 group flex items-center gap-4 shadow-xl">
-                <span class="text-2xl group-hover:rotate-12 transition-transform">🔍</span>
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] group-hover:text-blue-400">Visor de Historial</span>
+                class="flex items-center gap-2 px-6 py-2 bg-slate-900/50 border border-slate-800 rounded-full hover:bg-slate-800 hover:border-slate-700 transition-all duration-300 group">
+                <span class="text-sm opacity-60 group-hover:opacity-100 transition-opacity">🔍</span>
+                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] group-hover:text-slate-300">Visor de Historial</span>
             </button>
         </div>
 
-        <div class="mt-16">
+        <div class="mt-8">
             <p class="text-slate-700 text-[8px] uppercase tracking-widest font-medium">Sistema de Gestión Hospitalaria v1.0</p>
         </div>
     </div>
 
     <script>
-        // Temporizador de 3 segundos
         setTimeout(() => {
             document.getElementById('loader-screen').classList.add('hidden');
             document.getElementById('portal').classList.remove('hidden');
