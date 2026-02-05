@@ -61,7 +61,7 @@
             </div>
 
             <div class="mt-8 pt-8 border-t border-slate-800 flex justify-center">
-                <button class="px-8 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 text-slate-400 hover:text-white group">
+                <button onclick="descargarPDF()" class="px-8 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 text-slate-400 hover:text-white group">
                     <span class="group-hover:scale-110 transition-transform">📄</span> Ver Historial Completo
                 </button>
             </div>
@@ -69,8 +69,9 @@
     </div>
 
     <script>
-        // URL de tu Backend en Render (Asegúrate que termine en /pacientes/)
-        const API_DESTINO = 'https://historial-clinico-936s.onrender.com/pacientes/';
+        const API_BASE = 'https://historial-clinico-936s.onrender.com';
+        const API_PACIENTES = `${API_BASE}/pacientes/`;
+        let pacienteIdActual = null; // Almacena el ID numérico para el PDF
 
         async function buscarPaciente() {
             const codigoInput = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
@@ -88,15 +89,14 @@
             visor.classList.add('hidden');
 
             try {
-                const response = await fetch(API_DESTINO);
+                const response = await fetch(API_PACIENTES);
                 if (!response.ok) throw new Error("Error de red");
                 
                 const pacientes = await response.json();
-
-                // Buscamos coincidencia con el código generado (codigo_paciente)
                 const encontrado = pacientes.find(p => p.codigo_paciente.toUpperCase() === codigoInput);
 
                 if (encontrado) {
+                    pacienteIdActual = encontrado.id; // Guardamos el ID para el PDF
                     document.getElementById('resNombre').textContent = `${encontrado.nombres} ${encontrado.apellidos}`;
                     document.getElementById('resCI').textContent = encontrado.ci || "NO REGISTRADO";
                     document.getElementById('resCodigo').textContent = encontrado.codigo_paciente;
@@ -115,7 +115,16 @@
             }
         }
 
-        // Permitir buscar al presionar "Enter"
+        function descargarPDF() {
+            if (!pacienteIdActual) {
+                alert("Error: No hay un paciente seleccionado.");
+                return;
+            }
+            // Abrimos la ruta de generación de PDF en una nueva pestaña
+            const urlPdf = `${API_BASE}/generar-pdf/${pacienteIdActual}`;
+            window.open(urlPdf, '_blank');
+        }
+
         document.getElementById('codigoBusqueda').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 buscarPaciente();
