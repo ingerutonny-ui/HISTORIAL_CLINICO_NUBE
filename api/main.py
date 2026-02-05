@@ -5,6 +5,7 @@ from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 from fpdf import FPDF
+import io
 
 # Crear tablas
 models.Base.metadata.create_all(bind=engine)
@@ -77,7 +78,7 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         pdf.cell(0, 7, f"Ciudad: {f.ciudad if f else '---'}", border="B", ln=True)
         pdf.ln(5)
 
-        # 2. ANTECEDENTES (Basado en tus 22 campos de schemas.py)
+        # 2. ANTECEDENTES
         pdf.set_font("Helvetica", "B", 10)
         pdf.cell(0, 8, " 2. ANTECEDENTES PATOLOGICOS", ln=True, fill=True)
         pdf.set_font("Helvetica", "B", 8)
@@ -86,7 +87,6 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         pdf.cell(0, 6, "DETALLES", border=1, align="C", ln=True)
         
         pdf.set_font("Helvetica", "", 8)
-        # Mapeo de tus campos p1...p22
         areas = [
             ("VISTA", p2.p1 if p2 else "NO", p2.d1 if p2 else ""),
             ("AUDITIVO", p2.p2 if p2 else "NO", p2.d2 if p2 else ""),
@@ -99,11 +99,11 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         for area, valor, det in areas:
             pdf.cell(50, 6, area, border=1)
             pdf.cell(15, 6, valor, border=1, align="C")
-            pdf.cell(0, 6, (det[:75] + '...') if len(str(det)) > 75 else str(det), border=1, ln=True)
+            pdf.cell(0, 6, (str(det)[:75] + '...') if len(str(det)) > 75 else str(det), border=1, ln=True)
         
         pdf.ln(5)
 
-        # 3. HABITOS Y RIESGOS (Esquema HabitosRiesgosP3)
+        # 3. HABITOS Y RIESGOS
         pdf.set_font("Helvetica", "B", 10)
         pdf.cell(0, 8, " 3. HABITOS Y RIESGOS EXPOSICION", ln=True, fill=True)
         pdf.set_font("Helvetica", "", 9)
@@ -121,9 +121,10 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         pdf.set_font("Helvetica", "B", 9)
         pdf.cell(0, 5, f"FIRMA DEL TRABAJADOR: {p.nombres} {p.apellidos}", ln=True, align="C")
 
-        pdf_bytes = pdf.output()
+        # CORRECCIÓN DE SALIDA PDF PARA FASTAPI
+        pdf_output = pdf.output(dest='S').encode('latin-1')
         return Response(
-            content=pdf_bytes,
+            content=pdf_output,
             media_type="application/pdf",
             headers={"Content-Disposition": f"inline; filename=Historial_{p.codigo_paciente}.pdf"}
         )
