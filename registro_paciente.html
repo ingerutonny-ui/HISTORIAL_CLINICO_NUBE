@@ -51,10 +51,8 @@
     </div>
 
     <script>
-        // Configuración de API
         const API_DESTINO = 'https://historial-clinico-936s.onrender.com/pacientes/';
 
-        // Elementos del DOM
         const fechaEl = document.getElementById('fechaActual');
         const inN = document.getElementById('nombres');
         const inA = document.getElementById('apellidos');
@@ -65,12 +63,10 @@
         const btnReg = document.getElementById('btnRegistrar');
         const btnCon = document.getElementById('btnConsultar');
 
-        // Inicializar Fecha
         if (fechaEl) {
             fechaEl.innerText = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
         }
 
-        // Generador de Código
         function genCod() {
             if(inN.value.trim() && inA.value.trim()) {
                 const initials = (inN.value[0] || "") + (inA.value[0] || "");
@@ -84,7 +80,6 @@
         inN.oninput = () => { inN.value = inN.value.toUpperCase(); genCod(); };
         inA.oninput = () => { inA.value = inA.value.toUpperCase(); genCod(); };
 
-        // Registro de Paciente
         form.onsubmit = async (e) => {
             e.preventDefault();
             btnReg.innerText = "PROCESANDO...";
@@ -118,27 +113,26 @@
                     alert("ERROR: " + (dataServer.detail || "No se pudo registrar"));
                 }
             } catch (error) { 
-                console.error("Error en fetch:", error);
-                alert("ERROR DE CONEXIÓN CON RENDER. REINTENTE CON CTRL+F5"); 
+                console.error("Error:", error);
+                alert("ERROR DE CONEXIÓN. REINTENTE CON CTRL+F5"); 
             } finally { 
                 btnReg.innerText = "GUARDAR REGISTRO FINAL"; 
                 btnReg.disabled = false;
             }
         };
 
-        // Consulta de Pacientes
         btnCon.onclick = async () => {
             const lista = document.getElementById('listaContenido');
             const seccion = document.getElementById('seccionLista');
             seccion.style.display = 'block';
-            lista.innerHTML = '<p class="text-muted small text-center">Buscando en la nube...</p>';
+            lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
             
             try {
                 const res = await fetch(API_DESTINO);
                 const data = await res.json();
                 
                 if (data.length === 0) {
-                    lista.innerHTML = '<p class="text-muted small text-center">No hay pacientes registrados aún.</p>';
+                    lista.innerHTML = '<p class="text-muted small text-center">No hay registros.</p>';
                 } else {
                     lista.innerHTML = data.map(p => `
                         <div class="paciente-fila">
