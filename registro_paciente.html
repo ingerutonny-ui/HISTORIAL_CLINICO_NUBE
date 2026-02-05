@@ -153,6 +153,7 @@
                     const data = await res.json();
                     actualizarMemoriaLocal(data);
                     alert("REGISTRO EXITOSO");
+                    // LA REDIRECCIÓN DEBE SER AQUÍ:
                     window.location.href = "declaracion_jurada_p1.html";
                 }
             } catch (error) { alert("FALLO EN NUBE"); }
