@@ -7,12 +7,12 @@ from .database import SessionLocal, engine
 from fpdf import FPDF
 import io
 
-# Crear tablas en la base de datos
+# Inicialización de base de datos
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
-# Configuración de CORS para permitir conexión desde el Frontend
+# Configuración CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -21,7 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Dependencia de base de datos
 def get_db():
     db = SessionLocal()
     try:
@@ -33,8 +32,7 @@ def get_db():
 def read_root():
     return {"status": "ONLINE", "proyecto": "HISTORIAL_CLINICO_NUBE"}
 
-# --- RUTAS DE PACIENTES (Registro Inicial) ---
-
+# --- RUTAS DE PACIENTES ---
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     return crud.create_paciente(db=db, paciente=paciente)
@@ -44,29 +42,24 @@ def read_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
 # --- RUTAS DE DECLARACIÓN JURADA (P1, P2, P3) ---
-
 @app.post("/filiacion/")
 def save_filiacion(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
-    # Esta ruta recibe los datos de declaracion_jurada_p1.html
     return crud.create_filiacion(db=db, filiacion=data)
 
 @app.post("/antecedentes/")
 def save_antecedentes(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
-    # Esta ruta recibe los datos de declaracion_jurada_p2.html
     return crud.create_antecedentes(db=db, antecedentes=data)
 
 @app.post("/habitos/")
 def save_habitos(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
-    # Esta ruta recibe los datos de declaracion_jurada_p3.html
     return crud.create_habitos(db=db, habitos=data)
 
 # --- GENERADOR DE PDF ---
-
 @app.get("/generar-pdf/{paciente_id}")
 def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
     try:
         historial = crud.get_historial_completo(db, paciente_id=paciente_id)
-        if not historial:
+        if not historial or not historial["paciente"]:
             raise HTTPException(status_code=404, detail="Paciente no encontrado")
 
         p = historial["paciente"]
@@ -77,74 +70,52 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         pdf = FPDF()
         pdf.add_page()
         
-        # ENCABEZADO
-        pdf.set_font("Helvetica", "B", 14)
-        pdf.cell(0, 10, "DECLARACION JURADA DE SALUD", ln=True, align="C")
-        pdf.set_font("Helvetica", "I", 8)
-        pdf.cell(0, 5, "PROYECTO: HISTORIAL_CLINICO_NUBE", ln=True, align="C")
+        # Estilo del documento
+        pdf.set_font("Helvetica", "B", 16)
+        pdf.cell(0, 10, "HISTORIAL CLINICO - DECLARACION JURADA", ln=True, align="C")
         pdf.ln(5)
 
-        # 1. AFILIACION
-        pdf.set_fill_color(240, 240, 240)
-        pdf.set_font("Helvetica", "B", 10)
-        pdf.cell(0, 8, " 1. AFILIACION DEL TRABAJADOR", ln=True, fill=True)
-        pdf.set_font("Helvetica", "", 9)
-        pdf.cell(0, 7, f"Nombre Completo: {p.nombres} {p.apellidos}", border="B", ln=True)
-        pdf.cell(60, 7, f"CI: {p.ci}", border="B")
-        pdf.cell(60, 7, f"Edad: {f.edad if f else '---'}", border="B")
-        pdf.cell(0, 7, f"Sexo: {f.sexo if f else '---'}", border="B", ln=True)
-        pdf.cell(90, 7, f"Profesion: {f.profesion_oficio if f else '---'}", border="B")
-        pdf.cell(0, 7, f"Ciudad: {f.ciudad if f else '---'}", border="B", ln=True)
-        pdf.ln(5)
-
-        # 2. ANTECEDENTES (Mapeo de los campos principales)
-        pdf.set_font("Helvetica", "B", 10)
-        pdf.cell(0, 8, " 2. ANTECEDENTES PATOLOGICOS", ln=True, fill=True)
-        pdf.set_font("Helvetica", "B", 8)
-        pdf.cell(50, 6, "AREA", border=1, align="C")
-        pdf.cell(15, 6, "SI/NO", border=1, align="C")
-        pdf.cell(0, 6, "DETALLES", border=1, align="C", ln=True)
+        # Sección 1: Datos Personales
+        pdf.set_fill_color(230, 230, 230)
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.cell(0, 10, " 1. DATOS DE FILIACION", ln=True, fill=True)
+        pdf.set_font("Helvetica", "", 10)
+        pdf.cell(0, 8, f"Nombre: {p.nombres} {p.apellidos}", border="B", ln=True)
+        pdf.cell(90, 8, f"CI: {p.ci}", border="B")
+        pdf.cell(0, 8, f"Codigo: {p.codigo_paciente}", border="B", ln=True)
         
-        pdf.set_font("Helvetica", "", 8)
-        areas = [
-            ("VISTA", p2.p1 if p2 else "NO", p2.d1 if p2 else ""),
-            ("AUDITIVO", p2.p2 if p2 else "NO", p2.d2 if p2 else ""),
-            ("RESPIRATORIOS", p2.p3 if p2 else "NO", p2.d3 if p2 else ""),
-            ("CARDIO-VASCULARES", p2.p4 if p2 else "NO", p2.d4 if p2 else ""),
-            ("SISTEMA NERVIOSO", p2.p9 if p2 else "NO", p2.d9 if p2 else ""),
-            ("OSTEOMUSCULARES", p2.p11 if p2 else "NO", p2.d11 if p2 else ""),
-        ]
+        if f:
+            pdf.cell(45, 8, f"Edad: {f.edad}", border="B")
+            pdf.cell(45, 8, f"Sexo: {f.sexo}", border="B")
+            pdf.cell(0, 8, f"Estado Civil: {f.estado_civil}", border="B", ln=True)
+            pdf.cell(0, 8, f"Profesion: {f.profesion_oficio}", border="B", ln=True)
 
-        for area, valor, det in areas:
-            pdf.cell(50, 6, area, border=1)
-            pdf.cell(15, 6, valor, border=1, align="C")
-            pdf.cell(0, 6, (str(det)[:75] + '...') if len(str(det)) > 75 else str(det), border=1, ln=True)
-        
+        # Sección 2: Antecedentes
         pdf.ln(5)
-
-        # 3. HABITOS
-        pdf.set_font("Helvetica", "B", 10)
-        pdf.cell(0, 8, " 3. HABITOS Y RIESGOS EXPOSICION", ln=True, fill=True)
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.cell(0, 10, " 2. ANTECEDENTES PATOLOGICOS", ln=True, fill=True)
         pdf.set_font("Helvetica", "", 9)
-        if p3:
-            pdf.cell(60, 7, f"Fuma: {p3.fuma}", border=1)
-            pdf.cell(60, 7, f"Bebe: {p3.bebe}", border=1)
-            pdf.cell(0, 7, f"Drogas: {p3.drogas}", border=1, ln=True)
+        if p2:
+            pdf.cell(0, 7, f"Cirugias: {p2.cirugias}", border="B", ln=True)
+            pdf.cell(0, 7, f"Accidentes: {p2.accidentes}", border="B", ln=True)
         else:
-            pdf.cell(0, 7, "Sin registros de habitos.", border=1, ln=True)
+            pdf.cell(0, 7, "Sin registros de antecedentes.", ln=True)
 
-        # FIRMA
-        pdf.ln(15)
-        pdf.cell(0, 10, "__________________________", ln=True, align="C")
-        pdf.set_font("Helvetica", "B", 9)
-        pdf.cell(0, 5, f"FIRMA DEL TRABAJADOR: {p.nombres} {p.apellidos}", ln=True, align="C")
+        # Sección 3: Habitos
+        pdf.ln(5)
+        pdf.set_font("Helvetica", "B", 12)
+        pdf.cell(0, 10, " 3. HABITOS", ln=True, fill=True)
+        if p3:
+            pdf.cell(45, 8, f"Fuma: {p3.fuma}", border=1)
+            pdf.cell(45, 8, f"Bebe: {p3.bebe}", border=1)
+            pdf.cell(45, 8, f"Drogas: {p3.drogas}", border=1)
+            pdf.cell(0, 8, f"Sangre: {p3.grupo_sanguineo}", border=1, ln=True)
 
-        # Generar salida en bytes para FastAPI
         pdf_output = pdf.output(dest='S').encode('latin-1')
         return Response(
             content=pdf_output,
             media_type="application/pdf",
-            headers={"Content-Disposition": f"inline; filename=Historial_{p.codigo_paciente}.pdf"}
+            headers={"Content-Disposition": f"attachment; filename=HC_{p.codigo_paciente}.pdf"}
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
