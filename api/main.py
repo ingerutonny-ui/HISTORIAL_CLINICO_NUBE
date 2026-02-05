@@ -7,11 +7,12 @@ from .database import SessionLocal, engine
 from fpdf import FPDF
 import io
 
-# Crear tablas
+# Crear tablas en la base de datos
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
 
+# Configuración de CORS para permitir conexión desde el Frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,6 +21,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Dependencia de base de datos
 def get_db():
     db = SessionLocal()
     try:
@@ -29,9 +31,9 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"status": "ONLINE"}
+    return {"status": "ONLINE", "proyecto": "HISTORIAL_CLINICO_NUBE"}
 
-# --- RUTAS DE PACIENTES ---
+# --- RUTAS DE PACIENTES (Registro Inicial) ---
 
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
@@ -41,7 +43,24 @@ def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_
 def read_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
-# --- GENERADOR DE PDF (Réplica de Declaración Jurada) ---
+# --- RUTAS DE DECLARACIÓN JURADA (P1, P2, P3) ---
+
+@app.post("/filiacion/")
+def save_filiacion(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
+    # Esta ruta recibe los datos de declaracion_jurada_p1.html
+    return crud.create_filiacion(db=db, filiacion=data)
+
+@app.post("/antecedentes/")
+def save_antecedentes(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
+    # Esta ruta recibe los datos de declaracion_jurada_p2.html
+    return crud.create_antecedentes(db=db, antecedentes=data)
+
+@app.post("/habitos/")
+def save_habitos(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
+    # Esta ruta recibe los datos de declaracion_jurada_p3.html
+    return crud.create_habitos(db=db, habitos=data)
+
+# --- GENERADOR DE PDF ---
 
 @app.get("/generar-pdf/{paciente_id}")
 def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
@@ -58,7 +77,7 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         pdf = FPDF()
         pdf.add_page()
         
-        # ENCABEZADO PROFESIONAL
+        # ENCABEZADO
         pdf.set_font("Helvetica", "B", 14)
         pdf.cell(0, 10, "DECLARACION JURADA DE SALUD", ln=True, align="C")
         pdf.set_font("Helvetica", "I", 8)
@@ -74,11 +93,11 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         pdf.cell(60, 7, f"CI: {p.ci}", border="B")
         pdf.cell(60, 7, f"Edad: {f.edad if f else '---'}", border="B")
         pdf.cell(0, 7, f"Sexo: {f.sexo if f else '---'}", border="B", ln=True)
-        pdf.cell(90, 7, f"Profesion/Labor: {f.profesion_oficio if f else '---'}", border="B")
+        pdf.cell(90, 7, f"Profesion: {f.profesion_oficio if f else '---'}", border="B")
         pdf.cell(0, 7, f"Ciudad: {f.ciudad if f else '---'}", border="B", ln=True)
         pdf.ln(5)
 
-        # 2. ANTECEDENTES
+        # 2. ANTECEDENTES (Mapeo de los campos principales)
         pdf.set_font("Helvetica", "B", 10)
         pdf.cell(0, 8, " 2. ANTECEDENTES PATOLOGICOS", ln=True, fill=True)
         pdf.set_font("Helvetica", "B", 8)
@@ -103,7 +122,7 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         
         pdf.ln(5)
 
-        # 3. HABITOS Y RIESGOS
+        # 3. HABITOS
         pdf.set_font("Helvetica", "B", 10)
         pdf.cell(0, 8, " 3. HABITOS Y RIESGOS EXPOSICION", ln=True, fill=True)
         pdf.set_font("Helvetica", "", 9)
@@ -111,7 +130,6 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
             pdf.cell(60, 7, f"Fuma: {p3.fuma}", border=1)
             pdf.cell(60, 7, f"Bebe: {p3.bebe}", border=1)
             pdf.cell(0, 7, f"Drogas: {p3.drogas}", border=1, ln=True)
-            pdf.multi_cell(0, 7, f"RIESGOS: {p3.r_fisico} / {p3.r_quimico} / {p3.r_ergonomico}", border=1)
         else:
             pdf.cell(0, 7, "Sin registros de habitos.", border=1, ln=True)
 
@@ -121,7 +139,7 @@ def generar_pdf_historial(paciente_id: int, db: Session = Depends(get_db)):
         pdf.set_font("Helvetica", "B", 9)
         pdf.cell(0, 5, f"FIRMA DEL TRABAJADOR: {p.nombres} {p.apellidos}", ln=True, align="C")
 
-        # CORRECCIÓN DE SALIDA PDF PARA FASTAPI
+        # Generar salida en bytes para FastAPI
         pdf_output = pdf.output(dest='S').encode('latin-1')
         return Response(
             content=pdf_output,
