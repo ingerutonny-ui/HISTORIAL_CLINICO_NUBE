@@ -3,107 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Visor de Historial</title>
+    <title>HC NUBE | Inicio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
     <style>
-        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-950 min-h-screen text-slate-200 font-sans p-4">
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-6">
 
-    <div class="max-w-2xl mx-auto mt-8 flex justify-between items-center mb-12">
-        <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-[0.3em] text-slate-500 hover:text-white transition-colors flex items-center gap-2">
-            ← Volver al Portal
-        </button>
-        <div class="text-right">
-            <h2 class="text-xl font-black uppercase tracking-tighter text-white">Visor de Historial</h2>
-            <p class="text-[8px] text-blue-500 uppercase tracking-[0.4em]">Consulta de Registros Nube</p>
-        </div>
+    <div id="loader-screen" class="text-center">
+        <div class="loader ease-linear rounded-full border-4 border-slate-900 h-12 w-12 mb-4 mx-auto"></div>
+        <p class="text-slate-600 text-[9px] uppercase tracking-[0.4em] animate-pulse font-bold">Cargando Protocolos...</p>
     </div>
 
-    <div class="max-w-md mx-auto mb-12 fade-in">
-        <div class="relative">
-            <input type="text" id="codigoBusqueda" placeholder="INGRESE CÓDIGO (EJ: LV9944)" 
-                class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 transition-all uppercase">
-            <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all shadow-lg shadow-blue-900/20">
-                🔍
+    <div id="portal" class="hidden text-center fade-in w-full max-w-lg">
+        <div class="relative inline-block mb-8">
+            <img src="puerta.jpeg" alt="Logo" class="w-32 h-32 mx-auto rounded-full border-4 border-slate-900 shadow-2xl object-cover">
+            <div class="absolute inset-0 rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"></div>
+        </div>
+
+        <h1 class="text-white text-3xl font-bold uppercase tracking-tighter mb-1">Historial Clínico Nube</h1>
+        <p class="text-slate-500 text-[10px] uppercase tracking-[0.4em] mb-12">Panel de Control de Acceso</p>
+
+        <div class="flex flex-wrap gap-8 justify-center items-start">
+            
+            <div class="flex flex-col items-center">
+                <button class="w-40 py-10 bg-slate-900/40 rounded-[2.5rem] border border-slate-900 opacity-40 cursor-not-allowed flex flex-col items-center">
+                    <div class="text-4xl mb-4 grayscale">👨‍⚕️</div>
+                    <span class="text-[11px] font-bold text-slate-600 uppercase tracking-widest">Médico</span>
+                </button>
+                <p class="text-[7px] text-slate-700 uppercase tracking-[0.3em] mt-4 font-bold animate-pulse">Próximamente</p>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <button onclick="location.href='enfermera.html'" 
+                    class="w-40 py-10 bg-slate-900 rounded-[2.5rem] border border-slate-800 hover:border-emerald-500 hover:bg-slate-900/80 transition-all duration-500 group flex flex-col items-center shadow-2xl shadow-black/50">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform duration-500 text-emerald-500">⚕️</div>
+                    <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">Enfermera</span>
+                </button>
+                <p class="text-[7px] text-emerald-900 uppercase tracking-[0.3em] mt-4 font-bold">Módulo Activo</p>
+            </div>
+        </div>
+
+        <div class="mt-14 flex justify-center">
+            <button onclick="location.href='visor.historial.html'"
+                class="flex items-center gap-2 px-6 py-2 bg-slate-900/50 border border-slate-800 rounded-full hover:bg-slate-800 hover:border-slate-700 transition-all duration-300 group">
+                <span class="text-sm opacity-60 group-hover:opacity-100 transition-opacity">🔍</span>
+                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] group-hover:text-slate-300">Visor de Historial</span>
             </button>
         </div>
-        <p id="msgEstado" class="text-[7px] text-center mt-4 uppercase tracking-widest text-slate-600 italic"></p>
-    </div>
 
-    <div id="resultadoVisor" class="hidden max-w-xl mx-auto fade-in">
-        <div class="glass-card rounded-[2.5rem] p-8 shadow-2xl text-center">
-            <div class="flex flex-col items-center mb-8">
-                <div class="w-20 h-20 bg-blue-900/30 rounded-full flex items-center justify-center text-3xl mb-4 border border-blue-500/30">👤</div>
-                <h3 id="resNombre" class="text-2xl font-bold text-white uppercase">---</h3>
-                <span id="resCodigo" class="px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-[10px] font-black mt-2 tracking-widest">---</span>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 text-left">
-                <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
-                    <p class="text-[7px] text-slate-500 uppercase tracking-widest mb-1">Documento CI</p>
-                    <p id="resCI" class="text-sm font-bold text-slate-200 tracking-wider">---</p>
-                </div>
-                <div class="bg-slate-900/50 p-4 rounded-2xl border border-slate-800">
-                    <p class="text-[7px] text-slate-500 uppercase tracking-widest mb-1">Fecha de Consulta</p>
-                    <p id="resFecha" class="text-sm font-bold text-slate-200">05/02/2026</p>
-                </div>
-            </div>
-
-            <div class="mt-8 pt-8 border-t border-slate-800 flex justify-center">
-                <button class="px-8 py-3 bg-slate-800 hover:bg-slate-700 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3">
-                    📄 Ver Historial Completo
-                </button>
-            </div>
+        <div class="mt-8">
+            <p class="text-slate-700 text-[8px] uppercase tracking-widest font-medium">Sistema de Gestión Hospitalaria v1.0</p>
         </div>
     </div>
 
     <script>
-        // URL de tu Backend en Render
-        const API_URL = "https://historial-clinico-backend.onrender.com"; 
-
-        async function buscarPaciente() {
-            const codigo = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
-            const msg = document.getElementById('msgEstado');
-            const visor = document.getElementById('resultadoVisor');
-
-            if (!codigo) {
-                msg.textContent = "POR FAVOR INGRESE UN CÓDIGO";
-                return;
-            }
-
-            msg.textContent = "CONSULTANDO EN EL SERVIDOR NUBE...";
-            msg.className = "text-[7px] text-center mt-4 uppercase tracking-widest text-blue-400 animate-pulse";
-            visor.classList.add('hidden');
-
-            try {
-                const response = await fetch(`${API_URL}/obtener_pacientes`);
-                const pacientes = await response.json();
-
-                // Buscamos el paciente por el campo pac_cod
-                const encontrado = pacientes.find(p => p.pac_cod === codigo);
-
-                if (encontrado) {
-                    document.getElementById('resNombre').textContent = encontrado.pac_nom;
-                    document.getElementById('resCI').textContent = encontrado.pac_ci;
-                    document.getElementById('resCodigo').textContent = encontrado.pac_cod;
-                    
-                    msg.textContent = "REGISTRO ENCONTRADO";
-                    msg.className = "text-[7px] text-center mt-4 uppercase tracking-widest text-emerald-500 font-bold";
-                    visor.classList.remove('hidden');
-                } else {
-                    msg.textContent = "EL CÓDIGO NO EXISTE EN EL SISTEMA";
-                    msg.className = "text-[7px] text-center mt-4 uppercase tracking-widest text-red-500 font-bold";
-                }
-            } catch (error) {
-                msg.textContent = "ERROR DE CONEXIÓN CON RENDER";
-                msg.className = "text-[7px] text-center mt-4 uppercase tracking-widest text-red-400";
-            }
-        }
+        setTimeout(() => {
+            document.getElementById('loader-screen').classList.add('hidden');
+            document.getElementById('portal').classList.remove('hidden');
+        }, 3000);
     </script>
 </body>
 </html>
