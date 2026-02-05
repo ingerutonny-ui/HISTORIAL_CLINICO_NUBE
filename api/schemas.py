@@ -73,3 +73,29 @@ class AntecedentesP2(AntecedentesP2Base):
     id: int
     class Config:
         from_attributes = True
+
+# --- ESQUEMAS DE PARTE 3: HÁBITOS Y RIESGOS ---
+class HabitosRiesgosP3Base(BaseModel):
+    paciente_id: int
+    fuma: str
+    fuma_det: str
+    bebe: str
+    bebe_det: str
+    drogas: str
+    drogas_det: str
+    meds: str
+    meds_det: str
+    historial_lab: str
+    r_fisico: str
+    r_ergonomico: str
+    r_quimico: str
+    r_psico: str
+    r_obs: str
+
+class HabitosRiesgosP3Create(HabitosRiesgosP3Base):
+    pass
+
+class HabitosRiesgosP3(HabitosRiesgosP3Base):
+    id: int
+    class Config:
+        from_attributes = True
