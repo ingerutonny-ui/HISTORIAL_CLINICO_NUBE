@@ -32,6 +32,8 @@ def get_db():
 def read_root():
     return {"status": "ONLINE", "database": "CONNECTED"}
 
+# --- RUTAS DE PACIENTES (EXTENDIDAS) ---
+
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     try:
@@ -45,6 +47,29 @@ def read_pacientes(db: Session = Depends(get_db)):
         return db.query(models.Paciente).all()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/pacientes/{codigo}", response_model=schemas.Paciente)
+def read_paciente_por_codigo(codigo: str, db: Session = Depends(get_db)):
+    db_paciente = crud.get_paciente_by_codigo(db, codigo=codigo)
+    if db_paciente is None:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return db_paciente
+
+@app.put("/pacientes/{codigo}", response_model=schemas.Paciente)
+def update_paciente(codigo: str, paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
+    db_paciente = crud.update_paciente(db, codigo=codigo, datos_actualizados=paciente)
+    if db_paciente is None:
+        raise HTTPException(status_code=404, detail="No se pudo actualizar: Paciente no encontrado")
+    return db_paciente
+
+@app.delete("/pacientes/{codigo}")
+def delete_paciente(codigo: str, db: Session = Depends(get_db)):
+    success = crud.delete_paciente(db, codigo=codigo)
+    if not success:
+        raise HTTPException(status_code=404, detail="No se pudo eliminar: Paciente no encontrado")
+    return {"message": f"Paciente {codigo} eliminado exitosamente"}
+
+# --- RUTAS DE DECLARACIONES ---
 
 @app.post("/declaraciones/p1/", response_model=schemas.DeclaracionJurada)
 def save_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
