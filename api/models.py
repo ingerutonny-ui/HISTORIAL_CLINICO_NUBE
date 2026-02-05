@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -10,20 +10,19 @@ class Paciente(Base):
     ci = Column(String, unique=True, index=True)
     codigo_paciente = Column(String, unique=True)
     
-    declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
-    # Relación con la nueva tabla de antecedentes
-    antecedentes = relationship("AntecedentesP2", back_populates="paciente")
-    # Relación con la tercera sección
-    habitos_riesgos = relationship("HabitosRiesgosP3", back_populates="paciente")
+    # Relaciones unificadas
+    declaraciones = relationship("DeclaracionJurada", back_populates="paciente", cascade="all, delete-orphan")
+    antecedentes = relationship("AntecedentesP2", back_populates="paciente", cascade="all, delete-orphan")
+    habitos_riesgos = relationship("HabitosRiesgosP3", back_populates="paciente", cascade="all, delete-orphan")
 
 class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_juradas"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     
-    edad = Column(String) 
+    edad = Column(Integer) # Cambiado a Integer para cálculos médicos
     sexo = Column(String)
-    fecha_nacimiento = Column(String)
+    fecha_nacimiento = Column(String) # Se guarda como texto ISO del input date
     lugar_nacimiento = Column(String)
     domicilio = Column(String)
     n_casa = Column(String)
@@ -36,16 +35,12 @@ class DeclaracionJurada(Base):
 
     paciente = relationship("Paciente", back_populates="declaraciones")
 
-# ============================================================
-# INICIO DE LA SEGUNDA SECCIÓN - ANTECEDENTES PATOLÓGICOS
-# ============================================================
-
 class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
 
-    # Campos para los 22 datos (11 indicadores 'p' y 11 detalles 'd')
+    # Estructura de 12 pares (p=pregunta, d=detalle) alineada con schemas.py
     p1 = Column(String); d1 = Column(String)
     p2 = Column(String); d2 = Column(String)
     p3 = Column(String); d3 = Column(String)
@@ -58,22 +53,11 @@ class AntecedentesP2(Base):
     p10 = Column(String); d10 = Column(String)
     p11 = Column(String); d11 = Column(String)
     p12 = Column(String); d12 = Column(String)
-    p13 = Column(String); d13 = Column(String)
-    p14 = Column(String); d14 = Column(String)
-    p15 = Column(String); d15 = Column(String)
-    p16 = Column(String); d16 = Column(String)
-    p17 = Column(String); d17 = Column(String)
-    p18 = Column(String); d18 = Column(String)
-    p19 = Column(String); d19 = Column(String)
-    p20 = Column(String); d20 = Column(String)
-    p21 = Column(String); d21 = Column(String)
-    p22 = Column(String); d22 = Column(String)
+    
+    cirugias = Column(String)
+    accidentes = Column(String)
 
     paciente = relationship("Paciente", back_populates="antecedentes")
-
-# ============================================================
-# INICIO DE LA TERCERA SECCIÓN - HÁBITOS Y RIESGOS
-# ============================================================
 
 class HabitosRiesgosP3(Base):
     __tablename__ = "habitos_riesgos_p3"
@@ -82,22 +66,10 @@ class HabitosRiesgosP3(Base):
 
     # Hábitos Personales
     fuma = Column(String)
-    fuma_det = Column(String)
     bebe = Column(String)
-    bebe_det = Column(String)
     drogas = Column(String)
-    drogas_det = Column(String)
-    meds = Column(String)
-    meds_det = Column(String)
-
-    # Antecedentes Ocupacionales
-    historial_lab = Column(String)
-
-    # Antecedentes de Riesgo
-    r_fisico = Column(String)
-    r_ergonomico = Column(String)
-    r_quimico = Column(String)
-    r_psico = Column(String)
-    r_obs = Column(String)
+    coca = Column(String)
+    deportes = Column(String)
+    grupo_sanguineo = Column(String)
 
     paciente = relationship("Paciente", back_populates="habitos_riesgos")
