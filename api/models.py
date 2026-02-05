@@ -12,7 +12,6 @@ class Paciente(Base):
     
     declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
     antecedentes = relationship("AntecedentesP2", back_populates="paciente")
-    habitos_riesgos = relationship("HabitosRiesgosP3", back_populates="paciente")
 
 class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_juradas"
@@ -36,30 +35,16 @@ class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    p1 = Column(String); d1 = Column(String)
-    p2 = Column(String); d2 = Column(String)
-    p3 = Column(String); d3 = Column(String)
-    p4 = Column(String); d4 = Column(String)
-    p5 = Column(String); d5 = Column(String)
-    p6 = Column(String); d6 = Column(String)
-    p7 = Column(String); d7 = Column(String)
-    p8 = Column(String); d8 = Column(String)
-    p9 = Column(String); d9 = Column(String)
-    p10 = Column(String); d10 = Column(String)
-    p11 = Column(String); d11 = Column(String)
-    p12 = Column(String); d12 = Column(String)
-    cirugias = Column(String)
-    accidentes = Column(String)
+    # Definición de los 22 campos de datos (d1 a d22) y estados (p1 a p22)
+    p1 = Column(String); d1 = Column(String); p2 = Column(String); d2 = Column(String)
+    p3 = Column(String); d3 = Column(String); p4 = Column(String); d4 = Column(String)
+    p5 = Column(String); d5 = Column(String); p6 = Column(String); d6 = Column(String)
+    p7 = Column(String); d7 = Column(String); p8 = Column(String); d8 = Column(String)
+    p9 = Column(String); d9 = Column(String); p10 = Column(String); d10 = Column(String)
+    p11 = Column(String); d11 = Column(String); p12 = Column(String); d12 = Column(String)
+    p13 = Column(String); d13 = Column(String); p14 = Column(String); d14 = Column(String)
+    p15 = Column(String); d15 = Column(String); p16 = Column(String); d16 = Column(String)
+    p17 = Column(String); d17 = Column(String); p18 = Column(String); d18 = Column(String)
+    p19 = Column(String); d19 = Column(String); p20 = Column(String); d20 = Column(String)
+    p21 = Column(String); d21 = Column(String); p22 = Column(String); d22 = Column(String)
     paciente = relationship("Paciente", back_populates="antecedentes")
-
-class HabitosRiesgosP3(Base):
-    __tablename__ = "habitos_riesgos_p3"
-    id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    fuma = Column(String)
-    bebe = Column(String)
-    drogas = Column(String)
-    coca = Column(String)
-    deportes = Column(String)
-    grupo_sanguineo = Column(String)
-    paciente = relationship("Paciente", back_populates="habitos_riesgos")
