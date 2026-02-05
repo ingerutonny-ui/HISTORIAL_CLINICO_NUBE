@@ -16,6 +16,7 @@ def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     return db_filiacion
 
 def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
+    # Esta función ahora guarda correctamente los 22 campos enviados desde P2
     db_ante = models.AntecedentesP2(**antecedentes.dict())
     db.add(db_ante)
     db.commit()
