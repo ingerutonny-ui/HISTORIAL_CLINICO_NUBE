@@ -3,65 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Registro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>DECLARACIÓN JURADA - SECCIÓN 3</title>
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 40px; text-transform: uppercase; }
-        .registro-container { max-width: 480px; width: 95%; background: white; padding: 45px; border-radius: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.03); text-align: center; }
-        .form-label { font-size: 11px; font-weight: 700; color: #94a3b8; letter-spacing: 1px; display: block; text-align: left; margin: 15px 0 6px 12px; }
-        .form-control { border-radius: 18px; background-color: #f1f5f9; border: 1px solid transparent; padding: 14px; font-weight: 600; color: #1e293b; text-transform: uppercase; font-size: 14px; }
-        #codigo_contenedor { border: 1px dashed #24a174; border-radius: 18px; padding: 12px; margin: 25px 0; background-color: #f0fdf4; color: #24a174; font-weight: 700; font-size: 15px; }
-        .btn-registrar { background-color: #24a174; color: white; border: none; border-radius: 20px; padding: 16px; font-weight: 700; width: 100%; margin-top: 10px; box-shadow: 0 10px 20px rgba(36, 161, 116, 0.15); }
+        :root { --verde: #34a174; --fondo: #f1f5f9; --blanco: #ffffff; --texto: #1e293b; --placeholder: #94a3b8; }
+        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; text-transform: uppercase; }
+        .card { background: var(--blanco); padding: 40px; border-radius: 50px; width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h2 { color: #0f172a; text-align: center; font-size: 22px; margin-bottom: 5px; letter-spacing: 1px; }
+        .subtitulo { text-align: center; font-size: 10px; color: var(--placeholder); margin-bottom: 30px; font-weight: 700; }
+        .seccion-header { color: #0f172a; font-weight: 900; font-size: 14px; margin: 25px 0 15px 0; display: flex; align-items: center; }
+        .seccion-header::before { content: ""; width: 4px; height: 18px; background: var(--verde); margin-right: 10px; border-radius: 2px; }
+        
+        /* Estilo para los títulos con ejemplo al lado */
+        .label-grupo { display: flex; justify-content: flex-start; align-items: baseline; gap: 10px; margin-bottom: 8px; }
+        .titulo-txt { font-size: 10px; font-weight: 800; color: #1e293b; }
+        .ejemplo-txt { font-size: 9px; font-weight: 600; color: var(--placeholder); font-style: italic; }
+
+        .grid-habitos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .habito-item { background: #f8fafc; padding: 12px; border-radius: 15px; border: 1px solid #e2e8f0; }
+        
+        select, input, textarea { width: 100%; padding: 12px; border: none; border-radius: 10px; background: #f1f5f9; font-size: 11px; font-weight: 700; color: var(--texto); box-sizing: border-box; text-transform: uppercase; }
+        textarea { height: 100px; resize: none; font-family: inherit; }
+        
+        .grid-riesgos { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 10px; }
+        .campo-riesgo { margin-bottom: 15px; }
+
+        .btn-finalizar { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 15px; width: 100%; font-weight: 800; font-size: 15px; cursor: pointer; margin-top: 30px; transition: 0.3s; box-shadow: 0 4px 12px rgba(52, 161, 116, 0.2); }
+        .btn-finalizar:hover { opacity: 0.9; transform: translateY(-2px); }
+        .btn-regresar { background: #f1f5f9; color: var(--placeholder); border: none; padding: 12px; border-radius: 15px; width: 100%; font-weight: 800; font-size: 11px; cursor: pointer; margin-top: 10px; }
+        ::placeholder { color: var(--placeholder); font-weight: 400; opacity: 0.5; }
     </style>
 </head>
 <body>
-    <div class="registro-container">
-        <h2 style="font-weight:800; color:#1e293b; font-size: 20px;">GESTIÓN DE PACIENTES</h2>
-        <form id="formRegistro">
-            <label class="form-label">NOMBRES</label>
-            <input type="text" id="nombres" class="form-control" required autocomplete="off">
-            <label class="form-label">APELLIDOS</label>
-            <input type="text" id="apellidos" class="form-control" required autocomplete="off">
-            <label class="form-label">DOCUMENTO DE IDENTIDAD (CI)</label>
-            <input type="text" id="ci" class="form-control" required autocomplete="off">
-            <div id="codigo_contenedor">CÓDIGO GENERADO: <span id="valor_cod">---</span></div>
-            <button type="submit" class="btn-registrar">REGISTRAR Y CONTINUAR A P1</button>
+    <div class="card">
+        <h2>DECLARACIÓN JURADA DE SALUD</h2>
+        <p class="subtitulo">SECCIÓN 3: HÁBITOS Y VIDA LABORAL</p>
+
+        <form id="formP3">
+            <div class="seccion-header">I. HÁBITOS PERSONALES</div>
+            <div class="grid-habitos">
+                <div class="habito-item">
+                    <div class="label-grupo"><span class="titulo-txt">¿FUMA?</span></div>
+                    <select id="fuma"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="fuma_det" placeholder="CANT./FRECUENCIA" style="margin-top:8px">
+                </div>
+                <div class="habito-item">
+                    <div class="label-grupo"><span class="titulo-txt">¿ALCOHOL?</span></div>
+                    <select id="bebe"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="bebe_det" placeholder="CANT./FRECUENCIA" style="margin-top:8px">
+                </div>
+                <div class="habito-item">
+                    <div class="label-grupo"><span class="titulo-txt">¿DROGAS?</span></div>
+                    <select id="drogas"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="drogas_det" placeholder="TIPO/FRECUENCIA" style="margin-top:8px">
+                </div>
+                <div class="habito-item">
+                    <div class="label-grupo"><span class="titulo-txt">¿MEDS?</span></div>
+                    <select id="meds"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="meds_det" placeholder="¿CUÁLES?" style="margin-top:8px">
+                </div>
+            </div>
+
+            <div class="seccion-header">II. ANTECEDENTES OCUPACIONALES</div>
+            <div class="label-grupo">
+                <span class="titulo-txt">HISTORIAL LABORAL</span>
+                <span class="ejemplo-txt">(EDAD, EMPRESA, OCUPACIÓN, TIEMPO, RIESGOS, EPP)</span>
+            </div>
+            <textarea id="historial_lab" placeholder="EJ: 18 AÑOS, EMPRESA MINERA, OBRERO, 5 AÑOS, RUIDO Y POLVO..."></textarea>
+
+            <div class="seccion-header">III. ANTECEDENTES DE RIESGO (EXPOSICIÓN ACTUAL)</div>
+            <div class="grid-riesgos">
+                <div class="campo-riesgo">
+                    <div class="label-grupo"><span class="titulo-txt">FÍSICOS</span><span class="ejemplo-txt">(RUIDO, CALOR, RADIACIÓN)</span></div>
+                    <input type="text" id="r_fisico" placeholder="ESCRIBA AQUÍ LOS RIESGOS">
+                </div>
+                <div class="campo-riesgo">
+                    <div class="label-grupo"><span class="titulo-txt">ERGONÓMICOS</span><span class="ejemplo-txt">(POSTURAS, CARGA)</span></div>
+                    <input type="text" id="r_ergonomico" placeholder="ESCRIBA AQUÍ LOS RIESGOS">
+                </div>
+                <div class="campo-riesgo">
+                    <div class="label-grupo"><span class="titulo-txt">QUÍMICOS</span><span class="ejemplo-txt">(POLVOS, HUMOS, GASES)</span></div>
+                    <input type="text" id="r_quimico" placeholder="ESCRIBA AQUÍ LOS RIESGOS">
+                </div>
+                <div class="campo-riesgo">
+                    <div class="label-grupo"><span class="titulo-txt">PSICOLOGÍA</span><span class="ejemplo-txt">(ESTRÉS, TURNOS)</span></div>
+                    <input type="text" id="r_psico" placeholder="ESCRIBA AQUÍ LOS RIESGOS">
+                </div>
+            </div>
+            <div style="margin-top:10px">
+                <div class="label-grupo"><span class="titulo-txt">OBSERVACIONES</span><span class="ejemplo-txt">(OTROS DETALLES RELEVANTES)</span></div>
+                <input type="text" id="r_obs" placeholder="NINGUNA">
+            </div>
+
+            <button type="submit" id="btnFinalizar" class="btn-finalizar">FINALIZAR Y GUARDAR HISTORIAL 💾</button>
+            <button type="button" class="btn-regresar" onclick="history.back()">REGRESAR A SECCIÓN ANTERIOR</button>
         </form>
     </div>
 
     <script>
-        const API = 'https://historial-clinico-936s.onrender.com/pacientes/';
-        const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos'), vCod = document.getElementById('valor_cod');
+        const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p3/';
 
-        function actualizarCodigo() {
-            if(inN.value.trim() && inA.value.trim()) {
-                const initials = (inN.value.trim()[0] + inA.value.trim()[0]).toUpperCase();
-                vCod.innerText = initials + Math.floor(1000 + Math.random() * 9000);
-            }
-        }
-        inN.oninput = () => { inN.value = inN.value.toUpperCase(); actualizarCodigo(); };
-        inA.oninput = () => { inA.value = inA.value.toUpperCase(); actualizarCodigo(); };
-
-        document.getElementById('formRegistro').onsubmit = async (e) => {
+        document.getElementById('formP3').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const payload = { nombres: inN.value, apellidos: inA.value, ci: document.getElementById('ci').value, codigo_paciente: vCod.innerText };
-            
-            const res = await fetch(API, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            const pacId = localStorage.getItem('paciente_id');
+            const btn = document.getElementById('btnFinalizar');
 
-            if(res.ok) {
-                const data = await res.json();
-                // GUARDADO CRÍTICO PARA P1
-                localStorage.setItem('paciente_id', data.id);
-                localStorage.setItem('pac_nom', `${data.nombres} ${data.apellidos}`);
-                localStorage.setItem('pac_ci', data.ci);
-                localStorage.setItem('pac_cod', data.codigo_paciente);
-                window.location.href = "declaracion_jurada_p1.html";
+            if (!pacId) { alert("ERROR: NO SE ENCONTRÓ EL ID DEL PACIENTE"); return; }
+
+            btn.innerText = "PROCESANDO DATOS...";
+            btn.disabled = true;
+
+            const payload = {
+                paciente_id: parseInt(pacId),
+                fuma: document.getElementById('fuma').value,
+                fuma_det: document.getElementById('fuma_det').value.trim() || "NO REFIERE DETALLES",
+                bebe: document.getElementById('bebe').value,
+                bebe_det: document.getElementById('bebe_det').value.trim() || "NO REFIERE DETALLES",
+                drogas: document.getElementById('drogas').value,
+                drogas_det: document.getElementById('drogas_det').value.trim() || "NO REFIERE DETALLES",
+                meds: document.getElementById('meds').value,
+                meds_det: document.getElementById('meds_det').value.trim() || "NO CONSUME MEDICAMENTOS",
+                historial_lab: document.getElementById('historial_lab').value.trim() || "SIN ANTECEDENTES LABORALES",
+                r_fisico: document.getElementById('r_fisico').value.trim() || "SIN RIESGO EXPECÍFICO",
+                r_ergonomico: document.getElementById('r_ergonomico').value.trim() || "SIN RIESGO EXPECÍFICO",
+                r_quimico: document.getElementById('r_quimico').value.trim() || "SIN RIESGO EXPECÍFICO",
+                r_psico: document.getElementById('r_psico').value.trim() || "SIN RIESGO EXPECÍFICO",
+                r_obs: document.getElementById('r_obs').value.trim() || "NINGUNA"
+            };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+
+                if(response.ok) {
+                    alert("✓ HISTORIAL COMPLETADO CON ÉXITO");
+                    window.location.href = "enfermera.html"; 
+                } else {
+                    alert("ERROR AL GUARDAR LA INFORMACIÓN EN EL SERVIDOR");
+                }
+            } catch (err) {
+                alert("ERROR DE CONEXIÓN: VERIFIQUE SU INTERNET O SERVIDOR");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "FINALIZAR Y GUARDAR HISTORIAL 💾";
             }
-        };
+        });
     </script>
 </body>
 </html>
