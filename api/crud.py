@@ -33,3 +33,14 @@ def create_antecedentes_p2(db: Session, antecedentes: schemas.AntecedentesP2Crea
     except Exception as e:
         db.rollback()
         raise e
+
+def create_habitos_p3(db: Session, habitos: schemas.HabitosRiesgosP3Create):
+    try:
+        db_habitos = models.HabitosRiesgosP3(**habitos.model_dump())
+        db.add(db_habitos)
+        db.commit()
+        db.refresh(db_habitos)
+        return db_habitos
+    except Exception as e:
+        db.rollback()
+        raise e
