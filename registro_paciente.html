@@ -70,9 +70,12 @@
               btnReg = document.getElementById('btnRegistrar'), btnEdi = document.getElementById('btnEditar'), 
               btnHis = document.getElementById('btnVerHistorial'), btnEli = document.getElementById('btnEliminar');
 
-        function actualizarMemoriaLocal(p) {
+        // FUNCIÓN CLAVE CORREGIDA PARA P1
+        function prepararMemoriaP1(p) {
+            localStorage.clear(); // Limpiamos todo residuo previo
+            localStorage.setItem('paciente_id', p.id); // P1 suele buscar 'paciente_id'
             localStorage.setItem('pac_id', p.id);
-            localStorage.setItem('pac_nom', p.nombres + " " + p.apellidos);
+            localStorage.setItem('pac_nom', `${p.nombres} ${p.apellidos}`);
             localStorage.setItem('pac_cod', p.codigo_paciente);
             localStorage.setItem('pac_ci', p.ci);
         }
@@ -101,7 +104,7 @@
                 if(res.ok) {
                     const p = await res.json();
                     inN.value = p.nombres; inA.value = p.apellidos; inCI.value = p.ci; codVal.innerText = p.codigo_paciente;
-                    actualizarMemoriaLocal(p);
+                    prepararMemoriaP1(p);
                     btnReg.style.display = 'none'; btnEdi.style.display = 'block'; btnHis.style.display = 'block'; btnEli.style.display = 'block';
                 } else { alert("PACIENTE NO REGISTRADO"); }
             } catch (e) { alert("ERROR DE CONEXIÓN"); }
@@ -123,8 +126,9 @@
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    actualizarMemoriaLocal(data); // <--- ESTO ES CRÍTICO
-                    setTimeout(() => { window.location.href = "declaracion_jurada_p1.html"; }, 500);
+                    prepararMemoriaP1(data);
+                    alert("REGISTRO EXITOSO EN NUBE");
+                    window.location.href = "declaracion_jurada_p1.html";
                 }
             } catch (error) { alert("FALLO EN NUBE"); }
         };
@@ -138,27 +142,31 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if(res.ok) alert("DATOS ACTUALIZADOS");
+                if(res.ok) alert("DATOS ACTUALIZADOS EN NUBE");
             } catch (e) { alert("ERROR"); }
         }
 
         async function eliminarPaciente() {
-            if(!confirm("¿ELIMINAR?")) return;
+            if(!confirm("¿ELIMINAR PERMANENTEMENTE?")) return;
             try {
                 await fetch(`${API_BASE}${codVal.innerText}`, { method: 'DELETE' });
                 limpiarFormulario();
+                alert("ELIMINADO");
             } catch (e) { alert("ERROR"); }
         }
 
         document.getElementById('btnConsultar').onclick = async () => {
-            document.getElementById('seccionLista').style.display = 'block';
-            const res = await fetch(API_BASE);
-            const data = await res.json();
-            document.getElementById('listaContenido').innerHTML = data.map(p => `
-                <div class="paciente-fila" onclick="inBuscar.value='${p.codigo_paciente}'; buscarPaciente();">
-                    <span>${p.nombres} ${p.apellidos}</span>
-                    <span class="badge bg-success">${p.codigo_paciente}</span>
-                </div>`).join('');
+            const seccion = document.getElementById('seccionLista');
+            seccion.style.display = 'block';
+            try {
+                const res = await fetch(API_BASE);
+                const data = await res.json();
+                document.getElementById('listaContenido').innerHTML = data.map(p => `
+                    <div class="paciente-fila" onclick="inBuscar.value='${p.codigo_paciente}'; buscarPaciente();">
+                        <span style="font-size:12px; font-weight:700;">${p.nombres} ${p.apellidos}</span>
+                        <span class="badge bg-success">${p.codigo_paciente}</span>
+                    </div>`).join('');
+            } catch (e) { alert("ERROR LISTA"); }
         };
     </script>
 </body>
