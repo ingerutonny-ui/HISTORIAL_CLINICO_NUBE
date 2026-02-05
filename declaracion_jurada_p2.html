@@ -21,14 +21,13 @@
         input:focus { background: white; border-color: #d1eadd; outline: none; }
         .btn-submit { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 25px; font-size: 14px; transition: 0.3s; box-shadow: 0 4px 15px rgba(52, 161, 116, 0.2); }
         .btn-submit:hover { transform: translateY(-2px); filter: brightness(1.1); }
-        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <h2>DECLARACIÓN JURADA DE SALUD</h2>
-        <p style="color: var(--gris-texto); font-size: 11px; font-weight: 700;">SECCIÓN 2: ANTECEDENTES PATOLÓGICOS (POR SISTEMAS)</p>
+        <p style="color: var(--gris-texto); font-size: 11px; font-weight: 700;">SECCIÓN 2: ANTECEDENTES PATOLÓGICOS</p>
     </div>
 
     <div class="paciente-info">
@@ -40,46 +39,34 @@
     <form id="formP2">
         <div class="grid">
             <div class="col">
-                <div class="campo"><label>1. VISTA (GLAUCOMA, LENTES)</label><input type="text" id="d1" value="NORMAL"></div>
-                <div class="campo"><label>2. AUDITIVO (OTITIS, VÉRTIGO)</label><input type="text" id="d2" value="NORMAL"></div>
-                <div class="campo"><label>3. RESPIRATORIOS (ASMA, BRONQUITIS)</label><input type="text" id="d3" value="NORMAL"></div>
-                <div class="campo"><label>4. CARDIOVASCULARES (HTA, INFARTO)</label><input type="text" id="d4" value="NORMAL"></div>
-                <div class="campo"><label>5. DIGESTIVOS (ULCERA, HERNIA)</label><input type="text" id="d5" value="NORMAL"></div>
-                <div class="campo"><label>6. NERVIOSO/MENTAL (MIGRAÑA)</label><input type="text" id="d6" value="NORMAL"></div>
-                <div class="campo"><label>7. URINARIO (CÁLCULOS, CISTITIS)</label><input type="text" id="d7" value="NORMAL"></div>
-                <div class="campo"><label>8. GENITALES (PROSTATA, QUISTES)</label><input type="text" id="d8" value="NORMAL"></div>
-                <div class="campo"><label>9. OSTEOMUSCULARES (FRACTURAS)</label><input type="text" id="d9" value="NORMAL"></div>
-                <div class="campo"><label>10. PIEL (ALERGIAS, DERMATITIS)</label><input type="text" id="d10" value="NORMAL"></div>
-                <div class="campo"><label>11. INFECCIOSAS (CHAGAS, MALARIA)</label><input type="text" id="d11" value="NORMAL"></div>
+                <div class="campo"><label>1. VISTA</label><input type="text" id="d1" value="NORMAL"></div>
+                <div class="campo"><label>2. AUDITIVO</label><input type="text" id="d2" value="NORMAL"></div>
+                <div class="campo"><label>3. RESPIRATORIOS</label><input type="text" id="d3" value="NORMAL"></div>
+                <div class="campo"><label>4. CARDIOVASCULARES</label><input type="text" id="d4" value="NORMAL"></div>
+                <div class="campo"><label>5. DIGESTIVOS</label><input type="text" id="d5" value="NORMAL"></div>
+                <div class="campo"><label>6. SANGRE</label><input type="text" id="d6" value="NORMAL"></div>
             </div>
             <div class="col">
-                <div class="campo"><label>12. SANGUÍNEOS (ANEMIA, LEUCEMIA)</label><input type="text" id="d12" value="NORMAL"></div>
-                <div class="campo"><label>13. ENDOCRINOS (DIABETES, TIROIDES)</label><input type="text" id="d13" value="NORMAL"></div>
-                <div class="campo"><label>14. ALERGIAS (MEDICAMENTOS, ALIMENTOS)</label><input type="text" id="d14" value="NINGUNA"></div>
-                <div class="campo"><label>15. CIRUGÍAS ANTERIORES</label><input type="text" id="d15" value="NINGUNA"></div>
-                <div class="campo"><label>16. HOSPITALIZACIONES</label><input type="text" id="d16" value="NINGUNA"></div>
-                <div class="campo"><label>17. ACCIDENTES LABORALES</label><input type="text" id="d17" value="NINGUNA"></div>
-                <div class="campo"><label>18. ACCIDENTES COMUNES</label><input type="text" id="d18" value="NINGUNA"></div>
-                <div class="campo"><label>19. VACUNAS (ESQUEMA COMPLETO)</label><input type="text" id="d19" value="NINGUNA"></div>
-                <div class="campo"><label>20. MEDICACIÓN ACTUAL</label><input type="text" id="d20" value="NINGUNA"></div>
-                <div class="campo"><label>21. ANTECEDENTES FAMILIARES</label><input type="text" id="d21" value="NINGUNA"></div>
-                <div class="campo"><label>22. OTRAS OBSERVACIONES</label><input type="text" id="d22" value="NINGUNA"></div>
+                <div class="campo"><label>7. GENITO-URINARIO</label><input type="text" id="d7" value="NORMAL"></div>
+                <div class="campo"><label>8. ITS</label><input type="text" id="d8" value="NORMAL"></div>
+                <div class="campo"><label>9. SISTEMA NERVIOSO</label><input type="text" id="d9" value="NORMAL"></div>
+                <div class="campo"><label>10. PSIQUIÁTRICOS</label><input type="text" id="d10" value="NORMAL"></div>
+                <div class="campo"><label>11. OSTEOMUSCULARES</label><input type="text" id="d11" value="NORMAL"></div>
+                <div class="campo"><label>12. ENDOCRINOLÓGICOS</label><input type="text" id="d12" value="NORMAL"></div>
             </div>
         </div>
+        <div class="campo"><label>CIRUGÍAS</label><input type="text" id="cirugias" value="NINGUNA"></div>
+        <div class="campo"><label>ACCIDENTES</label><input type="text" id="accidentes" value="NINGUNO"></div>
         <button type="submit" id="btnSiguiente" class="btn-submit">GUARDAR Y PASAR A HÁBITOS (P3)</button>
     </form>
 </div>
 
 <script>
-    const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p2';
+    const API_URL = 'https://historial-clinico-936s.onrender.com/antecedentes/';
 
     window.onload = () => {
         const id = localStorage.getItem('paciente_id');
-        if (!id) {
-            alert("⚠️ SESIÓN INVÁLIDA. REGRESE AL REGISTRO.");
-            window.location.href = "registro_paciente.html";
-            return;
-        }
+        if (!id) { window.location.href = "registro_paciente.html"; return; }
         document.getElementById('txt_nombre').innerText = localStorage.getItem('paciente_nombre');
         document.getElementById('txt_ci').innerText = localStorage.getItem('paciente_ci');
         document.getElementById('txt_codigo').innerText = localStorage.getItem('paciente_codigo');
@@ -88,17 +75,18 @@
     document.getElementById('formP2').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnSiguiente');
-        const pacienteId = localStorage.getItem('paciente_id');
-        
-        btn.innerText = "SINCRONIZANDO CON LA NUBE...";
-        btn.disabled = true;
+        btn.disabled = true; btn.innerText = "GUARDANDO...";
 
-        const data = { paciente_id: parseInt(pacienteId) };
-        for(let i=1; i<=22; i++) {
-            const inputVal = document.getElementById(`d${i}`).value.trim().toUpperCase();
-            const tienePatologia = (inputVal !== "NORMAL" && inputVal !== "NINGUNA" && inputVal !== "");
-            data[`p${i}`] = tienePatologia ? "SI" : "NO";
-            data[`d${i}`] = inputVal === "" ? (i <= 13 ? "NORMAL" : "NINGUNA") : inputVal;
+        const data = { 
+            paciente_id: parseInt(localStorage.getItem('paciente_id')),
+            cirugias: document.getElementById('cirugias').value.toUpperCase(),
+            accidentes: document.getElementById('accidentes').value.toUpperCase()
+        };
+
+        for(let i=1; i<=12; i++) {
+            const val = document.getElementById(`d${i}`).value.toUpperCase();
+            data[`p${i}`] = (val === "NORMAL" || val === "") ? "NO" : "SI";
+            data[`d${i}`] = val || "NORMAL";
         }
 
         try {
@@ -107,15 +95,9 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            
-            if(res.ok) {
-                alert("✓ ANTECEDENTES GUARDADOS CORRECTAMENTE");
-                window.location.href = "declaracion_jurada_p3.html";
-            } else { 
-                const errData = await res.json();
-                alert("ERROR DE SERVIDOR: " + JSON.stringify(errData.detail)); 
-            }
-        } catch (err) { alert("FALLO DE CONEXIÓN. REINTENTE."); }
+            if(res.ok) window.location.href = "declaracion_jurada_p3.html";
+            else alert("Error al guardar");
+        } catch (err) { alert("Error de conexión"); }
         finally { btn.disabled = false; btn.innerText = "GUARDAR Y PASAR A HÁBITOS (P3)"; }
     });
 </script>
