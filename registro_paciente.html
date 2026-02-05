@@ -21,6 +21,8 @@
         .btn-editar { background-color: #f59e0b; display: none; }
         .btn-eliminar { background-color: #ef4444; display: none; margin-top: 10px; font-size: 10px; padding: 10px; }
         
+        /* Ajuste de Búsqueda debajo de botones */
+        .seccion-busqueda-baja { margin-top: 30px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
         .grupo-busqueda { display: flex; gap: 10px; margin-top: 10px; }
         .btn-buscar { background: #1e293b; color: white; border-radius: 15px; border: none; padding: 0 20px; font-weight: 700; font-size: 11px; }
 
@@ -41,14 +43,6 @@
         <h2 style="font-weight:800; color:#1e293b; font-size: 20px; margin-bottom: 0;">GESTIÓN DE PACIENTES</h2>
         <p style="color:#b0bac9; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;">SISTEMA DE HISTORIAL CLÍNICO</p>
         <p id="fechaActual" class="fecha-texto"></p>
-        
-        <label class="form-label" style="color: #24a174;">BUSCAR POR CÓDIGO MAESTRO</label>
-        <div class="grupo-busqueda">
-            <input type="text" id="inputBuscar" class="form-control" placeholder="EJ: RA4798">
-            <button type="button" class="btn-buscar" onclick="buscarPaciente()">BUSCAR</button>
-        </div>
-
-        <hr style="margin: 30px 0; opacity: 0.1;">
 
         <form id="formRegistro">
             <label class="form-label">NOMBRES</label>
@@ -65,10 +59,18 @@
             <button type="submit" id="btnRegistrar" class="btn-main btn-registrar">GUARDAR NUEVO REGISTRO</button>
             <button type="button" id="btnEditar" class="btn-main btn-editar" onclick="editarPaciente()">GUARDAR CAMBIOS (EDITAR)</button>
             <button type="button" id="btnEliminar" class="btn-main btn-eliminar" onclick="eliminarPaciente()">ELIMINAR PACIENTE PERMANENTEMENTE</button>
+        </form>
+
+        <div class="seccion-busqueda-baja">
+            <label class="form-label" style="color: #24a174; text-align: center; margin-left: 0;">GESTIÓN POR CÓDIGO MAESTRO</label>
+            <div class="grupo-busqueda">
+                <input type="text" id="inputBuscar" class="form-control" placeholder="EJ: RA4798">
+                <button type="button" class="btn-buscar" onclick="buscarPaciente()">BUSCAR</button>
+            </div>
             
             <button type="button" id="btnConsultar" class="btn-consultar">MOSTRAR TODOS LOS REGISTROS</button>
             <button type="button" id="btnLimpiar" class="btn-consultar" onclick="limpiarFormulario()" style="color: #ef4444;">LIMPIAR / NUEVO PACIENTE</button>
-        </form>
+        </div>
     </div>
 
     <div id="seccionLista">
@@ -90,9 +92,8 @@
               btnEdi = document.getElementById('btnEditar'),
               btnEli = document.getElementById('btnEliminar');
 
-        // Función Maestra para sincronizar el LocalStorage
         function actualizarMemoriaLocal(data) {
-            localStorage.clear(); // Limpieza profunda antes de escribir
+            localStorage.clear();
             localStorage.setItem('paciente_id', data.id);
             localStorage.setItem('paciente_nombre', data.nombres + " " + data.apellidos);
             localStorage.setItem('paciente_ci', data.ci);
@@ -131,15 +132,12 @@
                     inA.value = p.apellidos;
                     inCI.value = p.ci;
                     codVal.innerText = p.codigo_paciente;
-                    
-                    actualizarMemoriaLocal(p); // Sincroniza memoria con el paciente buscado
-
+                    actualizarMemoriaLocal(p);
                     btnReg.style.display = 'none';
                     btnEdi.style.display = 'block';
                     btnEli.style.display = 'block';
-                } else {
-                    alert("PACIENTE NO ENCONTRADO");
-                }
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else { alert("PACIENTE NO ENCONTRADO"); }
             } catch (e) { alert("ERROR DE CONEXIÓN"); }
         }
 
@@ -147,14 +145,7 @@
             e.preventDefault();
             btnReg.innerText = "PROCESANDO...";
             btnReg.disabled = true;
-            
-            const payload = { 
-                nombres: inN.value.trim(), 
-                apellidos: inA.value.trim(), 
-                ci: inCI.value.trim(), 
-                codigo_paciente: codVal.innerText 
-            };
-
+            const payload = { nombres: inN.value.trim(), apellidos: inA.value.trim(), ci: inCI.value.trim(), codigo_paciente: codVal.innerText };
             try {
                 const res = await fetch(API_BASE, {
                     method: 'POST',
@@ -163,20 +154,18 @@
                 });
                 if (res.ok) {
                     const data = await res.json();
-                    actualizarMemoriaLocal(data); // Asegura que Ruben sea el único en memoria
-                    alert("¡PACIENTE REGISTRADO! PASANDO A DECLARACIÓN JURADA.");
+                    actualizarMemoriaLocal(data);
+                    alert("¡PACIENTE REGISTRADO!");
                     window.location.href = "declaracion_jurada_p1.html";
-                } else { alert("ERROR AL CREAR REGISTRO"); }
-            } catch (error) { alert("FALLO DE CONEXIÓN A LA NUBE"); }
+                } else { alert("ERROR AL CREAR"); }
+            } catch (error) { alert("FALLO DE CONEXIÓN"); }
             finally { btnReg.innerText = "GUARDAR NUEVO REGISTRO"; btnReg.disabled = false; }
         };
 
         async function editarPaciente() {
             const codigo = codVal.innerText;
             const payload = { nombres: inN.value.trim(), apellidos: inA.value.trim(), ci: inCI.value.trim(), codigo_paciente: codigo };
-
-            if(!confirm(`¿ESTÁ SEGURO DE ACTUALIZAR LOS DATOS DE ${codigo}?`)) return;
-
+            if(!confirm(`¿ACTUALIZAR DATOS DE ${codigo}?`)) return;
             try {
                 const res = await fetch(`${API_BASE}${codigo}`, {
                     method: 'PUT',
@@ -185,29 +174,25 @@
                 });
                 if(res.ok) {
                     const data = await res.json();
-                    actualizarMemoriaLocal(data); 
-                    alert("DATOS ACTUALIZADOS CORRECTAMENTE");
+                    actualizarMemoriaLocal(data);
+                    alert("DATOS ACTUALIZADOS");
                 }
             } catch (e) { alert("ERROR AL EDITAR"); }
         }
 
         async function eliminarPaciente() {
             const codigo = codVal.innerText;
-            if(!confirm(`⚠️ ELIMINARÁ PERMANENTEMENTE AL PACIENTE ${codigo}. ¿CONTINUAR?`)) return;
-
+            if(!confirm(`⚠️ ¿ELIMINAR A ${codigo}?`)) return;
             try {
                 const res = await fetch(`${API_BASE}${codigo}`, { method: 'DELETE' });
-                if(res.ok) {
-                    alert("PACIENTE ELIMINADO");
-                    limpiarFormulario();
-                }
+                if(res.ok) { alert("ELIMINADO"); limpiarFormulario(); }
             } catch (e) { alert("ERROR AL ELIMINAR"); }
         }
 
         document.getElementById('btnConsultar').onclick = async () => {
             const lista = document.getElementById('listaContenido'), seccion = document.getElementById('seccionLista');
             seccion.style.display = 'block';
-            lista.innerHTML = '<p class="text-muted small">CONECTANDO A RENDER...</p>';
+            lista.innerHTML = '<p class="text-muted small">CONECTANDO...</p>';
             try {
                 const res = await fetch(API_BASE);
                 const data = await res.json();
@@ -216,7 +201,7 @@
                         <span class="paciente-nombre">${p.nombres} ${p.apellidos}</span>
                         <span class="paciente-id-box">${p.codigo_paciente}</span>
                     </div>`).join('');
-            } catch (e) { alert("ERROR AL OBTENER LISTADO"); }
+            } catch (e) { alert("ERROR DE LISTADO"); }
         };
     </script>
 </body>
