@@ -3,23 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Registro</title>
+    <title>HC NUBE | Registro y Gestión</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 20px; text-transform: uppercase; }
         .btn-volver { color: #b0bac9; font-size: 11px; font-weight: 700; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; transition: 0.3s; }
         .btn-volver:hover { color: #24a174; }
-        .registro-container { max-width: 450px; width: 95%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); text-align: center; }
-        .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-top: 20px; display: block; text-align: left; margin-left: 10px; }
-        .form-control { border-radius: 18px; background-color: #f3f6f9; border: none; padding: 15px; font-weight: 600; color: #1e293b; text-transform: uppercase; }
-        #codigo_contenedor { border: 2px dashed #d1eadd; border-radius: 18px; padding: 15px; margin-top: 20px; display: none; background-color: #f9fdfc; color: #24a174; font-weight: 800; font-size: 16px; letter-spacing: 1px; }
-        .btn-registrar { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 30px; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); }
-        .btn-consultar { background-color: transparent; border: none; padding: 15px; width: 100%; margin-top: 10px; color: #b0bac9; font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
-        .fecha-texto { color: #cbd5e1; font-size: 12px; font-weight: 700; margin-top: 5px; text-transform: uppercase; }
+        .registro-container { max-width: 500px; width: 95%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); text-align: center; }
+        .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-top: 15px; display: block; text-align: left; margin-left: 10px; }
+        .form-control { border-radius: 18px; background-color: #f3f6f9; border: 2px solid transparent; padding: 15px; font-weight: 600; color: #1e293b; text-transform: uppercase; transition: 0.3s; }
+        .form-control:focus { background-color: #ffffff; border-color: #d1eadd; box-shadow: none; }
+        
+        #codigo_contenedor { border: 2px dashed #d1eadd; border-radius: 18px; padding: 15px; margin-top: 20px; background-color: #f9fdfc; color: #24a174; font-weight: 800; font-size: 16px; letter-spacing: 1px; }
+        
+        .btn-main { border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 15px; transition: 0.3s; }
+        .btn-registrar { background-color: #24a174; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); }
+        .btn-editar { background-color: #f59e0b; display: none; }
+        .btn-eliminar { background-color: #ef4444; display: none; margin-top: 10px; font-size: 10px; padding: 10px; }
+        
+        .grupo-busqueda { display: flex; gap: 10px; margin-top: 10px; }
+        .btn-buscar { background: #1e293b; color: white; border-radius: 15px; border: none; padding: 0 20px; font-weight: 700; font-size: 11px; }
+
+        .btn-consultar { background-color: transparent; border: none; padding: 10px; width: 100%; margin-top: 5px; color: #b0bac9; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
+        .fecha-texto { color: #cbd5e1; font-size: 12px; font-weight: 700; margin-top: 5px; }
+        
         #seccionLista { display: none; width: 100%; max-width: 450px; margin-top: 20px; background: white; padding: 30px; border-radius: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
-        .paciente-fila { padding: 15px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
-        .paciente-nombre { font-size: 13px; font-weight: 700; color: #1e293b; text-transform: uppercase; }
-        .paciente-id-box { font-size: 12px; font-weight: 800; color: #24a174; background: #f0fdf4; padding: 5px 12px; border-radius: 10px; }
+        .paciente-fila { padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+        .paciente-nombre { font-size: 12px; font-weight: 700; color: #1e293b; }
+        .paciente-id-box { font-size: 11px; font-weight: 800; color: #24a174; background: #f0fdf4; padding: 4px 10px; border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -27,102 +38,174 @@
 
     <div class="registro-container">
         <div class="mb-2"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="40" alt="icon"></div>
-        <h2 style="font-weight:800; color:#1e293b; font-size: 22px; margin-bottom: 0;">REGISTRO DE PACIENTE</h2>
-        <p style="color:#b0bac9; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 0;">MÓDULO DE ENFERMERÍA</p>
+        <h2 style="font-weight:800; color:#1e293b; font-size: 20px; margin-bottom: 0;">GESTIÓN DE PACIENTES</h2>
+        <p style="color:#b0bac9; font-size: 10px; font-weight: 700; letter-spacing: 1.5px;">NUBE PROYECTO HISTORIAL</p>
         <p id="fechaActual" class="fecha-texto"></p>
         
+        <label class="form-label" style="color: #24a174;">BUSCAR POR CÓDIGO MAESTRO</label>
+        <div class="grupo-busqueda">
+            <input type="text" id="inputBuscar" class="form-control" placeholder="EJ: SA1234">
+            <button type="button" class="btn-buscar" onclick="buscarPaciente()">BUSCAR</button>
+        </div>
+
+        <hr style="margin: 30px 0; opacity: 0.1;">
+
         <form id="formRegistro">
             <label class="form-label">NOMBRES</label>
-            <input type="text" id="nombres" class="form-control" required autocomplete="off">
+            <input type="text" id="nombres" class="form-control" required>
+            
             <label class="form-label">APELLIDOS</label>
-            <input type="text" id="apellidos" class="form-control" required autocomplete="off">
+            <input type="text" id="apellidos" class="form-control" required>
+            
             <label class="form-label">DOCUMENTO DE IDENTIDAD (CI)</label>
-            <input type="text" id="ci" class="form-control" required autocomplete="off">
-            <div id="codigo_contenedor">CÓDIGO GENERADO: <span id="codigo_val"></span></div>
-            <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR REGISTRO FINAL</button>
-            <button type="button" id="btnConsultar" class="btn-consultar">CONSULTAR REGISTROS EN NUBE</button>
+            <input type="text" id="ci" class="form-control" required>
+            
+            <div id="codigo_contenedor">CÓDIGO: <span id="codigo_val">---</span></div>
+
+            <button type="submit" id="btnRegistrar" class="btn-main btn-registrar">GUARDAR NUEVO REGISTRO</button>
+            <button type="button" id="btnEditar" class="btn-main btn-editar" onclick="editarPaciente()">GUARDAR CAMBIOS (EDITAR)</button>
+            <button type="button" id="btnEliminar" class="btn-main btn-eliminar" onclick="eliminarPaciente()">ELIMINAR PACIENTE PERMANENTEMENTE</button>
+            
+            <button type="button" id="btnConsultar" class="btn-consultar">MOSTRAR TODOS LOS REGISTROS</button>
+            <button type="button" id="btnLimpiar" class="btn-consultar" onclick="limpiarFormulario()" style="color: #ef4444;">LIMPIAR / NUEVO</button>
         </form>
     </div>
 
     <div id="seccionLista">
-        <h6 style="font-weight:800; color:#1e293b; margin-bottom: 20px; font-size: 14px;">PACIENTES EN NUBE:</h6>
+        <h6 style="font-weight:800; color:#1e293b; margin-bottom: 20px; font-size: 13px;">LISTADO EN NUBE:</h6>
         <div id="listaContenido"></div>
-        <button class="btn-consultar" onclick="document.getElementById('seccionLista').style.display='none'">CERRAR LISTA</button>
+        <button class="btn-consultar" onclick="document.getElementById('seccionLista').style.display='none'">OCULTAR LISTA</button>
     </div>
 
     <script>
-        const API_DESTINO = 'https://historial-clinico-936s.onrender.com/pacientes/';
+        const API_BASE = 'https://historial-clinico-936s.onrender.com/pacientes/';
         document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
-        const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos'), inCI = document.getElementById('ci'), codCont = document.getElementById('codigo_contenedor'), codVal = document.getElementById('codigo_val');
+        const inN = document.getElementById('nombres'), 
+              inA = document.getElementById('apellidos'), 
+              inCI = document.getElementById('ci'), 
+              inBuscar = document.getElementById('inputBuscar'),
+              codVal = document.getElementById('codigo_val'),
+              btnReg = document.getElementById('btnRegistrar'),
+              btnEdi = document.getElementById('btnEditar'),
+              btnEli = document.getElementById('btnEliminar');
 
+        // Generador de Código automático para nuevos
         function genCod() {
-            if(inN.value.trim() && inA.value.trim()) {
+            if(inN.value.trim() && inA.value.trim() && btnReg.style.display !== 'none') {
                 const initials = (inN.value[0] || "") + (inA.value[0] || "");
-                if(!codVal.innerText) {
-                    codVal.innerText = initials.toUpperCase() + Math.floor(1000 + Math.random() * 9000);
-                }
-                codCont.style.display = 'block';
+                codVal.innerText = initials.toUpperCase() + Math.floor(1000 + Math.random() * 9000);
             }
         }
 
         inN.oninput = () => { inN.value = inN.value.toUpperCase(); genCod(); };
         inA.oninput = () => { inA.value = inA.value.toUpperCase(); genCod(); };
 
-        document.getElementById('formRegistro').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnRegistrar');
-            btn.innerText = "PROCESANDO...";
-            btn.disabled = true;
-            
-            const payload = { 
-                nombres: inN.value.trim(), 
-                apellidos: inA.value.trim(), 
-                ci: inCI.value.trim(), // Cambio clave aquí: de documento_identidad a ci
-                codigo_paciente: codVal.innerText 
-            };
+        function limpiarFormulario() {
+            document.getElementById('formRegistro').reset();
+            codVal.innerText = "---";
+            btnReg.style.display = 'block';
+            btnEdi.style.display = 'none';
+            btnEli.style.display = 'none';
+            inBuscar.value = "";
+        }
+
+        // --- FUNCIÓN BUSCAR ---
+        async function buscarPaciente() {
+            const codigo = inBuscar.value.trim().toUpperCase();
+            if(!codigo) return alert("INGRESE UN CÓDIGO");
 
             try {
-                const res = await fetch(API_DESTINO, {
+                const res = await fetch(`${API_BASE}${codigo}`);
+                if(res.ok) {
+                    const p = await res.json();
+                    inN.value = p.nombres;
+                    inA.value = p.apellidos;
+                    inCI.value = p.ci;
+                    codVal.innerText = p.codigo_paciente;
+                    
+                    // Ajustar botones
+                    btnReg.style.display = 'none';
+                    btnEdi.style.display = 'block';
+                    btnEli.style.display = 'block';
+                } else {
+                    alert("PACIENTE NO ENCONTRADO");
+                }
+            } catch (e) { alert("ERROR DE CONEXIÓN"); }
+        }
+
+        // --- FUNCIÓN CREAR (EXISTENTE) ---
+        document.getElementById('formRegistro').onsubmit = async (e) => {
+            e.preventDefault();
+            btnReg.innerText = "PROCESANDO...";
+            btnReg.disabled = true;
+            
+            const payload = { nombres: inN.value.trim(), apellidos: inA.value.trim(), ci: inCI.value.trim(), codigo_paciente: codVal.innerText };
+
+            try {
+                const res = await fetch(API_BASE, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 if (res.ok) {
-                    const dataServer = await res.json();
-                    localStorage.setItem('paciente_id', dataServer.id); 
-                    localStorage.setItem('paciente_nombre', payload.nombres + " " + payload.apellidos);
-                    localStorage.setItem('paciente_ci', payload.ci);
-                    localStorage.setItem('paciente_codigo', payload.codigo_paciente);
-                    
-                    alert("¡PACIENTE REGISTRADO CORRECTAMENTE!");
-                    window.location.href = "declaracion_jurada_p1.html"; 
-                } else {
-                    const errorData = await response.json();
-                    alert("ERROR: " + JSON.stringify(errorData.detail));
-                }
-            } catch (error) { 
-                alert("REINTENTE CON CTRL+F5"); 
-            } finally { 
-                btn.innerText = "GUARDAR REGISTRO FINAL"; 
-                btn.disabled = false;
-            }
+                    const data = await res.json();
+                    localStorage.setItem('paciente_id', data.id);
+                    alert("¡REGISTRADO! PROCEDIENDO A DECLARACIÓN P1");
+                    window.location.href = "declaracion_jurada_p1.html";
+                } else { alert("ERROR AL CREAR"); }
+            } catch (error) { alert("ERROR DE RED"); }
+            finally { btnReg.innerText = "GUARDAR NUEVO REGISTRO"; btnReg.disabled = false; }
         };
 
+        // --- FUNCIÓN EDITAR ---
+        async function editarPaciente() {
+            const codigo = codVal.innerText;
+            const payload = { nombres: inN.value.trim(), apellidos: inA.value.trim(), ci: inCI.value.trim(), codigo_paciente: codigo };
+
+            if(!confirm(`¿CONFIRMA LOS CAMBIOS PARA EL CÓDIGO ${codigo}?`)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}${codigo}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if(res.ok) {
+                    alert("DATOS ACTUALIZADOS CORRECTAMENTE");
+                    buscarPaciente(); 
+                }
+            } catch (e) { alert("ERROR AL EDITAR"); }
+        }
+
+        // --- FUNCIÓN ELIMINAR ---
+        async function eliminarPaciente() {
+            const codigo = codVal.innerText;
+            if(!confirm(`⚠️ ADVERTENCIA: ¿REALMENTE DESEA ELIMINAR AL PACIENTE ${codigo}? ESTA ACCIÓN NO SE PUEDE DESHACER.`)) return;
+
+            try {
+                const res = await fetch(`${API_BASE}${codigo}`, { method: 'DELETE' });
+                if(res.ok) {
+                    alert("PACIENTE ELIMINADO DE LA NUBE");
+                    limpiarFormulario();
+                }
+            } catch (e) { alert("ERROR AL ELIMINAR"); }
+        }
+
+        // --- FUNCIÓN MOSTRAR TODOS ---
         document.getElementById('btnConsultar').onclick = async () => {
             const lista = document.getElementById('listaContenido'), seccion = document.getElementById('seccionLista');
             seccion.style.display = 'block';
-            lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
+            lista.innerHTML = '<p class="text-muted small">CARGANDO...</p>';
             try {
-                const res = await fetch(API_DESTINO);
+                const res = await fetch(API_BASE);
                 const data = await res.json();
                 lista.innerHTML = data.map(p => `
-                    <div class="paciente-fila">
+                    <div class="paciente-fila" onclick="inBuscar.value='${p.codigo_paciente}'; buscarPaciente();" style="cursor:pointer">
                         <span class="paciente-nombre">${p.nombres} ${p.apellidos}</span>
                         <span class="paciente-id-box">${p.codigo_paciente}</span>
                     </div>`).join('');
-            } catch (e) { alert("Error de conexión"); }
+            } catch (e) { alert("ERROR AL CONSULTAR"); }
         };
     </script>
 </body>
