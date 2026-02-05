@@ -69,7 +69,7 @@ def delete_paciente(codigo: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No se pudo eliminar: Paciente no encontrado")
     return {"message": f"Paciente {codigo} eliminado exitosamente"}
 
-# --- RUTAS DE DECLARACIONES ---
+# --- RUTAS DE DECLARACIONES (GUARDADO) ---
 
 @app.post("/declaraciones/p1/", response_model=schemas.DeclaracionJurada)
 def save_p1(declaracion: schemas.DeclaracionJuradaCreate, db: Session = Depends(get_db)):
@@ -91,3 +91,21 @@ def save_p3(habitos: schemas.HabitosRiesgosP3Create, db: Session = Depends(get_d
         return crud.create_habitos_p3(db=db, habitos=habitos)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# --- RUTA DE CONSULTA INTEGRAL (PARA EL VISOR DE HISTORIAL) ---
+
+@app.get("/historial-completo/{paciente_id}")
+def get_historial_completo(paciente_id: int, db: Session = Depends(get_db)):
+    """
+    Busca todas las partes de la declaración jurada de un paciente 
+    y las devuelve en un solo objeto.
+    """
+    p1 = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
+    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
+    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
+    
+    return {
+        "p1": p1,
+        "p2": p2,
+        "p3": p3
+    }
