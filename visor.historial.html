@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISOR DE HISTORIAL | HC NUBE</title>
+    <style>
+        body { background: #f1f5f9; font-family: 'Segoe UI', sans-serif; padding: 20px; text-transform: uppercase; }
+        .reporte { max-width: 850px; margin: auto; background: white; padding: 50px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .header { border-bottom: 4px solid #24a174; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; }
+        h1 { margin: 0; color: #1e293b; font-size: 22px; }
+        .seccion { margin-top: 25px; border: 1px solid #e2e8f0; padding: 20px; border-radius: 8px; }
+        .titulo-s { background: #f8fafc; padding: 5px 15px; font-weight: 800; color: #3b82f6; font-size: 13px; display: inline-block; margin-bottom: 15px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; }
+        .label { font-size: 10px; color: #94a3b8; font-weight: 700; }
+        .valor { font-size: 12px; font-weight: 700; color: #1e293b; }
+        .no-data { color: #ef4444; font-size: 10px; font-style: italic; }
+        .btn-print { background: #1e293b; color: white; padding: 12px 25px; border: none; border-radius: 8px; cursor: pointer; font-weight: 700; margin-bottom: 20px; }
+        @media print { .btn-print, .btn-back { display: none; } body { padding: 0; } .reporte { box-shadow: none; width: 100%; } }
+    </style>
+</head>
+<body>
+    <div style="text-align: center;">
+        <button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR REPORTE</button>
+        <button class="btn-print" style="background: #64748b;" onclick="history.back()">⬅️ VOLVER</button>
+    </div>
+
+    <div class="reporte" id="app">
+        <div class="header">
+            <div>
+                <h1>HISTORIAL CLÍNICO INTEGRAL</h1>
+                <p style="font-size: 11px; color: #64748b; margin: 5px 0;">SISTEMA HC_NUBE BOLIVIA - 2026</p>
+            </div>
+            <div style="text-align: right;">
+                <div class="label">CÓDIGO PACIENTE</div>
+                <div id="v_cod" style="font-size: 24px; color: #24a174; font-weight: 900;">...</div>
+            </div>
+        </div>
+
+        <div class="seccion">
+            <span class="titulo-s">I. DATOS PERSONALES Y FILIACIÓN</span>
+            <div class="grid">
+                <div><div class="label">NOMBRE COMPLETO</div><div id="v_nom" class="valor">...</div></div>
+                <div><div class="label">DOCUMENTO CI</div><div id="v_ci" class="valor">...</div></div>
+                <div><div class="label">EDAD</div><div id="v_edad" class="valor">...</div></div>
+                <div><div class="label">SEXO</div><div id="v_sexo" class="valor">...</div></div>
+                <div><div class="label">FECHA NAC.</div><div id="v_fnac" class="valor">...</div></div>
+                <div><div class="label">PROFESIÓN</div><div id="v_prof" class="valor">...</div></div>
+            </div>
+        </div>
+
+        <div class="seccion">
+            <span class="titulo-s">II. ANTECEDENTES PATOLÓGICOS (RESUMEN)</span>
+            <div id="v_p2" class="grid" style="grid-template-columns: 1fr;">
+                <div class="no-data">CARGANDO ANTECEDENTES...</div>
+            </div>
+        </div>
+
+        <div class="seccion">
+            <span class="titulo-s">III. HÁBITOS Y RIESGOS</span>
+            <div class="grid">
+                <div><div class="label">FUMA</div><div id="v_fuma" class="valor">...</div></div>
+                <div><div class="label">BEBE</div><div id="v_bebe" class="valor">...</div></div>
+                <div><div class="label">HISTORIAL LABORAL</div><div id="v_lab" class="valor">...</div></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const pid = params.get('id');
+        const API = 'https://historial-clinico-936s.onrender.com/historial-completo/';
+
+        async function cargar() {
+            if(!pid) return;
+            try {
+                const res = await fetch(API + pid);
+                const data = await res.json();
+                
+                // Filiación
+                document.getElementById('v_nom').innerText = `${data.paciente.nombres} ${data.paciente.apellidos}`;
+                document.getElementById('v_ci').innerText = data.paciente.ci;
+                document.getElementById('v_cod').innerText = data.paciente.codigo_paciente;
+                
+                if(data.filiacion) {
+                    document.getElementById('v_edad').innerText = data.filiacion.edad;
+                    document.getElementById('v_sexo').innerText = data.filiacion.sexo;
+                    document.getElementById('v_fnac').innerText = data.filiacion.fecha_nacimiento;
+                    document.getElementById('v_prof').innerText = data.filiacion.profesion_oficio;
+                }
+
+                // Antecedentes (Solo los que marcó SI)
+                if(data.antecedentes) {
+                    let html = "";
+                    for(let i=1; i<=22; i++) {
+                        if(data.antecedentes[`p${i}`] === "SI") {
+                            html += `<div><span class="valor" style="color:#ef4444;">• DETALLE ${i}:</span> <span class="valor">${data.antecedentes[`d${i}`]}</span></div>`;
+                        }
+                    }
+                    document.getElementById('v_p2').innerHTML = html || '<div class="valor">SIN ANTECEDENTES DE RELEVANCIA</div>';
+                }
+
+                // Hábitos
+                if(data.habitos) {
+                    document.getElementById('v_fuma').innerText = data.habitos.fuma + " (" + data.habitos.fuma_det + ")";
+                    document.getElementById('v_bebe').innerText = data.habitos.bebe + " (" + data.habitos.bebe_det + ")";
+                    document.getElementById('v_lab').innerText = data.habitos.historial_lab;
+                }
+
+            } catch (e) { alert("ERROR AL CARGAR HISTORIAL"); }
+        }
+        window.onload = cargar;
+    </script>
+</body>
+</html>
