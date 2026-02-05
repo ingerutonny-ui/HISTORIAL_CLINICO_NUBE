@@ -19,23 +19,20 @@
         .btn-main { border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 15px; transition: 0.3s; cursor: pointer; }
         .btn-registrar { background-color: #24a174; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); }
         .btn-editar { background-color: #f59e0b; display: none; }
+        .btn-historial { background-color: #3b82f6; display: none; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2); }
         .btn-eliminar { background-color: #ef4444; display: none; margin-top: 10px; font-size: 10px; padding: 10px; }
         
         .seccion-busqueda-baja { margin-top: 30px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
         .grupo-busqueda { display: flex; gap: 10px; margin-top: 10px; margin-bottom: 20px; }
         .btn-buscar { background: #1e293b; color: white; border-radius: 15px; border: none; padding: 0 20px; font-weight: 700; font-size: 11px; transition: 0.3s; }
 
-        /* Botones de Gestión con apariencia real */
         .btn-gestion { 
             display: block; width: 100%; padding: 12px; margin-top: 10px; border-radius: 15px; 
             font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
-            cursor: pointer; transition: 0.3s; border: none; text-decoration: none;
+            cursor: pointer; transition: 0.3s; border: 2px solid #1e293b; text-decoration: none;
+            background-color: white; color: #1e293b;
         }
-        .btn-lista { background-color: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
-        .btn-lista:hover { background-color: #e2e8f0; color: #1e293b; }
-        
-        .btn-reset { background-color: #fff1f2; color: #ef4444; border: 1px solid #fecaca; }
-        .btn-reset:hover { background-color: #ffe4e6; transform: translateY(-1px); }
+        .btn-reset { border-color: #ef4444; color: #ef4444; }
 
         .fecha-texto { color: #cbd5e1; font-size: 12px; font-weight: 700; margin-top: 5px; }
         
@@ -67,17 +64,17 @@
 
             <button type="submit" id="btnRegistrar" class="btn-main btn-registrar">GUARDAR NUEVO REGISTRO</button>
             <button type="button" id="btnEditar" class="btn-main btn-editar" onclick="editarPaciente()">GUARDAR CAMBIOS (EDITAR)</button>
+            <button type="button" id="btnVerHistorial" class="btn-main btn-historial" onclick="irAlVisor()">📄 VER HISTORIAL CLÍNICO COMPLETO</button>
             <button type="button" id="btnEliminar" class="btn-main btn-eliminar" onclick="eliminarPaciente()">ELIMINAR PACIENTE PERMANENTEMENTE</button>
         </form>
 
         <div class="seccion-busqueda-baja">
-            <label class="form-label" style="color: #24a174; text-align: center; margin-left: 0; margin-bottom: 10px;">BÚSQUEDA POR CÓDIGO MAESTRO</label>
             <div class="grupo-busqueda">
-                <input type="text" id="inputBuscar" class="form-control" placeholder="EJ: RA4798">
+                <input type="text" id="inputBuscar" class="form-control" placeholder="CÓDIGO MAESTRO">
                 <button type="button" class="btn-buscar" onclick="buscarPaciente()">BUSCAR</button>
             </div>
             
-            <button type="button" id="btnConsultar" class="btn-gestion btn-lista">📋 MOSTRAR TODOS LOS REGISTROS</button>
+            <button type="button" id="btnConsultar" class="btn-gestion">📋 MOSTRAR TODOS LOS REGISTROS</button>
             <button type="button" class="btn-gestion btn-reset" onclick="limpiarFormulario()">🧹 LIMPIAR / NUEVO PACIENTE</button>
         </div>
     </div>
@@ -85,7 +82,7 @@
     <div id="seccionLista">
         <h6 style="font-weight:800; color:#1e293b; margin-bottom: 20px; font-size: 13px;">LISTADO EN NUBE:</h6>
         <div id="listaContenido"></div>
-        <button class="btn-gestion btn-lista" style="margin-top: 20px;" onclick="document.getElementById('seccionLista').style.display='none'">OCULTAR LISTA</button>
+        <button class="btn-gestion" style="margin-top: 20px; border: none;" onclick="document.getElementById('seccionLista').style.display='none'">OCULTAR LISTA</button>
     </div>
 
     <script>
@@ -94,13 +91,13 @@
 
         const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos'), inCI = document.getElementById('ci'), 
               inBuscar = document.getElementById('inputBuscar'), codVal = document.getElementById('codigo_val'),
-              btnReg = document.getElementById('btnRegistrar'), btnEdi = document.getElementById('btnEditar'), btnEli = document.getElementById('btnEliminar');
+              btnReg = document.getElementById('btnRegistrar'), btnEdi = document.getElementById('btnEditar'), 
+              btnHis = document.getElementById('btnVerHistorial'), btnEli = document.getElementById('btnEliminar');
 
         function actualizarMemoriaLocal(p) {
-            localStorage.setItem('paciente_id', p.id);
-            localStorage.setItem('paciente_nombre', p.nombres + " " + p.apellidos);
-            localStorage.setItem('paciente_ci', p.ci);
-            localStorage.setItem('paciente_codigo', p.codigo_paciente);
+            localStorage.setItem('pac_id', p.id);
+            localStorage.setItem('pac_nom', p.nombres + " " + p.apellidos);
+            localStorage.setItem('pac_cod', p.codigo_paciente);
         }
 
         function genCod() {
@@ -118,6 +115,7 @@
             codVal.innerText = "---";
             btnReg.style.display = 'block';
             btnEdi.style.display = 'none';
+            btnHis.style.display = 'none';
             btnEli.style.display = 'none';
             inBuscar.value = "";
             localStorage.clear();
@@ -132,14 +130,18 @@
                     const p = await res.json();
                     inN.value = p.nombres; inA.value = p.apellidos; inCI.value = p.ci; codVal.innerText = p.codigo_paciente;
                     actualizarMemoriaLocal(p);
-                    btnReg.style.display = 'none'; btnEdi.style.display = 'block'; btnEli.style.display = 'block';
-                } else { alert("NO ENCONTRADO"); }
-            } catch (e) { alert("ERROR DE RED"); }
+                    btnReg.style.display = 'none'; btnEdi.style.display = 'block'; btnHis.style.display = 'block'; btnEli.style.display = 'block';
+                } else { alert("PACIENTE NO REGISTRADO"); }
+            } catch (e) { alert("ERROR DE CONEXIÓN"); }
+        }
+
+        function irAlVisor() {
+            const id = localStorage.getItem('pac_id');
+            if(id) window.location.href = `visor_historial.html?id=${id}`;
         }
 
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
-            btnReg.innerText = "PROCESANDO...";
             const payload = { nombres: inN.value, apellidos: inA.value, ci: inCI.value, codigo_paciente: codVal.innerText };
             try {
                 const res = await fetch(API_BASE, {
@@ -150,11 +152,10 @@
                 if (res.ok) {
                     const data = await res.json();
                     actualizarMemoriaLocal(data);
-                    alert("¡REGISTRADO! PROCEDIENDO A DECLARACIÓN P1");
+                    alert("REGISTRO EXITOSO");
                     window.location.href = "declaracion_jurada_p1.html";
                 }
             } catch (error) { alert("FALLO EN NUBE"); }
-            finally { btnReg.innerText = "GUARDAR NUEVO REGISTRO"; }
         };
 
         async function editarPaciente() {
@@ -166,13 +167,13 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if(res.ok) alert("CAMBIOS GUARDADOS EN LA NUBE");
+                if(res.ok) alert("DATOS ACTUALIZADOS");
             } catch (e) { alert("ERROR AL EDITAR"); }
         }
 
         async function eliminarPaciente() {
             const codigo = codVal.innerText;
-            if(!confirm("¿ELIMINAR DEFINITIVAMENTE?")) return;
+            if(!confirm("¿BORRAR PERMANENTEMENTE?")) return;
             try {
                 const res = await fetch(`${API_BASE}${codigo}`, { method: 'DELETE' });
                 if(res.ok) { alert("ELIMINADO"); limpiarFormulario(); }
@@ -190,7 +191,7 @@
                         <span class="paciente-nombre">${p.nombres} ${p.apellidos}</span>
                         <span class="paciente-id-box">${p.codigo_paciente}</span>
                     </div>`).join('');
-            } catch (e) { alert("ERROR DE LISTADO"); }
+            } catch (e) { alert("ERROR AL CARGAR LISTA"); }
         };
     </script>
 </body>
