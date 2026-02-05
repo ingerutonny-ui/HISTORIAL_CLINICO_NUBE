@@ -3,80 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Entrada</title>
+    <title>HC NUBE | Registro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding-top: 50px; text-transform: uppercase; }
-        .registro-container { max-width: 450px; width: 90%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.02); text-align: center; }
-        .form-label { font-size: 10px; font-weight: 800; color: #b0bac9; letter-spacing: 1px; display: block; text-align: left; margin: 15px 0 5px 10px; }
-        .form-control { border-radius: 15px; background-color: #f3f6f9; border: 2px solid transparent; padding: 12px; font-weight: 700; text-transform: uppercase; }
-        .btn-crear { background-color: #24a174; color: white; border-radius: 18px; padding: 15px; width: 100%; border: none; font-weight: 800; margin-top: 20px; }
-        .seccion-busqueda { margin-top: 30px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
-        .btn-buscar { background: #1e293b; color: white; border-radius: 15px; padding: 10px 20px; border: none; font-weight: 700; width: 100%; margin-top: 10px; }
+        .container-registro { max-width: 450px; width: 90%; background: white; padding: 40px; border-radius: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+        .form-control { border-radius: 15px; background: #f3f6f9; border: none; padding: 12px; font-weight: 700; margin-bottom: 15px; text-transform: uppercase; }
+        .btn-principal { background: #24a174; color: white; border: none; border-radius: 20px; padding: 15px; width: 100%; font-weight: 800; transition: 0.3s; }
+        .btn-principal:hover { background: #1c815c; }
     </style>
 </head>
 <body>
-    <div class="registro-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="50" class="mb-3">
-        <h2 style="font-weight:800; color:#1e293b; font-size: 18px;">GESTIÓN DE PACIENTES</h2>
+    <div class="container-registro">
+        <h2 style="font-weight: 800; color: #1e293b; font-size: 20px;">GESTIÓN DE PACIENTES</h2>
+        <p style="color: #b0bac9; font-size: 10px; font-weight: 800; margin-bottom: 30px;">NUBE PROYECTO HISTORIAL</p>
         
         <form id="formRegistro">
-            <label class="form-label">NOMBRES</label>
-            <input type="text" id="nombres" class="form-control" required autocomplete="off">
-            <label class="form-label">APELLIDOS</label>
-            <input type="text" id="apellidos" class="form-control" required autocomplete="off">
-            <label class="form-label">DNI / CI</label>
-            <input type="text" id="ci" class="form-control" required autocomplete="off">
-            <button type="submit" class="btn-crear">REGISTRAR Y CONTINUAR</button>
+            <input type="text" id="nombres" class="form-control" placeholder="NOMBRES" required autocomplete="off">
+            <input type="text" id="apellidos" class="form-control" placeholder="APELLIDOS" required autocomplete="off">
+            <input type="text" id="ci" class="form-control" placeholder="DOCUMENTO (CI)" required autocomplete="off">
+            <button type="submit" class="btn-principal">GUARDAR Y EMPEZAR FILIACIÓN</button>
         </form>
-
-        <div class="seccion-busqueda">
-            <p style="font-size: 10px; font-weight: 800; color: #b0bac9;">¿YA TIENE CÓDIGO?</p>
-            <input type="text" id="inputBuscar" class="form-control" placeholder="EJ: JP8668">
-            <button type="button" class="btn-buscar" onclick="buscar()">IR AL VISOR DEL PACIENTE</button>
-        </div>
     </div>
 
     <script>
         const API = 'https://historial-clinico-936s.onrender.com/pacientes/';
 
-        function guardarLocal(p) {
-            localStorage.setItem('paciente_id', p.id);
-            localStorage.setItem('pac_nom', `${p.nombres} ${p.apellidos}`);
-            localStorage.setItem('pac_cod', p.codigo_paciente);
-        }
-
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
-            const initials = (document.getElementById('nombres').value[0] + document.getElementById('apellidos').value[0]).toUpperCase();
-            const cod = initials + Math.floor(1000 + Math.random() * 9000);
-            
-            const res = await fetch(API, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    nombres: document.getElementById('nombres').value.toUpperCase(),
-                    apellidos: document.getElementById('apellidos').value.toUpperCase(),
-                    ci: document.getElementById('ci').value,
-                    codigo_paciente: cod
-                })
-            });
-            if(res.ok) {
-                const p = await res.json();
-                guardarLocal(p);
-                window.location.href = "declaracion_jurada_p1.html";
-            }
-        };
+            const n = document.getElementById('nombres').value.toUpperCase();
+            const a = document.getElementById('apellidos').value.toUpperCase();
+            const ci = document.getElementById('ci').value;
+            const cod = (n[0] + a[0]).toUpperCase() + Math.floor(1000 + Math.random() * 9000);
 
-        async function buscar() {
-            const cod = document.getElementById('inputBuscar').value.trim().toUpperCase();
-            const res = await fetch(`${API}${cod}`);
-            if(res.ok) {
-                const p = await res.json();
-                guardarLocal(p);
-                window.location.href = `visor_historial.html?id=${p.id}`;
-            } else { alert("PACIENTE NO ENCONTRADO"); }
-        }
+            const payload = { nombres: n, apellidos: a, ci: ci, codigo_paciente: cod };
+
+            try {
+                const res = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    // GUARDAR EN MEMORIA PARA QUE P1 LO LEA
+                    localStorage.setItem('paciente_id', data.id);
+                    localStorage.setItem('pac_nom', `${n} ${a}`);
+                    localStorage.setItem('pac_ci', ci);
+                    localStorage.setItem('pac_cod', cod);
+                    
+                    window.location.href = "declaracion_jurada_p1.html";
+                }
+            } catch (err) { alert("ERROR DE CONEXIÓN A LA NUBE"); }
+        };
     </script>
 </body>
 </html>
