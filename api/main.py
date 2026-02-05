@@ -94,18 +94,12 @@ def save_p3(habitos: schemas.HabitosRiesgosP3Create, db: Session = Depends(get_d
 
 # --- RUTA DE CONSULTA INTEGRAL (PARA EL VISOR DE HISTORIAL) ---
 
-@app.get("/historial-completo/{paciente_id}")
+@app.get("/historial-completo/{paciente_id}", response_model=schemas.HistorialCompleto)
 def get_historial_completo(paciente_id: int, db: Session = Depends(get_db)):
     """
-    Busca todas las partes de la declaración jurada de un paciente 
-    y las devuelve en un solo objeto.
+    Recupera el objeto integral que contiene Paciente, P1, P2 y P3.
     """
-    p1 = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
-    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
-    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
-    
-    return {
-        "p1": p1,
-        "p2": p2,
-        "p3": p3
-    }
+    historial = crud.get_historial_completo(db, paciente_id=paciente_id)
+    if not historial:
+        raise HTTPException(status_code=404, detail="Historial no encontrado")
+    return historial
