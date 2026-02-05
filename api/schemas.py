@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 # --- ESQUEMAS DE PACIENTE ---
 class PacienteBase(BaseModel):
@@ -97,5 +97,15 @@ class HabitosRiesgosP3Create(HabitosRiesgosP3Base):
 
 class HabitosRiesgosP3(HabitosRiesgosP3Base):
     id: int
+    class Config:
+        from_attributes = True
+
+# --- NUEVO: ESQUEMA PARA CONSULTA INTEGRAL ---
+class HistorialCompleto(BaseModel):
+    paciente: Paciente
+    filiacion: Optional[DeclaracionJurada] = None
+    antecedentes: Optional[AntecedentesP2] = None
+    habitos: Optional[HabitosRiesgosP3] = None
+
     class Config:
         from_attributes = True
