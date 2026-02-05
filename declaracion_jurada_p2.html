@@ -2,24 +2,43 @@
 <html lang="ES">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DECLARACIÓN JURADA - SECCIÓN 2</title>
     <style>
-        :root { --verde: #34a174; --fondo: #f0f4f8; --blanco: #ffffff; --input-bg: #f1f5f9; }
+        :root { --verde: #34a174; --fondo: #f0f4f8; --blanco: #ffffff; --gris-texto: #64748b; --input-bg: #f1f5f9; }
         body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-transform: uppercase; }
         .container { background: var(--blanco); max-width: 950px; margin: auto; padding: 40px; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .header { text-align: center; margin-bottom: 20px; }
+        .header h2 { color: #1e293b; margin: 0; font-size: 22px; }
+        
+        /* Bloque de Identidad */
+        .paciente-info { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 25px; background: #f8fafc; padding: 15px; border-radius: 20px; border: 1px solid #e2e8f0; }
+        .info-item { display: flex; flex-direction: column; }
+        .info-item label { font-size: 9px; color: #94a3b8; margin: 0; }
+        .info-item span { font-weight: 800; color: var(--verde); font-size: 13px; }
+
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .campo { margin-bottom: 15px; }
-        label { font-size: 9px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 5px; }
-        input { background: var(--input-bg); border: none; padding: 12px; border-radius: 15px; font-size: 11px; font-weight: 600; text-transform: uppercase; width: 100%; box-sizing: border-box; }
-        .btn-submit { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 20px; font-size: 14px; }
+        .campo { margin-bottom: 12px; }
+        label { font-size: 9px; font-weight: 700; color: #94a3b8; display: block; margin-bottom: 5px; margin-left: 5px; }
+        input { background: var(--input-bg); border: 2px solid transparent; padding: 10px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; width: 100%; box-sizing: border-box; transition: 0.3s; }
+        input:focus { background: white; border-color: #d1eadd; outline: none; }
+        
+        .btn-submit { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 25px; font-size: 14px; transition: 0.3s; box-shadow: 0 4px 15px rgba(52, 161, 116, 0.2); }
+        .btn-submit:hover { transform: translateY(-2px); filter: brightness(1.1); }
+        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <h2>DECLARACIÓN JURADA DE SALUD</h2>
-        <p>SECCIÓN 2: ANTECEDENTES PATOLÓGICOS (POR SISTEMAS)</p>
+        <p style="color: var(--gris-texto); font-size: 11px; font-weight: 700;">SECCIÓN 2: ANTECEDENTES PATOLÓGICOS (POR SISTEMAS)</p>
+    </div>
+
+    <div class="paciente-info">
+        <div class="info-item"><label>PACIENTE:</label><span id="txt_nombre">...</span></div>
+        <div class="info-item"><label>DOCUMENTO:</label><span id="txt_ci">...</span></div>
+        <div class="info-item"><label>CÓDIGO:</label><span id="txt_codigo">...</span></div>
     </div>
 
     <form id="formP2">
@@ -51,24 +70,45 @@
                 <div class="campo"><label>22. OTRAS OBSERVACIONES</label><input type="text" id="d22" value="NINGUNA"></div>
             </div>
         </div>
-        <button type="submit" id="btnSiguiente" class="btn-submit">SIGUIENTE: HÁBITOS Y RIESGOS</button>
+        <button type="submit" id="btnSiguiente" class="btn-submit">GUARDAR Y PASAR A HÁBITOS (P3)</button>
     </form>
 </div>
 
 <script>
     const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p2/';
+
+    // Cargar datos del paciente al iniciar
+    window.onload = () => {
+        const id = localStorage.getItem('paciente_id');
+        if (!id) {
+            alert("⚠️ SESIÓN INVÁLIDA. REGRESE AL REGISTRO.");
+            window.location.href = "registro_paciente.html";
+            return;
+        }
+        document.getElementById('txt_nombre').innerText = localStorage.getItem('paciente_nombre');
+        document.getElementById('txt_ci').innerText = localStorage.getItem('paciente_ci');
+        document.getElementById('txt_codigo').innerText = localStorage.getItem('paciente_codigo');
+    };
+
     document.getElementById('formP2').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnSiguiente');
         const pacienteId = localStorage.getItem('paciente_id');
-        btn.innerText = "GUARDANDO...";
+        
+        btn.innerText = "SINCRONIZANDO CON LA NUBE...";
         btn.disabled = true;
 
         const data = { paciente_id: parseInt(pacienteId) };
+        
+        // Procesamiento dinámico para asegurar compatibilidad con el Backend
         for(let i=1; i<=22; i++) {
-            data[`p${i}`] = "INFO"; // Marcador para SI/NO simplificado
-            const val = document.getElementById(`d${i}`).value.trim();
-            data[`d${i}`] = val === "" ? (i <= 13 ? "NORMAL" : "NINGUNA") : val.toUpperCase();
+            const inputVal = document.getElementById(`d${i}`).value.trim().toUpperCase();
+            
+            // Si el valor es NORMAL o NINGUNA, p(i) es "NO", de lo contrario es "SI"
+            const tienePatologia = (inputVal !== "NORMAL" && inputVal !== "NINGUNA" && inputVal !== "");
+            
+            data[`p${i}`] = tienePatologia ? "SI" : "NO";
+            data[`d${i}`] = inputVal === "" ? (i <= 13 ? "NORMAL" : "NINGUNA") : inputVal;
         }
 
         try {
@@ -77,12 +117,20 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
+            
             if(res.ok) {
-                alert("✓ SEGUNDA SECCIÓN GUARDADA");
+                alert("✓ ANTECEDENTES GUARDADOS CORRECTAMENTE");
                 window.location.href = "declaracion_jurada_p3.html";
-            } else { alert("ERROR EN SERVIDOR"); }
-        } catch (err) { alert("ERROR DE RED"); }
-        finally { btn.disabled = false; btn.innerText = "SIGUIENTE: HÁBITOS Y RIESGOS"; }
+            } else { 
+                const errData = await res.json();
+                alert("ERROR DE SERVIDOR: " + JSON.stringify(errData.detail)); 
+            }
+        } catch (err) { 
+            alert("FALLO DE CONEXIÓN. REINTENTE."); 
+        } finally { 
+            btn.disabled = false; 
+            btn.innerText = "GUARDAR Y PASAR A HÁBITOS (P3)"; 
+        }
     });
 </script>
 </body>
