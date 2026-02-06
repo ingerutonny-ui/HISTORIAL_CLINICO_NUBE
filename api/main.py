@@ -7,7 +7,7 @@ import os
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Asegura la creación de tablas
+# Asegura la creación de tablas en la base de datos de Render
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -82,7 +82,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
             .section-title {{ background-color: #d9e2f3; font-weight: bold; text-align: center; border: 1px solid black; padding: 2px; text-transform: uppercase; font-size: 9px; }}
             .label {{ font-size: 7px; font-weight: normal; color: #333; display: block; text-transform: uppercase; }}
             .value {{ font-weight: bold; text-transform: uppercase; font-size: 9px; }}
-            .col-si-no {{ width: 20px; text-align: center; font-weight: bold; font-size: 10px; }}
+            .col-si-no {{ width: 25px; text-align: center; font-weight: bold; font-size: 10px; }}
         </style>
     </head>
     <body>
