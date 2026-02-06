@@ -11,7 +11,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CONFIGURACIÓN CORS PARA ELIMINAR EL ERROR DE RED DE GITHUB
+# CONFIGURACIÓN CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -50,13 +50,17 @@ def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
 @app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
 def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     data = crud.get_historial_completo(db, paciente_id)
-    if not data:
+    if not data or not data["paciente"]:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
     p = data["paciente"]
     f = data.get("filiacion")
+    a = data.get("antecedentes")
     
-    # Construcción del HTML con el diseño de tus capturas
+    # Función auxiliar para marcar SI/NO
+    def mark(val, target):
+        return "X" if str(val).upper() == target else ""
+
     html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
@@ -64,55 +68,83 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <meta charset="UTF-8">
         <style>
             @page {{ size: letter; margin: 10mm; }}
-            body {{ font-family: Arial, sans-serif; font-size: 9px; color: #333; }}
-            .header-table {{ width: 100%; border-collapse: collapse; border: 2px solid black; margin-bottom: 5px; }}
-            .header-table td {{ border: 1px solid black; padding: 5px; text-align: center; }}
-            .title {{ font-weight: bold; font-size: 14px; background-color: #f0f0f0; }}
-            .section-title {{ background-color: #d9e2f3; font-weight: bold; text-transform: uppercase; padding: 3px; border: 1px solid black; }}
-            .data-table {{ width: 100%; border-collapse: collapse; margin-bottom: 10px; }}
-            .data-table td, .data-table th {{ border: 1px solid black; padding: 4px; }}
-            .label {{ font-weight: bold; font-size: 8px; color: #555; }}
-            .value {{ font-weight: bold; text-transform: uppercase; }}
+            body {{ font-family: 'Arial Narrow', Arial, sans-serif; font-size: 9px; line-height: 1.2; }}
+            .header-table, .data-table {{ width: 100%; border-collapse: collapse; margin-bottom: 8px; }}
+            .header-table td, .data-table td, .data-table th {{ border: 1px solid black; padding: 3px; }}
+            .section-title {{ background-color: #d9e2f3; font-weight: bold; text-align: center; border: 1px solid black; padding: 2px; text-transform: uppercase; }}
+            .label {{ font-size: 7px; font-weight: normal; color: #444; display: block; }}
+            .value {{ font-weight: bold; text-transform: uppercase; font-size: 9px; }}
+            .col-si-no {{ width: 25px; text-align: center; font-weight: bold; }}
+            .instruction {{ font-size: 8px; font-weight: bold; text-align: center; padding: 4px; border: 1px solid black; }}
         </style>
     </head>
     <body>
         <table class="header-table">
             <tr>
-                <td style="width: 20%;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="40"></td>
-                <td class="title">DECLARACIÓN JURADA DE SALUD</td>
+                <td style="width: 15%; text-align: center;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="35"></td>
+                <td style="text-align: center; font-weight: bold; font-size: 14px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
         </table>
 
+        <div class="instruction">Por favor lea con cuidado y escriba con letra clara.</div>
+        
         <div class="section-title">AFILIACIÓN DEL TRABAJADOR</div>
         <table class="data-table">
             <tr>
-                <td colspan="4"><span class="label">APELLIDOS Y NOMBRES:</span><br><span class="value">{p.apellidos} {p.nombres}</span></td>
+                <td colspan="4"><span class="label">APELLIDOS Y NOMBRES</span><span class="value">{p.apellidos} {p.nombres}</span></td>
             </tr>
             <tr>
-                <td><span class="label">EDAD:</span><br><span class="value">{f.edad if f else '-'}</span></td>
-                <td><span class="label">SEXO:</span><br><span class="value">{f.sexo if f else '-'}</span></td>
-                <td colspan="2"><span class="label">DOCUMENTO DE IDENTIDAD:</span><br><span class="value">{p.ci}</span></td>
-            </tr>
-            <tr>
-                <td><span class="label">FECHA NACIMIENTO:</span><br><span class="value">{f.fecha_nacimiento if f else '-'}</span></td>
-                <td><span class="label">LUGAR:</span><br><span class="value">{f.lugar_nacimiento if f else '-'}</span></td>
-                <td><span class="label">ESTADO CIVIL:</span><br><span class="value">{f.estado_civil if f else '-'}</span></td>
-                <td><span class="label">PROFESIÓN:</span><br><span class="value">{f.profesion_oficio if f else '-'}</span></td>
-            </tr>
-            <tr>
-                <td colspan="2"><span class="label">DOMICILIO:</span><br><span class="value">{f.domicilio if f else '-'} # {f.n_casa if f else '-'}</span></td>
-                <td><span class="label">CIUDAD:</span><br><span class="value">{f.ciudad if f else '-'}</span></td>
-                <td><span class="label">TELÉFONO:</span><br><span class="value">{f.telefono if f else '-'}</span></td>
+                <td style="width: 25%;"><span class="label">EDAD</span><span class="value">{f.edad if f else ''}</span></td>
+                <td style="width: 25%; text-align: center;"><span class="label">SEXO</span><span class="value">{f.sexo if f else ''}</span></td>
+                <td colspan="2"><span class="label">DOCUMENTO DE IDENTIDAD</span><span class="value">{p.ci}</span></td>
             </tr>
         </table>
 
-        <div style="text-align: center; font-size: 7px; margin-top: 20px;">
-            <p>Por medio de este documento médico legal declaro que es verdad toda la información proporcionada.</p>
-            <br><br>
-            ________________________________<br>
-            FIRMA DEL TRABAJADOR
-        </div>
+        <div class="instruction" style="background-color: #eee;">Indique (SI) o (NO) si usted fue diagnosticado de alguna de las enfermedades:</div>
         
+        <table class="data-table">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th>SISTEMA / ÓRGANO</th>
+                    <th class="col-si-no">SI</th>
+                    <th class="col-si-no">NO</th>
+                    <th>DETALLE / OBSERVACIÓN</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>VISTA (Disminución, Glaucoma, otros)</td>
+                    <td class="col-si-no">{mark(a.p1, 'SI') if a else ''}</td>
+                    <td class="col-si-no">{mark(a.p1, 'NO') if a else ''}</td>
+                    <td class="value">{a.d1 if a else ''}</td>
+                </tr>
+                <tr>
+                    <td>AUDITIVO (Hipoacusia, Vértigo, otros)</td>
+                    <td class="col-si-no">{mark(a.p2, 'SI') if a else ''}</td>
+                    <td class="col-si-no">{mark(a.p2, 'NO') if a else ''}</td>
+                    <td class="value">{a.d2 if a else ''}</td>
+                </tr>
+                <tr>
+                    <td>RESPIRATORIO (Asma, Bronquitis, otros)</td>
+                    <td class="col-si-no">{mark(a.p3, 'SI') if a else ''}</td>
+                    <td class="col-si-no">{mark(a.p3, 'NO') if a else ''}</td>
+                    <td class="value">{a.d3 if a else ''}</td>
+                </tr>
+                <tr>
+                    <td>CARDIO-VASCULARES (Hipertensión, Arritmia)</td>
+                    <td class="col-si-no">{mark(a.p4, 'SI') if a else ''}</td>
+                    <td class="col-si-no">{mark(a.p4, 'NO') if a else ''}</td>
+                    <td class="value">{a.d4 if a else ''}</td>
+                </tr>
+                <tr>
+                    <td>SANGRE (Anemia, Coagulopatía, otros)</td>
+                    <td class="col-si-no">{mark(a.p6, 'SI') if a else ''}</td>
+                    <td class="col-si-no">{mark(a.p6, 'NO') if a else ''}</td>
+                    <td class="value">{a.d6 if a else ''}</td>
+                </tr>
+            </tbody>
+        </table>
+
         <script>window.print();</script>
     </body>
     </html>
