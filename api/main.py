@@ -56,25 +56,15 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
     
     p, f, a, h = data["paciente"], data["filiacion"], data["antecedentes"], data["habitos"]
 
-    # Procesar Historia Laboral desde JSON
     filas_laboral = ""
     if h and h.historia_laboral:
         try:
             lista_lab = json.loads(h.historia_laboral)
             for item in lista_lab:
-                filas_laboral += f"""
-                <tr>
-                    <td>{item.get('edad','')}</td>
-                    <td>{item.get('emp','')}</td>
-                    <td>{item.get('ocu','')}</td>
-                    <td>{item.get('tie','')}</td>
-                    <td>{item.get('rie','')}</td>
-                    <td>{item.get('epp','')}</td>
-                </tr>"""
+                filas_laboral += f"<tr><td>{item.get('edad','')}</td><td>{item.get('emp','')}</td><td>{item.get('ocu','')}</td><td>{item.get('tie','')}</td><td>{item.get('rie','')}</td><td>{item.get('epp','')}</td></tr>"
         except:
             pass
     
-    # Relleno de seguridad para mantener la estructura de la tabla
     while filas_laboral.count("<tr>") < 5:
         filas_laboral += "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>"
 
@@ -95,7 +85,6 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
             .grid-table {{ width: 100%; border-collapse: collapse; margin-top: 2px; }}
             .grid-table td {{ border: 1px solid #000; padding: 3px; }}
             .label {{ font-size: 6px; font-weight: bold; display: block; }}
-            .footer-legal {{ margin-top: 15px; text-align: justify; border: 1px solid #000; padding: 8px; font-size: 7px; }}
             .sig-box {{ margin-top: 30px; text-align: center; }}
             .line {{ border-top: 1px solid #000; width: 200px; margin: 0 auto; padding-top: 3px; }}
         </style>
@@ -103,12 +92,41 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
     <body>
         <div class="page">
             <div class="header-box">
-                <div class="logo-area">ohs</div>
+                <div class="logo-area">OHS</div>
                 <div class="title-area"><b>DECLARACIÓN JURADA DE SALUD</b><br>TRABAJO SANO, SEGURO Y PRODUCTIVO</div>
                 <div class="code-area"><span class="label">CÓDIGO</span><b>{p.codigo_paciente}</b></div>
             </div>
-
             <div class="section-title">1. AFILIACIÓN DEL TRABAJADOR</div>
             <table class="grid-table">
                 <tr><td colspan="3"><span class="label">Apellidos y Nombres</span><b>{p.nombres} {p.apellidos}</b></td><td><span class="label">Edad</span>{f.edad if f else ''}</td><td><span class="label">Sexo</span>{f.sexo if f else ''}</td></tr>
-                <tr><td><span class="label">Fecha Nacimiento</span>{f.fecha_nacimiento if f else ''}</td><td>
+            </table>
+            <div class="section-title">2. ANTECEDENTES PATOLÓGICOS</div>
+            <table class="grid-table">
+                <tr style="background:#eee"><td>SISTEMA</td><td>SI/NO</td><td>OBSERVACIONES</td></tr>
+                <tr><td>VISTA</td><td>{a.p1 if a else ''}</td><td>{a.d1 if a else ''}</td></tr>
+                <tr><td>AUDITIVO</td><td>{a.p2 if a else ''}</td><td>{a.d2 if a else ''}</td></tr>
+                <tr><td>RESPIRATORIOS</td><td>{a.p3 if a else ''}</td><td>{a.d3 if a else ''}</td></tr>
+                <tr><td>CARDIOVASCULARES</td><td>{a.p4 if a else ''}</td><td>{a.d4 if a else ''}</td></tr>
+            </table>
+        </div>
+        <div class="page">
+            <div class="section-title">ANTECEDENTES OCUPACIONALES</div>
+            <table class="grid-table">
+                <tr style="background:#eee"><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>
+                {filas_laboral}
+            </table>
+            <div class="section-title">3. HÁBITOS</div>
+            <table class="grid-table">
+                <tr><td><b>FUMA:</b> {h.h1 if h else ''}</td><td><b>BEBE:</b> {h.h2 if h else ''}</td></tr>
+                <tr><td colspan="2"><b>RIESGOS:</b> {h.r6 if h else ''}</td></tr>
+                <tr><td colspan="2"><b>GRUPO SANGUÍNEO:</b> {h.r10 if h else ''}</td></tr>
+            </table>
+            <div class="sig-box">
+                <div class="line">FIRMA DEL TRABAJADOR</div>
+                C.I. {p.ci}
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
