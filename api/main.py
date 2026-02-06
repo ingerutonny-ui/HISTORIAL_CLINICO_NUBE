@@ -64,7 +64,8 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
 
     def get_val(obj, attr, default=""):
         if obj is None: return default
-        return getattr(obj, attr, default) or default
+        res = getattr(obj, attr, default)
+        return res if res else default
 
     html_content = f"""
     <!DOCTYPE html>
@@ -86,7 +87,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <table class="header-table">
             <tr>
                 <td style="width: 15%; text-align: center;">
-                    <img src="https://historial-clinico-936s.onrender.com/LOGO.PNG" width="45" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                    <img src="/LOGO.PNG" width="60" style="display: block; margin: 0 auto;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
                 </td>
                 <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
