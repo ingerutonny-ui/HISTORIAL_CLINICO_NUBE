@@ -27,21 +27,25 @@
 
         <form id="formP3">
             <div class="grid-habitos">
-                <div class="habito-item"><label>¿FUMA?</label><select id="fuma"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="habito-item"><label>¿BEBE?</label><select id="bebe"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="habito-item"><label>¿DROGAS?</label><select id="drogas"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="habito-item"><label>¿MASTICA COCA?</label><select id="coca"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            </div>
-            <div style="margin-top:20px">
-                <label>DEPORTES QUE PRACTICA</label><input type="text" id="deportes" value="NINGUNO">
-                <label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" value="S/D">
+                <div class="habito-item"><label>¿FUMA?</label><select id="h1"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r1" placeholder="FRECUENCIA" value="N/A"></div>
+                <div class="habito-item"><label>¿BEBE?</label><select id="h2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r2" placeholder="FRECUENCIA" value="N/A"></div>
+                <div class="habito-item"><label>¿DROGAS?</label><select id="h3"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r3" placeholder="TIPO" value="N/A"></div>
+                <div class="habito-item"><label>¿MASTICA COCA?</label><select id="h4"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r4" placeholder="FRECUENCIA" value="N/A"></div>
+                <div class="habito-item"><label>¿DEPORTES?</label><select id="h5"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r5" placeholder="CUAL" value="NINGUNO"></div>
+                <div class="habito-item"><label>GRUPO SANGUÍNEO</label><input type="text" id="h6" value="S/D" style="display:none;"><input type="text" id="r6" value="S/D"></div>
+                <div style="display:none;">
+                    <input type="text" id="h7" value="N/A"><input type="text" id="r7" value="N/A">
+                    <input type="text" id="h8" value="N/A"><input type="text" id="r8" value="N/A">
+                    <input type="text" id="h9" value="N/A"><input type="text" id="r9" value="N/A">
+                    <input type="text" id="h10" value="N/A"><input type="text" id="r10" value="N/A">
+                </div>
             </div>
             <button type="submit" id="btnFinalizar" class="btn-finalizar">FINALIZAR Y GUARDAR 💾</button>
         </form>
     </div>
 
     <script>
-        const API_URL = 'https://historial-clinico-936s.onrender.com/habitos/';
+        const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p3/';
 
         window.onload = () => {
             document.getElementById('txt_nombre').innerText = localStorage.getItem('paciente_nombre');
@@ -55,14 +59,13 @@
             btn.disabled = true;
 
             const payload = {
-                paciente_id: parseInt(localStorage.getItem('paciente_id')),
-                fuma: document.getElementById('fuma').value,
-                bebe: document.getElementById('bebe').value,
-                drogas: document.getElementById('drogas').value,
-                coca: document.getElementById('coca').value,
-                deportes: document.getElementById('deportes').value.toUpperCase(),
-                grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase()
+                paciente_id: parseInt(localStorage.getItem('paciente_id'))
             };
+
+            for(let i=1; i<=10; i++){
+                payload[`h${i}`] = document.getElementById(`h${i}`).value.toUpperCase();
+                payload[`r${i}`] = document.getElementById(`r${i}`).value.toUpperCase();
+            }
 
             try {
                 const res = await fetch(API_URL, {
@@ -73,7 +76,7 @@
                 if(res.ok) {
                     alert("✓ HISTORIAL COMPLETADO");
                     window.location.href = "index.html";
-                }
+                } else { alert("Error al guardar datos"); }
             } catch (err) { alert("Error de conexión"); }
             finally { btn.disabled = false; }
         });
