@@ -131,6 +131,8 @@
                 const res = await fetch(API_DESTINO);
                 const data = await res.json();
                 
+                if (!res.ok) throw new Error();
+
                 if (data.length === 0) {
                     lista.innerHTML = '<p class="text-muted small text-center">No hay registros.</p>';
                 } else {
@@ -142,6 +144,7 @@
                 }
             } catch (e) { 
                 alert("Error al conectar con la base de datos."); 
+                lista.innerHTML = '<p class="text-danger small text-center">Error de carga.</p>';
             }
         };
     </script>
