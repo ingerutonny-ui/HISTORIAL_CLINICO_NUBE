@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
@@ -21,6 +22,11 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@app.get("/pacientes/", response_model=List[schemas.Paciente])
+def read_pacientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    pacientes = crud.get_pacientes(db, skip=skip, limit=limit)
+    return pacientes
 
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
