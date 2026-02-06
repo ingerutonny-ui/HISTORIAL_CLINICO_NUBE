@@ -59,7 +59,12 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     h = data.get("habitos")
     
     def mark(val, target):
+        if val is None: return ""
         return "X" if str(val).upper() == target else ""
+
+    def get_val(obj, attr, default=""):
+        if obj is None: return default
+        return getattr(obj, attr, default) or default
 
     html_content = f"""
     <!DOCTYPE html>
@@ -81,7 +86,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <table class="header-table">
             <tr>
                 <td style="width: 15%; text-align: center;">
-                    <img src="LOGO.PNG" width="45" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                    <img src="https://historial-clinico-936s.onrender.com/LOGO.PNG" width="45" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
                 </td>
                 <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
@@ -90,26 +95,26 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <div class="section-title">AFILIACIÓN DEL TRABAJADOR</div>
         <table class="data-table">
             <tr>
-                <td colspan="4"><span class="label">1. APELLIDOS Y NOMBRES</span><span class="value">{p.apellidos} {p.nombres}</span></td>
+                <td colspan="4"><span class="label">1. APELLIDOS Y NOMBRES</span><span class="value">{get_val(p, 'apellidos')} {get_val(p, 'nombres')}</span></td>
             </tr>
             <tr>
-                <td style="width: 20%;"><span class="label">2. EDAD</span><span class="value">{f.edad if f else ''}</span></td>
-                <td style="width: 20%;"><span class="label">3. SEXO</span><span class="value">{f.sexo if f else ''}</span></td>
-                <td style="width: 30%;"><span class="label">4. FECHA NACIMIENTO</span><span class="value">{f.fecha_nacimiento if f else ''}</span></td>
-                <td style="width: 30%;"><span class="label">5. LUGAR NACIMIENTO</span><span class="value">{f.lugar_nacimiento if f else ''}</span></td>
+                <td style="width: 20%;"><span class="label">2. EDAD</span><span class="value">{get_val(f, 'edad')}</span></td>
+                <td style="width: 20%;"><span class="label">3. SEXO</span><span class="value">{get_val(f, 'sexo')}</span></td>
+                <td style="width: 30%;"><span class="label">4. FECHA NACIMIENTO</span><span class="value">{get_val(f, 'fecha_nacimiento')}</span></td>
+                <td style="width: 30%;"><span class="label">5. LUGAR NACIMIENTO</span><span class="value">{get_val(f, 'lugar_nacimiento')}</span></td>
             </tr>
             <tr>
-                <td colspan="2"><span class="label">6. DOCUMENTO DE IDENTIDAD</span><span class="value">{p.ci}</span></td>
-                <td colspan="2"><span class="label">7. ESTADO CIVIL</span><span class="value">{f.estado_civil if f else ''}</span></td>
+                <td colspan="2"><span class="label">6. DOCUMENTO DE IDENTIDAD</span><span class="value">{get_val(p, 'ci')}</span></td>
+                <td colspan="2"><span class="label">7. ESTADO CIVIL</span><span class="value">{get_val(f, 'estado_civil')}</span></td>
             </tr>
             <tr>
-                <td colspan="2"><span class="label">8. DOMICILIO ACTUAL</span><span class="value">{f.domicilio if f else ''} # {f.n_casa if f else ''}</span></td>
-                <td><span class="label">9. ZONA/BARRIO</span><span class="value">{f.zona_barrio if f else ''}</span></td>
-                <td><span class="label">10. CIUDAD/PAÍS</span><span class="value">{f.ciudad if f else ''}, {f.pais if f else ''}</span></td>
+                <td colspan="2"><span class="label">8. DOMICILIO ACTUAL</span><span class="value">{get_val(f, 'domicilio')} # {get_val(f, 'n_casa')}</span></td>
+                <td><span class="label">9. ZONA/BARRIO</span><span class="value">{get_val(f, 'zona_barrio')}</span></td>
+                <td><span class="label">10. CIUDAD/PAÍS</span><span class="value">{get_val(f, 'ciudad')}, {get_val(f, 'pais')}</span></td>
             </tr>
             <tr>
-                <td colspan="2"><span class="label">11. TELÉFONO / CELULAR</span><span class="value">{f.telefono if f else ''}</span></td>
-                <td colspan="2"><span class="label">12. PROFESIÓN U OFICIO</span><span class="value">{f.profesion_oficio if f else ''}</span></td>
+                <td colspan="2"><span class="label">11. TELÉFONO / CELULAR</span><span class="value">{get_val(f, 'telefono')}</span></td>
+                <td colspan="2"><span class="label">12. PROFESIÓN U OFICIO</span><span class="value">{get_val(f, 'profesion_oficio')}</span></td>
             </tr>
         </table>
 
@@ -124,7 +129,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                 </tr>
             </thead>
             <tbody>
-                {"".join([f"<tr><td>{label}</td><td class='col-si-no'>{mark(getattr(a, f'p{i}', ''), 'SI') if a else ''}</td><td class='col-si-no'>{mark(getattr(a, f'p{i}', ''), 'NO') if a else ''}</td><td class='value'>{getattr(a, f'd{i}', '') if a else ''}</td></tr>" 
+                {"".join([f"<tr><td>{label}</td><td class='col-si-no'>{mark(get_val(a, f'p{i}', None), 'SI')}</td><td class='col-si-no'>{mark(get_val(a, f'p{i}', None), 'NO')}</td><td class='value'>{get_val(a, f'd{i}', '')}</td></tr>" 
                 for i, label in enumerate([
                     "1. VISTA (Glaucoma, Retinopatía, otros)", "2. AUDITIVO (Hipoacusia, Vértigo, otros)", 
                     "3. RESPIRATORIO (Asma, Bronquitis, otros)", "4. CARDIO-VASCULARES (HTA, Arritmia)", 
@@ -138,26 +143,26 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                 ], 1)])}
                 <tr>
                     <td>19. ACCIDENTES PARTICULARES</td>
-                    <td class="col-si-no">{mark(a.p19, 'SI') if a else ''}</td>
-                    <td class="col-si-no">{mark(a.p19, 'NO') if a else ''}</td>
-                    <td class="value">{a.d19 if a else ''}</td>
+                    <td class="col-si-no">{mark(get_val(a, 'p19', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(a, 'p19', None), 'NO')}</td>
+                    <td class="value">{get_val(a, 'd19', '')}</td>
                 </tr>
                 <tr>
                     <td>20. MEDICAMENTOS (Uso actual)</td>
-                    <td class="col-si-no">{mark(a.p20, 'SI') if a else ''}</td>
-                    <td class="col-si-no">{mark(a.p20, 'NO') if a else ''}</td>
-                    <td class="value">{a.d20 if a else ''}</td>
+                    <td class="col-si-no">{mark(get_val(a, 'p20', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(a, 'p20', None), 'NO')}</td>
+                    <td class="value">{get_val(a, 'd20', '')}</td>
                 </tr>
                 <tr>
                     <td>21. GRUPO SANGUÍNEO</td>
                     <td colspan="2" style="background-color: #eee;"></td>
-                    <td class="value">{h.grupo_sanguineo if h else ''}</td>
+                    <td class="value">{get_val(h, 'grupo_sanguineo')}</td>
                 </tr>
                 <tr>
                     <td>22. DEPORTES (Actividad y frecuencia)</td>
-                    <td class="col-si-no">{mark(h.deportes, 'SI') if h else ''}</td>
-                    <td class="col-si-no">{mark(h.deportes, 'NO') if h else ''}</td>
-                    <td class="value">{h.deportes_frecuencia if h else ''}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'deportes', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'deportes', None), 'NO')}</td>
+                    <td class="value">{get_val(h, 'deportes_frecuencia')}</td>
                 </tr>
             </tbody>
         </table>
