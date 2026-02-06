@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from typing import List
+import os
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
@@ -55,6 +56,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     p = data["paciente"]
     f = data.get("filiacion")
     a = data.get("antecedentes")
+    h = data.get("habitos")
     
     def mark(val, target):
         return "X" if str(val).upper() == target else ""
@@ -66,19 +68,21 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <meta charset="UTF-8">
         <style>
             @page {{ size: letter; margin: 8mm; }}
-            body {{ font-family: 'Arial Narrow', Arial, sans-serif; font-size: 8.5px; line-height: 1.1; }}
-            .header-table, .data-table {{ width: 100%; border-collapse: collapse; margin-bottom: 5px; }}
+            body {{ font-family: 'Arial Narrow', Arial, sans-serif; font-size: 8.5px; line-height: 1.1; color: #000; }}
+            .header-table, .data-table {{ width: 100%; border-collapse: collapse; margin-bottom: 4px; }}
             .header-table td, .data-table td, .data-table th {{ border: 1px solid black; padding: 2px; }}
             .section-title {{ background-color: #d9e2f3; font-weight: bold; text-align: center; border: 1px solid black; padding: 2px; text-transform: uppercase; font-size: 9px; }}
             .label {{ font-size: 7px; font-weight: normal; color: #333; display: block; text-transform: uppercase; }}
-            .value {{ font-weight: bold; text-transform: uppercase; font-size: 9px; color: #000; }}
+            .value {{ font-weight: bold; text-transform: uppercase; font-size: 9px; }}
             .col-si-no {{ width: 20px; text-align: center; font-weight: bold; font-size: 10px; }}
         </style>
     </head>
     <body>
         <table class="header-table">
             <tr>
-                <td style="width: 15%; text-align: center;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="30"></td>
+                <td style="width: 15%; text-align: center;">
+                    <img src="LOGO.PNG" width="45" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                </td>
                 <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
         </table>
@@ -132,6 +136,29 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                     "15. ALERGIA (Medicamentos, Alimentos)", "16. INFECCIONES (Hepatitis, TBC, Chagas)", 
                     "17. CIRUGÍAS (Indique cuál y fecha)", "18. ACCIDENTES DE TRABAJO"
                 ], 1)])}
+                <tr>
+                    <td>19. ACCIDENTES PARTICULARES</td>
+                    <td class="col-si-no">{mark(a.p19, 'SI') if a else ''}</td>
+                    <td class="col-si-no">{mark(a.p19, 'NO') if a else ''}</td>
+                    <td class="value">{a.d19 if a else ''}</td>
+                </tr>
+                <tr>
+                    <td>20. MEDICAMENTOS (Uso actual)</td>
+                    <td class="col-si-no">{mark(a.p20, 'SI') if a else ''}</td>
+                    <td class="col-si-no">{mark(a.p20, 'NO') if a else ''}</td>
+                    <td class="value">{a.d20 if a else ''}</td>
+                </tr>
+                <tr>
+                    <td>21. GRUPO SANGUÍNEO</td>
+                    <td colspan="2" style="background-color: #eee;"></td>
+                    <td class="value">{h.grupo_sanguineo if h else ''}</td>
+                </tr>
+                <tr>
+                    <td>22. DEPORTES (Actividad y frecuencia)</td>
+                    <td class="col-si-no">{mark(h.deportes, 'SI') if h else ''}</td>
+                    <td class="col-si-no">{mark(h.deportes, 'NO') if h else ''}</td>
+                    <td class="value">{h.deportes_frecuencia if h else ''}</td>
+                </tr>
             </tbody>
         </table>
         <script>window.print();</script>
