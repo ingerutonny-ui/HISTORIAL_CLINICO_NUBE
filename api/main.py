@@ -54,7 +54,10 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
     if not data["paciente"]:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
-    p, f, a, h = data["paciente"], data["filiacion"], data["antecedentes"], data["habitos"]
+    p = data["paciente"]
+    f = data["filiacion"]
+    a = data["antecedentes"]
+    h = data["habitos"]
 
     filas_laboral = ""
     if h and h.historia_laboral:
@@ -62,7 +65,7 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
             lista_lab = json.loads(h.historia_laboral)
             for it in lista_lab:
                 filas_laboral += f"<tr><td>{it.get('edad','')}</td><td>{it.get('emp','')}</td><td>{it.get('ocu','')}</td><td>{it.get('tie','')}</td><td>{it.get('rie','')}</td><td>{it.get('epp','')}</td></tr>"
-        except:
+        except Exception:
             pass
     
     while filas_laboral.count("<tr>") < 6:
@@ -70,7 +73,7 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
 
     html_content = f"""
     <!DOCTYPE html>
-    <html>
+    <html lang="es">
     <head>
         <meta charset="UTF-8">
         <style>
@@ -78,12 +81,12 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
             body {{ font-family: Arial, sans-serif; font-size: 8px; margin: 0; padding: 0; text-transform: uppercase; }}
             .page {{ width: 216mm; height: 279mm; padding: 15mm; box-sizing: border-box; page-break-after: always; }}
             .header {{ border: 1px solid #000; display: flex; text-align: center; }}
-            .logo {{ width: 20%; border-right: 1px solid #000; padding: 5px; font-weight: bold; font-size: 14px; }}
-            .title {{ width: 60%; padding: 5px; font-weight: bold; }}
-            .code {{ width: 20%; border-left: 1px solid #000; padding: 5px; }}
+            .logo {{ width: 15%; border-right: 1px solid #000; padding: 5px; font-weight: bold; font-size: 14px; }}
+            .title {{ width: 70%; padding: 5px; font-weight: bold; }}
+            .code {{ width: 15%; border-left: 1px solid #000; padding: 5px; }}
             .section {{ background: #000; color: #fff; padding: 4px; font-weight: bold; margin-top: 10px; border: 1px solid #000; }}
             .table {{ width: 100%; border-collapse: collapse; margin-top: 2px; }}
-            .table td {{ border: 1px solid #000; padding: 3px; }}
+            .table td {{ border: 1px solid #000; padding: 3px; vertical-align: top; }}
             .label {{ font-size: 6px; font-weight: bold; display: block; }}
             .sig {{ margin-top: 40px; text-align: center; }}
             .line {{ border-top: 1px solid #000; width: 250px; margin: 0 auto; }}
@@ -92,45 +95,45 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
     <body>
         <div class="page">
             <div class="header">
-                [cite_start]<div class="logo">ohs [cite: 1]</div>
-                [cite_start]<div class="title">DECLARACION JURADA DE SALUD [cite: 2][cite_start]<br>TRABAJO SANO, SEGURO Y PRODUCTIVO [cite: 3]</div>
+                <div class="logo">OHS</div>
+                <div class="title">DECLARACIÓN JURADA DE SALUD<br>TRABAJO SANO, SEGURO Y PRODUCTIVO</div>
                 <div class="code"><span class="label">CÓDIGO</span>{p.codigo_paciente}</div>
             </div>
-            <div class="section">1. [cite_start]AFILIACION DEL TRABAJADOR [cite: 5]</div>
+            <div class="section">1. AFILIACIÓN DEL TRABAJADOR</div>
             <table class="table">
-                [cite_start]<tr><td colspan="2"><span class="label">APELLIDOS Y NOMBRES [cite: 6][cite_start]</span>{p.nombres} {p.apellidos}</td><td><span class="label">EDAD [cite: 6][cite_start]</span>{f.edad if f else ''}</td><td><span class="label">SEXO [cite: 7]</span>{f.sexo if f else ''}</td></tr>
-                [cite_start]<tr><td><span class="label">CI [cite: 15][cite_start]</span>{p.ci}</td><td><span class="label">FECHA NAC. [cite: 10][cite_start]</span>{f.fecha_nacimiento if f else ''}</td><td colspan="2"><span class="label">DOMICILIO [cite: 15]</span>{f.domicilio if f else ''}</td></tr>
+                <tr><td colspan="2"><span class="label">APELLIDOS Y NOMBRES</span>{p.nombres} {p.apellidos}</td><td><span class="label">EDAD</span>{f.edad if f else ''}</td><td><span class="label">SEXO</span>{f.sexo if f else ''}</td></tr>
+                <tr><td><span class="label">C.I.</span>{p.ci}</td><td><span class="label">FECHA NACIMIENTO</span>{f.fecha_nacimiento if f else ''}</td><td colspan="2"><span class="label">DOMICILIO</span>{f.domicilio if f else ''}</td></tr>
             </table>
-            <div class="section">2. [cite_start]ANTECEDENTES PATOLÓGICOS [cite: 24]</div>
+            <div class="section">2. ANTECEDENTES PATOLÓGICOS</div>
             <table class="table">
-                [cite_start]<tr style="background:#eee"><td>SISTEMA</td><td>SI/NO [cite: 34, 35][cite_start]</td><td>DETALLES [cite: 36]</td></tr>
-                [cite_start]<tr><td>VISTA [cite: 25]</td><td>{a.p1 if a else ''}</td><td>{a.d1 if a else ''}</td></tr>
-                [cite_start]<tr><td>AUDITIVO [cite: 26]</td><td>{a.p2 if a else ''}</td><td>{a.d2 if a else ''}</td></tr>
-                [cite_start]<tr><td>RESPIRATORIOS [cite: 27]</td><td>{a.p3 if a else ''}</td><td>{a.d3 if a else ''}</td></tr>
-                [cite_start]<tr><td>CARDIO-VASCULARES [cite: 28]</td><td>{a.p4 if a else ''}</td><td>{a.d4 if a else ''}</td></tr>
-                [cite_start]<tr><td>ESTOMAGO/INTESTINO [cite: 29]</td><td>{a.p5 if a else ''}</td><td>{a.d5 if a else ''}</td></tr>
-                [cite_start]<tr><td>SANGRE [cite: 29]</td><td>{a.p6 if a else ''}</td><td>{a.d6 if a else ''}</td></tr>
-                [cite_start]<tr><td>GENITO/URINARIO [cite: 30]</td><td>{a.p7 if a else ''}</td><td>{a.d7 if a else ''}</td></tr>
-                [cite_start]<tr><td>SISTEMA NERVIOSO [cite: 31]</td><td>{a.p8 if a else ''}</td><td>{a.d8 if a else ''}</td></tr>
-                [cite_start]<tr><td>PSIQUIATRICOS [cite: 32]</td><td>{a.p9 if a else ''}</td><td>{a.d9 if a else ''}</td></tr>
-                [cite_start]<tr><td>OSTEOMUSCULARES [cite: 47]</td><td>{a.p10 if a else ''}</td><td>{a.d10 if a else ''}</td></tr>
+                <tr style="background:#eee"><td>SISTEMA</td><td>SI/NO</td><td>DETALLES / OBSERVACIONES</td></tr>
+                <tr><td>VISTA</td><td>{a.p1 if a else ''}</td><td>{a.d1 if a else ''}</td></tr>
+                <tr><td>AUDITIVO</td><td>{a.p2 if a else ''}</td><td>{a.d2 if a else ''}</td></tr>
+                <tr><td>RESPIRATORIOS</td><td>{a.p3 if a else ''}</td><td>{a.d3 if a else ''}</td></tr>
+                <tr><td>CARDIOVASCULARES</td><td>{a.p4 if a else ''}</td><td>{a.d4 if a else ''}</td></tr>
+                <tr><td>ESTOMAGO / INTESTINO</td><td>{a.p5 if a else ''}</td><td>{a.d5 if a else ''}</td></tr>
+                <tr><td>SANGRE</td><td>{a.p6 if a else ''}</td><td>{a.d6 if a else ''}</td></tr>
+                <tr><td>GENITO / URINARIO</td><td>{a.p7 if a else ''}</td><td>{a.d7 if a else ''}</td></tr>
+                <tr><td>SISTEMA NERVIOSO</td><td>{a.p8 if a else ''}</td><td>{a.d8 if a else ''}</td></tr>
+                <tr><td>PSIQUIÁTRICOS</td><td>{a.p9 if a else ''}</td><td>{a.d9 if a else ''}</td></tr>
+                <tr><td>OSTEOMUSCULARES</td><td>{a.p10 if a else ''}</td><td>{a.d10 if a else ''}</td></tr>
             </table>
         </div>
         <div class="page">
-            [cite_start]<div class="section">ANTECEDENTES OCUPACIONALES [cite: 87]</div>
+            <div class="section">ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
             <table class="table">
-                [cite_start]<tr style="background:#eee"><td>EDAD INICIO</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP [cite: 90]</td></tr>
+                <tr style="background:#eee"><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>
                 {filas_laboral}
             </table>
-            <div class="section">3. [cite_start]HABITOS [cite: 77]</div>
+            <div class="section">3. HÁBITOS Y FACTORES DE RIESGO</div>
             <table class="table">
-                [cite_start]<tr><td>ALCOHOL [cite: 82][cite_start]: {h.h2 if h else ''} ({h.r2 if h else ''})</td><td>TABACO[cite: 83]: {h.h1 if h else ''} ({h.r1 if h else ''})</td></tr>
-                [cite_start]<tr><td>DROGAS [cite: 84][cite_start]: {h.h3 if h else ''}</td><td>COCA (BOLO)[cite: 86]: {h.h4 if h else ''}</td></tr>
-                [cite_start]<tr><td>DEPORTES [cite: 76][cite_start]: {h.h5 if h else ''}</td><td>GRUPO SANGUINEO[cite: 73]: {h.r10 if h else ''}</td></tr>
+                <tr><td><b>ALCOHOL:</b> {h.h2 if h else ''} ({h.r2 if h else ''})</td><td><b>TABACO:</b> {h.h1 if h else ''} ({h.r1 if h else ''})</td></tr>
+                <tr><td><b>DROGAS:</b> {h.h3 if h else ''}</td><td><b>COCA (BOLO):</b> {h.h4 if h else ''}</td></tr>
+                <tr><td><b>DEPORTES:</b> {h.h5 if h else ''}</td><td><b>GRUPO SANGUÍNEO:</b> {h.r10 if h else ''}</td></tr>
             </table>
             <div class="sig">
                 <div class="line"></div>
-                [cite_start]FIRMA DEL TRABAJADOR [cite: 124]<br>C.I. {p.ci}
+                FIRMA DEL TRABAJADOR<br>C.I. {p.ci}
             </div>
         </div>
     </body>
