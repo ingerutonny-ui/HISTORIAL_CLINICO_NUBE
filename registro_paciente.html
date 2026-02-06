@@ -7,27 +7,28 @@
     <style>
         :root { --primary-green: #1a8a5f; --bg-light: #f8fafc; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-light); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-transform: uppercase; color: #444; }
-        .back-link { font-size: 0.8rem; color: #8898aa; text-decoration: none; margin-bottom: 20px; letter-spacing: 2px; }
-        .card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
-        .icon { width: 50px; margin-bottom: 10px; }
-        h2 { margin: 0; font-size: 1.5rem; color: #1e293b; }
-        h3 { margin: 0 0 30px 0; font-size: 0.75rem; color: #94a3b8; font-weight: normal; }
-        .input-group { text-align: left; margin-bottom: 20px; }
-        label { display: block; font-size: 0.7rem; font-weight: bold; color: #94a3b8; margin-bottom: 8px; margin-left: 5px; }
-        input { width: 100%; padding: 15px; border: 1px solid #edf2f7; border-radius: 15px; background: #f8fafc; box-sizing: border-box; font-size: 0.9rem; color: #4a5568; transition: all 0.3s ease; }
-        input:focus { outline: none; border-color: var(--primary-green); background: white; box-shadow: 0 0 0 4px rgba(26, 138, 95, 0.1); }
-        .btn-save { width: 100%; padding: 18px; border: none; border-radius: 18px; background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2); transition: transform 0.2s; margin-top: 10px; }
-        .btn-save:active { transform: scale(0.98); }
-        .btn-query { background: transparent; border: none; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; margin-top: 20px; letter-spacing: 1px; }
-        #listaPacientes { margin-top: 20px; font-size: 0.8rem; color: #64748b; }
-        .paciente-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #f1f5f9; }
+        .back-link { font-size: 0.6rem; color: #8898aa; text-decoration: none; margin-bottom: 20px; letter-spacing: 2px; }
+        .card { background: white; padding: 40px; border-radius: 40px; box-shadow: 0 15px 35px rgba(0,0,0,0.03); width: 100%; max-width: 420px; text-align: center; }
+        .icon { width: 60px; margin-bottom: 15px; }
+        h2 { margin: 0; font-size: 1.6rem; color: #1e293b; letter-spacing: 1px; }
+        h3 { margin: 0 0 35px 0; font-size: 0.75rem; color: #94a3b8; font-weight: normal; letter-spacing: 1px; }
+        .input-group { text-align: left; margin-bottom: 25px; }
+        label { display: block; font-size: 0.7rem; font-weight: bold; color: #94a3b8; margin-bottom: 10px; margin-left: 5px; }
+        input { width: 100%; padding: 18px; border: 1px solid #edf2f7; border-radius: 20px; background: #ebf2ff; box-sizing: border-box; font-size: 0.9rem; color: #1e293b; transition: all 0.3s ease; border: none; }
+        input:focus { outline: none; background: #e0eaff; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1); }
+        .btn-save { width: 100%; padding: 20px; border: none; border-radius: 20px; background: #1a8a5f; color: white; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+        .btn-save:hover { background: #157347; }
+        .btn-query { background: none; border: 1px solid #ddd; color: #64748b; font-size: 0.7rem; font-weight: bold; cursor: pointer; margin-top: 25px; padding: 10px 20px; border-radius: 15px; letter-spacing: 1px; }
+        #listaPacientes { margin-top: 25px; width: 100%; }
+        .paciente-row { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; text-align: left; }
+        .status-text { font-size: 0.7rem; color: #94a3b8; margin-top: 15px; }
     </style>
 </head>
 <body>
     <a href="#" class="back-link">— VOLVER AL MENÚ DE ENFERMERÍA</a>
     
     <div class="card">
-        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" class="icon" alt="icon">
+        <img src="https://cdn-icons-png.flaticon.com/512/2693/2693507.png" class="icon" alt="icon">
         <h2>REGISTRO DE PACIENTE</h2>
         <h3>MÓDULO DE ENFERMERÍA</h3>
 
@@ -48,7 +49,9 @@
         </form>
 
         <button onclick="consultarPacientes()" class="btn-query">CONSULTAR REGISTROS EN NUBE</button>
-        <div id="listaPacientes"></div>
+        <div id="listaPacientes">
+            <p class="status-text" id="status">NO HAY REGISTROS.</p>
+        </div>
     </div>
 
     <script>
@@ -56,11 +59,17 @@
 
         document.getElementById('formPaciente').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // GENERACIÓN AUTOMÁTICA DEL CÓDIGO
+            const timestamp = Date.now().toString().slice(-4);
+            const ciFragment = document.getElementById('ci').value.slice(-2);
+            const codigoGenerado = `PAC-${timestamp}${ciFragment}`;
+
             const data = {
                 nombres: document.getElementById('nombres').value.toUpperCase(),
                 apellidos: document.getElementById('apellidos').value.toUpperCase(),
                 ci: document.getElementById('ci').value,
-                codigo_paciente: "PAC-" + Math.floor(1000 + Math.random() * 9000)
+                codigo_paciente: codigoGenerado
             };
 
             try {
@@ -69,34 +78,57 @@
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(data)
                 });
+                
                 if (res.ok) {
                     const p = await res.json();
                     localStorage.setItem('paciente_id', p.id);
-                    alert("REGISTRO GUARDADO EXITOSAMENTE");
+                    alert(`PACIENTE REGISTRADO\nCÓDIGO GENERADO: ${codigoGenerado}`);
                     window.location.href = "declaracion_jurada_p1.html";
+                } else {
+                    alert("ERROR AL GUARDAR EN NUBE");
                 }
-            } catch (err) { alert("ERROR DE CONEXIÓN CON EL SERVIDOR"); }
+            } catch (err) { 
+                alert("ERROR DE RED: VERIFIQUE CONEXIÓN CON RENDER"); 
+            }
         });
 
         async function consultarPacientes() {
+            const status = document.getElementById('status');
             const container = document.getElementById('listaPacientes');
-            container.innerHTML = "BUSCANDO...";
+            status.innerHTML = "CONECTANDO A LA NUBE...";
+            
             try {
                 const res = await fetch(`${API_URL}/pacientes/`);
                 const pacientes = await res.json();
-                if (pacientes.length === 0) {
-                    container.innerHTML = "NO HAY REGISTROS.";
+                
+                if (!pacientes || pacientes.length === 0) {
+                    status.innerHTML = "NO HAY REGISTROS EN LA BASE DE DATOS.";
                     return;
                 }
+
+                status.style.display = 'none';
                 container.innerHTML = "";
                 pacientes.forEach(p => {
-                    container.innerHTML += `<div class="paciente-row">
-                        <span>${p.nombres} ${p.apellidos}</span>
-                        <button onclick="window.open('${API_URL}/generar-pdf/${p.id}')" style="cursor:pointer; border:none; background:none; color:#22c55e; font-weight:bold;">PDF</button>
-                    </div>`;
+                    const row = document.createElement('div');
+                    row.className = 'paciente-row';
+                    row.innerHTML = `
+                        <div>
+                            <strong>${p.nombres} ${p.apellidos}</strong><br>
+                            <small style="color:#94a3b8">CI: ${p.ci} | ID: ${p.id}</small>
+                        </div>
+                        <button onclick="window.open('${API_URL}/generar-pdf/${p.id}')" 
+                                style="border:none; background:none; color:#1a8a5f; font-weight:bold; cursor:pointer;">
+                            PDF
+                        </button>
+                    `;
+                    container.appendChild(row);
                 });
-            } catch (err) { container.innerHTML = "ERROR AL CONECTAR CON LA NUBE."; }
+            } catch (err) { 
+                status.innerHTML = "ERROR DE CONEXIÓN CON LA NUBE."; 
+            }
         }
+
+        window.onload = consultarPacientes;
     </script>
 </body>
 </html>
