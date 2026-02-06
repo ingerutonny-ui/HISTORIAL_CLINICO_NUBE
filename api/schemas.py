@@ -39,6 +39,11 @@ class AntecedentesCreate(BaseModel):
 
 class HabitosCreate(BaseModel):
     paciente_id: int
-    h1: str; r1: str; h2: str; r2: str; h3: str; r3: str; h4: str; r4: str; h5: str; r5: str
-    h6: str; r6: str; h7: str; r7: str; h8: str; r8: str; h9: str; r9: str; h10: str; r10: str
+    deportes_si_no: str
+    deportes_detalle: str
+    accidentes_si_no: str
+    accidentes_detalle: str
+    medicamentos_si_no: str
+    medicamentos_detalle: str
+    grupo_sanguineo: str
     historia_laboral: str
