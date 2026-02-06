@@ -38,3 +38,8 @@ class AntecedentesCreate(BaseModel):
     p11: str; d11: str; p12: str; d12: str; p13: str; d13: str; p14: str; d14: str; p15: str; d15: str
     p16: str; d16: str; p17: str; d17: str; p18: str; d18: str; p19: str; d19: str; p20: str; d20: str
     p21: str; d21: str; p22: str; d22: str
+
+class HabitosCreate(BaseModel):
+    paciente_id: int
+    h1: str; r1: str; h2: str; r2: str; h3: str; r3: str; h4: str; r4: str; h5: str; r5: str
+    h6: str; r6: str; h7: str; r7: str; h8: str; r8: str; h9: str; r9: str; h10: str; r10: str
