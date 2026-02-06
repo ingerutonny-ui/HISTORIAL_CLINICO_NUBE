@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from typing import List
-import json
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
@@ -56,4 +55,4 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     if not data["paciente"]:
         return "Paciente no encontrado"
     p = data["paciente"]
-    return HTMLResponse(content=f"<html><body><h1>REGISTRO DE {p.nombres} {p.apellidos}</h1><p>ID: {p.id}</p></body></html>")
+    return HTMLResponse(content=f"<html><body style='text-transform: uppercase;'><h1>REGISTRO DE {p.nombres} {p.apellidos}</h1><p>ID PACIENTE: {p.id}</p><p>DOCUMENTO: {p.ci}</p></body></html>")
