@@ -6,11 +6,10 @@
     <title>DECLARACIÓN JURADA - FILIACIÓN</title>
     <style>
         :root { --verde: #34a174; --fondo: #f0f4f8; --blanco: #ffffff; --gris-texto: #64748b; --input-bg: #f1f5f9; }
-        body { background-color: var(--fondo); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; text-transform: uppercase; }
+        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-transform: uppercase; }
         .container { background: var(--blanco); max-width: 900px; margin: auto; padding: 40px; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { color: #1e293b; font-size: 24px; margin: 0; }
-        .header p { color: var(--gris-texto); font-size: 12px; margin-top: 5px; }
         .section-title { color: #1e293b; font-size: 18px; font-weight: 800; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; margin-bottom: 30px; }
         .badge { background: #f1f5f9; color: var(--verde); padding: 5px 15px; border-radius: 20px; font-size: 12px; }
         .top-info { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 30px; }
@@ -22,133 +21,70 @@
         .campo.full { grid-column: span 4; }
         label { font-size: 10px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; margin-left: 5px; }
         input, select { background: var(--input-bg); border: none; padding: 12px; border-radius: 15px; font-size: 13px; font-weight: 600; text-transform: uppercase; color: #334155; outline: none; }
-        input::placeholder { color: #cbd5e1; font-weight: 400; }
         .btn-submit { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 20px; font-size: 14px; transition: 0.3s; }
-        .btn-submit:hover { filter: brightness(1.1); transform: translateY(-2px); }
-        .btn-submit:disabled { background: #cbd5e1; cursor: not-allowed; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="header">
         <h1>DECLARACIÓN JURADA DE SALUD</h1>
-        <p>PARTE 1: FILIACIÓN</p>
+        <p>PARTE 1: FILIACIÓN DEL TRABAJADOR</p>
     </div>
-
-    <div class="section-title">
-        <span>I. FILIACIÓN</span>
-        <span class="badge">1 / 3</span>
-    </div>
-
+    <div class="section-title"><span>I. FILIACIÓN</span><span class="badge">1 / 3</span></div>
     <div class="top-info">
         <div class="info-box"><label>APELLIDOS Y NOMBRES</label><span id="display_nombre">CARGANDO...</span></div>
-        <div class="info-box"><label>DOCUMENTO DE IDENTIDAD (CI)</label><span id="display_ci">CARGANDO...</span></div>
-        <div class="info-box"><label>CÓDIGO GENERADO</label><span id="display_codigo">CARGANDO...</span></div>
+        <div class="info-box"><label>CI</label><span id="display_ci">CARGANDO...</span></div>
+        <div class="info-box"><label>CÓDIGO</label><span id="display_codigo">CARGANDO...</span></div>
     </div>
-
     <form id="formFiliacion">
         <div class="grid">
-            <div class="campo"><label>1. EDAD</label><input type="number" id="edad" placeholder="EJ. 25" required></div>
-            <div class="campo">
-                <label>2. SEXO</label>
-                <select id="sexo">
-                    <option value="MASCULINO">MASCULINO</option>
-                    <option value="FEMENINO">FEMENINO</option>
-                </select>
-            </div>
+            <div class="campo"><label>1. EDAD</label><input type="number" id="edad" required></div>
+            <div class="campo"><label>2. SEXO</label><select id="sexo"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
             <div class="campo"><label>3. FECHA NACIMIENTO</label><input type="date" id="fecha_nacimiento" required></div>
-            <div class="campo"><label>4. LUGAR NACIMIENTO</label><input type="text" id="lugar_nacimiento" placeholder="EJ. LA PAZ"></div>
-            
-            <div class="campo" style="grid-column: span 2;"><label>5. DOMICILIO</label><input type="text" id="domicilio" placeholder="EJ. AV. PRINCIPAL"></div>
-            <div class="campo"><label>6. N° CASA</label><input type="text" id="n_casa" placeholder="S/N"></div>
-            <div class="campo"><label>7. ZONA / BARRIO</label><input type="text" id="zona" placeholder="EJ. SOPOCACHI"></div>
-
-            <div class="campo"><label>8. CIUDAD</label><input type="text" id="ciudad" placeholder="EJ. EL ALTO"></div>
+            <div class="campo"><label>4. LUGAR NACIMIENTO</label><input type="text" id="lugar_nacimiento"></div>
+            <div class="campo" style="grid-column: span 2;"><label>5. DOMICILIO</label><input type="text" id="domicilio"></div>
+            <div class="campo"><label>6. N° CASA</label><input type="text" id="n_casa"></div>
+            <div class="campo"><label>7. ZONA / BARRIO</label><input type="text" id="zona"></div>
+            <div class="campo"><label>8. CIUDAD</label><input type="text" id="ciudad"></div>
             <div class="campo"><label>9. PAÍS</label><input type="text" id="pais" value="BOLIVIA"></div>
-            <div class="campo"><label>10. TELÉFONO</label><input type="text" id="telefono" placeholder="EJ. 70000000"></div>
-            <div class="campo">
-                <label>11. ESTADO CIVIL</label>
-                <select id="estado_civil">
-                    <option value="SOLTERO/A">SOLTERO/A</option>
-                    <option value="CASADO/A">CASADO/A</option>
-                    <option value="DIVORCIADO/A">DIVORCIADO/A</option>
-                    <option value="VIUDO/A">VIUDO/A</option>
-                </select>
-            </div>
-
-            <div class="campo full"><label>12. PROFESIÓN / LABOR</label><input type="text" id="profesion" placeholder="EJ. ESTUDIANTE / OBRERO"></div>
+            <div class="campo"><label>10. TELÉFONO</label><input type="text" id="telefono"></div>
+            <div class="campo"><label>11. ESTADO CIVIL</label><select id="estado_civil"><option value="SOLTERO/A">SOLTERO/A</option><option value="CASADO/A">CASADO/A</option><option value="DIVORCIADO/A">DIVORCIADO/A</option><option value="VIUDO/A">VIUDO/A</option></select></div>
+            <div class="campo full"><label>12. PROFESIÓN / LABOR</label><input type="text" id="profesion"></div>
         </div>
-
         <button type="submit" id="btnSiguiente" class="btn-submit">GUARDAR Y CONTINUAR A ANTECEDENTES</button>
     </form>
 </div>
-
 <script>
-    // URL CORREGIDA PARA QUE COINCIDA CON TU BACKEND (Asegúrate de tener esta ruta en main.py)
     const API_URL = 'https://historial-clinico-936s.onrender.com/filiacion/';
-
     window.onload = () => {
-        const id = localStorage.getItem('paciente_id');
-        if (!id) {
-            alert("⚠️ NO SE DETECTA PACIENTE ACTIVO. REGRESE AL REGISTRO.");
-            window.location.href = "registro_paciente.html";
-            return;
-        }
-        document.getElementById('display_nombre').innerText = localStorage.getItem('paciente_nombre') || '---';
-        document.getElementById('display_ci').innerText = localStorage.getItem('paciente_ci') || '---';
-        document.getElementById('display_codigo').innerText = localStorage.getItem('paciente_codigo') || '---';
+        document.getElementById('display_nombre').innerText = localStorage.getItem('paciente_nombre');
+        document.getElementById('display_ci').innerText = localStorage.getItem('paciente_ci');
+        document.getElementById('display_codigo').innerText = localStorage.getItem('paciente_codigo');
     };
-
     document.getElementById('formFiliacion').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnSiguiente');
-        const pacienteId = localStorage.getItem('paciente_id');
-        
-        btn.innerText = "ENVIANDO DATOS...";
         btn.disabled = true;
-
-        const val = (id, def = "S/D") => {
-            const el = document.getElementById(id);
-            return el && el.value.trim() !== "" ? el.value.trim().toUpperCase() : def;
-        };
-
         const data = {
-            paciente_id: parseInt(pacienteId),
-            edad: parseInt(document.getElementById('edad').value) || 0,
+            paciente_id: parseInt(localStorage.getItem('paciente_id')),
+            edad: parseInt(document.getElementById('edad').value),
             sexo: document.getElementById('sexo').value,
             fecha_nacimiento: document.getElementById('fecha_nacimiento').value,
-            lugar_nacimiento: val('lugar_nacimiento'),
-            domicilio: val('domicilio'),
-            n_casa: val('n_casa', 'S/N'),
-            zona_barrio: val('zona'),
-            ciudad: val('ciudad'),
-            pais: val('pais', 'BOLIVIA'),
-            telefono: val('telefono', '00000000'),
+            lugar_nacimiento: document.getElementById('lugar_nacimiento').value.toUpperCase(),
+            domicilio: document.getElementById('domicilio').value.toUpperCase(),
+            n_casa: document.getElementById('n_casa').value.toUpperCase(),
+            zona_barrio: document.getElementById('zona').value.toUpperCase(),
+            ciudad: document.getElementById('ciudad').value.toUpperCase(),
+            pais: document.getElementById('pais').value.toUpperCase(),
+            telefono: document.getElementById('telefono').value,
             estado_civil: document.getElementById('estado_civil').value,
-            profesion_oficio: val('profesion')
+            profesion_oficio: document.getElementById('profesion').value.toUpperCase()
         };
-
         try {
-            const res = await fetch(API_URL, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            
-            if(res.ok) {
-                alert("✓ FILIACIÓN GUARDADA CON ÉXITO");
-                window.location.href = "declaracion_jurada_p2.html";
-            } else {
-                const errorData = await res.json();
-                alert("ERROR: " + (errorData.detail || "Verifique los datos"));
-            }
-        } catch (err) { 
-            alert("ERROR DE CONEXIÓN AL SERVIDOR."); 
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "GUARDAR Y CONTINUAR A ANTECEDENTES";
-        }
+            const res = await fetch(API_URL, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+            if(res.ok) window.location.href = "declaracion_jurada_p2.html";
+        } catch (err) { alert("Error de conexión"); }
+        finally { btn.disabled = false; }
     });
 </script>
 </body>
