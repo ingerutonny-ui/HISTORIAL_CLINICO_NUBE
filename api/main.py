@@ -11,7 +11,6 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CONFIGURACIÓN CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -57,7 +56,6 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     f = data.get("filiacion")
     a = data.get("antecedentes")
     
-    # Función auxiliar para marcar SI/NO
     def mark(val, target):
         return "X" if str(val).upper() == target else ""
 
@@ -67,84 +65,75 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     <head>
         <meta charset="UTF-8">
         <style>
-            @page {{ size: letter; margin: 10mm; }}
-            body {{ font-family: 'Arial Narrow', Arial, sans-serif; font-size: 9px; line-height: 1.2; }}
-            .header-table, .data-table {{ width: 100%; border-collapse: collapse; margin-bottom: 8px; }}
-            .header-table td, .data-table td, .data-table th {{ border: 1px solid black; padding: 3px; }}
-            .section-title {{ background-color: #d9e2f3; font-weight: bold; text-align: center; border: 1px solid black; padding: 2px; text-transform: uppercase; }}
-            .label {{ font-size: 7px; font-weight: normal; color: #444; display: block; }}
-            .value {{ font-weight: bold; text-transform: uppercase; font-size: 9px; }}
-            .col-si-no {{ width: 25px; text-align: center; font-weight: bold; }}
-            .instruction {{ font-size: 8px; font-weight: bold; text-align: center; padding: 4px; border: 1px solid black; }}
+            @page {{ size: letter; margin: 8mm; }}
+            body {{ font-family: 'Arial Narrow', Arial, sans-serif; font-size: 8.5px; line-height: 1.1; }}
+            .header-table, .data-table {{ width: 100%; border-collapse: collapse; margin-bottom: 5px; }}
+            .header-table td, .data-table td, .data-table th {{ border: 1px solid black; padding: 2px; }}
+            .section-title {{ background-color: #d9e2f3; font-weight: bold; text-align: center; border: 1px solid black; padding: 2px; text-transform: uppercase; font-size: 9px; }}
+            .label {{ font-size: 7px; font-weight: normal; color: #333; display: block; text-transform: uppercase; }}
+            .value {{ font-weight: bold; text-transform: uppercase; font-size: 9px; color: #000; }}
+            .col-si-no {{ width: 20px; text-align: center; font-weight: bold; font-size: 10px; }}
         </style>
     </head>
     <body>
         <table class="header-table">
             <tr>
-                <td style="width: 15%; text-align: center;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="35"></td>
-                <td style="text-align: center; font-weight: bold; font-size: 14px;">DECLARACIÓN JURADA DE SALUD</td>
+                <td style="width: 15%; text-align: center;"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="30"></td>
+                <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
         </table>
 
-        <div class="instruction">Por favor lea con cuidado y escriba con letra clara.</div>
-        
         <div class="section-title">AFILIACIÓN DEL TRABAJADOR</div>
         <table class="data-table">
             <tr>
-                <td colspan="4"><span class="label">APELLIDOS Y NOMBRES</span><span class="value">{p.apellidos} {p.nombres}</span></td>
+                <td colspan="4"><span class="label">1. APELLIDOS Y NOMBRES</span><span class="value">{p.apellidos} {p.nombres}</span></td>
             </tr>
             <tr>
-                <td style="width: 25%;"><span class="label">EDAD</span><span class="value">{f.edad if f else ''}</span></td>
-                <td style="width: 25%; text-align: center;"><span class="label">SEXO</span><span class="value">{f.sexo if f else ''}</span></td>
-                <td colspan="2"><span class="label">DOCUMENTO DE IDENTIDAD</span><span class="value">{p.ci}</span></td>
+                <td style="width: 20%;"><span class="label">2. EDAD</span><span class="value">{f.edad if f else ''}</span></td>
+                <td style="width: 20%;"><span class="label">3. SEXO</span><span class="value">{f.sexo if f else ''}</span></td>
+                <td style="width: 30%;"><span class="label">4. FECHA NACIMIENTO</span><span class="value">{f.fecha_nacimiento if f else ''}</span></td>
+                <td style="width: 30%;"><span class="label">5. LUGAR NACIMIENTO</span><span class="value">{f.lugar_nacimiento if f else ''}</span></td>
+            </tr>
+            <tr>
+                <td colspan="2"><span class="label">6. DOCUMENTO DE IDENTIDAD</span><span class="value">{p.ci}</span></td>
+                <td colspan="2"><span class="label">7. ESTADO CIVIL</span><span class="value">{f.estado_civil if f else ''}</span></td>
+            </tr>
+            <tr>
+                <td colspan="2"><span class="label">8. DOMICILIO ACTUAL</span><span class="value">{f.domicilio if f else ''} # {f.n_casa if f else ''}</span></td>
+                <td><span class="label">9. ZONA/BARRIO</span><span class="value">{f.zona_barrio if f else ''}</span></td>
+                <td><span class="label">10. CIUDAD/PAÍS</span><span class="value">{f.ciudad if f else ''}, {f.pais if f else ''}</span></td>
+            </tr>
+            <tr>
+                <td colspan="2"><span class="label">11. TELÉFONO / CELULAR</span><span class="value">{f.telefono if f else ''}</span></td>
+                <td colspan="2"><span class="label">12. PROFESIÓN U OFICIO</span><span class="value">{f.profesion_oficio if f else ''}</span></td>
             </tr>
         </table>
 
-        <div class="instruction" style="background-color: #eee;">Indique (SI) o (NO) si usted fue diagnosticado de alguna de las enfermedades:</div>
-        
+        <div class="section-title">ANTECEDENTES PATOLÓGICOS</div>
         <table class="data-table">
             <thead>
                 <tr style="background-color: #f2f2f2;">
-                    <th>SISTEMA / ÓRGANO</th>
+                    <th>SISTEMA / ÓRGANO / ENFERMEDAD</th>
                     <th class="col-si-no">SI</th>
                     <th class="col-si-no">NO</th>
                     <th>DETALLE / OBSERVACIÓN</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>VISTA (Disminución, Glaucoma, otros)</td>
-                    <td class="col-si-no">{mark(a.p1, 'SI') if a else ''}</td>
-                    <td class="col-si-no">{mark(a.p1, 'NO') if a else ''}</td>
-                    <td class="value">{a.d1 if a else ''}</td>
-                </tr>
-                <tr>
-                    <td>AUDITIVO (Hipoacusia, Vértigo, otros)</td>
-                    <td class="col-si-no">{mark(a.p2, 'SI') if a else ''}</td>
-                    <td class="col-si-no">{mark(a.p2, 'NO') if a else ''}</td>
-                    <td class="value">{a.d2 if a else ''}</td>
-                </tr>
-                <tr>
-                    <td>RESPIRATORIO (Asma, Bronquitis, otros)</td>
-                    <td class="col-si-no">{mark(a.p3, 'SI') if a else ''}</td>
-                    <td class="col-si-no">{mark(a.p3, 'NO') if a else ''}</td>
-                    <td class="value">{a.d3 if a else ''}</td>
-                </tr>
-                <tr>
-                    <td>CARDIO-VASCULARES (Hipertensión, Arritmia)</td>
-                    <td class="col-si-no">{mark(a.p4, 'SI') if a else ''}</td>
-                    <td class="col-si-no">{mark(a.p4, 'NO') if a else ''}</td>
-                    <td class="value">{a.d4 if a else ''}</td>
-                </tr>
-                <tr>
-                    <td>SANGRE (Anemia, Coagulopatía, otros)</td>
-                    <td class="col-si-no">{mark(a.p6, 'SI') if a else ''}</td>
-                    <td class="col-si-no">{mark(a.p6, 'NO') if a else ''}</td>
-                    <td class="value">{a.d6 if a else ''}</td>
-                </tr>
+                {"".join([f"<tr><td>{label}</td><td class='col-si-no'>{mark(getattr(a, f'p{i}', ''), 'SI') if a else ''}</td><td class='col-si-no'>{mark(getattr(a, f'p{i}', ''), 'NO') if a else ''}</td><td class='value'>{getattr(a, f'd{i}', '') if a else ''}</td></tr>" 
+                for i, label in enumerate([
+                    "1. VISTA (Glaucoma, Retinopatía, otros)", "2. AUDITIVO (Hipoacusia, Vértigo, otros)", 
+                    "3. RESPIRATORIO (Asma, Bronquitis, otros)", "4. CARDIO-VASCULARES (HTA, Arritmia)", 
+                    "5. ESTÓMAGO/INTESTINO/HÍGADO/PÁNCREAS", "6. SANGRE (Anemia, Coagulopatía)", 
+                    "7. GENITO-URINARIO (Infecciones, Quistes)", "8. SISTEMA NERVIOSO (Epilepsia, Mareos)", 
+                    "9. PSIQUIÁTRICOS / MENTALES (Depresión, Ansiedad)", "10. OSTEOMUSCULARES (Fracturas, Artralgias)", 
+                    "11. ENDOCRINOLÓGICOS (Diabetes, Obesidad)", "12. REUMATOLÓGICOS (Artritis, Lupus)", 
+                    "13. GENERALES (Cáncer, Hernias)", "14. DERMATOLÓGICAS (Dermatitis, Micosis)", 
+                    "15. ALERGIA (Medicamentos, Alimentos)", "16. INFECCIONES (Hepatitis, TBC, Chagas)", 
+                    "17. CIRUGÍAS (Indique cuál y fecha)", "18. ACCIDENTES DE TRABAJO"
+                ], 1)])}
             </tbody>
         </table>
-
         <script>window.print();</script>
     </body>
     </html>
