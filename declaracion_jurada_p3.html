@@ -2,84 +2,67 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DECLARACIÓN JURADA - SECCIÓN 3</title>
+    <title>DECLARACIÓN JURADA - HOJA 2</title>
     <style>
         :root { --verde: #34a174; --fondo: #f1f5f9; --blanco: #ffffff; }
-        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 20px; text-transform: uppercase; }
-        .card { background: var(--blanco); padding: 40px; border-radius: 50px; width: 100%; max-width: 850px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .paciente-info { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 25px; background: #f8fafc; padding: 15px; border-radius: 20px; }
-        .info-item span { font-weight: 800; color: var(--verde); font-size: 13px; }
-        .grid-habitos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
-        .habito-item { background: #f8fafc; padding: 12px; border-radius: 15px; border: 1px solid #e2e8f0; }
-        select, input { width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #ddd; margin-top: 5px; text-transform: uppercase; }
-        .btn-finalizar { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 30px; }
+        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; padding: 20px; text-transform: uppercase; }
+        .card { background: var(--blanco); padding: 30px; border-radius: 40px; max-width: 900px; margin: auto; }
+        .habito-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px; }
+        table th, table td { border: 1px solid #ddd; padding: 5px; text-align: center; }
+        input, select { width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 5px; box-sizing: border-box; }
+        .btn-finalizar { background: var(--verde); color: white; border: none; padding: 15px; border-radius: 20px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2>DECLARACIÓN JURADA - SECCIÓN 3</h2>
-        <div class="paciente-info">
-            <div class="info-item"><label>PACIENTE:</label><span id="txt_nombre">...</span></div>
-            <div class="info-item"><label>DOCUMENTO:</label><span id="txt_ci">...</span></div>
-            <div class="info-item"><label>CÓDIGO:</label><span id="txt_codigo">...</span></div>
-        </div>
-
+        <h3>3. HÁBITOS (HOJA 2)</h3>
         <form id="formP3">
-            <div class="grid-habitos">
-                <div class="habito-item"><label>¿FUMA?</label><select id="h1"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r1" placeholder="FRECUENCIA" value="N/A"></div>
-                <div class="habito-item"><label>¿BEBE?</label><select id="h2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r2" placeholder="FRECUENCIA" value="N/A"></div>
-                <div class="habito-item"><label>¿DROGAS?</label><select id="h3"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r3" placeholder="TIPO" value="N/A"></div>
-                <div class="habito-item"><label>¿MASTICA COCA?</label><select id="h4"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r4" placeholder="FRECUENCIA" value="N/A"></div>
-                <div class="habito-item"><label>¿DEPORTES?</label><select id="h5"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r5" placeholder="CUAL" value="NINGUNO"></div>
-                <div class="habito-item"><label>GRUPO SANGUÍNEO</label><input type="text" id="h6" value="S/D" style="display:none;"><input type="text" id="r6" value="S/D"></div>
-                <div style="display:none;">
-                    <input type="text" id="h7" value="N/A"><input type="text" id="r7" value="N/A">
-                    <input type="text" id="h8" value="N/A"><input type="text" id="r8" value="N/A">
-                    <input type="text" id="h9" value="N/A"><input type="text" id="r9" value="N/A">
-                    <input type="text" id="h10" value="N/A"><input type="text" id="r10" value="N/A">
-                </div>
+            <div class="habito-grid">
+                <div><label>FUMA</label><select id="h1"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r1" placeholder="CANTIDAD"></div>
+                <div><label>BEBE</label><select id="h2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r2" placeholder="FRECUENCIA"></div>
+                <div><label>PIJCHA/BOLO</label><select id="h4"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div><label>GRUPO SANGUÍNEO</label><input type="text" id="r10" placeholder="EJ. ORH+"></div>
             </div>
-            <button type="submit" id="btnFinalizar" class="btn-finalizar">FINALIZAR Y GUARDAR 💾</button>
+
+            <h3>ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</h3>
+            <table id="tablaLaboral">
+                <thead><tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
+                <tbody>
+                    <tr><td><input type="number"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><select><option>SI</option><option>NO</option></select></td></tr>
+                </tbody>
+            </table>
+
+            <button type="submit" id="btnFinalizar" class="btn-finalizar">FINALIZAR Y GENERAR REPORTE OFICIAL 💾</button>
         </form>
     </div>
-
-    <script>
-        const API_URL = 'https://historial-clinico-936s.onrender.com/declaraciones/p3/';
-
-        window.onload = () => {
-            document.getElementById('txt_nombre').innerText = localStorage.getItem('paciente_nombre');
-            document.getElementById('txt_ci').innerText = localStorage.getItem('paciente_ci');
-            document.getElementById('txt_codigo').innerText = localStorage.getItem('paciente_codigo');
+<script>
+    document.getElementById('formP3').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btnFinalizar');
+        btn.disabled = true;
+        
+        const payload = {
+            paciente_id: parseInt(localStorage.getItem('paciente_id')),
+            h1: document.getElementById('h1').value, r1: document.getElementById('r1').value.toUpperCase(),
+            h2: document.getElementById('h2').value, r2: document.getElementById('r2').value.toUpperCase(),
+            h3: "NO", r3: "N/A", h4: document.getElementById('h4').value, r4: "N/A",
+            h5: "NO", r5: "N/A", h6: "N/A", r6: "N/A", h7: "N/A", r7: "N/A",
+            h8: "N/A", r8: "N/A", h9: "N/A", r9: "N/A", h10: "N/A", r10: document.getElementById('r10').value.toUpperCase(),
+            historia_laboral: "[]" 
         };
 
-        document.getElementById('formP3').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnFinalizar');
-            btn.disabled = true;
-
-            const payload = {
-                paciente_id: parseInt(localStorage.getItem('paciente_id'))
-            };
-
-            for(let i=1; i<=10; i++){
-                payload[`h${i}`] = document.getElementById(`h${i}`).value.toUpperCase();
-                payload[`r${i}`] = document.getElementById(`r${i}`).value.toUpperCase();
+        try {
+            const res = await fetch('https://historial-clinico-936s.onrender.com/declaraciones/p3/', {
+                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+            });
+            if(res.ok) {
+                alert("✓ COMPLETADO");
+                window.location.href = "generar_pdf.html"; // O donde visualices el PDF
             }
-
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                if(res.ok) {
-                    alert("✓ HISTORIAL COMPLETADO");
-                    window.location.href = "index.html";
-                } else { alert("Error al guardar datos"); }
-            } catch (err) { alert("Error de conexión"); }
-            finally { btn.disabled = false; }
-        });
-    </script>
+        } catch (err) { alert("Error"); }
+        finally { btn.disabled = false; }
+    });
+</script>
 </body>
 </html>
