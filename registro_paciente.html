@@ -2,33 +2,53 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>REGISTRO DE PACIENTE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HISTORIAL CLÍNICO - REGISTRO</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; text-transform: uppercase; }
-        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; }
-        .btn-save { background: #157347; color: white; }
-        .btn-query { background: #6c757d; color: white; }
-        #listaPacientes { margin-top: 20px; background: #fff; border-radius: 10px; padding: 10px; }
-        .paciente-item { border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        :root { --primary-green: #1a8a5f; --bg-light: #f8fafc; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-light); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; text-transform: uppercase; color: #444; }
+        .back-link { font-size: 0.8rem; color: #8898aa; text-decoration: none; margin-bottom: 20px; letter-spacing: 2px; }
+        .card { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
+        .icon { width: 50px; margin-bottom: 10px; }
+        h2 { margin: 0; font-size: 1.5rem; color: #1e293b; }
+        h3 { margin: 0 0 30px 0; font-size: 0.75rem; color: #94a3b8; font-weight: normal; }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; font-size: 0.7rem; font-weight: bold; color: #94a3b8; margin-bottom: 8px; margin-left: 5px; }
+        input { width: 100%; padding: 15px; border: 1px solid #edf2f7; border-radius: 15px; background: #f8fafc; box-sizing: border-box; font-size: 0.9rem; color: #4a5568; transition: all 0.3s ease; }
+        input:focus { outline: none; border-color: var(--primary-green); background: white; box-shadow: 0 0 0 4px rgba(26, 138, 95, 0.1); }
+        .btn-save { width: 100%; padding: 18px; border: none; border-radius: 18px; background: linear-gradient(135deg, #22c55e, #16a34a); color: white; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.2); transition: transform 0.2s; margin-top: 10px; }
+        .btn-save:active { transform: scale(0.98); }
+        .btn-query { background: transparent; border: none; color: #94a3b8; font-size: 0.7rem; font-weight: bold; cursor: pointer; margin-top: 20px; letter-spacing: 1px; }
+        #listaPacientes { margin-top: 20px; font-size: 0.8rem; color: #64748b; }
+        .paciente-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #f1f5f9; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 style="text-align: center;">REGISTRO DE PACIENTE</h2>
+    <a href="#" class="back-link">— VOLVER AL MENÚ DE ENFERMERÍA</a>
+    
+    <div class="card">
+        <img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" class="icon" alt="icon">
+        <h2>REGISTRO DE PACIENTE</h2>
+        <h3>MÓDULO DE ENFERMERÍA</h3>
+
         <form id="formPaciente">
-            <input type="text" id="nombres" placeholder="NOMBRES" required>
-            <input type="text" id="apellidos" placeholder="APELLIDOS" required>
-            <input type="text" id="ci" placeholder="DOCUMENTO DE IDENTIDAD (CI)" required>
-            <button type="submit" class="btn-save">GUARDAR REGISTRO FINAL</button>
+            <div class="input-group">
+                <label>NOMBRES</label>
+                <input type="text" id="nombres" placeholder="ESCRIBA LOS NOMBRES" required>
+            </div>
+            <div class="input-group">
+                <label>APELLIDOS</label>
+                <input type="text" id="apellidos" placeholder="ESCRIBA LOS APELLIDOS" required>
+            </div>
+            <div class="input-group">
+                <label>DOCUMENTO DE IDENTIDAD</label>
+                <input type="text" id="ci" placeholder="CI O PASAPORTE" required>
+            </div>
+            <button type="submit" class="btn-save">GUARDAR REGISTRO</button>
         </form>
-        
+
         <button onclick="consultarPacientes()" class="btn-query">CONSULTAR REGISTROS EN NUBE</button>
-        
-        <div id="listaPacientes">
-            <p style="text-align: center; color: #888;">PACIENTES EN NUBE: <br> Buscando...</p>
-        </div>
+        <div id="listaPacientes"></div>
     </div>
 
     <script>
@@ -36,12 +56,11 @@
 
         document.getElementById('formPaciente').addEventListener('submit', async (e) => {
             e.preventDefault();
-            // Generación de código automático según tus reglas
             const data = {
                 nombres: document.getElementById('nombres').value.toUpperCase(),
                 apellidos: document.getElementById('apellidos').value.toUpperCase(),
                 ci: document.getElementById('ci').value,
-                codigo_paciente: "PAC-" + Date.now().toString().slice(-4)
+                codigo_paciente: "PAC-" + Math.floor(1000 + Math.random() * 9000)
             };
 
             try {
@@ -53,45 +72,31 @@
                 if (res.ok) {
                     const p = await res.json();
                     localStorage.setItem('paciente_id', p.id);
-                    alert("PACIENTE GUARDADO CORRECTAMENTE");
+                    alert("REGISTRO GUARDADO EXITOSAMENTE");
                     window.location.href = "declaracion_jurada_p1.html";
-                } else {
-                    alert("ERROR AL GUARDAR");
                 }
-            } catch (err) { alert("ERROR DE CONEXIÓN"); }
+            } catch (err) { alert("ERROR DE CONEXIÓN CON EL SERVIDOR"); }
         });
 
         async function consultarPacientes() {
             const container = document.getElementById('listaPacientes');
-            container.innerHTML = "CARGANDO DATOS...";
+            container.innerHTML = "BUSCANDO...";
             try {
                 const res = await fetch(`${API_URL}/pacientes/`);
-                if (!res.ok) throw new Error("Error en red");
                 const pacientes = await res.json();
-                
-                if (!pacientes || pacientes.length === 0) {
+                if (pacientes.length === 0) {
                     container.innerHTML = "NO HAY REGISTROS.";
                     return;
                 }
-
-                container.innerHTML = ""; // Limpiar
+                container.innerHTML = "";
                 pacientes.forEach(p => {
-                    const div = document.createElement('div');
-                    div.className = 'paciente-item';
-                    div.innerHTML = `
-                        <span><strong>${p.nombres} ${p.apellidos}</strong><br>CI: ${p.ci}</span>
-                        <button style="width:auto; background:#0d6efd; color:white; padding:5px; margin:0;" 
-                                onclick="window.open('${API_URL}/generar-pdf/${p.id}')">PDF</button>
-                    `;
-                    container.appendChild(div);
+                    container.innerHTML += `<div class="paciente-row">
+                        <span>${p.nombres} ${p.apellidos}</span>
+                        <button onclick="window.open('${API_URL}/generar-pdf/${p.id}')" style="cursor:pointer; border:none; background:none; color:#22c55e; font-weight:bold;">PDF</button>
+                    </div>`;
                 });
-            } catch (err) {
-                container.innerHTML = "ERROR AL CONECTAR CON LA BASE DE DATOS.";
-            }
+            } catch (err) { container.innerHTML = "ERROR AL CONECTAR CON LA NUBE."; }
         }
-
-        // Cargar automáticamente al abrir la página
-        window.onload = consultarPacientes;
     </script>
 </body>
 </html>
