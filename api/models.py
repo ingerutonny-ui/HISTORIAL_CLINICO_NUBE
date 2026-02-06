@@ -30,7 +30,6 @@ class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # Mantengo p1-p18 por ser estándar, pero aseguro su lectura
     p1 = Column(String); d1 = Column(String); p2 = Column(String); d2 = Column(String)
     p3 = Column(String); d3 = Column(String); p4 = Column(String); d4 = Column(String)
     p5 = Column(String); d5 = Column(String); p6 = Column(String); d6 = Column(String)
@@ -45,12 +44,12 @@ class HabitosRiesgosP3(Base):
     __tablename__ = "habitos_p3"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # NOMBRES CLAROS PARA EVITAR EL BUCLE
-    deportes_si_no = Column(String) # Anterior h7
-    deportes_detalle = Column(String) # Anterior r7
-    accidentes_si_no = Column(String) # Anterior h8
-    accidentes_detalle = Column(String) # Anterior r8
-    medicamentos_si_no = Column(String) # Anterior h9
-    medicamentos_detalle = Column(String) # Anterior r9
-    grupo_sanguineo = Column(String) # Anterior r10
+    # Campos renombrados para claridad absoluta
+    deportes_si_no = Column(String)
+    deportes_detalle = Column(String)
+    accidentes_si_no = Column(String)
+    accidentes_detalle = Column(String)
+    medicamentos_si_no = Column(String)
+    medicamentos_detalle = Column(String)
+    grupo_sanguineo = Column(String)
     historia_laboral = Column(String)
