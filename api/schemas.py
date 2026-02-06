@@ -1,19 +1,34 @@
-from pydantic import BaseModel
-from typing import Optional
+from pydantic import BaseModel, ConfigDict
+from typing import Optional, List
 from datetime import date
 
-class PacienteCreate(BaseModel):
-    nombres: str; apellidos: str; ci: str; codigo_paciente: str
+class PacienteBase(BaseModel):
+    nombres: str
+    apellidos: str
+    ci: str
+    codigo_paciente: str
 
-class Paciente(PacienteCreate):
+class PacienteCreate(PacienteBase):
+    pass
+
+class Paciente(PacienteBase):
     id: int
-    class Config: from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class FiliacionCreate(BaseModel):
-    paciente_id: int; edad: int; sexo: str; fecha_nacimiento: date; estado_civil: str
-    lugar_nacimiento: Optional[str] = "S/D"; domicilio: Optional[str] = "S/D"; n_casa: Optional[str] = "S/N"
-    zona_barrio: Optional[str] = "S/D"; ciudad: Optional[str] = "S/D"; pais: Optional[str] = "BOLIVIA"
-    telefono: Optional[str] = "0"; profesion_oficio: Optional[str] = "S/D"
+    paciente_id: int
+    edad: int
+    sexo: str
+    fecha_nacimiento: date
+    estado_civil: str
+    lugar_nacimiento: Optional[str] = "S/D"
+    domicilio: Optional[str] = "S/D"
+    n_casa: Optional[str] = "S/N"
+    zona_barrio: Optional[str] = "S/D"
+    ciudad: Optional[str] = "S/D"
+    pais: Optional[str] = "BOLIVIA"
+    telefono: Optional[str] = "0"
+    profesion_oficio: Optional[str] = "S/D"
 
 class AntecedentesCreate(BaseModel):
     paciente_id: int
