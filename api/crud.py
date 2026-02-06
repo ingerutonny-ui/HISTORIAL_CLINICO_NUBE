@@ -1,6 +1,9 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
 
+def get_pacientes(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Paciente).offset(skip).limit(limit).all()
+
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
     db_paciente = models.Paciente(**paciente.dict())
     db.add(db_paciente)
