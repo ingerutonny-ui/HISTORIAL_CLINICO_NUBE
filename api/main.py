@@ -7,7 +7,7 @@ import os
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Asegura la creación de tablas
+# Sincronización de modelos con la base de datos en Render
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -49,6 +49,7 @@ def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
 
 @app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
 def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
+    # Obtener datos usando el crud proporcionado
     data = crud.get_historial_completo(db, paciente_id)
     if not data or not data["paciente"]:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
@@ -58,21 +59,22 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     a = data.get("antecedentes")
     h = data.get("habitos")
     
-    # Función de marcado corregida para detectar SI/NO exactos
+    # Lógica de marcado corregida para SI/NO
     def mark(obj, attr, target):
-        if obj is None: return ""
+        if not obj: return ""
         val = getattr(obj, attr, None)
         if val is None: return ""
         return "X" if str(val).strip().upper() == target.upper() else ""
 
-    # Función de obtención de valor de texto corregida
+    # Lógica de extracción de texto
     def get_val(obj, attr, default=""):
-        if obj is None: return default
+        if not obj: return default
         res = getattr(obj, attr, None)
-        if res is None or str(res).lower() in ["none", "null", "undefined"]:
+        if res is None or str(res).lower() in ["none", "null", ""]:
             return default
         return str(res).upper()
 
+    # Construcción dinámica de la sección de Antecedentes (1-18)
     antecedentes_labels = [
         "1. VISTA (Glaucoma, Retinopatía, otros)", "2. AUDITIVO (Hipoacusia, Vértigo, otros)", 
         "3. RESPIRATORIO (Asma, Bronquitis, otros)", "4. CARDIO-VASCULARES (HTA, Arritmia)", 
@@ -85,16 +87,14 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         "17. CIRUGÍAS (Indique cuál y fecha)", "18. ACCIDENTES DE TRABAJO"
     ]
 
-    filas_p2 = ""
+    filas_antecedentes = ""
     for i, label in enumerate(antecedentes_labels, 1):
-        campo_p = f"p{i}"
-        campo_d = f"d{i}"
-        filas_p2 += f"""
+        filas_antecedentes += f"""
         <tr>
             <td>{label}</td>
-            <td class="col-si-no">{mark(a, campo_p, 'SI')}</td>
-            <td class="col-si-no">{mark(a, campo_p, 'NO')}</td>
-            <td class="value">{get_val(a, campo_d, 'NORMAL')}</td>
+            <td class="col-si-no">{mark(a, f'p{i}', 'SI')}</td>
+            <td class="col-si-no">{mark(a, f'p{i}', 'NO')}</td>
+            <td class="value">{get_val(a, f'd{i}', 'NORMAL')}</td>
         </tr>"""
 
     html_content = f"""
@@ -117,7 +117,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <table class="header-table">
             <tr>
                 <td style="width: 15%; text-align: center;">
-                    <img src="https://historial-clinico-nube.onrender.com/LOGO.PNG" width="70" onerror="this.src='https://i.ibb.co/Y7YpLp0/med-logo.png'">
+                    <img src="https://i.ibb.co/Y7YpLp0/med-logo.png" width="70">
                 </td>
                 <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
@@ -160,7 +160,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                 </tr>
             </thead>
             <tbody>
-                {filas_p2}
+                {filas_antecedentes}
                 <tr>
                     <td>19. ACCIDENTES PARTICULARES</td>
                     <td class="col-si-no">{mark(h, 'h8', 'SI')}</td>
@@ -186,6 +186,10 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                 </tr>
             </tbody>
         </table>
+        <div class="section-title">HISTORIA LABORAL</div>
+        <div style="border: 1px solid black; padding: 5px; min-height: 40px; font-size: 9px; text-transform: uppercase;">
+            {get_val(h, 'historia_laboral', 'SIN REGISTRO')}
+        </div>
         <script>window.print();</script>
     </body>
     </html>
