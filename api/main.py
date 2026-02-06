@@ -45,14 +45,14 @@ def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
 def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
     db_habitos = crud.create_habitos(db=db, habitos=data)
     if not db_habitos:
-        raise HTTPException(status_code=400, detail="Error al finalizar el registro")
-    return {"status": "success", "message": "Registro completado exitosamente"}
+        raise HTTPException(status_code=400, detail="Error al finalizar")
+    return {"status": "success"}
 
 @app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
 def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
     data = crud.get_historial_completo(db, paciente_id)
     if not data["paciente"]:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+        raise HTTPException(status_code=404, detail="No encontrado")
     
     p = data["paciente"]
     f = data["filiacion"]
@@ -65,7 +65,7 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
             lista_lab = json.loads(h.historia_laboral)
             for it in lista_lab:
                 filas_laboral += f"<tr><td>{it.get('edad','')}</td><td>{it.get('emp','')}</td><td>{it.get('ocu','')}</td><td>{it.get('tie','')}</td><td>{it.get('rie','')}</td><td>{it.get('epp','')}</td></tr>"
-        except Exception:
+        except:
             pass
     
     while filas_laboral.count("<tr>") < 6:
@@ -86,7 +86,7 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
             .code {{ width: 15%; border-left: 1px solid #000; padding: 5px; }}
             .section {{ background: #000; color: #fff; padding: 4px; font-weight: bold; margin-top: 10px; border: 1px solid #000; }}
             .table {{ width: 100%; border-collapse: collapse; margin-top: 2px; }}
-            .table td {{ border: 1px solid #000; padding: 3px; vertical-align: top; }}
+            .table td {{ border: 1px solid #000; padding: 3px; }}
             .label {{ font-size: 6px; font-weight: bold; display: block; }}
             .sig {{ margin-top: 40px; text-align: center; }}
             .line {{ border-top: 1px solid #000; width: 250px; margin: 0 auto; }}
@@ -112,24 +112,17 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
                 <tr><td>RESPIRATORIOS</td><td>{a.p3 if a else ''}</td><td>{a.d3 if a else ''}</td></tr>
                 <tr><td>CARDIOVASCULARES</td><td>{a.p4 if a else ''}</td><td>{a.d4 if a else ''}</td></tr>
                 <tr><td>ESTOMAGO / INTESTINO</td><td>{a.p5 if a else ''}</td><td>{a.d5 if a else ''}</td></tr>
-                <tr><td>SANGRE</td><td>{a.p6 if a else ''}</td><td>{a.d6 if a else ''}</td></tr>
-                <tr><td>GENITO / URINARIO</td><td>{a.p7 if a else ''}</td><td>{a.d7 if a else ''}</td></tr>
-                <tr><td>SISTEMA NERVIOSO</td><td>{a.p8 if a else ''}</td><td>{a.d8 if a else ''}</td></tr>
-                <tr><td>PSIQUIÁTRICOS</td><td>{a.p9 if a else ''}</td><td>{a.d9 if a else ''}</td></tr>
-                <tr><td>OSTEOMUSCULARES</td><td>{a.p10 if a else ''}</td><td>{a.d10 if a else ''}</td></tr>
             </table>
         </div>
         <div class="page">
-            <div class="section">ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
+            <div class="section">ANTECEDENTES OCUPACIONALES</div>
             <table class="table">
                 <tr style="background:#eee"><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>
                 {filas_laboral}
             </table>
-            <div class="section">3. HÁBITOS Y FACTORES DE RIESGO</div>
+            <div class="section">3. HÁBITOS</div>
             <table class="table">
-                <tr><td><b>ALCOHOL:</b> {h.h2 if h else ''} ({h.r2 if h else ''})</td><td><b>TABACO:</b> {h.h1 if h else ''} ({h.r1 if h else ''})</td></tr>
-                <tr><td><b>DROGAS:</b> {h.h3 if h else ''}</td><td><b>COCA (BOLO):</b> {h.h4 if h else ''}</td></tr>
-                <tr><td><b>DEPORTES:</b> {h.h5 if h else ''}</td><td><b>GRUPO SANGUÍNEO:</b> {h.r10 if h else ''}</td></tr>
+                <tr><td>ALCOHOL: {h.h2 if h else ''} ({h.r2 if h else ''})</td><td>TABACO: {h.h1 if h else ''} ({h.r1 if h else ''})</td></tr>
             </table>
             <div class="sig">
                 <div class="line"></div>
