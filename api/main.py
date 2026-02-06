@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from typing import List
 import os
@@ -64,8 +65,8 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
 
     def get_val(obj, attr, default=""):
         if obj is None: return default
-        res = getattr(obj, attr, default)
-        return res if res else default
+        res = getattr(obj, attr, None)
+        return res if res not in [None, "", "null", "undefined"] else default
 
     html_content = f"""
     <!DOCTYPE html>
@@ -87,7 +88,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <table class="header-table">
             <tr>
                 <td style="width: 15%; text-align: center;">
-                    <img src="/LOGO.PNG" width="60" style="display: block; margin: 0 auto;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                    <img src="https://raw.githubusercontent.com/tu-usuario/tu-repo/main/LOGO.PNG" width="60" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
                 </td>
                 <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
@@ -144,26 +145,26 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                 ], 1)])}
                 <tr>
                     <td>19. ACCIDENTES PARTICULARES</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h1', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h1', None), 'NO')}</td>
-                    <td class="value">{get_val(h, 'r1', '')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h8', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h8', None), 'NO')}</td>
+                    <td class="value">{get_val(h, 'r8', '')}</td>
                 </tr>
                 <tr>
                     <td>20. MEDICAMENTOS (Uso actual)</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h2', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h2', None), 'NO')}</td>
-                    <td class="value">{get_val(h, 'r2', '')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h9', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h9', None), 'NO')}</td>
+                    <td class="value">{get_val(h, 'r9', '')}</td>
                 </tr>
                 <tr>
                     <td>21. GRUPO SANGUÍNEO</td>
                     <td colspan="2" style="background-color: #eee;"></td>
-                    <td class="value">{get_val(h, 'r3', '')}</td>
+                    <td class="value">{get_val(h, 'r10', '')}</td>
                 </tr>
                 <tr>
                     <td>22. DEPORTES (Actividad y frecuencia)</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h4', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h4', None), 'NO')}</td>
-                    <td class="value">{get_val(h, 'r4', '')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h7', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h7', None), 'NO')}</td>
+                    <td class="value">{get_val(h, 'r7', '')}</td>
                 </tr>
             </tbody>
         </table>
