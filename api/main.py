@@ -7,7 +7,7 @@ import os
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Asegura la creación de tablas en la base de datos de Render
+# Asegura la creación de tablas
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -58,16 +58,44 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     a = data.get("antecedentes")
     h = data.get("habitos")
     
-    def mark(val, target):
+    # Función de marcado corregida para detectar SI/NO exactos
+    def mark(obj, attr, target):
+        if obj is None: return ""
+        val = getattr(obj, attr, None)
         if val is None: return ""
-        return "X" if str(val).upper() == target else ""
+        return "X" if str(val).strip().upper() == target.upper() else ""
 
+    # Función de obtención de valor de texto corregida
     def get_val(obj, attr, default=""):
         if obj is None: return default
         res = getattr(obj, attr, None)
         if res is None or str(res).lower() in ["none", "null", "undefined"]:
             return default
-        return res
+        return str(res).upper()
+
+    antecedentes_labels = [
+        "1. VISTA (Glaucoma, Retinopatía, otros)", "2. AUDITIVO (Hipoacusia, Vértigo, otros)", 
+        "3. RESPIRATORIO (Asma, Bronquitis, otros)", "4. CARDIO-VASCULARES (HTA, Arritmia)", 
+        "5. ESTÓMAGO/INTESTINO/HÍGADO/PÁNCREAS", "6. SANGRE (Anemia, Coagulopatía)", 
+        "7. GENITO-URINARIO (Infecciones, Quistes)", "8. SISTEMA NERVIOSO (Epilepsia, Mareos)", 
+        "9. PSIQUIÁTRICOS / MENTALES (Depresión, Ansiedad)", "10. OSTEOMUSCULARES (Fracturas, Artralgias)", 
+        "11. ENDOCRINOLÓGICOS (Diabetes, Obesidad)", "12. REUMATOLÓGICOS (Artritis, Lupus)", 
+        "13. GENERALES (Cáncer, Hernias)", "14. DERMATOLÓGICAS (Dermatitis, Micosis)", 
+        "15. ALERGIA (Medicamentos, Alimentos)", "16. INFECCIONES (Hepatitis, TBC, Chagas)", 
+        "17. CIRUGÍAS (Indique cuál y fecha)", "18. ACCIDENTES DE TRABAJO"
+    ]
+
+    filas_p2 = ""
+    for i, label in enumerate(antecedentes_labels, 1):
+        campo_p = f"p{i}"
+        campo_d = f"d{i}"
+        filas_p2 += f"""
+        <tr>
+            <td>{label}</td>
+            <td class="col-si-no">{mark(a, campo_p, 'SI')}</td>
+            <td class="col-si-no">{mark(a, campo_p, 'NO')}</td>
+            <td class="value">{get_val(a, campo_d, 'NORMAL')}</td>
+        </tr>"""
 
     html_content = f"""
     <!DOCTYPE html>
@@ -89,7 +117,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <table class="header-table">
             <tr>
                 <td style="width: 15%; text-align: center;">
-                    <img src="logo.png" width="70" onerror="this.src='https://i.ibb.co/Y7YpLp0/med-logo.png'">
+                    <img src="https://historial-clinico-nube.onrender.com/LOGO.PNG" width="70" onerror="this.src='https://i.ibb.co/Y7YpLp0/med-logo.png'">
                 </td>
                 <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
@@ -132,40 +160,29 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                 </tr>
             </thead>
             <tbody>
-                {"".join([f"<tr><td>{label}</td><td class='col-si-no'>{mark(get_val(a, f'p{i}', None), 'SI')}</td><td class='col-si-no'>{mark(get_val(a, f'p{i}', None), 'NO')}</td><td class='value'>{get_val(a, f'd{i}', '')}</td></tr>" 
-                for i, label in enumerate([
-                    "1. VISTA (Glaucoma, Retinopatía, otros)", "2. AUDITIVO (Hipoacusia, Vértigo, otros)", 
-                    "3. RESPIRATORIO (Asma, Bronquitis, otros)", "4. CARDIO-VASCULARES (HTA, Arritmia)", 
-                    "5. ESTÓMAGO/INTESTINO/HÍGADO/PÁNCREAS", "6. SANGRE (Anemia, Coagulopatía)", 
-                    "7. GENITO-URINARIO (Infecciones, Quistes)", "8. SISTEMA NERVIOSO (Epilepsia, Mareos)", 
-                    "9. PSIQUIÁTRICOS / MENTALES (Depresión, Ansiedad)", "10. OSTEOMUSCULARES (Fracturas, Artralgias)", 
-                    "11. ENDOCRINOLÓGICOS (Diabetes, Obesidad)", "12. REUMATOLÓGICOS (Artritis, Lupus)", 
-                    "13. GENERALES (Cáncer, Hernias)", "14. DERMATOLÓGICAS (Dermatitis, Micosis)", 
-                    "15. ALERGIA (Medicamentos, Alimentos)", "16. INFECCIONES (Hepatitis, TBC, Chagas)", 
-                    "17. CIRUGÍAS (Indique cuál y fecha)", "18. ACCIDENTES DE TRABAJO"
-                ], 1)])}
+                {filas_p2}
                 <tr>
                     <td>19. ACCIDENTES PARTICULARES</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h8', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h8', None), 'NO')}</td>
-                    <td class="value">{get_val(h, 'r8', '')}</td>
+                    <td class="col-si-no">{mark(h, 'h8', 'SI')}</td>
+                    <td class="col-si-no">{mark(h, 'h8', 'NO')}</td>
+                    <td class="value">{get_val(h, 'r8', 'NINGUNO')}</td>
                 </tr>
                 <tr>
                     <td>20. MEDICAMENTOS (Uso actual)</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h9', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h9', None), 'NO')}</td>
-                    <td class="value">{get_val(h, 'r9', '')}</td>
+                    <td class="col-si-no">{mark(h, 'h9', 'SI')}</td>
+                    <td class="col-si-no">{mark(h, 'h9', 'NO')}</td>
+                    <td class="value">{get_val(h, 'r9', 'NINGUNO')}</td>
                 </tr>
                 <tr>
                     <td>21. GRUPO SANGUÍNEO</td>
                     <td colspan="2" style="background-color: #eee;"></td>
-                    <td class="value">{get_val(h, 'r10', '')}</td>
+                    <td class="value">{get_val(h, 'r10', 'S/D')}</td>
                 </tr>
                 <tr>
                     <td>22. DEPORTES (Actividad y frecuencia)</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h7', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(h, 'h7', None), 'NO')}</td>
-                    <td class="value">{get_val(h, 'r7', '')}</td>
+                    <td class="col-si-no">{mark(h, 'h7', 'SI')}</td>
+                    <td class="col-si-no">{mark(h, 'h7', 'NO')}</td>
+                    <td class="value">{get_val(h, 'r7', 'NINGUNO')}</td>
                 </tr>
             </tbody>
         </table>
