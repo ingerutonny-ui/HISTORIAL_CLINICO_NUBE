@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 from typing import List
 import os
@@ -66,7 +65,9 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     def get_val(obj, attr, default=""):
         if obj is None: return default
         res = getattr(obj, attr, None)
-        return res if res not in [None, "", "null", "undefined"] else default
+        if res is None or str(res).lower() in ["none", "null", "undefined", "n/a"]:
+            return default
+        return res
 
     html_content = f"""
     <!DOCTYPE html>
@@ -88,7 +89,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <table class="header-table">
             <tr>
                 <td style="width: 15%; text-align: center;">
-                    <img src="https://raw.githubusercontent.com/tu-usuario/tu-repo/main/LOGO.PNG" width="60" onerror="this.src='https://cdn-icons-png.flaticon.com/512/1048/1048953.png'">
+                    <img src="https://historial-clinico-nube.onrender.com/LOGO.PNG" width="70" onerror="this.src='https://i.ibb.co/Y7YpLp0/med-logo.png'">
                 </td>
                 <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
