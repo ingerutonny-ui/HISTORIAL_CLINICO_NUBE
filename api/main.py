@@ -89,7 +89,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <table class="header-table">
             <tr>
                 <td style="width: 15%; text-align: center;">
-                    <img src="https://historial-clinico-nube.onrender.com/LOGO.PNG" width="70" onerror="this.src='https://i.ibb.co/Y7YpLp0/med-logo.png'">
+                    <img src="logo.png" width="70" onerror="this.src='https://i.ibb.co/Y7YpLp0/med-logo.png'">
                 </td>
                 <td style="text-align: center; font-weight: bold; font-size: 13px;">DECLARACIÓN JURADA DE SALUD</td>
             </tr>
