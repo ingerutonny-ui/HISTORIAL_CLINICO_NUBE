@@ -66,7 +66,7 @@
 
         const data = { paciente_id: parseInt(pacienteId) };
         for(let i=1; i<=22; i++) {
-            data[`p${i}`] = "INFO"; // Marcador para SI/NO simplificado
+            data[`p${i}`] = "INFO"; 
             const val = document.getElementById(`d${i}`).value.trim();
             data[`d${i}`] = val === "" ? (i <= 13 ? "NORMAL" : "NINGUNA") : val.toUpperCase();
         }
