@@ -36,11 +36,12 @@
 
         document.getElementById('formPaciente').addEventListener('submit', async (e) => {
             e.preventDefault();
+            // Generación de código automático según tus reglas
             const data = {
                 nombres: document.getElementById('nombres').value.toUpperCase(),
                 apellidos: document.getElementById('apellidos').value.toUpperCase(),
                 ci: document.getElementById('ci').value,
-                codigo_paciente: "PAC-" + Math.floor(Math.random() * 1000)
+                codigo_paciente: "PAC-" + Date.now().toString().slice(-4)
             };
 
             try {
@@ -65,9 +66,10 @@
             container.innerHTML = "CARGANDO DATOS...";
             try {
                 const res = await fetch(`${API_URL}/pacientes/`);
+                if (!res.ok) throw new Error("Error en red");
                 const pacientes = await res.json();
                 
-                if (pacientes.length === 0) {
+                if (!pacientes || pacientes.length === 0) {
                     container.innerHTML = "NO HAY REGISTROS.";
                     return;
                 }
@@ -78,7 +80,7 @@
                     div.className = 'paciente-item';
                     div.innerHTML = `
                         <span><strong>${p.nombres} ${p.apellidos}</strong><br>CI: ${p.ci}</span>
-                        <button style="width:auto; background:#0d6efd; color:white; padding:5px;" 
+                        <button style="width:auto; background:#0d6efd; color:white; padding:5px; margin:0;" 
                                 onclick="window.open('${API_URL}/generar-pdf/${p.id}')">PDF</button>
                     `;
                     container.appendChild(div);
@@ -88,8 +90,8 @@
             }
         }
 
-        // Cargar al iniciar
-        consultarPacientes();
+        // Cargar automáticamente al abrir la página
+        window.onload = consultarPacientes;
     </script>
 </body>
 </html>
