@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from .database import Base
 
 class Paciente(Base):
@@ -9,17 +8,14 @@ class Paciente(Base):
     apellidos = Column(String)
     ci = Column(String, unique=True, index=True)
     codigo_paciente = Column(String, unique=True)
-    
-    declaraciones = relationship("DeclaracionJurada", back_populates="paciente")
-    antecedentes = relationship("AntecedentesP2", back_populates="paciente")
 
 class DeclaracionJurada(Base):
-    __tablename__ = "declaraciones_juradas"
+    __tablename__ = "filiaciones"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     edad = Column(Integer)
     sexo = Column(String)
-    fecha_nacimiento = Column(String)
+    fecha_nacimiento = Column(Date)
     lugar_nacimiento = Column(String)
     domicilio = Column(String)
     n_casa = Column(String)
@@ -29,13 +25,11 @@ class DeclaracionJurada(Base):
     telefono = Column(String)
     estado_civil = Column(String)
     profesion_oficio = Column(String)
-    paciente = relationship("Paciente", back_populates="declaraciones")
 
 class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # Definición de los 22 campos de datos (d1 a d22) y estados (p1 a p22)
     p1 = Column(String); d1 = Column(String); p2 = Column(String); d2 = Column(String)
     p3 = Column(String); d3 = Column(String); p4 = Column(String); d4 = Column(String)
     p5 = Column(String); d5 = Column(String); p6 = Column(String); d6 = Column(String)
@@ -47,4 +41,13 @@ class AntecedentesP2(Base):
     p17 = Column(String); d17 = Column(String); p18 = Column(String); d18 = Column(String)
     p19 = Column(String); d19 = Column(String); p20 = Column(String); d20 = Column(String)
     p21 = Column(String); d21 = Column(String); p22 = Column(String); d22 = Column(String)
-    paciente = relationship("Paciente", back_populates="antecedentes")
+
+class HabitosRiesgosP3(Base):
+    __tablename__ = "habitos_p3"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
+    h1 = Column(String); r1 = Column(String); h2 = Column(String); r2 = Column(String)
+    h3 = Column(String); r3 = Column(String); h4 = Column(String); r4 = Column(String)
+    h5 = Column(String); r5 = Column(String); h6 = Column(String); r6 = Column(String)
+    h7 = Column(String); r7 = Column(String); h8 = Column(String); r8 = Column(String)
+    h9 = Column(String); r9 = Column(String); h10 = Column(String); r10 = Column(String)
