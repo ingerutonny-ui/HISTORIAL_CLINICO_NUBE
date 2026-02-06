@@ -7,7 +7,6 @@ from .database import SessionLocal, engine
 models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
-# Configuración de CORS corregida para permitir el acceso desde GitHub Pages
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
