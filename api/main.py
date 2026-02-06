@@ -65,7 +65,8 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     def get_val(obj, attr, default=""):
         if obj is None: return default
         res = getattr(obj, attr, None)
-        if res is None or str(res).lower() in ["none", "null", "undefined", "n/a"]:
+        # Solo filtramos nulos reales, no el texto "N/A" si es lo que viene de la DB
+        if res is None or str(res).lower() in ["none", "null", "undefined"]:
             return default
         return res
 
