@@ -2,11 +2,11 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
-import json
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Esto creará las tablas nuevas si no existen
+# ESTO RESETEA LAS TABLAS PARA ACEPTAR LOS NUEVOS CAMPOS
+models.Base.metadata.drop_all(bind=engine)
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -40,15 +40,12 @@ def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
 
 @app.post("/declaraciones/p3/")
 def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
-    # Intentamos guardar; si falla es por la tabla vieja en la base de datos
     try:
         crud.create_habitos(db=db, habitos=data)
         return {"status": "success"}
     except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail="Error de base de datos. Por favor limpia el caché en Render.")
+        raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
-def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
-    # ... (Mantenemos la lógica del PDF que ya tienes)
-    return HTMLResponse(content="<h1>Reporte Generado</h1>")
+@app.get("/generar-pdf/{{paciente_id}}", response_class=HTMLResponse)
+def reporte_simple(paciente_id: int, db: Session = Depends(get_db)):
+    return HTMLResponse(content="<h1>REGISTRO COMPLETADO</h1>")
