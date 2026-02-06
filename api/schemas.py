@@ -2,34 +2,18 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 
-class PacienteBase(BaseModel):
-    nombres: str
-    apellidos: str
-    ci: str
-    codigo_paciente: str
+class PacienteCreate(BaseModel):
+    nombres: str; apellidos: str; ci: str; codigo_paciente: str
 
-class PacienteCreate(PacienteBase):
-    pass
-
-class Paciente(PacienteBase):
+class Paciente(PacienteCreate):
     id: int
-    class Config:
-        from_attributes = True
+    class Config: from_attributes = True
 
 class FiliacionCreate(BaseModel):
-    paciente_id: int
-    edad: int
-    sexo: str
-    fecha_nacimiento: date
-    lugar_nacimiento: Optional[str] = "S/D"
-    domicilio: Optional[str] = "S/D"
-    n_casa: Optional[str] = "S/N"
-    zona_barrio: Optional[str] = "S/D"
-    ciudad: Optional[str] = "S/D"
-    pais: Optional[str] = "BOLIVIA"
-    telefono: Optional[str] = "00000000"
-    estado_civil: str
-    profesion_oficio: Optional[str] = "S/D"
+    paciente_id: int; edad: int; sexo: str; fecha_nacimiento: date; estado_civil: str
+    lugar_nacimiento: Optional[str] = "S/D"; domicilio: Optional[str] = "S/D"; n_casa: Optional[str] = "S/N"
+    zona_barrio: Optional[str] = "S/D"; ciudad: Optional[str] = "S/D"; pais: Optional[str] = "BOLIVIA"
+    telefono: Optional[str] = "0"; profesion_oficio: Optional[str] = "S/D"
 
 class AntecedentesCreate(BaseModel):
     paciente_id: int
@@ -42,4 +26,4 @@ class HabitosCreate(BaseModel):
     paciente_id: int
     h1: str; r1: str; h2: str; r2: str; h3: str; r3: str; h4: str; r4: str; h5: str; r5: str
     h6: str; r6: str; h7: str; r7: str; h8: str; r8: str; h9: str; r9: str; h10: str; r10: str
-    historia_laboral: Optional[str] = "[]"
+    historia_laboral: str
