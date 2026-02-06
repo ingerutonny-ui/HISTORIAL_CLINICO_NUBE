@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional
 from datetime import date
 
 class PacienteBase(BaseModel):
@@ -21,11 +21,13 @@ class FiliacionCreate(BaseModel):
     edad: int
     sexo: str
     fecha_nacimiento: date
+    lugar_nacimiento: Optional[str] = "S/D"
     domicilio: Optional[str] = "S/D"
     n_casa: Optional[str] = "S/N"
+    zona_barrio: Optional[str] = "S/D"
     ciudad: Optional[str] = "S/D"
     pais: Optional[str] = "BOLIVIA"
-    telefono: Optional[str] = "0"
+    telefono: Optional[str] = "00000000"
     estado_civil: str
     profesion_oficio: Optional[str] = "S/D"
 
@@ -38,14 +40,6 @@ class AntecedentesCreate(BaseModel):
 
 class HabitosCreate(BaseModel):
     paciente_id: int
-    h1: Optional[str] = "NO"; r1: Optional[str] = ""
-    h2: Optional[str] = "NO"; r2: Optional[str] = ""
-    h3: Optional[str] = "NO"; r3: Optional[str] = ""
-    h4: Optional[str] = "NO"; r4: Optional[str] = ""
-    h5: Optional[str] = "NO"; r5: Optional[str] = ""
-    h6: Optional[str] = "NO"; r6: Optional[str] = ""
-    h7: Optional[str] = "NO"; r7: Optional[str] = ""
-    h8: Optional[str] = "NO"; r8: Optional[str] = ""
-    h9: Optional[str] = "NO"; r9: Optional[str] = ""
-    h10: Optional[str] = "NO"; r10: Optional[str] = ""
+    h1: str; r1: str; h2: str; r2: str; h3: str; r3: str; h4: str; r4: str; h5: str; r5: str
+    h6: str; r6: str; h7: str; r7: str; h8: str; r8: str; h9: str; r9: str; h10: str; r10: str
     historia_laboral: Optional[str] = "[]"
