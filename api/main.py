@@ -43,7 +43,10 @@ def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
 
 @app.post("/declaraciones/p3/")
 def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
-    return crud.create_habitos(db=db, habitos=data)
+    db_habitos = crud.create_habitos(db=db, habitos=data)
+    if not db_habitos:
+        raise HTTPException(status_code=400, detail="Error al finalizar el registro")
+    return {"status": "success", "message": "Registro completado exitosamente"}
 
 @app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
 def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
@@ -53,6 +56,28 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
     
     p, f, a, h = data["paciente"], data["filiacion"], data["antecedentes"], data["habitos"]
 
+    # Procesar Historia Laboral desde JSON
+    filas_laboral = ""
+    if h and h.historia_laboral:
+        try:
+            lista_lab = json.loads(h.historia_laboral)
+            for item in lista_lab:
+                filas_laboral += f"""
+                <tr>
+                    <td>{item.get('edad','')}</td>
+                    <td>{item.get('emp','')}</td>
+                    <td>{item.get('ocu','')}</td>
+                    <td>{item.get('tie','')}</td>
+                    <td>{item.get('rie','')}</td>
+                    <td>{item.get('epp','')}</td>
+                </tr>"""
+        except:
+            pass
+    
+    # Relleno de seguridad para mantener la estructura de la tabla
+    while filas_laboral.count("<tr>") < 5:
+        filas_laboral += "<tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>"
+
     html_content = f"""
     <!DOCTYPE html>
     <html lang="es">
@@ -60,112 +85,30 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
         <meta charset="UTF-8">
         <style>
             @page {{ size: letter; margin: 0; }}
-            body {{ font-family: Arial, sans-serif; font-size: 9px; margin: 0; padding: 0; }}
-            .page {{ width: 216mm; height: 279mm; padding: 15mm; box-sizing: border-box; page-break-after: always; position: relative; }}
-            .header-box {{ border: 1px solid #000; display: flex; align-items: center; text-align: center; margin-bottom: 10px; }}
-            .logo-area {{ width: 20%; font-weight: bold; font-size: 20px; border-right: 1px solid #000; padding: 10px; }}
+            body {{ font-family: Arial, sans-serif; font-size: 8px; margin: 0; padding: 0; text-transform: uppercase; }}
+            .page {{ width: 216mm; height: 279mm; padding: 15mm; box-sizing: border-box; page-break-after: always; }}
+            .header-box {{ border: 1px solid #000; display: flex; text-align: center; }}
+            .logo-area {{ width: 20%; font-weight: bold; font-size: 18px; border-right: 1px solid #000; padding: 10px; }}
             .title-area {{ width: 60%; padding: 5px; }}
             .code-area {{ width: 20%; border-left: 1px solid #000; padding: 5px; }}
-            
-            .section-title {{ background: #000; color: #fff; padding: 4px; font-weight: bold; text-transform: uppercase; margin-top: 10px; border: 1px solid #000; }}
-            .grid-table {{ width: 100%; border-collapse: collapse; margin-bottom: 5px; }}
-            .grid-table td {{ border: 1px solid #000; padding: 4px; vertical-align: top; }}
-            .label {{ font-size: 7px; font-weight: bold; display: block; text-transform: uppercase; }}
-            
-            .med-row {{ display: flex; border: 1px solid #000; border-top: none; align-items: stretch; }}
-            .med-label {{ width: 25%; font-weight: bold; border-right: 1px solid #000; padding: 3px; display: flex; align-items: center; }}
-            .med-val {{ width: 10%; border-right: 1px solid #000; padding: 3px; text-align: center; font-weight: bold; }}
-            .med-desc {{ width: 65%; padding: 3px; font-size: 8px; }}
-            
-            .footer-legal {{ margin-top: 20px; text-align: justify; border: 1px solid #000; padding: 10px; line-height: 1.4; }}
-            .signature-box {{ margin-top: 40px; text-align: center; }}
-            .line {{ border-top: 1px solid #000; width: 250px; margin: 0 auto; padding-top: 5px; font-weight: bold; }}
+            .section-title {{ background: #000; color: #fff; padding: 3px; font-weight: bold; margin-top: 8px; border: 1px solid #000; }}
+            .grid-table {{ width: 100%; border-collapse: collapse; margin-top: 2px; }}
+            .grid-table td {{ border: 1px solid #000; padding: 3px; }}
+            .label {{ font-size: 6px; font-weight: bold; display: block; }}
+            .footer-legal {{ margin-top: 15px; text-align: justify; border: 1px solid #000; padding: 8px; font-size: 7px; }}
+            .sig-box {{ margin-top: 30px; text-align: center; }}
+            .line {{ border-top: 1px solid #000; width: 200px; margin: 0 auto; padding-top: 3px; }}
         </style>
     </head>
     <body>
         <div class="page">
             <div class="header-box">
                 <div class="logo-area">ohs</div>
-                <div class="title-area">
-                    <b style="font-size: 14px;">DECLARACIÓN JURADA DE SALUD</b><br>
-                    <span>TRABAJO SANO, SEGURO Y PRODUCTIVO</span>
-                </div>
-                <div class="code-area">
-                    <span class="label">CÓDIGO</span>
-                    <b>{p.codigo_paciente}</b>
-                </div>
+                <div class="title-area"><b>DECLARACIÓN JURADA DE SALUD</b><br>TRABAJO SANO, SEGURO Y PRODUCTIVO</div>
+                <div class="code-area"><span class="label">CÓDIGO</span><b>{p.codigo_paciente}</b></div>
             </div>
 
             <div class="section-title">1. AFILIACIÓN DEL TRABAJADOR</div>
             <table class="grid-table">
-                <tr>
-                    <td colspan="3"><span class="label">Apellidos y Nombres</span><b>{p.nombres} {p.apellidos}</b></td>
-                    <td><span class="label">Edad</span>{f.edad if f else ''} AÑOS</td>
-                    <td><span class="label">Sexo</span>{f.sexo if f else ''}</td>
-                </tr>
-                <tr>
-                    <td><span class="label">Fecha Nacimiento</span>{f.fecha_nacimiento if f else ''}</td>
-                    <td><span class="label">C.I.</span>{p.ci}</td>
-                    <td colspan="3"><span class="label">Domicilio</span>{f.domicilio if f else ''} #{f.n_casa if f else ''} - {f.ciudad if f else ''}</td>
-                </tr>
-            </table>
-
-            <div class="section-title">2. ANTECEDENTES PATOLÓGICOS</div>
-            <div style="border-top: 1px solid #000;">
-                <div class="med-row">
-                    <div class="med-label">VISTA</div><div class="med-val">{a.p1 if a else ''}</div>
-                    <div class="med-desc">Glaucoma, Miopía, Daltonismo, Pterigión: {a.d1 if a else ''}</div>
-                </div>
-                <div class="med-row">
-                    <div class="med-label">AUDITIVO</div><div class="med-val">{a.p2 if a else ''}</div>
-                    <div class="med-desc">Hipoacusia, Vértigo, Otitis: {a.d2 if a else ''}</div>
-                </div>
-                <div class="med-row">
-                    <div class="med-label">RESPIRATORIOS</div><div class="med-val">{a.p3 if a else ''}</div>
-                    <div class="med-desc">TBC, Asma, Bronquitis, Rinitis: {a.d3 if a else ''}</div>
-                </div>
-                <div class="med-row">
-                    <div class="med-label">CARDIOVASCULARES</div><div class="med-val">{a.p4 if a else ''}</div>
-                    <div class="med-desc">Hipertensión, Soplos, Infartos: {a.d4 if a else ''}</div>
-                </div>
-                <div class="med-row">
-                    <div class="med-label">DIGESTIVOS</div><div class="med-val">{a.p5 if a else ''}</div>
-                    <div class="med-desc">Gastritis, Úlceras, Hemorroides: {a.d5 if a else ''}</div>
-                </div>
-                </div>
-        </div>
-
-        <div class="page">
-            <div class="section-title">ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
-            <table class="grid-table">
-                <tr style="background: #eee; font-weight: bold; text-align: center;">
-                    <td>Edad Inicio</td><td>Empresa</td><td>Ocupación</td><td>Tiempo</td><td>Riesgos</td><td>EPP</td>
-                </tr>
-                {"".join([f"<tr><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>" for _ in range(5)])}
-            </table>
-
-            <div class="section-title">3. HÁBITOS</div>
-            <table class="grid-table">
-                <tr>
-                    <td><b>ALCOHOL:</b> {h.h2 if h else ''} ({h.r2 if h else ''})</td>
-                    <td><b>TABACO:</b> {h.h1 if h else ''} ({h.r1 if h else ''})</td>
-                </tr>
-                <tr>
-                    <td><b>PIJCHAR/BOLO:</b> {h.h4 if h else ''}</td>
-                    <td><b>GRUPO SANGUÍNEO:</b> {h.r10 if h else ''}</td>
-                </tr>
-            </table>
-
-            <div class="footer-legal">
-                Por medio de este documento médico legal declaro que es verdad toda la información proporcionada. Cualquier omisión o falsedad invalida el presente de acuerdo a normativa del Ministerio de Salud.
-            </div>
-
-            <div class="signature-box">
-                <div class="line">FIRMA DEL TRABAJADOR / PACIENTE</div>
-                C.I. {p.ci}
-            </div>
-        </div>
-    </body>
-    </html>
-    """
-    return HTMLResponse(content=html_content)
+                <tr><td colspan="3"><span class="label">Apellidos y Nombres</span><b>{p.nombres} {p.apellidos}</b></td><td><span class="label">Edad</span>{f.edad if f else ''}</td><td><span class="label">Sexo</span>{f.sexo if f else ''}</td></tr>
+                <tr><td><span class="label">Fecha Nacimiento</span>{f.fecha_nacimiento if f else ''}</td><td>
