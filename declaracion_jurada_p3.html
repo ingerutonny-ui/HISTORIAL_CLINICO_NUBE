@@ -2,54 +2,114 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>DECLARACIÓN JURADA - HOJA 2</title>
+    <title>DECLARACIÓN JURADA - SECCIÓN 3</title>
     <style>
         :root { --verde: #34a174; --fondo: #f1f5f9; --blanco: #ffffff; }
         body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; padding: 20px; text-transform: uppercase; }
-        .card { background: var(--blanco); padding: 30px; border-radius: 40px; max-width: 900px; margin: auto; }
-        .habito-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px; }
-        table th, table td { border: 1px solid #ddd; padding: 5px; text-align: center; }
-        input, select { width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 5px; box-sizing: border-box; }
-        .btn-finalizar { background: var(--verde); color: white; border: none; padding: 15px; border-radius: 20px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .card { background: var(--blanco); padding: 30px; border-radius: 40px; max-width: 950px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        h3 { border-left: 5px solid var(--verde); padding-left: 10px; color: #1e293b; margin-top: 25px; }
+        .habito-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
+        .item-h { background: #f8fafc; padding: 10px; border-radius: 15px; border: 1px solid #e2e8f0; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
+        table th, table td { border: 1px solid #cbd5e1; padding: 8px; text-align: center; }
+        table th { background: #f1f5f9; }
+        input, select { width: 100%; border: 1px solid #ccc; border-radius: 8px; padding: 8px; box-sizing: border-box; text-transform: uppercase; font-size: 11px; }
+        .riesgos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #f8fafc; padding: 15px; border-radius: 15px; }
+        .check-item { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: bold; }
+        .check-item input { width: auto; }
+        .btn-add { background: #64748b; color: white; border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; margin-bottom: 10px; }
+        .btn-finalizar { background: var(--verde); color: white; border: none; padding: 20px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 30px; font-size: 16px; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h3>3. HÁBITOS (HOJA 2)</h3>
+        <h2 style="text-align: center;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
+        
         <form id="formP3">
+            <h3>I. HÁBITOS</h3>
             <div class="habito-grid">
-                <div><label>FUMA</label><select id="h1"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r1" placeholder="CANTIDAD"></div>
-                <div><label>BEBE</label><select id="h2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r2" placeholder="FRECUENCIA"></div>
-                <div><label>PIJCHA/BOLO</label><select id="h4"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div><label>GRUPO SANGUÍNEO</label><input type="text" id="r10" placeholder="EJ. ORH+"></div>
+                <div class="item-h"><label>FUMA</label><select id="h1"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r1" placeholder="CANTIDAD"></div>
+                <div class="item-h"><label>ALCOHOL</label><select id="h2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r2" placeholder="FRECUENCIA"></div>
+                <div class="item-h"><label>DROGAS</label><select id="h3"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r3" placeholder="TIPO"></div>
+                <div class="item-h"><label>PIJCHAR (COCA)</label><select id="h4"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="item-h"><label>DEPORTES</label><select id="h5"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r5" placeholder="CUAL/FRECUENCIA"></div>
+                <div class="item-h"><label>GRUPO SANGUÍNEO</label><input type="text" id="r10" placeholder="EJ. ORH+" required></div>
             </div>
 
-            <h3>ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</h3>
+            <h3>II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</h3>
+            <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
             <table id="tablaLaboral">
-                <thead><tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
+                <thead><tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP (SI/NO)</th></tr></thead>
                 <tbody>
-                    <tr><td><input type="number"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td><td><select><option>SI</option><option>NO</option></select></td></tr>
+                    <tr>
+                        <td><input type="number" class="l_edad"></td>
+                        <td><input type="text" class="l_emp"></td>
+                        <td><input type="text" class="l_ocu"></td>
+                        <td><input type="text" class="l_tie"></td>
+                        <td><input type="text" class="l_rie"></td>
+                        <td><select class="l_epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+                    </tr>
                 </tbody>
             </table>
 
-            <button type="submit" id="btnFinalizar" class="btn-finalizar">FINALIZAR Y GENERAR REPORTE OFICIAL 💾</button>
+            <h3>III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</h3>
+            <div class="riesgos-grid">
+                <div class="check-item"><input type="checkbox" id="rk1" value="RUIDO"> RUIDO</div>
+                <div class="check-item"><input type="checkbox" id="rk2" value="VIBRACION"> VIBRACIÓN</div>
+                <div class="check-item"><input type="checkbox" id="rk3" value="RADIACION"> RADIACIÓN</div>
+                <div class="check-item"><input type="checkbox" id="rk4" value="TEMPERATURAS"> TEMP. EXTREMAS</div>
+                <div class="check-item"><input type="checkbox" id="rk5" value="POLVOS"> POLVOS</div>
+                <div class="check-item"><input type="checkbox" id="rk6" value="GASES"> GASES/VAPORES</div>
+                <div class="check-item"><input type="checkbox" id="rk7" value="ERGONOMICOS"> ERGONÓMICOS</div>
+                <div class="check-item"><input type="checkbox" id="rk8" value="PSICOSOCIAL"> PSICOSOCIAL</div>
+            </div>
+
+            <button type="submit" id="btnFinalizar" class="btn-finalizar">TERMINAR Y GUARDAR REGISTRO 💾</button>
         </form>
     </div>
+
 <script>
+    function addRow() {
+        const tbody = document.querySelector("#tablaLaboral tbody");
+        const row = tbody.insertRow();
+        row.innerHTML = `<td><input type="number" class="l_edad"></td><td><input type="text" class="l_emp"></td><td><input type="text" class="l_ocu"></td><td><input type="text" class="l_tie"></td><td><input type="text" class="l_rie"></td><td><select class="l_epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
+    }
+
     document.getElementById('formP3').addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnFinalizar');
         btn.disabled = true;
         
+        // Recolectar Historia Laboral
+        const historia = [];
+        document.querySelectorAll("#tablaLaboral tbody tr").forEach(tr => {
+            const inputs = tr.querySelectorAll("input, select");
+            if(inputs[1].value) { // Si hay nombre de empresa
+                historia.push({
+                    edad: inputs[0].value, emp: inputs[1].value.toUpperCase(),
+                    ocu: inputs[2].value.toUpperCase(), tie: inputs[3].value.toUpperCase(),
+                    rie: inputs[4].value.toUpperCase(), epp: inputs[5].value
+                });
+            }
+        });
+
+        // Recolectar Riesgos Marcados
+        const riesgos_marcados = [];
+        for(let i=1; i<=8; i++) {
+            if(document.getElementById(`rk${i}`).checked) riesgos_marcados.push(document.getElementById(`rk${i}`).value);
+        }
+
         const payload = {
             paciente_id: parseInt(localStorage.getItem('paciente_id')),
-            h1: document.getElementById('h1').value, r1: document.getElementById('r1').value.toUpperCase(),
-            h2: document.getElementById('h2').value, r2: document.getElementById('r2').value.toUpperCase(),
-            h3: "NO", r3: "N/A", h4: document.getElementById('h4').value, r4: "N/A",
-            h5: "NO", r5: "N/A", h6: "N/A", r6: "N/A", h7: "N/A", r7: "N/A",
-            h8: "N/A", r8: "N/A", h9: "N/A", r9: "N/A", h10: "N/A", r10: document.getElementById('r10').value.toUpperCase(),
-            historia_laboral: "[]" 
+            h1: document.getElementById('h1').value, r1: document.getElementById('r1').value.toUpperCase() || "N/A",
+            h2: document.getElementById('h2').value, r2: document.getElementById('r2').value.toUpperCase() || "N/A",
+            h3: document.getElementById('h3').value, r3: document.getElementById('r3').value.toUpperCase() || "N/A",
+            h4: document.getElementById('h4').value, r4: "N/A",
+            h5: document.getElementById('h5').value, r5: document.getElementById('r5').value.toUpperCase() || "N/A",
+            h6: "RIESGOS", r6: riesgos_marcados.join(", "), 
+            h7: "N/A", r7: "N/A", h8: "N/A", r8: "N/A", h9: "N/A", r9: "N/A",
+            h10: "GRUPO", r10: document.getElementById('r10').value.toUpperCase(),
+            historia_laboral: JSON.stringify(historia)
         };
 
         try {
@@ -57,10 +117,10 @@
                 method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
             });
             if(res.ok) {
-                alert("✓ COMPLETADO");
-                window.location.href = "generar_pdf.html"; // O donde visualices el PDF
+                alert("✅ REGISTRO DE HISTORIAL CLÍNICO FINALIZADO CON ÉXITO");
+                window.location.href = "index.html"; 
             }
-        } catch (err) { alert("Error"); }
+        } catch (err) { alert("Error de red"); }
         finally { btn.disabled = false; }
     });
 </script>
