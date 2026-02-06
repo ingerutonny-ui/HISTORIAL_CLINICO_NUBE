@@ -143,26 +143,26 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                 ], 1)])}
                 <tr>
                     <td>19. ACCIDENTES PARTICULARES</td>
-                    <td class="col-si-no">{mark(get_val(a, 'p19', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(a, 'p19', None), 'NO')}</td>
-                    <td class="value">{get_val(a, 'd19', '')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h1', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h1', None), 'NO')}</td>
+                    <td class="value">{get_val(h, 'r1', '')}</td>
                 </tr>
                 <tr>
                     <td>20. MEDICAMENTOS (Uso actual)</td>
-                    <td class="col-si-no">{mark(get_val(a, 'p20', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(a, 'p20', None), 'NO')}</td>
-                    <td class="value">{get_val(a, 'd20', '')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h2', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h2', None), 'NO')}</td>
+                    <td class="value">{get_val(h, 'r2', '')}</td>
                 </tr>
                 <tr>
                     <td>21. GRUPO SANGUÍNEO</td>
                     <td colspan="2" style="background-color: #eee;"></td>
-                    <td class="value">{get_val(h, 'grupo_sanguineo')}</td>
+                    <td class="value">{get_val(h, 'r3', '')}</td>
                 </tr>
                 <tr>
                     <td>22. DEPORTES (Actividad y frecuencia)</td>
-                    <td class="col-si-no">{mark(get_val(h, 'deportes', None), 'SI')}</td>
-                    <td class="col-si-no">{mark(get_val(h, 'deportes', None), 'NO')}</td>
-                    <td class="value">{get_val(h, 'deportes_frecuencia')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h4', None), 'SI')}</td>
+                    <td class="col-si-no">{mark(get_val(h, 'h4', None), 'NO')}</td>
+                    <td class="value">{get_val(h, 'r4', '')}</td>
                 </tr>
             </tbody>
         </table>
