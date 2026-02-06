@@ -99,9 +99,9 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
                 <div class="title"><b>DECLARACIÓN JURADA DE SALUD</b><br>TRABAJO SANO, SEGURO Y PRODUCTIVO</div>
                 <div class="code"><span class="label">CÓDIGO</span><b>{p.codigo_paciente}</b></div>
             </div>
-            <div class="section">1. AFILIACIÓN</div>
+            <div class="section">1. AFILIACIÓN DEL TRABAJADOR</div>
             <table class="table">
-                <tr><td colspan="3"><span class="label">Nombres y Apellidos</span><b>{p.nombres} {p.apellidos}</b></td><td><span class="label">C.I.</span>{p.ci}</td></tr>
+                <tr><td colspan="3"><span class="label">Apellidos y Nombres</span><b>{p.nombres} {p.apellidos}</b></td><td><span class="label">C.I.</span>{p.ci}</td></tr>
                 <tr><td><span class="label">Edad</span>{f.edad if f else ''}</td><td><span class="label">Sexo</span>{f.sexo if f else ''}</td><td><span class="label">F. Nacimiento</span>{f.fecha_nacimiento if f else ''}</td><td><span class="label">Teléfono</span>{f.telefono if f else ''}</td></tr>
                 <tr><td colspan="2"><span class="label">Domicilio</span>{f.domicilio if f else ''} #{f.n_casa if f else ''}</td><td colspan="2"><span class="label">Ciudad/País</span>{f.ciudad if f else ''} / {f.pais if f else ''}</td></tr>
             </table>
@@ -114,24 +114,28 @@ def generar_reporte_completo(paciente_id: int, db: Session = Depends(get_db)):
                 <tr><td>CARDIOVASCULARES</td><td>{a.p4 if a else ''}</td><td>{a.d4 if a else ''}</td></tr>
                 <tr><td>DIGESTIVOS</td><td>{a.p5 if a else ''}</td><td>{a.d5 if a else ''}</td></tr>
                 <tr><td>SANGRE</td><td>{a.p6 if a else ''}</td><td>{a.d6 if a else ''}</td></tr>
-                <tr><td>GENITOURINARIO</td><td>{a.p7 if a else ''}</td><td>{a.d7 if a else ''}</td></tr>
-                <tr><td>NERVIOSO / PSIQ.</td><td>{a.p8 if a else ''} / {a.p9 if a else ''}</td><td>{a.d8 if a else ''} {a.d9 if a else ''}</td></tr>
+                <tr><td>GENITO/URINARIO</td><td>{a.p7 if a else ''}</td><td>{a.d7 if a else ''}</td></tr>
+                <tr><td>SISTEMA NERVIOSO</td><td>{a.p8 if a else ''}</td><td>{a.d8 if a else ''}</td></tr>
+                <tr><td>PSIQUIATRICOS</td><td>{a.p9 if a else ''}</td><td>{a.d9 if a else ''}</td></tr>
                 <tr><td>OSTEOMUSCULARES</td><td>{a.p10 if a else ''}</td><td>{a.d10 if a else ''}</td></tr>
-                <tr><td>ALERGIAS / PIEL</td><td>{a.p12 if a else ''} / {a.p11 if a else ''}</td><td>{a.d12 if a else ''} {a.d11 if a else ''}</td></tr>
+                <tr><td>DERMATOLOGICAS</td><td>{a.p11 if a else ''}</td><td>{a.d11 if a else ''}</td></tr>
+                <tr><td>ALERGIAS</td><td>{a.p12 if a else ''}</td><td>{a.d12 if a else ''}</td></tr>
+                <tr><td>CIRUGIAS</td><td>{a.p13 if a else ''}</td><td>{a.d13 if a else ''}</td></tr>
+                <tr><td>ACCIDENTES TRABAJO</td><td>{a.p14 if a else ''}</td><td>{a.d14 if a else ''}</td></tr>
             </table>
         </div>
         <div class="page">
-            <div class="section">ANTECEDENTES OCUPACIONALES</div>
+            <div class="section">ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
             <table class="table">
                 <tr style="background:#eee"><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>
                 {filas_laboral}
             </table>
-            <div class="section">3. HÁBITOS Y RIESGOS</div>
+            <div class="section">3. HÁBITOS Y FACTORES DE RIESGO</div>
             <table class="table">
-                <tr><td><b>FUMA:</b> {h.h1 if h else ''} ({h.r1 if h else ''})</td><td><b>BEBE:</b> {h.h2 if h else ''} ({h.r2 if h else ''})</td></tr>
-                <tr><td><b>DROGAS:</b> {h.h3 if h else ''} ({h.r3 if h else ''})</td><td><b>BOLO:</b> {h.h4 if h else ''} ({h.r4 if h else ''})</td></tr>
-                <tr><td><b>DEPORTE:</b> {h.h5 if h else ''} ({h.r5 if h else ''})</td><td><b>GRUPO SANGUÍNEO:</b> {h.r10 if h else ''}</td></tr>
-                <tr><td colspan="2"><b>RIESGOS LABORALES:</b> {h.r6 if h else ''} {h.r7 if h else ''} {h.r8 if h else ''} {h.r9 if h else ''}</td></tr>
+                <tr><td><b>ALCOHOL:</b> {h.h2 if h else ''} ({h.r2 if h else ''})</td><td><b>TABACO:</b> {h.h1 if h else ''} ({h.r1 if h else ''})</td></tr>
+                <tr><td><b>DROGAS:</b> {h.h3 if h else ''} ({h.r3 if h else ''})</td><td><b>COCA (BOLO):</b> {h.h4 if h else ''} ({h.r4 if h else ''})</td></tr>
+                <tr><td><b>DEPORTES:</b> {h.h5 if h else ''} ({h.r5 if h else ''})</td><td><b>GRUPO SANGUÍNEO:</b> {h.r10 if h else ''}</td></tr>
+                <tr><td colspan="2"><b>RIESGOS VIDA LABORAL:</b> {h.r6 if h else ''} {h.r7 if h else ''} {h.r8 if h else ''} {h.r9 if h else ''}</td></tr>
             </table>
             <div class="sig">
                 <div class="line"></div>
