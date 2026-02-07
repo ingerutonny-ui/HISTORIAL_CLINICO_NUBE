@@ -5,9 +5,8 @@ from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# ESTO ELIMINA LAS TABLAS ACTUALES Y LAS CREA DE NUEVO CON LAS COLUMNAS CORRECTAS
-# SE HACE PARA SOLUCIONAR EL ERROR 'UndefinedColumn' SIN USAR LA CONSOLA SQL
-models.Base.metadata.drop_all(bind=engine)
+# LÍNEA DE PROTECCIÓN: Comentamos drop_all para NO borrar datos nunca más
+# models.Base.metadata.drop_all(bind=engine) 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -47,6 +46,10 @@ def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
 def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
     return crud.create_habitos(db=db, habitos=data)
 
+# NUEVO ENDPOINT PARA EL VISOR DE HISTORIAL
 @app.get("/historial-completo/{paciente_id}")
 def get_todo(paciente_id: int, db: Session = Depends(get_db)):
-    return crud.get_historial_completo(db, paciente_id)
+    data = crud.get_historial_completo(db, paciente_id)
+    if not data["paciente"]:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return data
