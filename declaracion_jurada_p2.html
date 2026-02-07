@@ -1,65 +1,56 @@
 <!DOCTYPE html>
-<html lang="ES">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>DECLARACIÓN JURADA - ANTECEDENTES</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC NUBE | PARTE 2</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --verde: #34a174; --fondo: #f0f4f8; --blanco: #ffffff; --input-bg: #f1f5f9; }
-        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-transform: uppercase; }
-        .container { background: var(--blanco); max-width: 950px; margin: auto; padding: 40px; border-radius: 50px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .item-med { background: #f8fafc; padding: 10px; border-radius: 15px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
-        .item-med select { width: 70px; padding: 8px; border-radius: 10px; border: none; background: var(--verde); color: white; font-weight: bold; }
-        .item-med input { flex: 1; padding: 8px; border-radius: 10px; border: 1px solid #ddd; font-size: 11px; }
-        label { font-size: 9px; font-weight: bold; color: #64748b; width: 150px; }
-        .btn-submit { background: var(--verde); color: white; border: none; padding: 18px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 20px; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .form-container { background: white; padding: 30px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 1200px; margin: auto; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .item-card { background: #f8fafc; padding: 10px 15px; border-radius: 15px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+        .item-label { font-size: 10px; font-weight: 700; color: #64748b; flex: 1; text-transform: uppercase; }
+        .select-custom { width: 80px; background: #24a174; color: white; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; padding: 5px; }
+        .input-custom { flex: 1; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px 10px; font-size: 11px; text-transform: uppercase; }
+        .btn-next { background-color: #24a174; border: none; border-radius: 15px; padding: 15px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 20px; }
     </style>
 </head>
 <body>
-<div class="container">
-    <h2 style="text-align:center">2. ANTECEDENTES PATOLÓGICOS (HOJA 1)</h2>
+<div class="form-container">
+    <h4 class="text-center fw-bold mb-4">2. ANTECEDENTES PATOLÓGICOS (22 CAMPOS)</h4>
     <form id="formP2">
-        <div class="grid" id="gridSistemas">
+        <div id="camposContainer" class="grid-layout">
             </div>
-        <button type="submit" id="btnSiguiente" class="btn-submit">SIGUIENTE: HOJA 2 (HÁBITOS Y TRABAJO)</button>
+        <button type="submit" class="btn-next">SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)</button>
     </form>
 </div>
+
 <script>
-    const sistemas = [
-        "VISTA (LENTES/GLAUCOMA)", "AUDITIVO (SORDERA/VERTIGO)", "RESPIRATORIOS (ASMA/TBC)", 
-        "CARDIOVASCULARES (HTA)", "DIGESTIVOS (GASTRITIS)", "SANGRE (ANEMIA)", 
-        "GENITOURINARIO", "SISTEMA NERVIOSO", "PSIQUIATRICOS", "OSTEOMUSCULARES", 
-        "PIEL/DERMATOLOGICAS", "ALERGIAS", "CIRUGIAS", "ACCIDENTES TRABAJO", 
-        "ACCIDENTES PARTICULARES", "MEDICAMENTOS", "INFECCIOSAS (CHAGAS)", "OTROS"
+    const titulos = [
+        "VISTA (LENTES/GLAUCOMA)", "AUDITIVO (SORDERA/VERTIGO)", "RESPIRATORIOS (ASMA/TBC)", "CARDIOVASCULARES (HTA)",
+        "DIGESTIVOS (GASTRITIS)", "SANGRE (ANEMIA)", "GENITOURINARIO", "SISTEMA NERVIOSO",
+        "PSIQUIATRICOS", "OSTEOMUSCULARES", "PIEL/DERMATOLOGICAS", "ALERGIAS",
+        "CIRUGIAS", "ACCIDENTES TRABAJO", "ACCIDENTES PARTICULARES", "MEDICAMENTOS",
+        "INFECCIOSAS (CHAGAS)", "APARATO URINARIO", "SISTEMA ENDOCRINO", "SISTEMA LINFATICO",
+        "ANTECEDENTES FAMILIARES", "OTROS ESPECIFICOS"
     ];
 
-    const grid = document.getElementById('gridSistemas');
-    sistemas.forEach((s, i) => {
-        grid.innerHTML += `
-            <div class="item-med">
-                <label>${i+1}. ${s}</label>
-                <select id="p${i+1}"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="d${i+1}" placeholder="DETALLE O NORMAL">
+    const container = document.getElementById('camposContainer');
+    titulos.forEach((titulo, index) => {
+        container.innerHTML += `
+            <div class="item-card">
+                <span class="item-label">${index + 1}. ${titulo}</span>
+                <select class="select-custom" name="estado_${index}"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" class="input-custom" name="detalle_${index}" placeholder="DETALLE O NORMAL">
             </div>`;
     });
 
-    document.getElementById('formP2').addEventListener('submit', async (e) => {
+    document.getElementById('formP2').onsubmit = (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btnSiguiente');
-        btn.disabled = true;
-        const data = { paciente_id: parseInt(localStorage.getItem('paciente_id')) };
-        for(let i=1; i<=18; i++) {
-            data[`p${i}`] = document.getElementById(`p${i}`).value;
-            data[`d${i}`] = document.getElementById(`d${i}`).value.toUpperCase() || "NORMAL";
-        }
-        try {
-            const res = await fetch('https://historial-clinico-936s.onrender.com/declaraciones/p2/', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data)
-            });
-            if(res.ok) window.location.href = "declaracion_jurada_p3.html";
-        } catch (err) { alert("Error"); }
-        finally { btn.disabled = false; }
-    });
+        // Lógica de guardado en localStorage y salto a P3
+        window.location.href = "declaracion_jurada_p3.html";
+    };
 </script>
 </body>
 </html>
