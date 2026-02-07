@@ -86,7 +86,7 @@
                 if (res.ok) {
                     const data = await res.json();
                     
-                    // CORRECCIÓN CRÍTICA: Guardar los datos actuales para que la siguiente página los lea bien
+                    // PERSISTENCIA DE DATOS ACTUALES PARA EVITAR MOSTRAR PACIENTES ANTERIORES
                     localStorage.setItem('paciente_id', data.id);
                     localStorage.setItem('paciente_nombre', payload.nombres + " " + payload.apellidos);
                     localStorage.setItem('paciente_ci', payload.ci);
