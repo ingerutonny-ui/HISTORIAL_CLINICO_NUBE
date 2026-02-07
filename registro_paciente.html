@@ -108,7 +108,7 @@
                     alert("ERROR DEL SERVIDOR: " + (errorData.detail || "Error desconocido"));
                 }
             } catch (error) { 
-                alert("ERROR DE RED: REINTENTE CON CTRL+F5 O VERIFIQUE RENDER"); 
+                alert("ERROR DE RED: REINTENTE CON CTRL+F5"); 
             } finally { 
                 btn.innerText = "GUARDAR REGISTRO FINAL"; 
                 btn.disabled = false;
@@ -121,9 +121,12 @@
             seccion.style.display = 'block';
             lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
             try {
+                // Se asegura el uso de la barra al final para evitar el error 405 en Render
                 const res = await fetch(`${API_BASE}/pacientes/`);
+                if (!res.ok) throw new Error("Error en respuesta");
                 const data = await res.json();
-                if (data.length === 0) {
+                
+                if (!data || data.length === 0) {
                     lista.innerHTML = '<p class="text-muted small text-center">NO HAY REGISTROS.</p>';
                 } else {
                     lista.innerHTML = data.map(p => `
@@ -133,8 +136,8 @@
                         </div>`).join('');
                 }
             } catch (e) { 
-                alert("Error de conexión con la base de datos."); 
-                lista.innerHTML = '<p class="text-danger small text-center">Error al cargar.</p>';
+                console.error(e);
+                lista.innerHTML = '<p class="text-danger small text-center">ERROR AL CONECTAR CON LA NUBE.</p>';
             }
         };
     </script>
