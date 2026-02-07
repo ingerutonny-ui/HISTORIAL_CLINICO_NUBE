@@ -16,14 +16,14 @@
     <div class="max-w-2xl mx-auto mt-8 flex justify-between items-center mb-12">
         <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors">← Volver</button>
         <div class="text-right">
-            <h2 class="text-xl font-black uppercase text-white">Visor de Historial</h2>
-            <p class="text-[8px] text-blue-500 uppercase tracking-widest">Formato Legal OHS</p>
+            <h2 class="text-xl font-black uppercase text-white tracking-tighter">Visor de Historial</h2>
+            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Documento Legal Generado</p>
         </div>
     </div>
 
     <div class="max-w-md mx-auto mb-12">
         <div class="relative">
-            <input type="text" id="codigoBusqueda" placeholder="CÓDIGO PACIENTE" 
+            <input type="text" id="codigoBusqueda" placeholder="CÓDIGO (EJ: RC3209)" 
                 class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 uppercase">
             <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all">🔍</button>
         </div>
@@ -31,17 +31,15 @@
     </div>
 
     <div id="resultadoVisor" class="hidden max-w-xl mx-auto">
-        <div class="glass-card rounded-[2.5rem] p-8 shadow-2xl text-center">
+        <div class="glass-card rounded-[2.5rem] p-8 shadow-2xl text-center border-t-4 border-emerald-500/50">
             <div class="flex flex-col items-center mb-8">
-                <div class="w-20 h-20 bg-blue-900/30 rounded-full flex items-center justify-center text-3xl mb-4 border border-blue-500/30">👤</div>
+                <div class="w-20 h-20 bg-emerald-900/30 rounded-full flex items-center justify-center text-3xl mb-4 border border-emerald-500/30 text-emerald-400">📄</div>
                 <h3 id="resNombre" class="text-2xl font-bold text-white uppercase">---</h3>
-                <span id="resCodigo" class="px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-[10px] font-black mt-2">---</span>
+                <span id="resCodigo" class="px-4 py-1 bg-emerald-500/10 border border-emerald-500/50 rounded-full text-emerald-400 text-[10px] font-black mt-2">---</span>
             </div>
-            <div class="flex justify-center">
-                <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white shadow-xl shadow-emerald-900/20 transition-all">
-                    👁️ Ver y Revisar Formulario
-                </button>
-            </div>
+            <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white shadow-xl shadow-emerald-900/20 transition-all">
+                👁️ Generar Formulario Final
+            </button>
         </div>
     </div>
 
@@ -61,8 +59,8 @@
                     document.getElementById('resNombre').textContent = `${p.nombres} ${p.apellidos}`;
                     document.getElementById('resCodigo').textContent = p.codigo_paciente;
                     document.getElementById('resultadoVisor').classList.remove('hidden');
-                    document.getElementById('msgEstado').textContent = "REGISTRO LISTO";
-                } else { document.getElementById('msgEstado').textContent = "NO ENCONTRADO"; }
+                    document.getElementById('msgEstado').textContent = "REGISTRO LISTO PARA VISUALIZAR";
+                } else { document.getElementById('msgEstado').textContent = "CÓDIGO NO ENCONTRADO"; }
             } catch (e) { console.error(e); }
         }
 
@@ -74,25 +72,25 @@
 
             const drawHeader = (pdf) => {
                 pdf.addImage('logo.png', 'PNG', 15, 10, 25, 12);
-                pdf.setFontSize(11); pdf.setFont(undefined, 'bold');
+                pdf.setFontSize(12); pdf.setFont(undefined, 'bold');
                 pdf.text("DECLARACION JURADA DE SALUD", 105, 18, { align: "center" });
-                pdf.setLineWidth(0.3); pdf.line(15, 25, 195, 25);
+                pdf.setLineWidth(0.4); pdf.line(15, 25, 195, 25);
             };
 
-            // HOJA 1: SECCIÓN I (FILIACIÓN) Y SECCIÓN II (SISTEMAS)
+            // HOJA 1: SECCIONES I Y II
             drawHeader(doc);
             doc.autoTable({
                 startY: 28,
-                head: [[{content: 'I. AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [230, 230, 230], textColor: 0}}]],
+                head: [[{content: 'I. AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' } }]],
                 body: [
-                    ['APELLIDOS Y NOMBRES', {content: `${d.paciente.nombres} ${d.paciente.apellidos}`, colSpan: 3}],
-                    ['EDAD', d.filiacion?.edad || '', 'SEXO', d.filiacion?.sexo || ''],
-                    ['FECHA NACIMIENTO', d.filiacion?.fecha_nacimiento || '', 'LUGAR', d.filiacion?.lugar_nacimiento || ''],
-                    ['C.I.', d.paciente.ci || '', 'ESTADO CIVIL', d.filiacion?.estado_civil || ''],
-                    ['DOMICILIO', d.filiacion?.domicilio || '', 'CIUDAD / PAÍS', `${d.filiacion?.ciudad || ''} / ${d.filiacion?.pais || ''}`],
-                    ['TELÉFONO', d.filiacion?.telefono || '', 'PROFESIÓN / LABOR', d.filiacion?.profion_oficio || '']
+                    [{content: 'APELLIDOS Y NOMBRES', styles: {fontStyle: 'bold'}}, {content: `${d.paciente.nombres} ${d.paciente.apellidos}`, colSpan: 3}],
+                    [{content: 'EDAD', styles: {fontStyle: 'bold'}}, d.filiacion?.edad || '', {content: 'SEXO', styles: {fontStyle: 'bold'}}, d.filiacion?.sexo || ''],
+                    [{content: 'FECHA NACIMIENTO', styles: {fontStyle: 'bold'}}, d.filiacion?.fecha_nacimiento || '', {content: 'LUGAR', styles: {fontStyle: 'bold'}}, d.filiacion?.lugar_nacimiento || ''],
+                    [{content: 'C.I.', styles: {fontStyle: 'bold'}}, d.paciente.ci || '', {content: 'ESTADO CIVIL', styles: {fontStyle: 'bold'}}, d.filiacion?.estado_civil || ''],
+                    [{content: 'DOMICILIO', styles: {fontStyle: 'bold'}}, d.filiacion?.domicilio || '', {content: 'CIUDAD / PAÍS', styles: {fontStyle: 'bold'}}, `${d.filiacion?.ciudad || ''} / ${d.filiacion?.pais || ''}`],
+                    [{content: 'TELÉFONO', styles: {fontStyle: 'bold'}}, d.filiacion?.telefono || '', {content: 'PROFESIÓN / LABOR', styles: {fontStyle: 'bold'}}, d.filiacion?.profesion_oficio || '']
                 ],
-                theme: 'grid', styles: { fontSize: 7, cellPadding: 1.5 }
+                theme: 'grid', styles: { fontSize: 8, cellPadding: 1.5 }
             });
 
             const sistemas = [
@@ -109,36 +107,53 @@
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 4,
-                head: [[{content: 'II. SISTEMA / ANTECEDENTES Y RIESGOS', styles: {fillColor: [230, 230, 230], textColor: 0}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
-                body: sistemas.map(s => [s[0]+'\n'+s[1], '', 'X', 'NORMAL']),
-                theme: 'grid', styles: { fontSize: 6.5, cellPadding: 1 }
+                head: [[{content: 'II. SISTEMA / ANTECEDENTES Y RIESGOS', styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
+                body: sistemas.map(s => [{content: s[0]+'\n'+s[1], styles: {fontStyle: 'bold'}}, '', 'X', 'NORMAL']),
+                theme: 'grid', styles: { fontSize: 7, cellPadding: 1 }
             });
 
-            // HOJA 2: HABITOS Y HISTORIA LABORAL
+            // HOJA 2: SECCIONES III, IV Y V (LA NUEVA)
             doc.addPage();
             drawHeader(doc);
+
             doc.autoTable({
                 startY: 28,
-                head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [230, 230, 230], textColor: 0}}]],
+                head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' }}]],
                 body: [
-                    ['ALCOHOL', d.habitos?.alcohol_si_no || 'NO', 'DEPORTES', d.habitos?.deportes_detalle || 'N/A'],
-                    ['TABACO', d.habitos?.fuma_si_no || 'NO', 'GRUPO SANGUÍNEO', d.habitos?.grupo_sanguineo || 'ORH+'],
-                    ['MEDICAMENTOS', {content: d.habitos?.medicamentos_detalle || 'NINGUNO', colSpan: 3}]
+                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, d.habitos?.alcohol_si_no || 'NO', {content: 'DEPORTES', styles: {fontStyle: 'bold'}}, d.habitos?.deportes_detalle || 'N/A'],
+                    [{content: 'TABACO', styles: {fontStyle: 'bold'}}, d.habitos?.fuma_si_no || 'NO', {content: 'GRUPO SANGUÍNEO', styles: {fontStyle: 'bold'}}, d.habitos?.grupo_sanguineo || 'ORH+'],
+                    [{content: 'MEDICAMENTOS', styles: {fontStyle: 'bold'}}, {content: d.habitos?.medicamentos_detalle || 'NINGUNO', colSpan: 3}]
                 ],
-                theme: 'grid', styles: { fontSize: 7 }
+                theme: 'grid', styles: { fontSize: 8 }
             });
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)', colSpan: 6, styles: {fillColor: [230, 230, 230], textColor: 0}}]],
-                head2: [['EDAD', 'EMPRESA', 'OCUPACIÓN', 'TIEMPO', 'RIESGOS', 'EPP']],
-                body: [[ '21', 'DTDG', 'DOCENTE', '3 AÑOS', 'TOTAL', 'SI' ]], // Datos ejemplo de captura
-                theme: 'grid', styles: { fontSize: 7 }
+                head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)', colSpan: 6, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
+                body: [
+                    [{content: 'EDAD', styles: {fontStyle: 'bold'}}, {content: 'EMPRESA', styles: {fontStyle: 'bold'}}, {content: 'OCUPACIÓN', styles: {fontStyle: 'bold'}}, {content: 'TIEMPO', styles: {fontStyle: 'bold'}}, {content: 'RIESGOS', styles: {fontStyle: 'bold'}}, {content: 'EPP', styles: {fontStyle: 'bold'}}],
+                    ['21', 'DTDG', 'DOCENTE', '3 AÑOS', 'TOTAL', 'SI']
+                ],
+                theme: 'grid', styles: { fontSize: 7.5 }
+            });
+
+            // SECCIÓN V: RIESGOS EXPUESTOS (La que pediste en la captura 2)
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 5,
+                head: [[{content: 'V. ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE LA VIDA LABORAL', colSpan: 6, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
+                body: [
+                    [{content: 'FISICOS:', styles: {fontStyle: 'bold'}}, 'RUIDO', 'RADIACION', 'VIBRACION', 'MECANICOS', 'TEMP. EXTREMAS'],
+                    [{content: 'QUIMICOS:', styles: {fontStyle: 'bold'}}, 'POLVO', 'HUMOS', 'GASES', 'METALES PESADOS', 'PLOMO/ARSENICO'],
+                    [{content: 'ERGONOMICOS:', styles: {fontStyle: 'bold'}}, 'MOV. REPETITIVOS', {content: 'LEVANTAMIENTO DE CARGA', colSpan: 2}, {content: 'OTROS', colSpan: 2}],
+                    [{content: 'PSICOLOGICOS:', styles: {fontStyle: 'bold'}}, 'ESTRÉS', 'TURNO NOCTURNO', {content: 'TRABAJO EN ALTURA', colSpan: 2}, 'ESPACIOS CONFINADOS']
+                ],
+                theme: 'grid', styles: { fontSize: 6.5, cellPadding: 1 }
             });
 
             doc.setFontSize(8);
-            doc.text(`FECHA DE EMISIÓN: ${new Date().toLocaleDateString()}`, 15, doc.lastAutoTable.finalY + 20);
-            doc.text("FIRMA DEL TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 20, { align: "right" });
+            doc.setFont(undefined, 'bold');
+            doc.text(`FECHA DE EMISIÓN: ${new Date().toLocaleDateString()}`, 15, doc.lastAutoTable.finalY + 15);
+            doc.text("FIRMA DEL TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 15, { align: "right" });
 
             window.open(URL.createObjectURL(doc.output('blob')), '_blank');
         }
