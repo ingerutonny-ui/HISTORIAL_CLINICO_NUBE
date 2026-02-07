@@ -44,7 +44,6 @@ class HabitosRiesgosP3(Base):
     __tablename__ = "habitos_p3"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # Campos renombrados para claridad absoluta
     deportes_si_no = Column(String)
     deportes_detalle = Column(String)
     accidentes_si_no = Column(String)
@@ -53,3 +52,4 @@ class HabitosRiesgosP3(Base):
     medicamentos_detalle = Column(String)
     grupo_sanguineo = Column(String)
     historia_laboral = Column(String)
+    riesgos_vida_laboral = Column(String) # Campo recuperado
