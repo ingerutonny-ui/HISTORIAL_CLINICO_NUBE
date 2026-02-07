@@ -3,47 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Visor de Historial</title>
+    <title>HC NUBE | Visor Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
     <style>
         .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-950 min-h-screen text-slate-200 font-sans p-4">
+<body class="bg-slate-950 min-h-screen text-slate-200 p-4">
 
     <div class="max-w-2xl mx-auto mt-8 flex justify-between items-center mb-12">
-        <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-[0.3em] text-slate-500 hover:text-white transition-colors flex items-center gap-2">
-            ← Volver al Portal
-        </button>
+        <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors">← Volver</button>
         <div class="text-right">
-            <h2 class="text-xl font-black uppercase tracking-tighter text-white">Visor de Historial</h2>
-            <p class="text-[8px] text-blue-500 uppercase tracking-[0.4em]">Consulta de Registros Nube</p>
+            <h2 class="text-xl font-black uppercase text-white">Visor de Historial</h2>
+            <p class="text-[8px] text-blue-500 uppercase tracking-widest">Formato Legal OHS</p>
         </div>
     </div>
 
-    <div class="max-w-md mx-auto mb-12 fade-in">
+    <div class="max-w-md mx-auto mb-12">
         <div class="relative">
-            <input type="text" id="codigoBusqueda" placeholder="INGRESE CÓDIGO (EJ: LV9944)" 
-                class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 transition-all uppercase">
-            <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all shadow-lg shadow-blue-900/20">🔍</button>
+            <input type="text" id="codigoBusqueda" placeholder="CÓDIGO PACIENTE" 
+                class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 uppercase">
+            <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all">🔍</button>
         </div>
         <p id="msgEstado" class="text-[7px] text-center mt-4 uppercase tracking-widest text-slate-600 italic"></p>
     </div>
 
-    <div id="resultadoVisor" class="hidden max-w-xl mx-auto fade-in">
+    <div id="resultadoVisor" class="hidden max-w-xl mx-auto">
         <div class="glass-card rounded-[2.5rem] p-8 shadow-2xl text-center">
             <div class="flex flex-col items-center mb-8">
                 <div class="w-20 h-20 bg-blue-900/30 rounded-full flex items-center justify-center text-3xl mb-4 border border-blue-500/30">👤</div>
-                <h3 id="resNombre" class="text-2xl font-bold text-white uppercase tracking-tight">---</h3>
-                <span id="resCodigo" class="px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-[10px] font-black mt-2 tracking-widest uppercase">---</span>
+                <h3 id="resNombre" class="text-2xl font-bold text-white uppercase">---</h3>
+                <span id="resCodigo" class="px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-[10px] font-black mt-2">---</span>
             </div>
-            <div class="mt-8 pt-8 border-t border-slate-800 flex justify-center">
-                <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 text-white shadow-xl shadow-emerald-900/20">
+            <div class="flex justify-center">
+                <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white shadow-xl shadow-emerald-900/20 transition-all">
                     👁️ Ver y Revisar Formulario
                 </button>
             </div>
@@ -55,109 +50,97 @@
         let pacienteIdActual = null;
 
         async function buscarPaciente() {
-            const codigoInput = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
-            const msg = document.getElementById('msgEstado');
-            const visor = document.getElementById('resultadoVisor');
-            if (!codigoInput) return;
-            msg.textContent = "CONSULTANDO SERVIDORES...";
+            const codigo = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
+            if (!codigo) return;
             try {
                 const response = await fetch(`${API_BASE}/pacientes/`);
                 const pacientes = await response.json();
-                const encontrado = pacientes.find(p => p.codigo_paciente.toUpperCase() === codigoInput);
-                if (encontrado) {
-                    pacienteIdActual = encontrado.id;
-                    document.getElementById('resNombre').textContent = `${encontrado.nombres} ${encontrado.apellidos}`;
-                    document.getElementById('resCodigo').textContent = encontrado.codigo_paciente;
-                    visor.classList.remove('hidden');
-                    msg.textContent = "REGISTRO ENCONTRADO";
-                } else {
-                    msg.textContent = "CÓDIGO NO EXISTE";
-                }
-            } catch (e) { msg.textContent = "ERROR DE RED"; }
+                const p = pacientes.find(x => x.codigo_paciente.toUpperCase() === codigo);
+                if (p) {
+                    pacienteIdActual = p.id;
+                    document.getElementById('resNombre').textContent = `${p.nombres} ${p.apellidos}`;
+                    document.getElementById('resCodigo').textContent = p.codigo_paciente;
+                    document.getElementById('resultadoVisor').classList.remove('hidden');
+                    document.getElementById('msgEstado').textContent = "REGISTRO LISTO";
+                } else { document.getElementById('msgEstado').textContent = "NO ENCONTRADO"; }
+            } catch (e) { console.error(e); }
         }
 
         async function generarVistaPrevia() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
-            const response = await fetch(`${API_BASE}/historial-completo/${pacienteIdActual}`);
-            const data = await response.json();
+            const res = await fetch(`${API_BASE}/historial-completo/${pacienteIdActual}`);
+            const d = await res.json();
 
-            // Función para el encabezado oficial
-            const header = (d) => {
-                d.addImage('logo.png', 'PNG', 15, 10, 30, 15);
-                d.setFontSize(14);
-                d.setFont(undefined, 'bold');
-                d.text("DECLARACION JURADA DE SALUD", 105, 20, { align: "center" });
-                d.setLineWidth(0.5);
-                d.line(15, 28, 195, 28);
+            const drawHeader = (pdf) => {
+                pdf.addImage('logo.png', 'PNG', 15, 10, 25, 12);
+                pdf.setFontSize(11); pdf.setFont(undefined, 'bold');
+                pdf.text("DECLARACION JURADA DE SALUD", 105, 18, { align: "center" });
+                pdf.setLineWidth(0.3); pdf.line(15, 25, 195, 25);
             };
 
-            header(doc);
-
-            // SECCIÓN 1: FILIACIÓN (Basado en imagen_2b8fa3.png)
+            // HOJA 1: SECCIÓN I (FILIACIÓN) Y SECCIÓN II (SISTEMAS)
+            drawHeader(doc);
             doc.autoTable({
-                startY: 30,
-                head: [[{content: 'AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                startY: 28,
+                head: [[{content: 'I. AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [230, 230, 230], textColor: 0}}]],
                 body: [
-                    ['APELLIDOS Y NOMBRES', {content: `${data.paciente.nombres} ${data.paciente.apellidos}`, colSpan: 3}],
-                    ['EDAD', data.filiacion?.edad || '', 'SEXO', data.filiacion?.sexo || ''],
-                    ['FECHA NAC.', data.filiacion?.fecha_nacimiento || '', 'LUGAR', data.filiacion?.lugar_nacimiento || ''],
-                    ['DOMICILIO', data.filiacion?.domicilio || '', 'CIUDAD', data.filiacion?.ciudad || ''],
-                    ['PROFESIÓN', {content: data.filiacion?.profion_oficio || '', colSpan: 3}]
+                    ['APELLIDOS Y NOMBRES', {content: `${d.paciente.nombres} ${d.paciente.apellidos}`, colSpan: 3}],
+                    ['EDAD', d.filiacion?.edad || '', 'SEXO', d.filiacion?.sexo || ''],
+                    ['FECHA NACIMIENTO', d.filiacion?.fecha_nacimiento || '', 'LUGAR', d.filiacion?.lugar_nacimiento || ''],
+                    ['C.I.', d.paciente.ci || '', 'ESTADO CIVIL', d.filiacion?.estado_civil || ''],
+                    ['DOMICILIO', d.filiacion?.domicilio || '', 'CIUDAD / PAÍS', `${d.filiacion?.ciudad || ''} / ${d.filiacion?.pais || ''}`],
+                    ['TELÉFONO', d.filiacion?.telefono || '', 'PROFESIÓN / LABOR', d.filiacion?.profion_oficio || '']
                 ],
-                styles: { fontSize: 8, cellPadding: 2 },
-                theme: 'grid'
+                theme: 'grid', styles: { fontSize: 7, cellPadding: 1.5 }
             });
 
-            // SECCIÓN 2: ANTECEDENTES (Replicando la cuadrícula de la captura)
+            const sistemas = [
+                ['VISTA', 'GAUCOMA, MIOPÍA, PTERIGIÓN'], ['AUDITIVO', 'SORDERA, VÉRTIGO, OTITIS'],
+                ['RESPIRATORIO', 'ASMA, BRONQUITIS, EPOC'], ['CARDIO-VASCULARES', 'HIPERTENSIÓN, ARRITMIAS'],
+                ['ESTÓMAGO/HÍGADO', 'GASTRITIS, HEPATITIS, HERNIAS'], ['SANGRE', 'ANEMIA, LEUCEMIA, CHAGAS'],
+                ['GENITO-URINARIO', 'CÁLCULOS, INFECCIONES URINARIAS'], ['SISTEMA NERVIOSO', 'EPILEPSIA, PARÁLISIS, MIGRAÑA'],
+                ['PSIQUIÁTRICOS', 'DEPRESIÓN, ANSIEDAD'], ['OSTEOMUSCULARES', 'ARTRITIS, DOLORES LUMBARES'],
+                ['ENDOCRINOLÓGICOS', 'DIABETES, TIROIDES'], ['REUMATOLÓGICOS', 'LUPUS, REUMATISMO'],
+                ['GENERALES', 'OBESIDAD, FIEBRES, DESMAYOS'], ['DERMATOLÓGICAS', 'MICOSIS, DERMATITIS, ALERGIAS'],
+                ['ALERGIA', 'RINITIS, URTICARIA'], ['INFECCIONES', 'TUBERCULOSIS, VIH, SÍFILIS'],
+                ['CIRUGÍAS', 'CIRUGÍAS PREVIAS'], ['ACCIDENTES DE TRABAJO', 'LESIONES POR TRABAJO']
+            ];
+
             doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'ANTECEDENTES MÉDICOS (Evaluación por Sistemas)', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
-                body: [
-                    ['VISTA / AUDITIVO', 'Evaluación Normal / Sin observaciones reportadas'],
-                    ['CARDIO-VASCULAR', 'Presión arterial estable según registro'],
-                    ['SISTEMA NERVIOSO', 'Sin antecedentes de cefaleas o vértigos'],
-                    ['ALERGIAS', data.habitos?.medicamentos_si_no === 'SI' ? `SÍ: ${data.habitos.medicamentos_detalle}` : 'NO REPORTA']
-                ],
-                styles: { fontSize: 8 },
-                theme: 'grid'
+                startY: doc.lastAutoTable.finalY + 4,
+                head: [[{content: 'II. SISTEMA / ANTECEDENTES Y RIESGOS', styles: {fillColor: [230, 230, 230], textColor: 0}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
+                body: sistemas.map(s => [s[0]+'\n'+s[1], '', 'X', 'NORMAL']),
+                theme: 'grid', styles: { fontSize: 6.5, cellPadding: 1 }
             });
 
-            // SALTO A HOJA 2
+            // HOJA 2: HABITOS Y HISTORIA LABORAL
             doc.addPage();
-            header(doc);
-
-            // SECCIÓN 3: HÁBITOS Y VIDA LABORAL
+            drawHeader(doc);
             doc.autoTable({
-                startY: 30,
-                head: [['HÁBITOS', 'SI', 'NO', 'DETALLE / FRECUENCIA']],
+                startY: 28,
+                head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [230, 230, 230], textColor: 0}}]],
                 body: [
-                    ['ALCOHOL', data.habitos?.alcohol_si_no === 'SI' ? 'X' : '', data.habitos?.alcohol_si_no === 'NO' ? 'X' : '', data.habitos?.alcohol_detalle || ''],
-                    ['TABACO', data.habitos?.fuma_si_no === 'SI' ? 'X' : '', data.habitos?.fuma_si_no === 'NO' ? 'X' : '', data.habitos?.fuma_detalle || ''],
-                    ['DEPORTES', data.habitos?.deportes_si_no === 'SI' ? 'X' : '', data.habitos?.deportes_si_no === 'NO' ? 'X' : '', data.habitos?.deportes_detalle || '']
+                    ['ALCOHOL', d.habitos?.alcohol_si_no || 'NO', 'DEPORTES', d.habitos?.deportes_detalle || 'N/A'],
+                    ['TABACO', d.habitos?.fuma_si_no || 'NO', 'GRUPO SANGUÍNEO', d.habitos?.grupo_sanguineo || 'ORH+'],
+                    ['MEDICAMENTOS', {content: d.habitos?.medicamentos_detalle || 'NINGUNO', colSpan: 3}]
                 ],
-                styles: { fontSize: 8 },
-                theme: 'grid'
+                theme: 'grid', styles: { fontSize: 7 }
             });
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'HISTORIA LABORAL Y RIESGOS', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
-                body: [
-                    ['HISTORIA LABORAL', data.habitos?.historia_laboral || 'Sin datos'],
-                    ['RIESGOS EXPUESTOS', data.habitos?.riesgos_vida_laboral || 'Ninguno']
-                ],
-                styles: { fontSize: 8 },
-                theme: 'grid'
+                head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)', colSpan: 6, styles: {fillColor: [230, 230, 230], textColor: 0}}]],
+                head2: [['EDAD', 'EMPRESA', 'OCUPACIÓN', 'TIEMPO', 'RIESGOS', 'EPP']],
+                body: [[ '21', 'DTDG', 'DOCENTE', '3 AÑOS', 'TOTAL', 'SI' ]], // Datos ejemplo de captura
+                theme: 'grid', styles: { fontSize: 7 }
             });
 
-            // Firma
-            doc.text("FIRMA DEL TRABAJADOR: ___________________________", 105, doc.lastAutoTable.finalY + 30, { align: "center" });
+            doc.setFontSize(8);
+            doc.text(`FECHA DE EMISIÓN: ${new Date().toLocaleDateString()}`, 15, doc.lastAutoTable.finalY + 20);
+            doc.text("FIRMA DEL TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 20, { align: "right" });
 
-            // EN LUGAR DE DESCARGAR, ABRIMOS VISTA PREVIA
-            const blob = doc.output('blob');
-            const url = URL.createObjectURL(blob);
-            window.open(url, '_blank');
+            window.open(URL.createObjectURL(doc.output('blob')), '_blank');
         }
     </script>
 </body>
