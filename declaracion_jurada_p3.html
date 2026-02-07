@@ -6,119 +6,111 @@
     <title>PARTE 3: HÁBITOS Y RIESGOS</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
-        .card { border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .section-title { color: #2c3e50; border-left: 5px solid #27ae60; padding-left: 10px; margin-bottom: 20px; font-weight: bold; }
-        .btn-success { background-color: #27ae60; border: none; padding: 12px 30px; border-radius: 10px; font-weight: bold; }
-        .btn-success:hover { background-color: #219150; }
+        /* Restaurando tu paleta de colores original */
+        body { background-color: #f8f9fa; font-family: sans-serif; }
+        .section-title { color: #2c3e50; font-weight: bold; margin-top: 20px; border-bottom: 2px solid #eee; }
+        /* Botón verde original */
+        .btn-success { background-color: #28a745; border-color: #28a745; padding: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="container my-5">
-        <div class="card p-4">
-            <h2 class="text-center mb-4">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
+    <div class="container my-4">
+        <h2 class="text-center mb-4">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
 
-            <div class="section-title">I. HÁBITOS</div>
-            <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                    <label class="form-label">FUMA</label>
-                    <select id="fuma_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="fuma_detalle" class="form-control mt-2" placeholder="CANTIDAD">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">ALCOHOL</label>
-                    <select id="alcohol_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="alcohol_detalle" class="form-control mt-2" placeholder="FRECUENCIA">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">DROGAS</label>
-                    <select id="drogas_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="drogas_detalle" class="form-control mt-2" placeholder="TIPO">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">PIJCHAR (COCA)</label>
-                    <select id="pijchar_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">DEPORTES</label>
-                    <select id="deportes_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="deportes_detalle" class="form-control mt-2" placeholder="CUÁL">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">GRUPO SANGUÍNEO</label>
-                    <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">ACCIDENTES TRABAJO</label>
-                    <select id="accidentes_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="accidentes_detalle" class="form-control mt-2" placeholder="DETALLE">
-                </div>
-                <div class="col-md-6">
-                    <label class="form-label">MEDICAMENTOS ACTUALES</label>
-                    <select id="medicamentos_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="medicamentos_detalle" class="form-control mt-2" placeholder="DETALLE">
-                </div>
+        <h5 class="section-title">I. HÁBITOS</h5>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label>FUMA</label>
+                <select id="fuma_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="fuma_detalle" class="form-control mt-1" placeholder="CANTIDAD">
             </div>
-
-            <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
-            <button class="btn btn-sm btn-dark mb-2" onclick="agregarFila()">+ AGREGAR FILA</button>
-            <table class="table table-bordered align-middle text-center" style="font-size: 0.9rem;">
-                <thead class="table-light">
-                    <tr>
-                        <th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP (SI/NO)</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaLaboral">
-                    <tr>
-                        <td><input type="number" class="form-control form-control-sm h-edad"></td>
-                        <td><input type="text" class="form-control form-control-sm h-emp"></td>
-                        <td><input type="text" class="form-control form-control-sm h-ocu"></td>
-                        <td><input type="number" class="form-control form-control-sm h-tie"></td>
-                        <td><input type="text" class="form-control form-control-sm h-rie"></td>
-                        <td><select class="form-select form-select-sm h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="section-title">III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
-            <div class="row px-3 mb-4">
-                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="RUIDO"> RUIDO</div>
-                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="VIBRACIÓN"> VIBRACIÓN</div>
-                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="RADIACIÓN"> RADIACIÓN</div>
-                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</div>
-                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="POLVOS"> POLVOS</div>
-                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="GASES/VAPORES"> GASES/VAPORES</div>
-                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="ERGONÓMICOS"> ERGONÓMICOS</div>
-                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</div>
+            <div class="col-md-4">
+                <label>ALCOHOL</label>
+                <select id="alcohol_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="alcohol_detalle" class="form-control mt-1" placeholder="FRECUENCIA">
             </div>
-
-            <button class="btn btn-success w-100" onclick="guardarP3()">TERMINAR Y GUARDAR REGISTRO 💾</button>
+            <div class="col-md-4">
+                <label>DROGAS</label>
+                <select id="drogas_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="drogas_detalle" class="form-control mt-1" placeholder="TIPO">
+            </div>
+            <div class="col-md-4">
+                <label>PIJCHAR (COCA)</label>
+                <select id="pijchar_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+            </div>
+            <div class="col-md-4">
+                <label>DEPORTES</label>
+                <select id="deportes_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="deportes_detalle" class="form-control mt-1" placeholder="CUÁL">
+            </div>
+            <div class="col-md-4">
+                <label>GRUPO SANGUÍNEO</label>
+                <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
+            </div>
+            <div class="col-md-6">
+                <label>ACCIDENTES TRABAJO</label>
+                <select id="accidentes_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="accidentes_detalle" class="form-control mt-1" placeholder="DETALLE">
+            </div>
+            <div class="col-md-6">
+                <label>MEDICAMENTOS ACTUALES</label>
+                <select id="medicamentos_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="medicamentos_detalle" class="form-control mt-1" placeholder="DETALLE">
+            </div>
         </div>
+
+        <h5 class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</h5>
+        <button class="btn btn-dark btn-sm mb-2" onclick="agregarFila()">+ AGREGAR FILA</button>
+        <table class="table table-bordered">
+            <thead class="table-light text-center">
+                <tr style="font-size: 0.8rem;">
+                    <th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP (SI/NO)</th>
+                </tr>
+            </thead>
+            <tbody id="tablaLaboral">
+                <tr>
+                    <td><input type="number" class="form-control h-edad"></td>
+                    <td><input type="text" class="form-control h-emp"></td>
+                    <td><input type="text" class="form-control h-ocu"></td>
+                    <td><input type="number" class="form-control h-tie"></td>
+                    <td><input type="text" class="form-control h-rie"></td>
+                    <td><select class="form-select h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h5 class="section-title">III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</h5>
+        <div class="row mb-4">
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="RUIDO"> RUIDO</div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="VIBRACIÓN"> VIBRACIÓN</div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="RADIACIÓN"> RADIACIÓN</div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="POLVOS"> POLVOS</div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="GASES/VAPORES"> GASES/VAPORES</div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="ERGONÓMICOS"> ERGONÓMICOS</div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="PSICOSOCIAL"> PSICOSOCIAL</div>
+        </div>
+
+        <button class="btn btn-success w-100" onclick="guardarP3()">TERMINAR Y GUARDAR REGISTRO 💾</button>
     </div>
 
     <script>
         const API_BASE = "https://historial-clinico-936s.onrender.com";
         const paciente_id = localStorage.getItem("paciente_id");
 
-        if (!paciente_id) {
-            alert("No hay paciente seleccionado. Regrese al inicio.");
-            window.location.href = "registro_paciente.html";
-        }
-
         function agregarFila() {
             const html = `<tr>
-                <td><input type="number" class="form-control form-control-sm h-edad"></td>
-                <td><input type="text" class="form-control form-control-sm h-emp"></td>
-                <td><input type="text" class="form-control form-control-sm h-ocu"></td>
-                <td><input type="number" class="form-control form-control-sm h-tie"></td>
-                <td><input type="text" class="form-control form-control-sm h-rie"></td>
-                <td><select class="form-select form-select-sm h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+                <td><input type="number" class="form-control h-edad"></td>
+                <td><input type="text" class="form-control h-emp"></td>
+                <td><input type="text" class="form-control h-ocu"></td>
+                <td><input type="number" class="form-control h-tie"></td>
+                <td><input type="text" class="form-control h-rie"></td>
+                <td><select class="form-select h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
             </tr>`;
             document.getElementById("tablaLaboral").insertAdjacentHTML('beforeend', html);
         }
 
         async function guardarP3() {
-            // Recolectar Historia Laboral
             const historia = [];
             document.querySelectorAll("#tablaLaboral tr").forEach(tr => {
                 const fila = {
@@ -132,48 +124,44 @@
                 if(fila.emp) historia.push(fila);
             });
 
-            // Recolectar Riesgos Checkboxes
-            const riesgosSeleccionados = [];
-            document.querySelectorAll(".check-riesgo:checked").forEach(ch => {
-                riesgosSeleccionados.push(ch.value);
-            });
+            const riesgosSeleccionados = Array.from(document.querySelectorAll(".check-riesgo:checked")).map(ch => ch.value);
 
-            const data = {
+            const payload = {
                 paciente_id: parseInt(paciente_id),
                 fuma_si_no: document.getElementById("fuma_si_no").value,
-                fuma_detalle: document.getElementById("fuma_detalle").value,
+                fuma_detalle: document.getElementById("fuma_detalle").value || "N/A",
                 alcohol_si_no: document.getElementById("alcohol_si_no").value,
-                alcohol_detalle: document.getElementById("alcohol_detalle").value,
+                alcohol_detalle: document.getElementById("alcohol_detalle").value || "N/A",
                 drogas_si_no: document.getElementById("drogas_si_no").value,
-                drogas_detalle: document.getElementById("drogas_detalle").value,
+                drogas_detalle: document.getElementById("drogas_detalle").value || "N/A",
                 pijchar_si_no: document.getElementById("pijchar_si_no").value,
                 deportes_si_no: document.getElementById("deportes_si_no").value,
-                deportes_detalle: document.getElementById("deportes_detalle").value,
-                grupo_sanguineo: document.getElementById("grupo_sanguineo").value,
+                deportes_detalle: document.getElementById("deportes_detalle").value || "N/A",
+                grupo_sanguineo: document.getElementById("grupo_sanguineo").value || "S/D",
                 accidentes_si_no: document.getElementById("accidentes_si_no").value,
-                accidentes_detalle: document.getElementById("accidentes_detalle").value,
+                accidentes_detalle: document.getElementById("accidentes_detalle").value || "N/A",
                 medicamentos_si_no: document.getElementById("medicamentos_si_no").value,
-                medicamentos_detalle: document.getElementById("medicamentos_detalle").value,
+                medicamentos_detalle: document.getElementById("medicamentos_detalle").value || "N/A",
                 historia_laboral: JSON.stringify(historia),
-                riesgos_vida_laboral: riesgosSeleccionados.join(", ")
+                riesgos_vida_laboral: riesgosSeleccionados.join(", ") || "NINGUNO"
             };
 
             try {
-                const res = await fetch(`${API_BASE}/declaraciones/p3/`, {
+                const response = await fetch(`${API_BASE}/declaraciones/p3/`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(payload)
                 });
 
-                if (res.ok) {
-                    alert("¡Registro guardado exitosamente!");
-                    window.location.href = `index.html`; 
+                if (response.ok) {
+                    alert("✅ Registro Finalizado con Éxito");
+                    window.location.href = "index.html";
                 } else {
-                    const err = await res.json();
-                    alert("Error al guardar: " + JSON.stringify(err));
+                    const errorData = await response.json();
+                    alert("❌ Error en el servidor: " + JSON.stringify(errorData));
                 }
-            } catch (e) {
-                alert("Error de red: " + e.message);
+            } catch (err) {
+                alert("📡 Error de conexión: " + err.message);
             }
         }
     </script>
