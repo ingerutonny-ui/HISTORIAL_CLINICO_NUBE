@@ -25,6 +25,12 @@ def get_db():
     finally:
         db.close()
 
+# NUEVA RUTA PARA CONSULTAR REGISTROS
+@app.get("/pacientes/", response_model=List[schemas.Paciente])
+def read_pacientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    pacientes = crud.get_pacientes(db, skip=skip, limit=limit)
+    return pacientes
+
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     return crud.create_paciente(db=db, paciente=paciente)
