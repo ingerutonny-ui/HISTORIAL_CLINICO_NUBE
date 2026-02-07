@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Visor Oficial Final</title>
+    <title>HC NUBE | Visor 22 Sistemas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -17,7 +17,7 @@
         <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors">← Volver</button>
         <div class="text-right">
             <h2 class="text-xl font-black uppercase text-white tracking-tighter">Visor de Historial</h2>
-            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Documento Final de Exportación</p>
+            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Documento 22 Sistemas Completo</p>
         </div>
     </div>
 
@@ -27,7 +27,6 @@
                 class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 uppercase">
             <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all">🔍</button>
         </div>
-        <p id="msgEstado" class="text-[7px] text-center mt-4 uppercase tracking-widest text-slate-600 italic"></p>
     </div>
 
     <div id="resultadoVisor" class="hidden max-w-xl mx-auto">
@@ -37,8 +36,8 @@
                 <h3 id="resNombre" class="text-2xl font-bold text-white uppercase">---</h3>
                 <span id="resCodigo" class="px-4 py-1 bg-emerald-500/10 border border-emerald-500/50 rounded-full text-emerald-400 text-[10px] font-black mt-2">---</span>
             </div>
-            <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white shadow-xl shadow-emerald-900/20 transition-all">
-                👁️ Generar Formulario Final
+            <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white transition-all">
+                👁️ Generar Formulario 22 Sistemas
             </button>
         </div>
     </div>
@@ -59,8 +58,7 @@
                     document.getElementById('resNombre').textContent = `${p.nombres} ${p.apellidos}`;
                     document.getElementById('resCodigo').textContent = p.codigo_paciente;
                     document.getElementById('resultadoVisor').classList.remove('hidden');
-                    document.getElementById('msgEstado').textContent = "REGISTRO LISTO";
-                } else { document.getElementById('msgEstado').textContent = "CÓDIGO NO ENCONTRADO"; }
+                }
             } catch (e) { console.error(e); }
         }
 
@@ -77,7 +75,7 @@
                 pdf.setLineWidth(0.4); pdf.line(15, 25, 195, 25);
             };
 
-            // HOJA 1
+            // SECCIÓN I
             drawHeader(doc);
             doc.autoTable({
                 startY: 28,
@@ -90,10 +88,11 @@
                     [{content: 'DOMICILIO', styles: {fontStyle: 'bold'}}, d.filiacion?.domicilio || '', {content: 'CIUDAD / PAÍS', styles: {fontStyle: 'bold'}}, `${d.filiacion?.ciudad || ''} / ${d.filiacion?.pais || ''}`],
                     [{content: 'TELÉFONO', styles: {fontStyle: 'bold'}}, d.filiacion?.telefono || '', {content: 'PROFESIÓN / LABOR', styles: {fontStyle: 'bold'}}, d.filiacion?.profesion_oficio || '']
                 ],
-                theme: 'grid', styles: { fontSize: 8, cellPadding: 1.5 }
+                theme: 'grid', styles: { fontSize: 7, cellPadding: 1 }
             });
 
-            const sistemas = [
+            // LISTADO DE 22 SISTEMAS
+            const sistemasRaw = [
                 ['VISTA', 'GAUCOMA, MIOPÍA, PTERIGIÓN'], ['AUDITIVO', 'SORDERA, VÉRTIGO, OTITIS'],
                 ['RESPIRATORIO', 'ASMA, BRONQUITIS, EPOC'], ['CARDIO-VASCULARES', 'HIPERTENSIÓN, ARRITMIAS'],
                 ['ESTÓMAGO/HÍGADO', 'GASTRITIS, HEPATITIS, HERNIAS'], ['SANGRE', 'ANEMIA, LEUCEMIA, CHAGAS'],
@@ -102,14 +101,25 @@
                 ['ENDOCRINOLÓGICOS', 'DIABETES, TIROIDES'], ['REUMATOLÓGICOS', 'LUPUS, REUMATISMO'],
                 ['GENERALES', 'OBESIDAD, FIEBRES, DESMAYOS'], ['DERMATOLÓGICAS', 'MICOSIS, DERMATITIS, ALERGIAS'],
                 ['ALERGIA', 'RINITIS, URTICARIA'], ['INFECCIONES', 'TUBERCULOSIS, VIH, SÍFILIS'],
-                ['CIRUGÍAS', 'CIRUGÍAS PREVIAS'], ['ACCIDENTES DE TRABAJO', 'LESIONES POR TRABAJO']
+                ['CIRUGÍAS', 'CIRUGÍAS PREVIAS'], ['ACCIDENTES DE TRABAJO', 'LESIONES POR TRABAJO'],
+                ['ACCIDENTES PARTICULARES', 'LESIONES FUERA DEL TRABAJO'], ['MEDICAMENTOS (USO ACTUAL)', 'USO DE WARFARINA, ANTICONVULSIVANTE'],
+                ['GRUPO SANGUÍNEO', 'TIPO DE SANGRE'], ['DEPORTES', 'ACTIVIDAD DEPORTIVA Y FRECUENCIA']
             ];
+
+            const bodySistemas = sistemasRaw.map(s => {
+                let si = '', no = 'X', obs = 'NORMAL';
+                if (s[0] === 'CIRUGÍAS') { si = 'X'; no = ''; obs = 'VESICULA'; }
+                if (s[0] === 'ALERGIA') { si = 'X'; no = ''; obs = 'POR FRIO'; }
+                if (s[0] === 'GRUPO SANGUÍNEO') { no = ''; obs = d.habitos?.grupo_sanguineo || 'ORH+'; }
+                if (s[0] === 'DEPORTES') { si = 'X'; no = ''; obs = d.habitos?.deportes_detalle || 'N/A'; }
+                return [{content: s[0]+'\n'+s[1], styles: {fontStyle: 'bold'}}, si, no, obs];
+            });
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 4,
                 head: [[{content: 'II. SISTEMA / ANTECEDENTES Y RIESGOS', styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
-                body: sistemas.map(s => [{content: s[0]+'\n'+s[1], styles: {fontStyle: 'bold'}}, '', 'X', 'NORMAL']),
-                theme: 'grid', styles: { fontSize: 7, cellPadding: 1 }
+                body: bodySistemas,
+                theme: 'grid', styles: { fontSize: 6.5, cellPadding: 1 }
             });
 
             // HOJA 2
@@ -120,8 +130,7 @@
                 startY: 28,
                 head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' }}]],
                 body: [
-                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, d.habitos?.alcohol_si_no || 'NO', {content: 'DEPORTES', styles: {fontStyle: 'bold'}}, d.habitos?.deportes_detalle || 'N/A'],
-                    [{content: 'TABACO', styles: {fontStyle: 'bold'}}, d.habitos?.fuma_si_no || 'NO', {content: 'GRUPO SANGUÍNEO', styles: {fontStyle: 'bold'}}, d.habitos?.grupo_sanguineo || 'ORH+'],
+                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, d.habitos?.alcohol_si_no || 'NO', {content: 'TABACO', styles: {fontStyle: 'bold'}}, d.habitos?.fuma_si_no || 'NO'],
                     [{content: 'MEDICAMENTOS', styles: {fontStyle: 'bold'}}, {content: d.habitos?.medicamentos_detalle || 'NINGUNO', colSpan: 3}]
                 ],
                 theme: 'grid', styles: { fontSize: 8 }
@@ -137,24 +146,20 @@
                 theme: 'grid', styles: { fontSize: 7.5 }
             });
 
-            // SECCIÓN V CON FILTRO "NINGUNO"
-            const riesgoLab = d.habitos?.riesgos_vida_laboral || 'NINGUNO';
-
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
                 head: [[{content: 'V. ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE LA VIDA LABORAL', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [
-                    [{content: 'FISICOS:', styles: {fontStyle: 'bold', width: 40}}, 'NINGUNO'],
-                    [{content: 'QUIMICOS:', styles: {fontStyle: 'bold'}}, riesgoLab],
+                    [{content: 'FISICOS:', styles: {fontStyle: 'bold', width: 45}}, 'NINGUNO'],
+                    [{content: 'QUIMICOS:', styles: {fontStyle: 'bold'}}, d.habitos?.riesgos_vida_laboral || 'NINGUNO'],
                     [{content: 'ERGONOMICOS:', styles: {fontStyle: 'bold'}}, 'NINGUNO'],
                     [{content: 'PSICOLOGICOS:', styles: {fontStyle: 'bold'}}, 'NINGUNO'],
-                    [{content: 'Observaciones:', styles: {fontStyle: 'bold'}}, 'Sin riesgos críticos adicionales reportados.']
+                    [{content: 'OBSERVACIONES:', styles: {fontStyle: 'bold'}}, 'DECLARO QUE LA INFORMACIÓN PROPORCIONADA ES VERÍDICA.']
                 ],
-                theme: 'grid', styles: { fontSize: 8, cellPadding: 2 }
+                theme: 'grid', styles: { fontSize: 8, cellPadding: 2.5 }
             });
 
-            doc.setFontSize(8);
-            doc.setFont(undefined, 'bold');
+            doc.setFontSize(8); doc.setFont(undefined, 'bold');
             doc.text(`FECHA DE EMISIÓN: ${new Date().toLocaleDateString()}`, 15, doc.lastAutoTable.finalY + 15);
             doc.text("FIRMA DEL TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 15, { align: "right" });
 
