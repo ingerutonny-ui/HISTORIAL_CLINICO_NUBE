@@ -52,7 +52,6 @@
 
     <script>
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
-        const API_DESTINO = `${API_BASE}/pacientes/`;
         
         document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
 
@@ -89,7 +88,7 @@
             };
 
             try {
-                const res = await fetch(API_DESTINO, {
+                const res = await fetch(`${API_BASE}/pacientes/`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -122,7 +121,7 @@
             seccion.style.display = 'block';
             lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
             try {
-                const res = await fetch(API_DESTINO);
+                const res = await fetch(`${API_BASE}/pacientes/`);
                 const data = await res.json();
                 if (data.length === 0) {
                     lista.innerHTML = '<p class="text-muted small text-center">NO HAY REGISTROS.</p>';
