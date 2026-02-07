@@ -7,41 +7,26 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 40px 20px; }
-        .form-container { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; }
+        .form-container { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 1100px; margin: auto; }
         .section-title { font-weight: 800; color: #1e293b; border-left: 5px solid #24a174; padding-left: 15px; margin: 30px 0 20px; text-transform: uppercase; font-size: 16px; }
-        .form-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
+        .form-control, .form-select { border-radius: 12px; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; font-weight: 600; color: #1e293b; font-size: 13px; text-transform: uppercase; }
         
-        /* Inputs con forzado de MAYÚSCULAS */
-        .form-control, .form-select { 
-            border-radius: 12px; 
-            background-color: #f8fafc; 
-            border: 1px solid #e2e8f0; 
-            padding: 12px; 
-            font-weight: 600; 
-            color: #1e293b; 
-            font-size: 13px; 
-            text-transform: uppercase; 
-        }
-
-        /* DISEÑO DE TABLA REPARADO: Sin barra larga, con divisiones claras en VERDE */
-        .table { border-collapse: separate; border-spacing: 0 10px; }
+        /* CABECERA DIVIDIDA - SIN BARRA UNIDA */
+        .table { border-collapse: separate; border-spacing: 8px; }
         .table thead th { 
             background-color: #24a174; 
             color: white; 
             text-transform: uppercase; 
-            font-size: 11px; 
-            padding: 15px; 
-            border: none;
+            font-size: 10px; 
+            padding: 15px 5px; 
+            border: none; 
+            border-radius: 10px; /* Redondeado individual para cada celda */
             text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .table thead th:first-child { border-radius: 10px 0 0 10px; }
-        .table thead th:last-child { border-radius: 0 10px 10px 0; }
-        .table tbody td { background: white; border: none; padding: 10px; }
-
-        .btn-add { background-color: #1e293b; border: none; border-radius: 10px; padding: 8px 18px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
-        .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; background: #f8fafc; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; }
-        .check-item { display: flex; align-items: center; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; }
-        .check-item input { margin-right: 8px; width: 16px; height: 16px; accent-color: #24a174; }
+        .table tbody td { background: transparent; border: none; padding: 0; }
+        
+        .btn-add { background-color: #1e293b; border: none; border-radius: 10px; padding: 8px 18px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
         .btn-final { background-color: #24a174; border: none; border-radius: 15px; padding: 18px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 30px; font-size: 14px; }
     </style>
 </head>
@@ -54,72 +39,46 @@
         <div class="section-title">I. HÁBITOS</div>
         <div class="row g-3">
             <div class="col-md-4">
-                <label class="form-label">FUMA</label>
+                <label class="form-label small fw-bold text-muted">FUMA</label>
                 <select id="fuma" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
                 <input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD">
             </div>
             <div class="col-md-4">
-                <label class="form-label">ALCOHOL</label>
+                <label class="form-label small fw-bold text-muted">ALCOHOL</label>
                 <select id="alcohol" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
                 <input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA">
             </div>
             <div class="col-md-4">
-                <label class="form-label">DROGAS</label>
-                <select id="drogas" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO">
-            </div>
-            <div class="col-md-4 mt-3">
-                <label class="form-label">PIJCHAR (COCA)</label>
-                <select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-            </div>
-            <div class="col-md-4 mt-3">
-                <label class="form-label">DEPORTES</label>
-                <select id="deportes" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?">
-            </div>
-            <div class="col-md-4 mt-3">
-                <label class="form-label">GRUPO SANGUÍNEO</label>
+                <label class="form-label small fw-bold text-muted">GRUPO SANGUÍNEO</label>
                 <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
             </div>
         </div>
 
         <div class="section-title">II. HISTORIA LABORAL</div>
-        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
+        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR NUEVA FILA</button>
         <div class="table-responsive">
             <table class="table align-middle">
                 <thead>
                     <tr>
-                        <th width="120">EDAD INICIO</th>
-                        <th>EMPRESA</th>
-                        <th>OCUPACIÓN</th>
-                        <th width="120">TIEMPO (AÑOS)</th>
-                        <th>RIESGOS</th>
-                        <th width="120">EPP (SI/NO)</th>
+                        <th width="10%">EDAD INICIO</th>
+                        <th width="25%">EMPRESA</th>
+                        <th width="25%">OCUPACIÓN</th>
+                        <th width="10%">TIEMPO (AÑOS)</th>
+                        <th width="20%">RIESGOS</th>
+                        <th width="10%">EPP</th>
                     </tr>
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td><input type="number" class="form-control" name="edad_inicio" required></td>
-                        <td><input type="text" class="form-control" name="empresa" required></td>
-                        <td><input type="text" class="form-control" name="ocupacion" required></td>
-                        <td><input type="number" class="form-control" name="tiempo_anios" required></td>
+                        <td><input type="number" class="form-control" name="edad_inicio" value="0"></td>
+                        <td><input type="text" class="form-control" name="empresa"></td>
+                        <td><input type="text" class="form-control" name="ocupacion"></td>
+                        <td><input type="number" class="form-control" name="tiempo_anios" value="0"></td>
                         <td><input type="text" class="form-control" name="riesgos"></td>
                         <td><select class="form-select" name="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
                     </tr>
                 </tbody>
             </table>
-        </div>
-
-        <div class="section-title">III. RIESGOS EXPUESTOS</div>
-        <div class="check-grid">
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="RUIDO"> RUIDO</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="VIBRACIÓN"> VIBRACIÓN</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="RADIACIÓN"> RADIACIÓN</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="POLVOS"> POLVOS</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="GASES/VAPORES"> GASES/VAPORES</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="ERGONÓMICOS"> ERGONÓMICOS</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         </div>
 
         <button type="submit" id="btnGuardar" class="btn-final">TERMINAR Y GUARDAR REGISTRO 💾</button>
@@ -131,17 +90,15 @@
     const PACIENTE_ID = localStorage.getItem('paciente_id');
 
     document.addEventListener('input', (e) => {
-        if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
-            e.target.value = e.target.value.toUpperCase();
-        }
+        if (e.target.tagName === 'INPUT' && e.target.type === 'text') e.target.value = e.target.value.toUpperCase();
     });
 
     function addRow() {
         const row = `<tr>
-            <td><input type="number" class="form-control" name="edad_inicio" required></td>
-            <td><input type="text" class="form-control" name="empresa" required></td>
-            <td><input type="text" class="form-control" name="ocupacion" required></td>
-            <td><input type="number" class="form-control" name="tiempo_anios" required></td>
+            <td><input type="number" class="form-control" name="edad_inicio" value="0"></td>
+            <td><input type="text" class="form-control" name="empresa"></td>
+            <td><input type="text" class="form-control" name="ocupacion"></td>
+            <td><input type="number" class="form-control" name="tiempo_anios" value="0"></td>
             <td><input type="text" class="form-control" name="riesgos"></td>
             <td><select class="form-select" name="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
         </tr>`;
@@ -151,25 +108,19 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnGuardar');
-        btn.innerText = "GUARDANDO..."; btn.disabled = true;
+        btn.innerText = "PROCESANDO..."; btn.disabled = true;
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
-            const edad = tr.querySelector('[name="edad_inicio"]').value;
             const empresa = tr.querySelector('[name="empresa"]').value;
-            const ocupacion = tr.querySelector('[name="ocupacion"]').value;
-            const tiempo = tr.querySelector('[name="tiempo_anios"]').value;
-            const riesgos = tr.querySelector('[name="riesgos"]').value;
-            const epp = tr.querySelector('[name="epp"]').value;
-
             if(empresa.trim() !== "") {
                 historia.push({
-                    edad_inicio: parseInt(edad),
+                    edad_inicio: parseInt(tr.querySelector('[name="edad_inicio"]').value) || 0,
                     empresa: empresa.toUpperCase(),
-                    ocupacion: ocupacion.toUpperCase(),
-                    tiempo_anios: parseInt(tiempo),
-                    riesgos: riesgos.toUpperCase() || "NINGUNO",
-                    epp: epp
+                    ocupacion: tr.querySelector('[name="ocupacion"]').value.toUpperCase(),
+                    tiempo_anios: parseInt(tr.querySelector('[name="tiempo_anios"]').value) || 0,
+                    riesgos: tr.querySelector('[name="riesgos"]').value.toUpperCase() || "NINGUNO",
+                    epp: tr.querySelector('[name="epp"]').value
                 });
             }
         });
@@ -180,14 +131,9 @@
             fuma_detalle: document.getElementById('fuma_detalle').value.toUpperCase() || "N/A",
             alcohol: document.getElementById('alcohol').value,
             alcohol_detalle: document.getElementById('alcohol_detalle').value.toUpperCase() || "N/A",
-            drogas: document.getElementById('drogas').value,
-            drogas_detalle: document.getElementById('drogas_detalle').value.toUpperCase() || "N/A",
-            pijchar: document.getElementById('pijchar').value,
-            deportes: document.getElementById('deportes').value,
-            deportes_detalle: document.getElementById('deportes_detalle').value.toUpperCase() || "N/A",
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "N/A",
             historia_laboral: historia,
-            riesgos_expuestos: Array.from(document.querySelectorAll('.riesgo-check:checked')).map(c => c.value)
+            riesgos_expuestos: []
         };
 
         try {
@@ -196,20 +142,9 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
-            if (res.ok) {
-                alert("¡REGISTRO COMPLETADO!");
-                window.location.href = "index.html";
-            } else {
-                const err = await res.json();
-                alert("ERROR EN SERVIDOR (500): Verifique los datos enviados.");
-            }
-        } catch (error) {
-            alert("ERROR DE RED: No se pudo conectar con el servidor.");
-        } finally {
-            btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾";
-            btn.disabled = false;
-        }
+            if (res.ok) { alert("¡ÉXITO!"); window.location.href = "index.html"; }
+            else { alert("ERROR 500: Fallo en el servidor. Revise campos numéricos."); }
+        } catch (error) { alert("ERROR DE RED."); } finally { btn.disabled = false; btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾"; }
     };
 </script>
 </body>
