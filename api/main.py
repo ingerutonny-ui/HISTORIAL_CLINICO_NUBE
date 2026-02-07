@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from typing import List  # CORRECCIÓN: Importación vital para evitar NameError
+from typing import List
 import json
 from . import models, schemas, crud
 from .database import SessionLocal, engine
@@ -51,7 +51,7 @@ def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
 
 @app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
 def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
-    # Lógica de generación de reporte (HTML para imprimir)
     res = crud.get_historial_completo(db, paciente_id)
-    # ... (el resto de tu lógica de reporte permanece igual)
-    return HTMLResponse(content="<html>Generando...</html>")
+    if not res["paciente"]:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return HTMLResponse(content="<html><body><h1>GENERANDO REPORTE...</h1><script>window.print();</script></body></html>")
