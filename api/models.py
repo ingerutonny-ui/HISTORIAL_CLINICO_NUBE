@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date
+from sqlalchemy import Column, Integer, String, Date, ForeignKey
 from .database import Base
 
 class Paciente(Base):
@@ -10,7 +10,7 @@ class Paciente(Base):
     codigo_paciente = Column(String)
 
 class DeclaracionJurada(Base):
-    __tablename__ = "filiacion_p1"
+    __tablename__ = "filiacion"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     edad = Column(Integer)
@@ -41,15 +41,22 @@ class AntecedentesP2(Base):
     p17 = Column(String); d17 = Column(String); p18 = Column(String); d18 = Column(String)
 
 class HabitosRiesgosP3(Base):
-    __tablename__ = "habitos_p3"
+    __tablename__ = "habitos_riesgos_p3"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
+    fuma_si_no = Column(String)
+    fuma_detalle = Column(String)
+    alcohol_si_no = Column(String)
+    alcohol_detalle = Column(String)
+    drogas_si_no = Column(String)
+    drogas_detalle = Column(String)
+    pijchar_si_no = Column(String)
     deportes_si_no = Column(String)
     deportes_detalle = Column(String)
+    grupo_sanguineo = Column(String)
     accidentes_si_no = Column(String)
     accidentes_detalle = Column(String)
     medicamentos_si_no = Column(String)
     medicamentos_detalle = Column(String)
-    grupo_sanguineo = Column(String)
-    historia_laboral = Column(String)
     riesgos_vida_laboral = Column(String)
+    historia_laboral = Column(String)
