@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from . import models, schemas
+from fastapi import HTTPException
 
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
     db_paciente = models.Paciente(**paciente.model_dump())
@@ -24,10 +25,15 @@ def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     return db_ant
 
 def create_habitos(db: Session, habitos: schemas.HabitosCreate):
-    db_hab = models.HabitosRiesgosP3(**habitos.model_dump())
-    db.add(db_hab)
-    db.commit()
-    return db_hab
+    try:
+        db_hab = models.HabitosRiesgosP3(**habitos.model_dump())
+        db.add(db_hab)
+        db.commit()
+        db.refresh(db_hab)
+        return db_hab
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error BD: {str(e)}")
 
 def get_historial_completo(db: Session, paciente_id: int):
     return {
