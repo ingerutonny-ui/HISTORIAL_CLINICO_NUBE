@@ -59,14 +59,17 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
 
     def get_v(obj, attr, default="N/A"):
+        # Intenta obtener el valor del atributo; si no existe, intenta con variantes comunes
         val = getattr(obj, attr, None)
+        if val is None and attr == 'domicilio_ciudad': # Corrección para el campo ciudad
+            val = getattr(obj, 'domicilio_city', None)
         return str(val).upper() if val and str(val).strip() != "" else default
 
     def mark(obj, attr, target):
         val = getattr(obj, attr, None)
         return "X" if str(val).strip().upper() == target else ""
 
-    # SECCIÓN I: FILIACIÓN (MAPEO DE LOS 14 CAMPOS)
+    # SECCIÓN I: AFILIACIÓN (Corregido: Ciudad y variantes de campos)
     filiacion_html = f"""
     <table>
         <tr><td colspan="4" class="header">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
@@ -91,7 +94,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
             <td colspan="3">{get_v(f,'domicilio_av_calle')} NO. {get_v(f,'domicilio_numero')}, BARRIO {get_v(f,'domicilio_barrio')}</td>
         </tr>
         <tr>
-            <td><b>CIUDAD / PAÍS:</b></td><td>{get_v(f,'domicilio_city')} / {get_v(f,'domicilio_pais')}</td>
+            <td><b>CIUDAD / PAÍS:</b></td><td>{get_v(f,'domicilio_ciudad')} / {get_v(f,'domicilio_pais')}</td>
             <td><b>TELÉFONO:</b></td><td>{get_v(f,'telefono')}</td>
         </tr>
         <tr>
@@ -100,13 +103,31 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     </table>
     """
 
-    # SECCIÓN II: ANTECEDENTES (P2)
+    # SECCIÓN II: ANTECEDENTES Y RIESGOS (P2)
+    # Incluimos ejemplos de riesgos en la columna de descripción como pide el PDF
+    desc_p2 = [
+        "Glaucoma, Miopía, Pterigión", "Sordera, Vértigo, Otitis", "Asma, Bronquitis, EPOC",
+        "Hipertensión, Arritmias", "Gastritis, Hepatitis, Hernias", "Anemia, Leucemia, Chagas",
+        "Cálculos, Infecciones Urinarias", "Epilepsia, Parálisis, Migraña", "Depresión, Ansiedad",
+        "Artritis, Dolores lumbares", "Diabetes, Tiroides", "Lupus, Reumatismo",
+        "Obesidad, Fiebres, Desmayos", "Micosis, Dermatitis, Alergias", "Rinitis, Urticaria",
+        "Tuberculosis, VIH, Sífilis", "Cirugías Previas", "Lesiones por Trabajo"
+    ]
+    
     labels_p2 = ["VISTA", "AUDITIVO", "RESPIRATORIO", "CARDIO-VASCULARES", "ESTÓMAGO/HÍGADO", 
                  "SANGRE", "GENITO-URINARIO", "SISTEMA NERVIOSO", "PSIQUIÁTRICOS", "OSTEOMUSCULARES",
                  "ENDOCRINOLÓGICOS", "REUMATOLÓGICOS", "GENERALES", "DERMATOLÓGICAS", 
                  "ALERGIA", "INFECCIONES", "CIRUGÍAS", "ACCIDENTES DE TRABAJO"]
     
-    rows_p2 = "".join([f"<tr><td>{i+1}. {l}</td><td style='text-align:center;'>{mark(a,f'p{i+1}','SI')}</td><td style='text-align:center;'>{mark(a,f'p{i+1}','NO')}</td><td>{get_v(a,f'd{i+1}')}</td></tr>" for i,l in enumerate(labels_p2)])
+    rows_p2 = ""
+    for i, label in enumerate(labels_p2):
+        rows_p2 += f"""
+        <tr>
+            <td><b>{label}</b><br><small style="font-size:7px; color:#555;">{desc_p2[i]}</small></td>
+            <td style='text-align:center;'>{mark(a,f'p{i+1}','SI')}</td>
+            <td style='text-align:center;'>{mark(a,f'p{i+1}','NO')}</td>
+            <td>{get_v(a,f'd{i+1}')}</td>
+        </tr>"""
 
     # SECCIÓN III: HISTORIA LABORAL (P3)
     historia_html = "SIN REGISTROS"
@@ -114,13 +135,13 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         if h and h.historia_laboral:
             data_laboral = json.loads(h.historia_laboral)
             filas_laboral = "".join([f"<tr><td>{i.get('edad','-')}</td><td>{i.get('emp','-')}</td><td>{i.get('ocu','-')}</td><td>{i.get('tie','-')}</td><td>{i.get('rie','-')}</td><td>{i.get('epp','-')}</td></tr>" for i in data_laboral])
-            historia_html = f"<table><tr style='background:#f2f2f2; font-weight:bold; text-align:center;'><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>{filas_laboral}</table>"
+            historia_html = f"<table><tr style='background:#f2f2f2; font-weight:bold; text-align:center;'><td>EDAD INICIO</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>{filas_laboral}</table>"
     except:
         historia_html = "ERROR EN PROCESAMIENTO"
 
     html = f"""
     <!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-    body {{ font-family: Arial, sans-serif; font-size: 8.2px; line-height: 1.1; padding: 10px; }}
+    body {{ font-family: Arial, sans-serif; font-size: 8px; line-height: 1.1; padding: 10px; }}
     table {{ width: 100%; border-collapse: collapse; margin-bottom: 8px; }}
     td, th {{ border: 1px solid #000; padding: 4px; }}
     .header {{ background: #d9e2f3; font-weight: bold; text-align: center; text-transform: uppercase; }}
@@ -131,7 +152,11 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     {filiacion_html}
 
     <table>
-        <tr class="header"><td style="width:40%">II. SISTEMA / ANTECEDENTE</td><td style="width:30px">SI</td><td style="width:30px">NO</td><td>OBSERVACIONES / DETALLES</td></tr>
+        <tr class="header">
+            <td style="width:40%">II. SISTEMA / ANTECEDENTE Y RIESGOS</td>
+            <td style="width:30px">SI</td><td style="width:30px">NO</td>
+            <td>OBSERVACIONES / DETALLES</td>
+        </tr>
         {rows_p2}
         <tr><td>19. ACCIDENTES PARTICULARES</td><td style="text-align:center;">{mark(h,'accidentes_si_no','SI')}</td><td style="text-align:center;">{mark(h,'accidentes_si_no','NO')}</td><td>{get_v(h,'accidentes_detalle')}</td></tr>
         <tr><td>20. MEDICAMENTOS (Uso actual)</td><td style="text-align:center;">{mark(h,'medicamentos_si_no','SI')}</td><td style="text-align:center;">{mark(h,'medicamentos_si_no','NO')}</td><td>{get_v(h,'medicamentos_detalle')}</td></tr>
@@ -146,7 +171,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     <div style="border:1px solid black; padding:6px;">{get_v(h, 'riesgos_vida_laboral')}</div>
 
     <div style="margin-top:20px; display:flex; justify-content:space-between; font-weight:bold;">
-        <span>FECHA DE GENERACIÓN: 06/02/2026</span>
+        <span>FECHA: 06/02/2026</span>
         <span>FIRMA DEL TRABAJADOR: __________________________</span>
     </div>
     <script>window.print();</script></body></html>
