@@ -58,18 +58,15 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     if not p:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
 
-    def get_v(obj, attr, default="N/A"):
-        # Intenta obtener el valor del atributo; si no existe, intenta con variantes comunes
+    def get_v(obj, attr, default="S/D"):
         val = getattr(obj, attr, None)
-        if val is None and attr == 'domicilio_ciudad': # Corrección para el campo ciudad
-            val = getattr(obj, 'domicilio_city', None)
         return str(val).upper() if val and str(val).strip() != "" else default
 
     def mark(obj, attr, target):
         val = getattr(obj, attr, None)
         return "X" if str(val).strip().upper() == target else ""
 
-    # SECCIÓN I: AFILIACIÓN (Corregido: Ciudad y variantes de campos)
+    # SECCIÓN I: AFILIACIÓN (Sincronizado con Models.py)
     filiacion_html = f"""
     <table>
         <tr><td colspan="4" class="header">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
@@ -86,25 +83,24 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
             <td><b>LUGAR:</b></td><td>{get_v(f,'lugar_nacimiento')}</td>
         </tr>
         <tr>
-            <td><b>C.I.:</b></td><td>{get_v(p,'documento_identidad')}</td>
+            <td><b>C.I.:</b></td><td>{get_v(p,'ci')}</td>
             <td><b>ESTADO CIVIL:</b></td><td>{get_v(f,'estado_civil')}</td>
         </tr>
         <tr>
             <td><b>DOMICILIO:</b></td>
-            <td colspan="3">{get_v(f,'domicilio_av_calle')} NO. {get_v(f,'domicilio_numero')}, BARRIO {get_v(f,'domicilio_barrio')}</td>
+            <td colspan="3">{get_v(f,'domicilio')} NO. {get_v(f,'n_casa')}, BARRIO {get_v(f,'zona_barrio')}</td>
         </tr>
         <tr>
-            <td><b>CIUDAD / PAÍS:</b></td><td>{get_v(f,'domicilio_ciudad')} / {get_v(f,'domicilio_pais')}</td>
+            <td><b>CIUDAD / PAÍS:</b></td><td>{get_v(f,'ciudad')} / {get_v(f,'pais')}</td>
             <td><b>TELÉFONO:</b></td><td>{get_v(f,'telefono')}</td>
         </tr>
         <tr>
-            <td><b>PROFESIÓN / LABOR:</b></td><td colspan="3">{get_v(f,'profesion_labor')}</td>
+            <td><b>PROFESIÓN / LABOR:</b></td><td colspan="3">{get_v(f,'profesion_oficio')}</td>
         </tr>
     </table>
     """
 
     # SECCIÓN II: ANTECEDENTES Y RIESGOS (P2)
-    # Incluimos ejemplos de riesgos en la columna de descripción como pide el PDF
     desc_p2 = [
         "Glaucoma, Miopía, Pterigión", "Sordera, Vértigo, Otitis", "Asma, Bronquitis, EPOC",
         "Hipertensión, Arritmias", "Gastritis, Hepatitis, Hernias", "Anemia, Leucemia, Chagas",
@@ -124,8 +120,8 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         rows_p2 += f"""
         <tr>
             <td><b>{label}</b><br><small style="font-size:7px; color:#555;">{desc_p2[i]}</small></td>
-            <td style='text-align:center;'>{mark(a,f'p{i+1}','SI')}</td>
-            <td style='text-align:center;'>{mark(a,f'p{i+1}','NO')}</td>
+            <td style='text-align:center; font-weight:bold;'>{mark(a,f'p{i+1}','SI')}</td>
+            <td style='text-align:center; font-weight:bold;'>{mark(a,f'p{i+1}','NO')}</td>
             <td>{get_v(a,f'd{i+1}')}</td>
         </tr>"""
 
@@ -135,13 +131,13 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         if h and h.historia_laboral:
             data_laboral = json.loads(h.historia_laboral)
             filas_laboral = "".join([f"<tr><td>{i.get('edad','-')}</td><td>{i.get('emp','-')}</td><td>{i.get('ocu','-')}</td><td>{i.get('tie','-')}</td><td>{i.get('rie','-')}</td><td>{i.get('epp','-')}</td></tr>" for i in data_laboral])
-            historia_html = f"<table><tr style='background:#f2f2f2; font-weight:bold; text-align:center;'><td>EDAD INICIO</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>{filas_laboral}</table>"
+            historia_html = f"<table><tr style='background:#f2f2f2; font-weight:bold; text-align:center;'><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>{filas_laboral}</table>"
     except:
         historia_html = "ERROR EN PROCESAMIENTO"
 
     html = f"""
     <!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-    body {{ font-family: Arial, sans-serif; font-size: 8px; line-height: 1.1; padding: 10px; }}
+    body {{ font-family: Arial, sans-serif; font-size: 8px; line-height: 1.1; padding: 10px; text-transform: uppercase; }}
     table {{ width: 100%; border-collapse: collapse; margin-bottom: 8px; }}
     td, th {{ border: 1px solid #000; padding: 4px; }}
     .header {{ background: #d9e2f3; font-weight: bold; text-align: center; text-transform: uppercase; }}
@@ -158,17 +154,14 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
             <td>OBSERVACIONES / DETALLES</td>
         </tr>
         {rows_p2}
-        <tr><td>19. ACCIDENTES PARTICULARES</td><td style="text-align:center;">{mark(h,'accidentes_si_no','SI')}</td><td style="text-align:center;">{mark(h,'accidentes_si_no','NO')}</td><td>{get_v(h,'accidentes_detalle')}</td></tr>
-        <tr><td>20. MEDICAMENTOS (Uso actual)</td><td style="text-align:center;">{mark(h,'medicamentos_si_no','SI')}</td><td style="text-align:center;">{mark(h,'medicamentos_si_no','NO')}</td><td>{get_v(h,'medicamentos_detalle')}</td></tr>
+        <tr><td>19. ACCIDENTES PARTICULARES</td><td style="text-align:center; font-weight:bold;">{mark(h,'accidentes_si_no','SI')}</td><td style="text-align:center; font-weight:bold;">{mark(h,'accidentes_si_no','NO')}</td><td>{get_v(h,'accidentes_detalle')}</td></tr>
+        <tr><td>20. MEDICAMENTOS (Uso actual)</td><td style="text-align:center; font-weight:bold;">{mark(h,'medicamentos_si_no','SI')}</td><td style="text-align:center; font-weight:bold;">{mark(h,'medicamentos_si_no','NO')}</td><td>{get_v(h,'medicamentos_detalle')}</td></tr>
         <tr><td>21. GRUPO SANGUÍNEO</td><td colspan="2" style="background:#f2f2f2;"></td><td><b>{get_v(h,'grupo_sanguineo')}</b></td></tr>
-        <tr><td>22. DEPORTES</td><td style="text-align:center;">{mark(h,'deportes_si_no','SI')}</td><td style="text-align:center;">{mark(h,'deportes_si_no','NO')}</td><td>{get_v(h,'deportes_detalle')}</td></tr>
+        <tr><td>22. DEPORTES</td><td style="text-align:center; font-weight:bold;">{mark(h,'deportes_si_no','SI')}</td><td style="text-align:center; font-weight:bold;">{mark(h,'deportes_si_no','NO')}</td><td>{get_v(h,'deportes_detalle')}</td></tr>
     </table>
 
     <div class="header">III. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
     {historia_html}
-
-    <div class="header">IV. RIESGOS EXPUESTOS DURANTE VIDA LABORAL</div>
-    <div style="border:1px solid black; padding:6px;">{get_v(h, 'riesgos_vida_laboral')}</div>
 
     <div style="margin-top:20px; display:flex; justify-content:space-between; font-weight:bold;">
         <span>FECHA: 06/02/2026</span>
