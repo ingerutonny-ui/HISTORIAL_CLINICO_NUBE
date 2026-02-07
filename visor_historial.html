@@ -10,8 +10,6 @@
         .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Estilo para el input de búsqueda */
         .search-input::placeholder { color: #475569; letter-spacing: 0.1em; }
     </style>
 </head>
@@ -61,7 +59,7 @@
             </div>
 
             <div class="mt-8 pt-8 border-t border-slate-800 flex justify-center">
-                <button onclick="descargarPDF()" class="px-8 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 text-slate-400 hover:text-white group">
+                <button onclick="verHistorial()" class="px-8 py-3 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 text-slate-400 hover:text-white group">
                     <span class="group-hover:scale-110 transition-transform">📄</span> Ver Historial Completo
                 </button>
             </div>
@@ -71,7 +69,7 @@
     <script>
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
         const API_PACIENTES = `${API_BASE}/pacientes/`;
-        let pacienteIdActual = null; // Almacena el ID numérico para el PDF
+        let pacienteIdActual = null;
 
         async function buscarPaciente() {
             const codigoInput = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
@@ -96,7 +94,7 @@
                 const encontrado = pacientes.find(p => p.codigo_paciente.toUpperCase() === codigoInput);
 
                 if (encontrado) {
-                    pacienteIdActual = encontrado.id; // Guardamos el ID para el PDF
+                    pacienteIdActual = encontrado.id;
                     document.getElementById('resNombre').textContent = `${encontrado.nombres} ${encontrado.apellidos}`;
                     document.getElementById('resCI').textContent = encontrado.ci || "NO REGISTRADO";
                     document.getElementById('resCodigo').textContent = encontrado.codigo_paciente;
@@ -115,14 +113,14 @@
             }
         }
 
-        function descargarPDF() {
+        function verHistorial() {
             if (!pacienteIdActual) {
                 alert("Error: No hay un paciente seleccionado.");
                 return;
             }
-            // Abrimos la ruta de generación de PDF en una nueva pestaña
-            const urlPdf = `${API_BASE}/generar-pdf/${pacienteIdActual}`;
-            window.open(urlPdf, '_blank');
+            // Abrimos el endpoint de historial completo corregido
+            const urlCompleta = `${API_BASE}/historial-completo/${pacienteIdActual}`;
+            window.open(urlCompleta, '_blank');
         }
 
         document.getElementById('codigoBusqueda').addEventListener('keypress', function (e) {
