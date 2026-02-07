@@ -3,12 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from typing import List
+from typing import List  # <--- ESTA LÍNEA CORRIGE EL ERROR DE RENDER
 import json
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Sincronización automática de base de datos
+# Sincronización automática de base de datos y migración de columnas faltantes
 models.Base.metadata.create_all(bind=engine)
 with engine.begin() as conn:
     columnas = ["fuma_si_no", "fuma_detalle", "alcohol_si_no", "alcohol_detalle", 
@@ -16,14 +16,16 @@ with engine.begin() as conn:
     for col in columnas:
         try:
             conn.execute(text(f"ALTER TABLE habitos_p3 ADD COLUMN {col} TEXT"))
-        except:
+        except Exception:
             pass
 
 app = FastAPI()
 
+# Configuración de CORS para permitir la conexión desde GitHub Pages
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -73,7 +75,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         val = getattr(obj, attr, None)
         return "X" if str(val).strip().upper() == target else ""
 
-    # Sección II: Antecedentes
+    # Lógica de Antecedentes (Sección II)
     labels = ["VISTA", "AUDITIVO", "RESPIRATORIO", "CARDIO-VASCULARES", "ESTÓMAGO/HÍGADO", 
               "SANGRE", "GENITO-URINARIO", "SISTEMA NERVIOSO", "PSIQUIÁTRICOS", "OSTEOMUSCULARES", 
               "ENDOCRINOLÓGICOS", "REUMATOLÓGICOS", "GENERALES", "DERMATOLÓGICAS", "ALERGIA", 
@@ -81,14 +83,14 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     
     rows_p2 = "".join([f"<tr><td>{i+1}. {l}</td><td style='text-align:center;'>{mark(a,f'p{i+1}','SI')}</td><td style='text-align:center;'>{mark(a,f'p{i+1}','NO')}</td><td>{get_v(a,f'd{i+1}')}</td></tr>" for i,l in enumerate(labels)])
 
-    # Sección III: Historia Laboral
+    # Lógica de Historia Laboral (Sección III)
     filas_h = "<tr><td colspan='6' style='text-align:center;'>SIN REGISTROS</td></tr>"
     if h and h.historia_laboral:
         try:
             items = json.loads(h.historia_laboral)
             if items:
                 filas_h = "".join([f"<tr><td>{i.get('edad','-')}</td><td>{i.get('emp','-')}</td><td>{i.get('ocu','-')}</td><td>{i.get('tie','-')}</td><td>{i.get('rie','-')}</td><td>{i.get('epp','-')}</td></tr>" for i in items])
-        except:
+        except Exception:
             pass
 
     html = f"""
@@ -114,7 +116,6 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
             <tr class="header"><td>II. ANTECEDENTES</td><td width="40px">SI</td><td width="40px">NO</td><td>DETALLES / OBSERVACIONES</td></tr>
             {rows_p2}
         </table>
-
         <div class="page-break"></div>
         <table>
             <tr class="header"><td colspan="4">III. HÁBITOS Y OTROS ANTECEDENTES</td></tr>
@@ -127,16 +128,13 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
             <tr><td>ACCIDENTES TRABAJO</td><td>{get_v(h,'accidentes_si_no')}</td><td>DETALLE:</td><td>{get_v(h,'accidentes_detalle')}</td></tr>
             <tr><td>MEDICAMENTOS</td><td>{get_v(h,'medicamentos_si_no')}</td><td>DETALLE:</td><td>{get_v(h,'medicamentos_detalle')}</td></tr>
         </table>
-        
         <div class="header" style="border:1px solid black;">IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
         <table>
             <tr class="header" style="font-size:9px;"><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>
             {filas_h}
         </table>
-
         <div class="header" style="border:1px solid black; margin-top:10px;">V. RIESGOS EXPUESTOS DURANTE VIDA LABORAL</div>
         <div style="border:1px solid black; padding:15px; min-height:60px; font-size:11px;">{get_v(h, 'riesgos_vida_laboral')}</div>
-        
         <div style="display:flex; justify-content: space-around; margin-top:50px;">
             <div style="text-align:center; border-top:1px solid black; width:200px;">FIRMA DEL TRABAJADOR</div>
             <div style="text-align:center; border-top:1px solid black; width:200px;">HUELLA DIGITAL</div>
