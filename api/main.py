@@ -1,26 +1,20 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
-from sqlalchemy import text
 from typing import List
-import json
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Inicialización de Base de Datos
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CONFIGURACIÓN DE CORS REFORZADA
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
 )
 
 def get_db():
@@ -50,21 +44,6 @@ def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
 def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
     return crud.create_habitos(db=db, habitos=data)
 
-@app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
-def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
-    res = crud.get_historial_completo(db, paciente_id)
-    if not res["paciente"]:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    
-    # Estructura básica para impresión
-    contenido_html = f"""
-    <html>
-        <head><title>Reporte - {res['paciente'].nombre}</title></head>
-        <body>
-            <h1>HISTORIAL CLÍNICO - {res['paciente'].nombre}</h1>
-            <p>ID: {res['paciente'].id}</p>
-            <script>window.onload = function() {{ window.print(); }}</script>
-        </body>
-    </html>
-    """
-    return HTMLResponse(content=contenido_html)
+@app.get("/historial-completo/{paciente_id}")
+def get_todo(paciente_id: int, db: Session = Depends(get_db)):
+    return crud.get_historial_completo(db, paciente_id)
