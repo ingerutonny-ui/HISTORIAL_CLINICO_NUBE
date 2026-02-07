@@ -2,135 +2,180 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>DECLARACIÓN JURADA - SECCIÓN 3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARTE 3: HÁBITOS Y RIESGOS</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        :root { --verde: #34a174; --fondo: #f1f5f9; --blanco: #ffffff; }
-        body { background-color: var(--fondo); font-family: 'Segoe UI', sans-serif; padding: 20px; text-transform: uppercase; }
-        .card { background: var(--blanco); padding: 30px; border-radius: 40px; max-width: 950px; margin: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        h3 { border-left: 5px solid var(--verde); padding-left: 10px; color: #1e293b; margin-top: 25px; }
-        .habito-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
-        .item-h { background: #f8fafc; padding: 10px; border-radius: 15px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
-        table th, table td { border: 1px solid #cbd5e1; padding: 8px; text-align: center; }
-        table th { background: #f1f5f9; }
-        input, select { width: 100%; border: 1px solid #ccc; border-radius: 8px; padding: 8px; box-sizing: border-box; text-transform: uppercase; font-size: 11px; }
-        .riesgos-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #f8fafc; padding: 15px; border-radius: 15px; }
-        .check-item { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: bold; }
-        .check-item input { width: auto; }
-        .btn-add { background: #64748b; color: white; border: none; padding: 5px 15px; border-radius: 10px; cursor: pointer; margin-bottom: 10px; }
-        .btn-finalizar { background: var(--verde); color: white; border: none; padding: 20px; border-radius: 25px; width: 100%; font-weight: 800; cursor: pointer; margin-top: 30px; font-size: 16px; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+        .card { border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .section-title { color: #2c3e50; border-left: 5px solid #27ae60; padding-left: 10px; margin-bottom: 20px; font-weight: bold; }
+        .btn-success { background-color: #27ae60; border: none; padding: 12px 30px; border-radius: 10px; font-weight: bold; }
+        .btn-success:hover { background-color: #219150; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2 style="text-align: center;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
-        
-        <form id="formP3">
-            <h3>I. HÁBITOS</h3>
-            <div class="habito-grid">
-                <div class="item-h"><label>FUMA</label><select id="fuma_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="fuma_detalle" placeholder="CANTIDAD"></div>
-                <div class="item-h"><label>ALCOHOL</label><select id="alcohol_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="alcohol_detalle" placeholder="FRECUENCIA"></div>
-                <div class="item-h"><label>DROGAS</label><select id="drogas_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="drogas_detalle" placeholder="TIPO"></div>
-                <div class="item-h"><label>PIJCHAR (COCA)</label><select id="pijchar_si_no"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="item-h"><label>DEPORTES</label><select id="deportes_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="deportes_detalle" placeholder="CUAL/FRECUENCIA"></div>
-                <div class="item-h"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" placeholder="EJ. ORH+" required></div>
+    <div class="container my-5">
+        <div class="card p-4">
+            <h2 class="text-center mb-4">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
+
+            <div class="section-title">I. HÁBITOS</div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">FUMA</label>
+                    <select id="fuma_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="fuma_detalle" class="form-control mt-2" placeholder="CANTIDAD">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">ALCOHOL</label>
+                    <select id="alcohol_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="alcohol_detalle" class="form-control mt-2" placeholder="FRECUENCIA">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">DROGAS</label>
+                    <select id="drogas_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="drogas_detalle" class="form-control mt-2" placeholder="TIPO">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">PIJCHAR (COCA)</label>
+                    <select id="pijchar_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">DEPORTES</label>
+                    <select id="deportes_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="deportes_detalle" class="form-control mt-2" placeholder="CUÁL">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">GRUPO SANGUÍNEO</label>
+                    <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">ACCIDENTES TRABAJO</label>
+                    <select id="accidentes_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="accidentes_detalle" class="form-control mt-2" placeholder="DETALLE">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">MEDICAMENTOS ACTUALES</label>
+                    <select id="medicamentos_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="medicamentos_detalle" class="form-control mt-2" placeholder="DETALLE">
+                </div>
             </div>
 
-            <div class="habito-grid" style="grid-template-columns: repeat(2, 1fr);">
-                <div class="item-h"><label>ACCIDENTES TRABAJO</label><select id="accidentes_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="accidentes_detalle" placeholder="DETALLE"></div>
-                <div class="item-h"><label>MEDICAMENTOS ACTUALES</label><select id="medicamentos_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="medicamentos_detalle" placeholder="DETALLE"></div>
-            </div>
-
-            <h3>II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</h3>
-            <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
-            <table id="tablaLaboral">
-                <thead><tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP (SI/NO)</th></tr></thead>
-                <tbody>
+            <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
+            <button class="btn btn-sm btn-dark mb-2" onclick="agregarFila()">+ AGREGAR FILA</button>
+            <table class="table table-bordered align-middle text-center" style="font-size: 0.9rem;">
+                <thead class="table-light">
                     <tr>
-                        <td><input type="number" class="l_edad"></td>
-                        <td><input type="text" class="l_emp"></td>
-                        <td><input type="text" class="l_ocu"></td>
-                        <td><input type="text" class="l_tie"></td>
-                        <td><input type="text" class="l_rie"></td>
-                        <td><select class="l_epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+                        <th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP (SI/NO)</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaLaboral">
+                    <tr>
+                        <td><input type="number" class="form-control form-control-sm h-edad"></td>
+                        <td><input type="text" class="form-control form-control-sm h-emp"></td>
+                        <td><input type="text" class="form-control form-control-sm h-ocu"></td>
+                        <td><input type="number" class="form-control form-control-sm h-tie"></td>
+                        <td><input type="text" class="form-control form-control-sm h-rie"></td>
+                        <td><select class="form-select form-select-sm h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</h3>
-            <div class="riesgos-grid">
-                <div class="check-item"><input type="checkbox" class="riesgo_check" value="RUIDO"> RUIDO</div>
-                <div class="check-item"><input type="checkbox" class="riesgo_check" value="VIBRACION"> VIBRACIÓN</div>
-                <div class="check-item"><input type="checkbox" class="riesgo_check" value="RADIACION"> RADIACIÓN</div>
-                <div class="check-item"><input type="checkbox" class="riesgo_check" value="TEMPERATURAS"> TEMP. EXTREMAS</div>
-                <div class="check-item"><input type="checkbox" class="riesgo_check" value="POLVOS"> POLVOS</div>
-                <div class="check-item"><input type="checkbox" class="riesgo_check" value="GASES"> GASES/VAPORES</div>
-                <div class="check-item"><input type="checkbox" class="riesgo_check" value="ERGONOMICOS"> ERGONÓMICOS</div>
-                <div class="check-item"><input type="checkbox" class="riesgo_check" value="PSICOSOCIAL"> PSICOSOCIAL</div>
+            <div class="section-title">III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
+            <div class="row px-3 mb-4">
+                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="RUIDO"> RUIDO</div>
+                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="VIBRACIÓN"> VIBRACIÓN</div>
+                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="RADIACIÓN"> RADIACIÓN</div>
+                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</div>
+                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="POLVOS"> POLVOS</div>
+                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="GASES/VAPORES"> GASES/VAPORES</div>
+                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="ERGONÓMICOS"> ERGONÓMICOS</div>
+                <div class="form-check col-md-3"><input class="form-check-input check-riesgo" type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</div>
             </div>
 
-            <button type="submit" id="btnFinalizar" class="btn-finalizar">TERMINAR Y GUARDAR REGISTRO 💾</button>
-        </form>
+            <button class="btn btn-success w-100" onclick="guardarP3()">TERMINAR Y GUARDAR REGISTRO 💾</button>
+        </div>
     </div>
 
-<script>
-    function addRow() {
-        const tbody = document.querySelector("#tablaLaboral tbody");
-        const row = tbody.insertRow();
-        row.innerHTML = `<td><input type="number" class="l_edad"></td><td><input type="text" class="l_emp"></td><td><input type="text" class="l_ocu"></td><td><input type="text" class="l_tie"></td><td><input type="text" class="l_rie"></td><td><select class="l_epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
-    }
+    <script>
+        const API_BASE = "https://historial-clinico-936s.onrender.com";
+        const paciente_id = localStorage.getItem("paciente_id");
 
-    document.getElementById('formP3').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('btnFinalizar');
-        btn.disabled = true;
-        
-        const historia = [];
-        document.querySelectorAll("#tablaLaboral tbody tr").forEach(tr => {
-            const inps = tr.querySelectorAll("input, select");
-            if(inps[1].value) {
-                historia.push({
-                    edad: inps[0].value, emp: inps[1].value.toUpperCase(),
-                    ocu: inps[2].value.toUpperCase(), tie: inps[3].value.toUpperCase(),
-                    rie: inps[4].value.toUpperCase(), epp: inps[5].value
-                });
-            }
-        });
+        if (!paciente_id) {
+            alert("No hay paciente seleccionado. Regrese al inicio.");
+            window.location.href = "registro_paciente.html";
+        }
 
-        const riesgos_marcados = [];
-        document.querySelectorAll(".riesgo_check:checked").forEach(ch => riesgos_marcados.push(ch.value));
+        function agregarFila() {
+            const html = `<tr>
+                <td><input type="number" class="form-control form-control-sm h-edad"></td>
+                <td><input type="text" class="form-control form-control-sm h-emp"></td>
+                <td><input type="text" class="form-control form-control-sm h-ocu"></td>
+                <td><input type="number" class="form-control form-control-sm h-tie"></td>
+                <td><input type="text" class="form-control form-control-sm h-rie"></td>
+                <td><select class="form-select form-select-sm h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+            </tr>`;
+            document.getElementById("tablaLaboral").insertAdjacentHTML('beforeend', html);
+        }
 
-        const payload = {
-            paciente_id: parseInt(localStorage.getItem('paciente_id')),
-            fuma_si_no: document.getElementById('fuma_si_no').value,
-            fuma_detalle: document.getElementById('fuma_detalle').value.toUpperCase() || "N/A",
-            alcohol_si_no: document.getElementById('alcohol_si_no').value,
-            alcohol_detalle: document.getElementById('alcohol_detalle').value.toUpperCase() || "N/A",
-            drogas_si_no: document.getElementById('drogas_si_no').value,
-            drogas_detalle: document.getElementById('drogas_detalle').value.toUpperCase() || "N/A",
-            pijchar_si_no: document.getElementById('pijchar_si_no').value,
-            deportes_si_no: document.getElementById('deportes_si_no').value,
-            deportes_detalle: document.getElementById('deportes_detalle').value.toUpperCase() || "N/A",
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            accidentes_si_no: document.getElementById('accidentes_si_no').value,
-            accidentes_detalle: document.getElementById('accidentes_detalle').value.toUpperCase() || "N/A",
-            medicamentos_si_no: document.getElementById('medicamentos_si_no').value,
-            medicamentos_detalle: document.getElementById('medicamentos_detalle').value.toUpperCase() || "N/A",
-            riesgos_vida_laboral: riesgos_marcados.join(", ") || "NINGUNO",
-            historia_laboral: JSON.stringify(historia)
-        };
-
-        try {
-            const res = await fetch('https://historial-clinico-936s.onrender.com/declaraciones/p3/', {
-                method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
+        async function guardarP3() {
+            // Recolectar Historia Laboral
+            const historia = [];
+            document.querySelectorAll("#tablaLaboral tr").forEach(tr => {
+                const fila = {
+                    edad: tr.querySelector(".h-edad").value,
+                    emp: tr.querySelector(".h-emp").value,
+                    ocu: tr.querySelector(".h-ocu").value,
+                    tie: tr.querySelector(".h-tie").value,
+                    rie: tr.querySelector(".h-rie").value,
+                    epp: tr.querySelector(".h-epp").value
+                };
+                if(fila.emp) historia.push(fila);
             });
-            if(res.ok) {
-                alert("✅ REGISTRO FINALIZADO CON ÉXITO");
-                window.location.href = "index.html"; 
+
+            // Recolectar Riesgos Checkboxes
+            const riesgosSeleccionados = [];
+            document.querySelectorAll(".check-riesgo:checked").forEach(ch => {
+                riesgosSeleccionados.push(ch.value);
+            });
+
+            const data = {
+                paciente_id: parseInt(paciente_id),
+                fuma_si_no: document.getElementById("fuma_si_no").value,
+                fuma_detalle: document.getElementById("fuma_detalle").value,
+                alcohol_si_no: document.getElementById("alcohol_si_no").value,
+                alcohol_detalle: document.getElementById("alcohol_detalle").value,
+                drogas_si_no: document.getElementById("drogas_si_no").value,
+                drogas_detalle: document.getElementById("drogas_detalle").value,
+                pijchar_si_no: document.getElementById("pijchar_si_no").value,
+                deportes_si_no: document.getElementById("deportes_si_no").value,
+                deportes_detalle: document.getElementById("deportes_detalle").value,
+                grupo_sanguineo: document.getElementById("grupo_sanguineo").value,
+                accidentes_si_no: document.getElementById("accidentes_si_no").value,
+                accidentes_detalle: document.getElementById("accidentes_detalle").value,
+                medicamentos_si_no: document.getElementById("medicamentos_si_no").value,
+                medicamentos_detalle: document.getElementById("medicamentos_detalle").value,
+                historia_laboral: JSON.stringify(historia),
+                riesgos_vida_laboral: riesgosSeleccionados.join(", ")
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/declaraciones/p3/`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    alert("¡Registro guardado exitosamente!");
+                    window.location.href = `index.html`; 
+                } else {
+                    const err = await res.json();
+                    alert("Error al guardar: " + JSON.stringify(err));
+                }
+            } catch (e) {
+                alert("Error de red: " + e.message);
             }
-        } catch (err) { alert("Error de red"); }
-        finally { btn.disabled = false; }
-    });
-</script>
+        }
+    </script>
 </body>
 </html>
