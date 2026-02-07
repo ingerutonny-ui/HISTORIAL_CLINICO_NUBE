@@ -12,7 +12,7 @@
         .form-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
         .form-control, .form-select { 
             border-radius: 12px; 
-            background-color: #f1f5f9; 
+            background-color: #f8fafc; 
             border: 1px solid #e2e8f0; 
             padding: 12px; 
             font-weight: 600; 
@@ -21,13 +21,15 @@
             text-transform: uppercase; 
         }
         .habito-card { background: #ffffff; border: 1px solid #f1f5f9; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
-        .btn-add { background-color: #475569; border: none; border-radius: 10px; padding: 8px 18px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
-        .table thead th { background: #f8fafc; color: #1e293b; border: 1px solid #e2e8f0; font-weight: 700; text-transform: uppercase; padding: 12px; font-size: 11px; text-align: center; }
+        .btn-add { background-color: #1e293b; border: none; border-radius: 10px; padding: 8px 18px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+        
+        /* Ajuste de color en cabecera de tabla a VERDE según solicitud */
+        .table thead th { background: #24a174; color: white; border: none; font-weight: 700; text-transform: uppercase; padding: 12px; font-size: 11px; text-align: center; }
+        
         .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; background: #f8fafc; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; }
         .check-item { display: flex; align-items: center; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; }
         .check-item input { margin-right: 8px; width: 16px; height: 16px; accent-color: #24a174; }
-        .btn-final { background-color: #24a174; border: none; border-radius: 15px; padding: 18px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 30px; font-size: 14px; transition: 0.3s; }
-        .btn-final:hover { background-color: #1d8661; transform: translateY(-2px); }
+        .btn-final { background-color: #24a174; border: none; border-radius: 15px; padding: 18px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 30px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -62,10 +64,10 @@
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td><input type="number" class="form-control" name="edad"></td>
+                        <td><input type="number" class="form-control" name="edad" value="0"></td>
                         <td><input type="text" class="form-control" name="empresa"></td>
                         <td><input type="text" class="form-control" name="ocupacion"></td>
-                        <td><input type="number" class="form-control" name="tiempo"></td>
+                        <td><input type="number" class="form-control" name="tiempo" value="0"></td>
                         <td><input type="text" class="form-control" name="riesgos"></td>
                         <td><select class="form-select" name="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
                     </tr>
@@ -93,7 +95,7 @@
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     const PACIENTE_ID = localStorage.getItem('paciente_id');
 
-    // Forzar mayúsculas en inputs de texto
+    // Forzar Mayúsculas
     document.addEventListener('input', (e) => {
         if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
             e.target.value = e.target.value.toUpperCase();
@@ -102,10 +104,10 @@
 
     function addRow() {
         const row = `<tr>
-            <td><input type="number" class="form-control" name="edad"></td>
+            <td><input type="number" class="form-control" name="edad" value="0"></td>
             <td><input type="text" class="form-control" name="empresa"></td>
             <td><input type="text" class="form-control" name="ocupacion"></td>
-            <td><input type="number" class="form-control" name="tiempo"></td>
+            <td><input type="number" class="form-control" name="tiempo" value="0"></td>
             <td><input type="text" class="form-control" name="riesgos"></td>
             <td><select class="form-select" name="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
         </tr>`;
@@ -115,12 +117,12 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnGuardar');
-        btn.innerText = "PROCESANDO ENVÍO..."; btn.disabled = true;
+        btn.innerText = "GUARDANDO..."; btn.disabled = true;
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
             const ins = tr.querySelectorAll('input, select');
-            if(ins[1].value) { 
+            if(ins[1].value.trim() !== "") { 
                 historia.push({
                     edad_inicio: parseInt(ins[0].value) || 0,
                     empresa: ins[1].value.toUpperCase(),
@@ -151,20 +153,20 @@
         try {
             const res = await fetch(`${API_BASE}/declaraciones/p3/`, {
                 method: 'POST',
-                mode: 'cors', // Forzar modo CORS
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("¡REGISTRO EXITOSO! VOLVIENDO AL MENÚ.");
+                alert("¡REGISTRO FINALIZADO CON ÉXITO!");
                 window.location.href = "index.html";
             } else {
                 const err = await res.json();
-                alert("ERROR SERVIDOR: " + JSON.stringify(err.detail));
+                console.error(err);
+                alert("ERROR 500: Verifique que la tabla laboral tenga EDAD y TIEMPO como números.");
             }
         } catch (error) {
-            alert("FALLO DE CONEXIÓN: El servidor en Render no responde o hay bloqueo de CORS.");
+            alert("ERROR DE RED: No se pudo conectar con el servidor.");
         } finally {
             btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾";
             btn.disabled = false;
