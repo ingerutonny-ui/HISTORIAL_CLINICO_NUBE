@@ -1,34 +1,18 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional, List
+from typing import Optional
 from datetime import date
 
-class PacienteBase(BaseModel):
-    nombres: str
-    apellidos: str
-    ci: str
-    codigo_paciente: str
+class PacienteCreate(BaseModel):
+    nombres: str; apellidos: str; ci: str; codigo_paciente: str
 
-class PacienteCreate(PacienteBase):
-    pass
-
-class Paciente(PacienteBase):
+class Paciente(PacienteCreate):
     id: int
     model_config = ConfigDict(from_attributes=True)
 
 class FiliacionCreate(BaseModel):
-    paciente_id: int
-    edad: int
-    sexo: str
-    fecha_nacimiento: date
-    estado_civil: str
-    lugar_nacimiento: Optional[str] = "S/D"
-    domicilio: Optional[str] = "S/D"
-    n_casa: Optional[str] = "S/N"
-    zona_barrio: Optional[str] = "S/D"
-    ciudad: Optional[str] = "S/D"
-    pais: Optional[str] = "BOLIVIA"
-    telefono: Optional[str] = "0"
-    profesion_oficio: Optional[str] = "S/D"
+    paciente_id: int; edad: int; sexo: str; fecha_nacimiento: date
+    estado_civil: str; lugar_nacimiento: str; domicilio: str; n_casa: str
+    zona_barrio: str; ciudad: str; pais: str; telefono: str; profesion_oficio: str
 
 class AntecedentesCreate(BaseModel):
     paciente_id: int
@@ -38,13 +22,7 @@ class AntecedentesCreate(BaseModel):
     p16: str; d16: str; p17: str; d17: str; p18: str; d18: str
 
 class HabitosCreate(BaseModel):
-    paciente_id: int
-    deportes_si_no: str
-    deportes_detalle: str
-    accidentes_si_no: str
-    accidentes_detalle: str
-    medicamentos_si_no: str
-    medicamentos_detalle: str
-    grupo_sanguineo: str
-    historia_laboral: str
-    riesgos_vida_laboral: str # Sincronizado
+    paciente_id: int; deportes_si_no: str; deportes_detalle: str
+    accidentes_si_no: str; accidentes_detalle: str; medicamentos_si_no: str
+    medicamentos_detalle: str; grupo_sanguineo: str; historia_laboral: str
+    riesgos_vida_laboral: str
