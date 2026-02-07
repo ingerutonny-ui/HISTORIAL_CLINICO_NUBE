@@ -5,6 +5,9 @@ from typing import List
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
+# ESTO ELIMINA LAS TABLAS ACTUALES Y LAS CREA DE NUEVO CON LAS COLUMNAS CORRECTAS
+# SE HACE PARA SOLUCIONAR EL ERROR 'UndefinedColumn' SIN USAR LA CONSOLA SQL
+models.Base.metadata.drop_all(bind=engine)
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
