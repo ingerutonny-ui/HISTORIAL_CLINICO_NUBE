@@ -26,7 +26,8 @@ def get_db():
     finally:
         db.close()
 
-# --- ENDPOINTS DE OPERACIÓN ---
+# --- ENDPOINTS ---
+
 @app.get("/pacientes/", response_model=List[schemas.Paciente])
 def read_pacientes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_pacientes(db, skip=skip, limit=limit)
@@ -47,13 +48,15 @@ def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
 def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
     return crud.create_habitos(db=db, habitos=data)
 
-# --- GENERADOR DE PDF ---
+# --- GENERADOR DE REPORTE PDF ---
+
 @app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
 def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     res = crud.get_historial_completo(db, paciente_id)
     p, f, a, h = res["paciente"], res["filiacion"], res["antecedentes"], res["habitos"]
     
-    if not p: raise HTTPException(status_code=404, detail="No existe")
+    if not p:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
 
     def get_v(obj, attr, default="N/A"):
         val = getattr(obj, attr, None)
@@ -63,34 +66,36 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         val = getattr(obj, attr, None)
         return "X" if str(val).strip().upper() == target else ""
 
-    # SECCIÓN I: FILIACIÓN (14 CAMPOS)
+    # SECCIÓN I: FILIACIÓN (MAPEO DE LOS 14 CAMPOS)
     filiacion_html = f"""
     <table>
-        <tr><td colspan="4" class="header">I. FILIACIÓN DEL TRABAJADOR</td></tr>
+        <tr><td colspan="4" class="header">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
         <tr>
-            <td style="width:20%"><b>NOMBRE:</b></td><td colspan="3">{get_v(p,'apellidos')} {get_v(p,'nombres')}</td>
+            <td style="width:25%"><b>APELLIDOS Y NOMBRES:</b></td>
+            <td colspan="3">{get_v(p,'apellidos')} {get_v(p,'nombres')}</td>
         </tr>
         <tr>
             <td><b>EDAD:</b></td><td>{get_v(f,'edad')} AÑOS</td>
             <td><b>SEXO:</b></td><td>{get_v(f,'sexo')}</td>
         </tr>
         <tr>
-            <td><b>FECHA NAC.:</b></td><td>{get_v(f,'fecha_nacimiento')}</td>
+            <td><b>FECHA NACIMIENTO:</b></td><td>{get_v(f,'fecha_nacimiento')}</td>
             <td><b>LUGAR:</b></td><td>{get_v(f,'lugar_nacimiento')}</td>
         </tr>
         <tr>
-            <td><b>CI:</b></td><td>{get_v(p,'documento_identidad')}</td>
+            <td><b>C.I.:</b></td><td>{get_v(p,'documento_identidad')}</td>
             <td><b>ESTADO CIVIL:</b></td><td>{get_v(f,'estado_civil')}</td>
         </tr>
         <tr>
-            <td><b>DOMICILIO:</b></td><td colspan="3">{get_v(f,'domicilio_av_calle')} #{get_v(f,'domicilio_numero')}, {get_v(f,'domicilio_barrio')}</td>
+            <td><b>DOMICILIO:</b></td>
+            <td colspan="3">{get_v(f,'domicilio_av_calle')} NO. {get_v(f,'domicilio_numero')}, BARRIO {get_v(f,'domicilio_barrio')}</td>
         </tr>
         <tr>
-            <td><b>CIUDAD/PAÍS:</b></td><td>{get_v(f,'domicilio_ciudad')} / {get_v(f,'domicilio_pais')}</td>
+            <td><b>CIUDAD / PAÍS:</b></td><td>{get_v(f,'domicilio_city')} / {get_v(f,'domicilio_pais')}</td>
             <td><b>TELÉFONO:</b></td><td>{get_v(f,'telefono')}</td>
         </tr>
         <tr>
-            <td><b>PROFESIÓN:</b></td><td colspan="3">{get_v(f,'profesion_labor')}</td>
+            <td><b>PROFESIÓN / LABOR:</b></td><td colspan="3">{get_v(f,'profesion_labor')}</td>
         </tr>
     </table>
     """
@@ -100,26 +105,31 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                  "SANGRE", "GENITO-URINARIO", "SISTEMA NERVIOSO", "PSIQUIÁTRICOS", "OSTEOMUSCULARES",
                  "ENDOCRINOLÓGICOS", "REUMATOLÓGICOS", "GENERALES", "DERMATOLÓGICAS", 
                  "ALERGIA", "INFECCIONES", "CIRUGÍAS", "ACCIDENTES DE TRABAJO"]
+    
     rows_p2 = "".join([f"<tr><td>{i+1}. {l}</td><td style='text-align:center;'>{mark(a,f'p{i+1}','SI')}</td><td style='text-align:center;'>{mark(a,f'p{i+1}','NO')}</td><td>{get_v(a,f'd{i+1}')}</td></tr>" for i,l in enumerate(labels_p2)])
 
-    # SECCIÓN III: HISTORIA LABORAL (TABLA DINÁMICA)
+    # SECCIÓN III: HISTORIA LABORAL (P3)
     historia_html = "SIN REGISTROS"
     try:
         if h and h.historia_laboral:
             data_laboral = json.loads(h.historia_laboral)
             filas_laboral = "".join([f"<tr><td>{i.get('edad','-')}</td><td>{i.get('emp','-')}</td><td>{i.get('ocu','-')}</td><td>{i.get('tie','-')}</td><td>{i.get('rie','-')}</td><td>{i.get('epp','-')}</td></tr>" for i in data_laboral])
             historia_html = f"<table><tr style='background:#f2f2f2; font-weight:bold; text-align:center;'><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>{filas_laboral}</table>"
-    except: historia_html = "ERROR EN DATOS"
+    except:
+        historia_html = "ERROR EN PROCESAMIENTO"
 
     html = f"""
     <!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-    body {{ font-family: Arial; font-size: 8px; line-height: 1.1; padding: 10px; }}
-    table {{ width: 100%; border-collapse: collapse; margin-bottom: 5px; }}
-    td, th {{ border: 1px solid black; padding: 3px; }}
-    .header {{ background: #d9e2f3; font-weight: bold; text-align: center; padding: 4px; text-transform: uppercase; font-size: 9px; }}
+    body {{ font-family: Arial, sans-serif; font-size: 8.2px; line-height: 1.1; padding: 10px; }}
+    table {{ width: 100%; border-collapse: collapse; margin-bottom: 8px; }}
+    td, th {{ border: 1px solid #000; padding: 4px; }}
+    .header {{ background: #d9e2f3; font-weight: bold; text-align: center; text-transform: uppercase; }}
+    .title {{ text-align: center; font-size: 13px; font-weight: bold; margin-bottom: 10px; text-decoration: underline; }}
     </style></head><body>
-    <div style="text-align:center; font-weight:bold; font-size:12px; margin-bottom:10px;">DECLARACIÓN JURADA DE SALUD</div>
+    <div class="title">DECLARACIÓN JURADA DE SALUD</div>
+    
     {filiacion_html}
+
     <table>
         <tr class="header"><td style="width:40%">II. SISTEMA / ANTECEDENTE</td><td style="width:30px">SI</td><td style="width:30px">NO</td><td>OBSERVACIONES / DETALLES</td></tr>
         {rows_p2}
@@ -128,11 +138,17 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <tr><td>21. GRUPO SANGUÍNEO</td><td colspan="2" style="background:#f2f2f2;"></td><td><b>{get_v(h,'grupo_sanguineo')}</b></td></tr>
         <tr><td>22. DEPORTES</td><td style="text-align:center;">{mark(h,'deportes_si_no','SI')}</td><td style="text-align:center;">{mark(h,'deportes_si_no','NO')}</td><td>{get_v(h,'deportes_detalle')}</td></tr>
     </table>
-    <div class="header">III. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
+
+    <div class="header">III. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)</div>
     {historia_html}
+
     <div class="header">IV. RIESGOS EXPUESTOS DURANTE VIDA LABORAL</div>
-    <div style="border:1px solid black; padding:5px;">{get_v(h, 'riesgos_vida_laboral')}</div>
-    <div style="margin-top:15px; text-align:right;">Firma del Trabajador: __________________________</div>
+    <div style="border:1px solid black; padding:6px;">{get_v(h, 'riesgos_vida_laboral')}</div>
+
+    <div style="margin-top:20px; display:flex; justify-content:space-between; font-weight:bold;">
+        <span>FECHA DE GENERACIÓN: 06/02/2026</span>
+        <span>FIRMA DEL TRABAJADOR: __________________________</span>
+    </div>
     <script>window.print();</script></body></html>
     """
     return HTMLResponse(content=html)
