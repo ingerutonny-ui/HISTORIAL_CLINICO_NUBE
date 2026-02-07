@@ -61,19 +61,19 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         val = getattr(obj, attr, None)
         return "X" if str(val).strip().upper() == target else ""
 
-    # PROCESAMIENTO DE HISTORIA LABORAL (Elimina las comillas y crea tabla)
+    # PROCESAMIENTO DE HISTORIA LABORAL (Corregido para claves en minúsculas)
     historia_html = "SIN REGISTROS"
     try:
         if h and h.historia_laboral:
             data_laboral = json.loads(h.historia_laboral)
             filas_laboral = "".join([f"""
                 <tr>
-                    <td>{item.get('EDAD','-')}</td>
-                    <td>{item.get('EMP','-')}</td>
-                    <td>{item.get('OCU','-')}</td>
-                    <td>{item.get('TIE','-')}</td>
-                    <td>{item.get('RIE','-')}</td>
-                    <td>{item.get('EPP','-')}</td>
+                    <td>{item.get('edad','-')}</td>
+                    <td>{item.get('emp','-')}</td>
+                    <td>{item.get('ocu','-')}</td>
+                    <td>{item.get('tie','-')}</td>
+                    <td>{item.get('rie','-')}</td>
+                    <td>{item.get('epp','-')}</td>
                 </tr>""" for item in data_laboral])
             historia_html = f"""
                 <table style='margin-top:0;'>
@@ -83,7 +83,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
                     {filas_laboral}
                 </table>"""
     except:
-        historia_html = get_v(h, 'historia_laboral')
+        historia_html = "ERROR AL PROCESAR DATOS"
 
     labels_p2 = ["VISTA", "AUDITIVO", "RESPIRATORIO", "CARDIO-VASCULARES", "ESTÓMAGO/HÍGADO", 
                  "SANGRE", "GENITO-URINARIO", "SISTEMA NERVIOSO", "PSIQUIÁTRICOS", "OSTEOMUSCULARES",
@@ -94,7 +94,7 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
 
     html = f"""
     <!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-    body {{ font-family: Arial; font-size: 9px; line-height: 1.2; }}
+    body {{ font-family: Arial; font-size: 9px; line-height: 1.1; }}
     table {{ width: 100%; border-collapse: collapse; margin-bottom: 8px; }}
     td, th {{ border: 1px solid black; padding: 4px; }}
     .header {{ background: #d9e2f3; font-weight: bold; text-align: center; padding: 5px; text-transform: uppercase; }}
@@ -108,8 +108,13 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         <tr><td>21. GRUPO SANGUÍNEO</td><td colspan="2" style="background:#f2f2f2;"></td><td><b>{get_v(h,'grupo_sanguineo')}</b></td></tr>
         <tr><td>22. DEPORTES</td><td style="text-align:center;">{mark(h,'deportes_si_no','SI')}</td><td style="text-align:center;">{mark(h,'deportes_si_no','NO')}</td><td>{get_v(h,'deportes_detalle')}</td></tr>
     </table>
+    
     <div class="header">HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
     {historia_html}
+
+    <div class="header">III. RIESGOS EXPUESTOS DURANTE VIDA LABORAL</div>
+    <div style="border:1px solid black; padding:5px; margin-top:0;">{get_v(h, 'riesgos_vida_laboral')}</div>
+
     <div style="margin-top:20px; text-align:center; font-size:8px; color:#666;">Documento generado digitalmente - Proyecto HISTORIAL_CLINICO_NUBE</div>
     <script>window.print();</script></body></html>
     """
