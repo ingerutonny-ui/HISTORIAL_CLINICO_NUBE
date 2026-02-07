@@ -13,13 +13,14 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CONFIGURACIÓN DE CORS: Permite la conexión desde GitHub Pages
+# CONFIGURACIÓN DE CORS REFORZADA
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
+    expose_headers=["*"]
 )
 
 def get_db():
@@ -54,4 +55,16 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     res = crud.get_historial_completo(db, paciente_id)
     if not res["paciente"]:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    return HTMLResponse(content="<html><body><h1>GENERANDO REPORTE...</h1><script>window.print();</script></body></html>")
+    
+    # Estructura básica para impresión
+    contenido_html = f"""
+    <html>
+        <head><title>Reporte - {res['paciente'].nombre}</title></head>
+        <body>
+            <h1>HISTORIAL CLÍNICO - {res['paciente'].nombre}</h1>
+            <p>ID: {res['paciente'].id}</p>
+            <script>window.onload = function() {{ window.print(); }}</script>
+        </body>
+    </html>
+    """
+    return HTMLResponse(content=contenido_html)
