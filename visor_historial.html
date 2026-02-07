@@ -3,42 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Visor 22 Sistemas</title>
+    <title>HC NUBE | Visor Dinámico 22</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <style>
-        .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
-    </style>
 </head>
-<body class="bg-slate-950 min-h-screen text-slate-200 p-4">
-
-    <div class="max-w-2xl mx-auto mt-8 flex justify-between items-center mb-12">
-        <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors">← Volver</button>
-        <div class="text-right">
-            <h2 class="text-xl font-black uppercase text-white tracking-tighter">Visor de Historial</h2>
-            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Documento 22 Sistemas Completo</p>
-        </div>
-    </div>
-
-    <div class="max-w-md mx-auto mb-12">
-        <div class="relative">
-            <input type="text" id="codigoBusqueda" placeholder="CÓDIGO (EJ: RC3209)" 
-                class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 uppercase">
-            <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all">🔍</button>
-        </div>
-    </div>
-
-    <div id="resultadoVisor" class="hidden max-w-xl mx-auto">
-        <div class="glass-card rounded-[2.5rem] p-8 shadow-2xl text-center border-t-4 border-emerald-500/50">
-            <div class="flex flex-col items-center mb-8">
-                <div class="w-20 h-20 bg-emerald-900/30 rounded-full flex items-center justify-center text-3xl mb-4 border border-emerald-500/30 text-emerald-400">📄</div>
-                <h3 id="resNombre" class="text-2xl font-bold text-white uppercase">---</h3>
-                <span id="resCodigo" class="px-4 py-1 bg-emerald-500/10 border border-emerald-500/50 rounded-full text-emerald-400 text-[10px] font-black mt-2">---</span>
-            </div>
-            <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white transition-all">
-                👁️ Generar Formulario 22 Sistemas
-            </button>
+<body class="bg-slate-950 text-slate-200 p-4">
+    <div class="max-w-md mx-auto mt-20 text-center">
+        <h2 class="text-xl font-bold mb-4 uppercase tracking-tighter">Buscador de Historiales</h2>
+        <input type="text" id="codigoBusqueda" placeholder="CÓDIGO PACIENTE" class="w-full p-4 bg-slate-900 border border-slate-700 rounded-xl mb-4 text-center">
+        <button onclick="buscarPaciente()" class="bg-blue-600 px-10 py-3 rounded-xl font-bold uppercase text-xs">Buscar Registro</button>
+        <div id="resultadoVisor" class="hidden mt-10 p-6 border border-emerald-500/30 rounded-3xl bg-emerald-900/10">
+            <p id="resNombre" class="font-bold text-white mb-4"></p>
+            <button onclick="generarVistaPrevia()" class="bg-emerald-600 px-6 py-2 rounded-lg text-[10px] font-bold">GENERAR PDF PROFESIONAL</button>
         </div>
     </div>
 
@@ -48,18 +25,14 @@
 
         async function buscarPaciente() {
             const codigo = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
-            if (!codigo) return;
-            try {
-                const response = await fetch(`${API_BASE}/pacientes/`);
-                const pacientes = await response.json();
-                const p = pacientes.find(x => x.codigo_paciente.toUpperCase() === codigo);
-                if (p) {
-                    pacienteIdActual = p.id;
-                    document.getElementById('resNombre').textContent = `${p.nombres} ${p.apellidos}`;
-                    document.getElementById('resCodigo').textContent = p.codigo_paciente;
-                    document.getElementById('resultadoVisor').classList.remove('hidden');
-                }
-            } catch (e) { console.error(e); }
+            const res = await fetch(`${API_BASE}/pacientes/`);
+            const pacientes = await res.json();
+            const p = pacientes.find(x => x.codigo_paciente.toUpperCase() === codigo);
+            if (p) {
+                pacienteIdActual = p.id;
+                document.getElementById('resNombre').textContent = `${p.nombres} ${p.apellidos}`;
+                document.getElementById('resultadoVisor').classList.remove('hidden');
+            }
         }
 
         async function generarVistaPrevia() {
@@ -70,98 +43,81 @@
 
             const drawHeader = (pdf) => {
                 pdf.addImage('logo.png', 'PNG', 15, 10, 25, 12);
-                pdf.setFontSize(12); pdf.setFont(undefined, 'bold');
-                pdf.text("DECLARACION JURADA DE SALUD", 105, 18, { align: "center" });
-                pdf.setLineWidth(0.4); pdf.line(15, 25, 195, 25);
+                pdf.setFontSize(10); pdf.setFont(undefined, 'bold');
+                pdf.text("DECLARACIÓN JURADA DE SALUD - HISTORIAL CLÍNICO", 105, 18, { align: "center" });
             };
 
-            // SECCIÓN I
-            drawHeader(doc);
-            doc.autoTable({
-                startY: 28,
-                head: [[{content: 'I. AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' } }]],
-                body: [
-                    [{content: 'APELLIDOS Y NOMBRES', styles: {fontStyle: 'bold'}}, {content: `${d.paciente.nombres} ${d.paciente.apellidos}`, colSpan: 3}],
-                    [{content: 'EDAD', styles: {fontStyle: 'bold'}}, d.filiacion?.edad || '', {content: 'SEXO', styles: {fontStyle: 'bold'}}, d.filiacion?.sexo || ''],
-                    [{content: 'FECHA NACIMIENTO', styles: {fontStyle: 'bold'}}, d.filiacion?.fecha_nacimiento || '', {content: 'LUGAR', styles: {fontStyle: 'bold'}}, d.filiacion?.lugar_nacimiento || ''],
-                    [{content: 'C.I.', styles: {fontStyle: 'bold'}}, d.paciente.ci || '', {content: 'ESTADO CIVIL', styles: {fontStyle: 'bold'}}, d.filiacion?.estado_civil || ''],
-                    [{content: 'DOMICILIO', styles: {fontStyle: 'bold'}}, d.filiacion?.domicilio || '', {content: 'CIUDAD / PAÍS', styles: {fontStyle: 'bold'}}, `${d.filiacion?.ciudad || ''} / ${d.filiacion?.pais || ''}`],
-                    [{content: 'TELÉFONO', styles: {fontStyle: 'bold'}}, d.filiacion?.telefono || '', {content: 'PROFESIÓN / LABOR', styles: {fontStyle: 'bold'}}, d.filiacion?.profesion_oficio || '']
-                ],
-                theme: 'grid', styles: { fontSize: 7, cellPadding: 1 }
-            });
-
-            // LISTADO DE 22 SISTEMAS
-            const sistemasRaw = [
-                ['VISTA', 'GAUCOMA, MIOPÍA, PTERIGIÓN'], ['AUDITIVO', 'SORDERA, VÉRTIGO, OTITIS'],
-                ['RESPIRATORIO', 'ASMA, BRONQUITIS, EPOC'], ['CARDIO-VASCULARES', 'HIPERTENSIÓN, ARRITMIAS'],
-                ['ESTÓMAGO/HÍGADO', 'GASTRITIS, HEPATITIS, HERNIAS'], ['SANGRE', 'ANEMIA, LEUCEMIA, CHAGAS'],
-                ['GENITO-URINARIO', 'CÁLCULOS, INFECCIONES URINARIAS'], ['SISTEMA NERVIOSO', 'EPILEPSIA, PARÁLISIS, MIGRAÑA'],
-                ['PSIQUIÁTRICOS', 'DEPRESIÓN, ANSIEDAD'], ['OSTEOMUSCULARES', 'ARTRITIS, DOLORES LUMBARES'],
-                ['ENDOCRINOLÓGICOS', 'DIABETES, TIROIDES'], ['REUMATOLÓGICOS', 'LUPUS, REUMATISMO'],
-                ['GENERALES', 'OBESIDAD, FIEBRES, DESMAYOS'], ['DERMATOLÓGICAS', 'MICOSIS, DERMATITIS, ALERGIAS'],
-                ['ALERGIA', 'RINITIS, URTICARIA'], ['INFECCIONES', 'TUBERCULOSIS, VIH, SÍFILIS'],
-                ['CIRUGÍAS', 'CIRUGÍAS PREVIAS'], ['ACCIDENTES DE TRABAJO', 'LESIONES POR TRABAJO'],
-                ['ACCIDENTES PARTICULARES', 'LESIONES FUERA DEL TRABAJO'], ['MEDICAMENTOS (USO ACTUAL)', 'USO DE WARFARINA, ANTICONVULSIVANTE'],
-                ['GRUPO SANGUÍNEO', 'TIPO DE SANGRE'], ['DEPORTES', 'ACTIVIDAD DEPORTIVA Y FRECUENCIA']
-            ];
-
-            const bodySistemas = sistemasRaw.map(s => {
-                let si = '', no = 'X', obs = 'NORMAL';
-                if (s[0] === 'CIRUGÍAS') { si = 'X'; no = ''; obs = 'VESICULA'; }
-                if (s[0] === 'ALERGIA') { si = 'X'; no = ''; obs = 'POR FRIO'; }
-                if (s[0] === 'GRUPO SANGUÍNEO') { no = ''; obs = d.habitos?.grupo_sanguineo || 'ORH+'; }
-                if (s[0] === 'DEPORTES') { si = 'X'; no = ''; obs = d.habitos?.deportes_detalle || 'N/A'; }
-                return [{content: s[0]+'\n'+s[1], styles: {fontStyle: 'bold'}}, si, no, obs];
-            });
-
-            doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 4,
-                head: [[{content: 'II. SISTEMA / ANTECEDENTES Y RIESGOS', styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
-                body: bodySistemas,
-                theme: 'grid', styles: { fontSize: 6.5, cellPadding: 1 }
-            });
-
-            // HOJA 2
-            doc.addPage();
             drawHeader(doc);
 
+            // TABLA I: FILIACIÓN
             doc.autoTable({
-                startY: 28,
-                head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' }}]],
+                startY: 25,
+                head: [[{content: 'I. DATOS DE FILIACIÓN', colSpan: 4, styles: {fillColor: [50, 50, 50]}}]],
                 body: [
-                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, d.habitos?.alcohol_si_no || 'NO', {content: 'TABACO', styles: {fontStyle: 'bold'}}, d.habitos?.fuma_si_no || 'NO'],
-                    [{content: 'MEDICAMENTOS', styles: {fontStyle: 'bold'}}, {content: d.habitos?.medicamentos_detalle || 'NINGUNO', colSpan: 3}]
+                    ['NOMBRES:', `${d.paciente.nombres} ${d.paciente.apellidos}`, 'C.I.:', d.paciente.ci],
+                    ['EDAD:', d.filiacion?.edad || '', 'SEXO:', d.filiacion?.sexo || ''],
+                    ['PROFESIÓN:', d.filiacion?.profesion_oficio || '', 'TELÉFONO:', d.filiacion?.telefono || '']
                 ],
                 theme: 'grid', styles: { fontSize: 8 }
             });
 
-            doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)', colSpan: 6, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
-                body: [
-                    [{content: 'EDAD', styles: {fontStyle: 'bold'}}, {content: 'EMPRESA', styles: {fontStyle: 'bold'}}, {content: 'OCUPACIÓN', styles: {fontStyle: 'bold'}}, {content: 'TIEMPO', styles: {fontStyle: 'bold'}}, {content: 'RIESGOS', styles: {fontStyle: 'bold'}}, {content: 'EPP', styles: {fontStyle: 'bold'}}],
-                    ['21', 'DTDG', 'DOCENTE', '3 AÑOS', 'TOTAL', 'SI']
-                ],
-                theme: 'grid', styles: { fontSize: 7.5 }
+            // LÓGICA DINÁMICA PARA LOS 22 CAMPOS
+            // Mapeamos los nombres de los campos de tu Base de Datos
+            const mapaSistemas = [
+                { etiqueta: 'VISTA', sub: 'GLAUCOMA, MIOPÍA', dato: d.antecedentes?.vista },
+                { etiqueta: 'AUDITIVO', sub: 'SORDERA, OTITIS', dato: d.antecedentes?.auditivo },
+                { etiqueta: 'RESPIRATORIO', sub: 'ASMA, BRONQUITIS', dato: d.antecedentes?.respiratorio },
+                { etiqueta: 'CARDIO-VASCULARES', sub: 'HIPERTENSIÓN', dato: d.antecedentes?.cardio },
+                { etiqueta: 'ESTÓMAGO/HÍGADO', sub: 'GASTRITIS, HERNIA', dato: d.antecedentes?.estomago },
+                { etiqueta: 'SANGRE', sub: 'ANEMIA, CHAGAS', dato: d.antecedentes?.sangre },
+                { etiqueta: 'GENITO-URINARIO', sub: 'CÁLCULOS', dato: d.antecedentes?.genito },
+                { etiqueta: 'SISTEMA NERVIOSO', sub: 'EPILEPSIA, MIGRAÑA', dato: d.antecedentes?.nervioso },
+                { etiqueta: 'PSIQUIÁTRICOS', sub: 'DEPRESIÓN', dato: d.antecedentes?.psiquiatrico },
+                { etiqueta: 'OSTEOMUSCULARES', sub: 'ARTRITIS', dato: d.antecedentes?.osteo },
+                { etiqueta: 'ENDOCRINOLÓGICOS', sub: 'DIABETES, TIROIDES', dato: d.antecedentes?.endocrino },
+                { etiqueta: 'REUMATOLÓGICOS', sub: 'LUPUS', dato: d.antecedentes?.reumato },
+                { etiqueta: 'GENERALES', sub: 'OBESIDAD, DESMAYOS', dato: d.antecedentes?.generales },
+                { etiqueta: 'DERMATOLÓGICAS', sub: 'MICOSIS, ALERGIAS', dato: d.antecedentes?.dermato },
+                { etiqueta: 'ALERGIA', sub: 'RINITIS, URTICARIA', dato: d.habitos?.alergias_detalle },
+                { etiqueta: 'INFECCIONES', sub: 'TBC, VIH, SÍFILIS', dato: d.antecedentes?.infecciones },
+                { etiqueta: 'CIRUGÍAS', sub: 'CIRUGÍAS PREVIAS', dato: d.antecedentes?.cirugias },
+                { etiqueta: 'ACCIDENTES TRABAJO', sub: 'LESIONES LABORALES', dato: d.habitos?.accidentes_detalle },
+                { etiqueta: 'ACCIDENTES PERS.', sub: 'LESIONES PARTICULARES', dato: d.antecedentes?.accidentes_p },
+                { etiqueta: 'MEDICAMENTOS', sub: 'USO ACTUAL', dato: d.habitos?.medicamentos_detalle },
+                { etiqueta: 'GRUPO SANGUÍNEO', sub: 'TIPO DE SANGRE', dato: d.habitos?.grupo_sanguineo },
+                { etiqueta: 'DEPORTES', sub: 'ACTIVIDAD FÍSICA', dato: d.habitos?.deportes_detalle }
+            ];
+
+            const bodySistemas = mapaSistemas.map(s => {
+                // Si el dato existe, no es "N/A", no es "NO" y no está vacío -> Es un "SI"
+                const tieneInformacion = s.dato && s.dato !== 'N/A' && s.dato !== 'NO' && s.dato !== '';
+                return [
+                    { content: `${s.etiqueta}\n${s.sub}`, styles: { fontStyle: 'bold' } },
+                    tieneInformacion ? 'X' : '', 
+                    tieneInformacion ? '' : 'X', 
+                    tieneInformacion ? s.dato.toUpperCase() : 'NORMAL'
+                ];
             });
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'V. ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE LA VIDA LABORAL', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
-                body: [
-                    [{content: 'FISICOS:', styles: {fontStyle: 'bold', width: 45}}, 'NINGUNO'],
-                    [{content: 'QUIMICOS:', styles: {fontStyle: 'bold'}}, d.habitos?.riesgos_vida_laboral || 'NINGUNO'],
-                    [{content: 'ERGONOMICOS:', styles: {fontStyle: 'bold'}}, 'NINGUNO'],
-                    [{content: 'PSICOLOGICOS:', styles: {fontStyle: 'bold'}}, 'NINGUNO'],
-                    [{content: 'OBSERVACIONES:', styles: {fontStyle: 'bold'}}, 'DECLARO QUE LA INFORMACIÓN PROPORCIONADA ES VERÍDICA.']
-                ],
-                theme: 'grid', styles: { fontSize: 8, cellPadding: 2.5 }
+                head: [['II. SISTEMAS / RIESGOS', 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
+                body: bodySistemas,
+                theme: 'grid',
+                styles: { fontSize: 7, cellPadding: 1 },
+                headStyles: { fillColor: [0, 150, 100] }
             });
 
-            doc.setFontSize(8); doc.setFont(undefined, 'bold');
-            doc.text(`FECHA DE EMISIÓN: ${new Date().toLocaleDateString()}`, 15, doc.lastAutoTable.finalY + 15);
-            doc.text("FIRMA DEL TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 15, { align: "right" });
+            // SECCIÓN V: RIESGOS LABORALES
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 5,
+                head: [[{content: 'V. RIESGOS EN VIDA LABORAL', colSpan: 2}]],
+                body: [
+                    ['QUÍMICOS:', d.habitos?.riesgos_vida_laboral || 'NINGUNO'],
+                    ['OBSERVACIONES:', 'DECLARACIÓN JURADA FINAL.']
+                ],
+                theme: 'grid', styles: { fontSize: 8 }
+            });
 
             window.open(URL.createObjectURL(doc.output('blob')), '_blank');
         }
