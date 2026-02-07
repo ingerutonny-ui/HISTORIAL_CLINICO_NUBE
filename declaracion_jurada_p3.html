@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</title>
+    <title>PARTE 3: HÁBITOS Y RIESGOS</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body { background-color: #f1f4f9; font-family: 'Segoe UI', Arial, sans-serif; }
-        .card { border-radius: 25px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); padding: 30px; margin-top: 20px; }
-        .section-title { color: #1a3a5a; font-weight: bold; border-left: 4px solid #28a745; padding-left: 15px; margin: 25px 0 15px 0; text-transform: uppercase; font-size: 1.1rem; }
-        .form-label { font-weight: 600; color: #555; font-size: 0.85rem; text-transform: uppercase; }
-        .form-control, .form-select { border-radius: 12px; border: 1px solid #e0e6ed; padding: 10px; text-transform: uppercase; font-size: 0.9rem; }
-        .btn-add { background-color: #34495e; color: white; border-radius: 10px; font-weight: bold; border: none; padding: 5px 15px; margin-bottom: 10px; }
-        .btn-save { background-color: #38a169; color: white; border-radius: 15px; padding: 15px; font-weight: bold; border: none; width: 100%; font-size: 1.1rem; transition: 0.3s; margin-top: 20px; }
-        .btn-save:hover { background-color: #2f855a; }
-        table { border-radius: 10px; overflow: hidden; }
-        th { background-color: #f8fafc !important; color: #333; font-size: 0.75rem; text-transform: uppercase; border: 1px solid #eee !important; }
-        .check-group { background: white; border-radius: 15px; padding: 15px; border: 1px solid #eef2f7; }
-        .form-check-label { font-size: 0.8rem; font-weight: 600; color: #444; }
+        body { background-color: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card-container { background: white; border-radius: 35px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); padding: 40px; margin-top: 30px; border: none; }
+        .section-title { color: #1e3a8a; font-weight: 800; border-left: 6px solid #22c55e; padding-left: 15px; margin: 30px 0 20px 0; text-transform: uppercase; font-size: 1rem; }
+        .form-label { font-weight: 700; color: #475569; font-size: 0.8rem; text-transform: uppercase; }
+        .form-control, .form-select { border-radius: 15px; border: 1.5px solid #e2e8f0; padding: 12px; text-transform: uppercase; font-size: 0.9rem; background-color: #f8fafc; }
+        .form-control:focus { border-color: #22c55e; box-shadow: none; }
+        .btn-add-row { background-color: #334155; color: white; border-radius: 12px; font-weight: 700; border: none; padding: 8px 20px; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 15px; }
+        .btn-submit { background-color: #22c55e; color: white; border-radius: 20px; padding: 18px; font-weight: 800; border: none; width: 100%; font-size: 1.2rem; text-transform: uppercase; margin-top: 35px; box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2); }
+        .btn-submit:hover { background-color: #16a34a; transform: translateY(-2px); }
+        th { background-color: #f1f5f9 !important; color: #475569; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid #e2e8f0 !important; }
+        .check-card { background: #f8fafc; border-radius: 20px; padding: 20px; border: 1.5px solid #e2e8f0; }
+        .form-check-label { font-weight: 600; text-transform: uppercase; font-size: 0.8rem; color: #334155; }
     </style>
 </head>
 <body>
     <div class="container mb-5">
-        <div class="card">
-            <h3 class="text-center mb-4" style="color: #2d3748; font-weight: 800;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h3>
+        <div class="card-container">
+            <h2 class="text-center mb-5" style="font-weight: 900; color: #0f172a; letter-spacing: -0.02em;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
 
-            <div class="section-title">I. HÁBITOS</div>
-            <div class="row g-3">
+            <div class="section-title">I. HÁBITOS Y OTROS</div>
+            <div class="row g-4">
                 <div class="col-md-4">
                     <label class="form-label">FUMA</label>
                     <select id="fuma_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
@@ -58,12 +58,12 @@
             </div>
 
             <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
-            <button class="btn-add" onclick="agregarFila()">+ AGREGAR FILA</button>
+            <button class="btn-add-row" onclick="agregarFila()">+ AGREGAR NUEVA FILA</button>
             <div class="table-responsive">
                 <table class="table table-bordered align-middle">
                     <thead class="text-center">
                         <tr>
-                            <th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP (SI/NO)</th>
+                            <th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th>
                         </tr>
                     </thead>
                     <tbody id="tablaLaboral">
@@ -71,7 +71,7 @@
                             <td><input type="number" class="form-control h-edad"></td>
                             <td><input type="text" class="form-control h-emp"></td>
                             <td><input type="text" class="form-control h-ocu"></td>
-                            <td><input type="number" class="form-control h-tie"></td>
+                            <td><input type="text" class="form-control h-tie"></td>
                             <td><input type="text" class="form-control h-rie"></td>
                             <td><select class="form-select h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
                         </tr>
@@ -80,7 +80,7 @@
             </div>
 
             <div class="section-title">III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
-            <div class="check-group row g-3 mx-0">
+            <div class="check-card row g-3 mx-0">
                 <div class="col-6 col-md-3 form-check"><input class="form-check-input check-rie" type="checkbox" value="RUIDO"> <label class="form-check-label">RUIDO</label></div>
                 <div class="col-6 col-md-3 form-check"><input class="form-check-input check-rie" type="checkbox" value="VIBRACIÓN"> <label class="form-check-label">VIBRACIÓN</label></div>
                 <div class="col-6 col-md-3 form-check"><input class="form-check-input check-rie" type="checkbox" value="RADIACIÓN"> <label class="form-check-label">RADIACIÓN</label></div>
@@ -91,7 +91,7 @@
                 <div class="col-6 col-md-3 form-check"><input class="form-check-input check-rie" type="checkbox" value="PSICOSOCIAL"> <label class="form-check-label">PSICOSOCIAL</label></div>
             </div>
 
-            <button class="btn-save" onclick="guardarP3()">TERMINAR Y GUARDAR REGISTRO 💾</button>
+            <button class="btn-submit" onclick="guardarTodo()">TERMINAR Y GUARDAR REGISTRO 💾</button>
         </div>
     </div>
 
@@ -100,25 +100,25 @@
         const paciente_id = localStorage.getItem("paciente_id");
 
         function agregarFila() {
-            const html = `<tr>
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
                 <td><input type="number" class="form-control h-edad"></td>
                 <td><input type="text" class="form-control h-emp"></td>
                 <td><input type="text" class="form-control h-ocu"></td>
-                <td><input type="number" class="form-control h-tie"></td>
+                <td><input type="text" class="form-control h-tie"></td>
                 <td><input type="text" class="form-control h-rie"></td>
-                <td><select class="form-select h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
-            </tr>`;
-            document.getElementById("tablaLaboral").insertAdjacentHTML('beforeend', html);
+                <td><select class="form-select h-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
+            document.getElementById("tablaLaboral").appendChild(tr);
         }
 
-        async function guardarP3() {
+        async function guardarTodo() {
             const historia = [];
             document.querySelectorAll("#tablaLaboral tr").forEach(tr => {
                 const fila = {
                     edad: tr.querySelector(".h-edad").value || "0",
                     emp: (tr.querySelector(".h-emp").value || "").toUpperCase(),
                     ocu: (tr.querySelector(".h-ocu").value || "").toUpperCase(),
-                    tie: tr.querySelector(".h-tie").value || "0",
+                    tie: (tr.querySelector(".h-tie").value || "").toUpperCase(),
                     rie: (tr.querySelector(".h-rie").value || "").toUpperCase(),
                     epp: tr.querySelector(".h-epp").value
                 };
@@ -127,7 +127,7 @@
 
             const seleccionados = Array.from(document.querySelectorAll(".check-rie:checked")).map(c => c.value);
 
-            const data = {
+            const payload = {
                 paciente_id: parseInt(paciente_id),
                 fuma_si_no: document.getElementById("fuma_si_no").value,
                 fuma_detalle: (document.getElementById("fuma_detalle").value || "NINGUNO").toUpperCase(),
@@ -139,7 +139,7 @@
                 deportes_si_no: document.getElementById("deportes_si_no").value,
                 deportes_detalle: (document.getElementById("deportes_detalle").value || "NINGUNO").toUpperCase(),
                 grupo_sanguineo: (document.getElementById("grupo_sanguineo").value || "S/D").toUpperCase(),
-                accidentes_si_no: "NO", // Campos por defecto para evitar error 500
+                accidentes_si_no: "NO", 
                 accidentes_detalle: "N/A",
                 medicamentos_si_no: "NO",
                 medicamentos_detalle: "N/A",
@@ -151,18 +151,18 @@
                 const response = await fetch(`${API_BASE}/declaraciones/p3/`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(payload)
                 });
 
                 if (response.ok) {
-                    alert("¡REGISTRO GUARDADO EXITOSAMENTE!");
+                    alert("✅ ¡REGISTRO FINALIZADO CON ÉXITO!");
                     window.location.href = "index.html";
                 } else {
-                    const errorJson = await response.json();
-                    alert("ERROR DEL SERVIDOR: " + JSON.stringify(errorJson));
+                    const err = await response.json();
+                    alert("❌ ERROR: " + JSON.stringify(err));
                 }
             } catch (err) {
-                alert("ERROR DE CONEXIÓN: " + err.message);
+                alert("📡 ERROR DE RED: VERIFIQUE QUE RENDER ESTÉ LIVE");
             }
         }
     </script>
