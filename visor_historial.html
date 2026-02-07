@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Visor Oficial 2 Hojas</title>
+    <title>HC NUBE | Visor Final Profesional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -17,17 +17,17 @@
         <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors">← Volver</button>
         <div class="text-right">
             <h2 class="text-xl font-black uppercase text-white tracking-tighter italic">Visor de Historial</h2>
-            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Documento Final de Exportación</p>
+            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Sincronización de Datos SI/NO</p>
         </div>
     </div>
 
-    <div class="max-w-md mx-auto mb-12">
-        <div class="relative">
+    <div class="max-w-md mx-auto mb-12 text-center">
+        <div class="relative inline-block w-full">
             <input type="text" id="codigoBusqueda" placeholder="CÓDIGO (EJ: RC3209)" 
                 class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 uppercase">
             <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all">🔍</button>
         </div>
-        <p id="msgEstado" class="text-[7px] text-center mt-4 uppercase tracking-widest text-slate-600 italic"></p>
+        <p id="msgEstado" class="text-[7px] mt-4 uppercase tracking-widest text-slate-600 italic"></p>
     </div>
 
     <div id="resultadoVisor" class="hidden max-w-xl mx-auto">
@@ -92,7 +92,13 @@
                 theme: 'grid', styles: { fontSize: 8, cellPadding: 1.5 }
             });
 
-            // LOGICA DINAMICA 22 CAMPOS CON MAYÚSCULAS
+            // LÓGICA DE DETECCIÓN "SI" MEJORADA
+            const validarSI = (valor) => {
+                if (!valor) return false;
+                const v = String(valor).toUpperCase().trim();
+                return (v.includes("SI") || (v !== "NO" && v !== "N/A" && v !== "NORMAL" && v !== "NINGUNO" && v !== "---"));
+            };
+
             const mapaSistemas = [
                 { et: 'VISTA', sub: 'GLAUCOMA, MIOPÍA', dato: d.antecedentes?.vista },
                 { et: 'AUDITIVO', sub: 'SORDERA, OTITIS', dato: d.antecedentes?.auditivo },
@@ -119,13 +125,12 @@
             ];
 
             const bodySistemas = mapaSistemas.map(s => {
-                const val = s.dato ? String(s.dato).toUpperCase().trim() : "";
-                const tiene = (val && val !== "NO" && val !== "N/A" && val !== "NORMAL" && val !== "NINGUNO");
+                const tiene = validarSI(s.dato);
                 return [
                     { content: `${s.et}\n${s.sub}`, styles: { fontStyle: 'bold' } },
                     tiene ? 'X' : '', 
                     tiene ? '' : 'X', 
-                    tiene ? val : 'NORMAL'
+                    tiene ? String(s.dato).toUpperCase() : 'NORMAL'
                 ];
             });
 
@@ -140,12 +145,15 @@
             doc.addPage();
             drawHeader(doc);
 
+            // CORRECCIÓN SECCIÓN III: HÁBITOS (RECONOCER "SI" EN ALCOHOL, TABACO, ETC)
+            const checkHabito = (val) => validarSI(val) ? 'SI' : 'NO';
+
             doc.autoTable({
                 startY: 28,
                 head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' }}]],
                 body: [
-                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, String(d.habitos?.alcohol_si_no || 'NO').toUpperCase(), {content: 'TABACO', styles: {fontStyle: 'bold'}}, String(d.habitos?.fuma_si_no || 'NO').toUpperCase()],
-                    [{content: 'DROGAS / PIJCHAR', styles: {fontStyle: 'bold'}}, String(d.habitos?.pijchar_si_no || 'NO').toUpperCase(), {content: 'OTROS', styles: {fontStyle: 'bold'}}, 'N/A']
+                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, checkHabito(d.habitos?.alcohol_si_no), {content: 'TABACO', styles: {fontStyle: 'bold'}}, checkHabito(d.habitos?.fuma_si_no)],
+                    [{content: 'DROGAS / PIJCHAR', styles: {fontStyle: 'bold'}}, checkHabito(d.habitos?.pijchar_si_no), {content: 'OTROS', styles: {fontStyle: 'bold'}}, 'N/A']
                 ],
                 theme: 'grid', styles: { fontSize: 8 }
             });
