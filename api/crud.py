@@ -26,7 +26,8 @@ def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
 
 def create_habitos(db: Session, habitos: schemas.HabitosCreate):
     try:
-        db_hab = models.HabitosRiesgosP3(**habitos.model_dump())
+        data = habitos.model_dump()
+        db_hab = models.HabitosRiesgosP3(**data)
         db.add(db_hab)
         db.commit()
         db.refresh(db_hab)
