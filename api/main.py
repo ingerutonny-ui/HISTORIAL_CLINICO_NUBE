@@ -7,22 +7,36 @@ import json
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
-# Intentar crear tablas y agregar columna si no existe (Auto-limpieza)
+# Crear tablas y forzar columna de riesgos si no existe
 models.Base.metadata.create_all(bind=engine)
 with engine.connect() as conn:
     try:
         conn.execute(text("ALTER TABLE habitos_p3 ADD COLUMN riesgos_vida_laboral VARCHAR"))
         conn.commit()
     except:
-        pass # La columna ya existía
+        pass 
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
-    try: yield db
-    finally: db.close()
+    try:
+        yield db
+    finally:
+        db.close()
+
+# RUTA PARA REGISTRO INICIAL (Soluciona el 404 de tu captura)
+@app.post("/pacientes/")
+def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
+    return crud.create_paciente(db=db, paciente=paciente)
 
 @app.post("/filiacion/")
 def save_filiacion(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
@@ -39,10 +53,15 @@ def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
 @app.get("/generar-pdf/{paciente_id}", response_class=HTMLResponse)
 def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     res = crud.get_historial_completo(db, paciente_id)
-    p, f, a, h = res["paciente"], res["filiacion"], res["antecedentes"], res["habitos"]
-    if not p: raise HTTPException(status_code=404)
+    p = res["paciente"]
+    f = res["filiacion"]
+    a = res["antecedentes"]
+    h = res["habitos"]
+    
+    if not p:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
 
-    def get_v(obj, attr, default="S/D"):
+    def get_v(obj, attr, default="N/A"):
         val = getattr(obj, attr, None)
         return str(val).upper() if val and str(val).strip() != "" else default
 
@@ -50,47 +69,69 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         val = getattr(obj, attr, None)
         return "X" if str(val).strip().upper() == target else ""
 
-    # SECCIÓN I: FILIACIÓN
-    f_html = f"""
-    <table>
-        <tr><td colspan="4" style="background:#d9e2f3; text-align:center; font-weight:bold;">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
-        <tr><td><b>NOMBRE:</b></td><td colspan="3">{get_v(p,'apellidos')} {get_v(p,'nombres')}</td></tr>
-        <tr><td><b>EDAD:</b></td><td>{get_v(f,'edad')} AÑOS</td><td><b>SEXO:</b></td><td>{get_v(f,'sexo')}</td></tr>
-        <tr><td><b>C.I.:</b></td><td>{get_v(p,'ci')}</td><td><b>TELÉFONO:</b></td><td>{get_v(f,'telefono')}</td></tr>
-        <tr><td><b>DOMICILIO:</b></td><td colspan="3">{get_v(f,'domicilio')} NO. {get_v(f,'n_casa')}, {get_v(f,'zona_barrio')}</td></tr>
-        <tr><td><b>CIUDAD/PAÍS:</b></td><td>{get_v(f,'ciudad')} / {get_v(f,'pais')}</td><td><b>PROFESIÓN:</b></td><td>{get_v(f,'profesion_oficio')}</td></tr>
-    </table>"""
-
-    # SECCIÓN II: ANTECEDENTES
-    labels = ["VISTA", "AUDITIVO", "RESPIRATORIO", "CARDIO-VASCULARES", "ESTÓMAGO/HÍGADO", "SANGRE", "GENITO-URINARIO", "SISTEMA NERVIOSO", "PSIQUIÁTRICOS", "OSTEOMUSCULARES", "ENDOCRINOLÓGICOS", "REUMATOLÓGICOS", "GENERALES", "DERMATOLÓGICAS", "ALERGIA", "INFECCIONES", "CIRUGÍAS", "ACCIDENTES DE TRABAJO"]
-    rows_p2 = "".join([f"<tr><td>{i+1}. {l}</td><td style='text-align:center;'>{mark(a,f'p{i+1}','SI')}</td><td style='text-align:center;'>{mark(a,f'p{i+1}','NO')}</td><td>{get_v(a,f'd{i+1}')}</td></tr>" for i,l in enumerate(labels)])
-
-    # SECCIÓN III: HISTORIA LABORAL
-    h_html = "SIN REGISTROS"
+    # Lógica de Historia Laboral
+    h_html = "<tr><td colspan='6' style='text-align:center;'>SIN REGISTROS</td></tr>"
     if h and h.historia_laboral:
         try:
-            data = json.loads(h.historia_laboral)
-            filas = "".join([f"<tr><td>{x.get('edad','-')}</td><td>{x.get('emp','-')}</td><td>{x.get('ocu','-')}</td><td>{x.get('tie','-')}</td><td>{x.get('rie','-')}</td><td>{x.get('epp','-')}</td></tr>" for x in data])
-            h_html = f"<table><tr style='background:#d9e2f3; font-weight:bold;'><td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td></tr>{filas}</table>"
-        except: h_html = "ERROR FORMATO"
+            data_laboral = json.loads(h.historia_laboral)
+            filas = ""
+            for x in data_laboral:
+                filas += f"""
+                <tr>
+                    <td>{x.get('edad','-')}</td>
+                    <td>{x.get('emp','-')}</td>
+                    <td>{x.get('ocu','-')}</td>
+                    <td>{x.get('tie','-')}</td>
+                    <td>{x.get('rie','-')}</td>
+                    <td>{x.get('epp','-')}</td>
+                </tr>"""
+            h_html = filas
+        except:
+            pass
 
     html = f"""
-    <!DOCTYPE html><html><head><meta charset="UTF-8"><style>
-    body {{ font-family: Arial; font-size: 8.5px; text-transform: uppercase; }}
-    table {{ width: 100%; border-collapse: collapse; margin-bottom: 8px; }}
-    td {{ border: 1px solid black; padding: 4px; }}
+    <!DOCTYPE html><html><head><meta charset="UTF-8">
+    <style>
+        body {{ font-family: Arial, sans-serif; font-size: 9px; text-transform: uppercase; padding: 20px; }}
+        table {{ width: 100%; border-collapse: collapse; margin-bottom: 10px; }}
+        td {{ border: 1px solid #000; padding: 5px; }}
+        .bg-blue {{ background-color: #d9e2f3; font-weight: bold; text-align: center; }}
+        .title {{ text-align: center; font-size: 14px; font-weight: bold; text-decoration: underline; margin-bottom: 15px; }}
     </style></head><body>
-    <h2 style="text-align:center; text-decoration:underline;">DECLARACIÓN JURADA DE SALUD</h2>
-    {f_html}
-    <table><tr style="background:#d9e2f3; font-weight:bold; text-align:center;"><td>II. ANTECEDENTES</td><td>SI</td><td>NO</td><td>DETALLES</td></tr>
-    {rows_p2}
-    <tr><td>19. ACCIDENTES</td><td>{mark(h,'accidentes_si_no','SI')}</td><td>{mark(h,'accidentes_si_no','NO')}</td><td>{get_v(h,'accidentes_detalle')}</td></tr>
-    <tr><td>20. MEDICAMENTOS</td><td>{mark(h,'medicamentos_si_no','SI')}</td><td>{mark(h,'medicamentos_si_no','NO')}</td><td>{get_v(h,'medicamentos_detalle')}</td></tr>
-    <tr><td>21. GRUPO SANGUÍNEO</td><td colspan="2"></td><td style="font-weight:bold;">{get_v(h,'grupo_sanguineo')}</td></tr>
-    <tr><td>22. DEPORTES</td><td>{mark(h,'deportes_si_no','SI')}</td><td>{mark(h,'deportes_si_no','NO')}</td><td>{get_v(h,'deportes_detalle')}</td></tr>
+    <div class="title">DECLARACIÓN JURADA DE SALUD - {get_v(p, 'apellidos')} {get_v(p, 'nombres')}</div>
+    
+    <table>
+        <tr><td colspan="4" class="bg-blue">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
+        <tr><td><b>APELLIDOS Y NOMBRES:</b></td><td colspan="3">{get_v(p, 'apellidos')} {get_v(p, 'nombres')}</td></tr>
+        <tr><td><b>EDAD:</b></td><td>{get_v(f, 'edad')} AÑOS</td><td><b>FECHA NACIMIENTO:</b></td><td>{get_v(f, 'fecha_nacimiento')}</td></tr>
+        <tr><td><b>C.I.:</b></td><td>{get_v(p, 'ci')}</td><td><b>DOMICILIO:</b></td><td>{get_v(f, 'domicilio')} NO. {get_v(f, 'n_casa')}, BARRIO {get_v(f, 'zona_barrio')}</td></tr>
+        <tr><td><b>CIUDAD / PAÍS:</b></td><td>{get_v(f, 'ciudad')} / {get_v(f, 'pais')}</td><td><b>PROFESIÓN / LABOR:</b></td><td>{get_v(f, 'profesion_oficio')}</td></tr>
     </table>
-    <div style="background:#d9e2f3; font-weight:bold; text-align:center; border:1px solid black;">III. HISTORIA LABORAL</div>{h_html}
-    <div style="background:#d9e2f3; font-weight:bold; text-align:center; border:1px solid black; margin-top:5px;">IV. RIESGOS EXPUESTOS VIDA LABORAL</div>
-    <div style="border:1px solid black; padding:8px; min-height:30px;">{get_v(h, 'riesgos_vida_laboral')}</div>
-    <script>window.print();</script></body></html>"""
+
+    <table>
+        <tr class="bg-blue"><td>SISTEMA / ANTECEDENTE</td><td>SI</td><td>NO</td><td>OBSERVACIONES / DETALLES</td></tr>
+        <tr><td>1. VISTA</td><td>{mark(a,'p1','SI')}</td><td>{mark(a,'p1','NO')}</td><td>{get_v(a,'d1')}</td></tr>
+        <tr><td>2. AUDITIVO</td><td>{mark(a,'p2','SI')}</td><td>{mark(a,'p2','NO')}</td><td>{get_v(a,'d2')}</td></tr>
+        <tr><td>18. ACCIDENTES DE TRABAJO</td><td>{mark(h,'accidentes_si_no','SI')}</td><td>{mark(h,'accidentes_si_no','NO')}</td><td>{get_v(h,'accidentes_detalle')}</td></tr>
+        <tr><td>21. GRUPO SANGUÍNEO</td><td colspan="2"></td><td>{get_v(h,'grupo_sanguineo')}</td></tr>
+        <tr><td>22. DEPORTES</td><td>{mark(h,'deportes_si_no','SI')}</td><td>{mark(h,'deportes_si_no','NO')}</td><td>{get_v(h,'deportes_detalle')}</td></tr>
+    </table>
+
+    <div class="bg-blue" style="border: 1px solid black;">HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
+    <table>
+        <tr style="font-weight:bold; text-align:center;">
+            <td>EDAD</td><td>EMPRESA</td><td>OCUPACIÓN</td><td>TIEMPO</td><td>RIESGOS</td><td>EPP</td>
+        </tr>
+        {h_html}
+    </table>
+
+    <div class="bg-blue" style="border: 1px solid black;">III. RIESGOS EXPUESTOS DURANTE VIDA LABORAL</div>
+    <div style="border: 1px solid black; padding: 10px; min-height: 30px;">
+        {get_v(h, 'riesgos_vida_laboral')}
+    </div>
+
+    <p style="text-align:center; font-size:7px; color:gray; margin-top:20px;">Documento generado digitalmente - Proyecto HISTORIAL_CLINICO_NUBE</p>
+    <script>window.print();</script>
+    </body></html>
+    """
     return HTMLResponse(content=html)
