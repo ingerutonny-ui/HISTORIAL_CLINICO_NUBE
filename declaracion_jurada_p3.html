@@ -3,73 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Declaración P3</title>
+    <title>HC NUBE | Parte 3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; }
-        .form-container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .section-title { color: #1e293b; font-weight: 800; border-left: 4px solid #24a174; padding-left: 15px; margin-bottom: 25px; text-transform: uppercase; font-size: 18px; }
-        .grid-habitos { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card-habito { background: #fdfdfd; border: 1px solid #f1f5f9; padding: 15px; border-radius: 12px; }
-        .form-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .form-control, .form-select { border-radius: 10px; border: 1px solid #e2e8f0; font-size: 13px; padding: 10px; }
+        body { background-color: #f3f6f9; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 40px 20px; }
+        .form-container { background: white; padding: 40px; border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.03); max-width: 1000px; width: 100%; }
+        .section-title { font-weight: 800; color: #1e293b; border-left: 5px solid #24a174; padding-left: 15px; margin: 30px 0 20px; text-transform: uppercase; font-size: 16px; }
+        .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-bottom: 8px; }
+        .form-control, .form-select { border-radius: 15px; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; font-weight: 600; color: #1e293b; font-size: 13px; }
+        .habito-card { background: #fcfdfe; border: 1px solid #f1f5f9; padding: 20px; border-radius: 20px; margin-bottom: 15px; }
+        .btn-add { background-color: #1e293b; border: none; border-radius: 12px; padding: 10px 20px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
         .table { font-size: 12px; }
-        .table th { background: #1e293b; color: white; text-transform: uppercase; font-size: 10px; }
-        .btn-add { background: #1e293b; color: white; border-radius: 10px; font-size: 11px; font-weight: 700; border: none; padding: 8px 15px; margin-bottom: 15px; }
-        .btn-save { background: #24a174; color: white; border: none; border-radius: 15px; padding: 15px; width: 100%; font-weight: 700; text-transform: uppercase; margin-top: 30px; }
-        .check-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; background: #f8fafc; padding: 20px; border-radius: 15px; }
+        .table thead th { background: #1e293b; color: white; border: none; font-weight: 700; text-transform: uppercase; padding: 12px; }
+        .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; background: #f8fafc; padding: 25px; border-radius: 20px; }
+        .check-item { display: flex; align-items: center; font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .check-item input { margin-right: 10px; width: 18px; height: 18px; accent-color: #24a174; }
+        .btn-final { background-color: #24a174; border: none; border-radius: 20px; padding: 20px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 40px; font-size: 15px; box-shadow: 0 10px 20px rgba(36, 161, 116, 0.2); }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h3 class="text-center mb-4" style="font-weight: 800; color: #1e293b;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h3>
+    <h2 class="text-center" style="font-weight: 800; color: #1e293b; margin-bottom: 40px;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
 
     <form id="formP3">
-        <div class="section-title">I. HÁBITOS</div>
-        <div class="grid-habitos">
-            <div class="card-habito">
-                <label class="form-label">FUMA</label>
-                <select id="fuma" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD">
+        <div class="section-title">I. HÁBITOS Y OTROS</div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="habito-card">
+                    <label class="form-label">FUMA</label>
+                    <select id="fuma" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD">
+                </div>
             </div>
-            <div class="card-habito">
-                <label class="form-label">ALCOHOL</label>
-                <select id="alcohol" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA">
+            <div class="col-md-4">
+                <div class="habito-card">
+                    <label class="form-label">ALCOHOL</label>
+                    <select id="alcohol" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA">
+                </div>
             </div>
-            <div class="card-habito">
-                <label class="form-label">DROGAS</label>
-                <select id="drogas" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO">
+            <div class="col-md-4">
+                <div class="habito-card">
+                    <label class="form-label">DROGAS</label>
+                    <select id="drogas" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO">
+                </div>
             </div>
-            <div class="card-habito">
-                <label class="form-label">PIJCHAR (COCA)</label>
-                <select id="pijchar" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+            <div class="col-md-4">
+                <div class="habito-card">
+                    <label class="form-label">PIJCHAR (COCA)</label>
+                    <select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                </div>
             </div>
-            <div class="card-habito">
-                <label class="form-label">DEPORTES</label>
-                <select id="deportes" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="deportes_detalle" class="form-control" placeholder="CUAL/FRECUENCIA">
+            <div class="col-md-4">
+                <div class="habito-card">
+                    <label class="form-label">DEPORTES</label>
+                    <select id="deportes" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                    <input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?">
+                </div>
             </div>
-            <div class="card-habito">
-                <label class="form-label">GRUPO SANGUÍNEO</label>
-                <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
+            <div class="col-md-4">
+                <div class="habito-card">
+                    <label class="form-label">GRUPO SANGUÍNEO</label>
+                    <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
+                </div>
             </div>
         </div>
 
         <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
-        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
+        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR NUEVA FILA</button>
         <div class="table-responsive">
-            <table class="table table-bordered">
+            <table class="table table-bordered align-middle">
                 <thead>
                     <tr>
-                        <th>EDAD INICIO</th>
+                        <th width="100">EDAD INICIO</th>
                         <th>EMPRESA</th>
                         <th>OCUPACIÓN</th>
-                        <th>TIEMPO (AÑOS)</th>
+                        <th width="100">TIEMPO</th>
                         <th>RIESGOS</th>
-                        <th>EPP (SI/NO)</th>
+                        <th width="100">EPP</th>
                     </tr>
                 </thead>
                 <tbody id="tablaLaboral">
@@ -86,18 +99,18 @@
         </div>
 
         <div class="section-title">III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
-        <div class="check-group">
-            <label><input type="checkbox" class="riesgo-check" value="RUIDO"> RUIDO</label>
-            <label><input type="checkbox" class="riesgo-check" value="VIBRACIÓN"> VIBRACIÓN</label>
-            <label><input type="checkbox" class="riesgo-check" value="RADIACIÓN"> RADIACIÓN</label>
-            <label><input type="checkbox" class="riesgo-check" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</label>
-            <label><input type="checkbox" class="riesgo-check" value="POLVOS"> POLVOS</label>
-            <label><input type="checkbox" class="riesgo-check" value="GASES/VAPORES"> GASES/VAPORES</label>
-            <label><input type="checkbox" class="riesgo-check" value="ERGONÓMICOS"> ERGONÓMICOS</label>
-            <label><input type="checkbox" class="riesgo-check" value="PSICOSOCIAL"> PSICOSOCIAL</label>
+        <div class="check-grid">
+            <label class="check-item"><input type="checkbox" class="riesgo-check" value="RUIDO"> RUIDO</label>
+            <label class="check-item"><input type="checkbox" class="riesgo-check" value="VIBRACIÓN"> VIBRACIÓN</label>
+            <label class="check-item"><input type="checkbox" class="riesgo-check" value="RADIACIÓN"> RADIACIÓN</label>
+            <label class="check-item"><input type="checkbox" class="riesgo-check" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</label>
+            <label class="check-item"><input type="checkbox" class="riesgo-check" value="POLVOS"> POLVOS</label>
+            <label class="check-item"><input type="checkbox" class="riesgo-check" value="GASES/VAPORES"> GASES/VAPORES</label>
+            <label class="check-item"><input type="checkbox" class="riesgo-check" value="ERGONÓMICOS"> ERGONÓMICOS</label>
+            <label class="check-item"><input type="checkbox" class="riesgo-check" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         </div>
 
-        <button type="submit" id="btnGuardar" class="btn-save">TERMINAR Y GUARDAR REGISTRO 💾</button>
+        <button type="submit" id="btnGuardar" class="btn-final">TERMINAR Y GUARDAR REGISTRO 💾</button>
     </form>
 </div>
 
@@ -122,42 +135,35 @@
         const btn = document.getElementById('btnGuardar');
         btn.innerText = "GUARDANDO..."; btn.disabled = true;
 
-        if(!PACIENTE_ID) {
-            alert("ERROR: No se encontró el ID del paciente. Regrese al inicio.");
-            btn.disabled = false; return;
-        }
-
-        // Recolectar Historial Laboral
         const historia_laboral = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
             const inputs = tr.querySelectorAll('input, select');
-            if(inputs[1].value) { // Si hay nombre de empresa
+            if(inputs[1].value) { 
                 historia_laboral.push({
-                    edad_inicio: inputs[0].value || 0,
+                    edad_inicio: parseInt(inputs[0].value) || 0,
                     empresa: inputs[1].value,
                     ocupacion: inputs[2].value,
-                    tiempo_anios: inputs[3].value || 0,
-                    riesgos: inputs[4].value,
+                    tiempo_anios: parseInt(inputs[3].value) || 0,
+                    riesgos: inputs[4].value || "NINGUNO",
                     epp: inputs[5].value
                 });
             }
         });
 
-        // Recolectar Riesgos Expuestos
         const riesgos_expuestos = Array.from(document.querySelectorAll('.riesgo-check:checked')).map(c => c.value);
 
         const payload = {
             paciente_id: parseInt(PACIENTE_ID),
             fuma: document.getElementById('fuma').value,
-            fuma_detalle: document.getElementById('fuma_detalle').value,
+            fuma_detalle: document.getElementById('fuma_detalle').value || "N/A",
             alcohol: document.getElementById('alcohol').value,
-            alcohol_detalle: document.getElementById('alcohol_detalle').value,
+            alcohol_detalle: document.getElementById('alcohol_detalle').value || "N/A",
             drogas: document.getElementById('drogas').value,
-            drogas_detalle: document.getElementById('drogas_detalle').value,
+            drogas_detalle: document.getElementById('drogas_detalle').value || "N/A",
             pijchar: document.getElementById('pijchar').value,
             deportes: document.getElementById('deportes').value,
-            deportes_detalle: document.getElementById('deportes_detalle').value,
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value,
+            deportes_detalle: document.getElementById('deportes_detalle').value || "N/A",
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value || "DESCONOCIDO",
             historia_laboral: historia_laboral,
             riesgos_expuestos: riesgos_expuestos
         };
@@ -165,24 +171,19 @@
         try {
             const res = await fetch(`${API_BASE}/declaraciones/p3/`, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("¡REGISTRO COMPLETADO EXITOSAMENTE!");
+                alert("¡PROCESO FINALIZADO CON ÉXITO!");
                 window.location.href = "index.html";
             } else {
-                const errData = await res.json();
-                console.error("Error servidor:", errData);
-                alert("ERROR EN SERVIDOR (500): Verifique que todos los campos numéricos tengan valor.");
+                const errorData = await res.json();
+                alert("ERROR EN EL SERVIDOR: " + JSON.stringify(errorData.detail));
             }
         } catch (error) {
-            console.error("Error de red:", error);
-            alert("ERROR DE RED: No se pudo conectar con el servidor en Render.");
+            alert("ERROR DE RED: VERIFIQUE QUE RENDER ESTÉ LIVE");
         } finally {
             btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾";
             btn.disabled = false;
