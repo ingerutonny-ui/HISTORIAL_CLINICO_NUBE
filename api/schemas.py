@@ -47,3 +47,4 @@ class HabitosCreate(BaseModel):
     medicamentos_detalle: str
     grupo_sanguineo: str
     historia_laboral: str
+    riesgos_vida_laboral: str # Sincronizado
