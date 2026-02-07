@@ -3,30 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PARTE 3: HÁBITOS Y RIESGOS</title>
+    <title>PARTE 3: HÁBITOS Y TRABAJO</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
-        body { background-color: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .card-container { background: white; border-radius: 35px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); padding: 40px; margin-top: 30px; border: none; }
-        .section-title { color: #1e3a8a; font-weight: 800; border-left: 6px solid #22c55e; padding-left: 15px; margin: 30px 0 20px 0; text-transform: uppercase; font-size: 1rem; }
-        .form-label { font-weight: 700; color: #475569; font-size: 0.8rem; text-transform: uppercase; }
-        .form-control, .form-select { border-radius: 15px; border: 1.5px solid #e2e8f0; padding: 12px; text-transform: uppercase; font-size: 0.9rem; background-color: #f8fafc; }
-        .form-control:focus { border-color: #22c55e; box-shadow: none; }
-        .btn-add-row { background-color: #334155; color: white; border-radius: 12px; font-weight: 700; border: none; padding: 8px 20px; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 15px; }
-        .btn-submit { background-color: #22c55e; color: white; border-radius: 20px; padding: 18px; font-weight: 800; border: none; width: 100%; font-size: 1.2rem; text-transform: uppercase; margin-top: 35px; box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2); }
-        .btn-submit:hover { background-color: #16a34a; transform: translateY(-2px); }
-        th { background-color: #f1f5f9 !important; color: #475569; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; border: 1px solid #e2e8f0 !important; }
-        .check-card { background: #f8fafc; border-radius: 20px; padding: 20px; border: 1.5px solid #e2e8f0; }
-        .form-check-label { font-weight: 600; text-transform: uppercase; font-size: 0.8rem; color: #334155; }
+        body { background-color: #f1f5f9; font-family: 'Segoe UI', sans-serif; }
+        .main-card { background: white; border-radius: 30px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: 25px; }
+        .section-header { color: #1e3a8a; font-weight: 800; border-left: 5px solid #10b981; padding-left: 15px; margin: 25px 0 15px 0; text-transform: uppercase; font-size: 0.9rem; }
+        .form-label { font-weight: 700; color: #475569; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .form-control, .form-select { border-radius: 12px; border: 1.5px solid #e2e8f0; padding: 10px; text-transform: uppercase; background-color: #f8fafc; font-size: 0.85rem; }
+        .btn-add { background-color: #334155; color: white; border-radius: 10px; font-weight: bold; border: none; padding: 6px 15px; font-size: 0.75rem; margin-bottom: 10px; }
+        .btn-final { background-color: #10b981; color: white; border-radius: 15px; padding: 15px; font-weight: 800; border: none; width: 100%; font-size: 1.1rem; text-transform: uppercase; margin-top: 30px; }
+        th { background-color: #f1f5f9 !important; font-size: 0.7rem; text-transform: uppercase; border: 1px solid #dee2e6 !important; }
+        .check-container { background: #f8fafc; border-radius: 15px; padding: 20px; border: 1px solid #e2e8f0; }
+        .form-check-label { font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
     </style>
 </head>
 <body>
     <div class="container mb-5">
-        <div class="card-container">
-            <h2 class="text-center mb-5" style="font-weight: 900; color: #0f172a; letter-spacing: -0.02em;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
+        <div class="main-card">
+            <h2 class="text-center mb-5" style="font-weight: 900; color: #0f172a;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
 
-            <div class="section-title">I. HÁBITOS Y OTROS</div>
-            <div class="row g-4">
+            <div class="section-header">I. HÁBITOS</div>
+            <div class="row g-3">
                 <div class="col-md-4">
                     <label class="form-label">FUMA</label>
                     <select id="fuma_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
@@ -57,14 +55,12 @@
                 </div>
             </div>
 
-            <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
-            <button class="btn-add-row" onclick="agregarFila()">+ AGREGAR NUEVA FILA</button>
+            <div class="section-header">II. HISTORIA LABORAL</div>
+            <button class="btn-add" onclick="agregarFila()">+ AGREGAR FILA</button>
             <div class="table-responsive">
                 <table class="table table-bordered align-middle">
                     <thead class="text-center">
-                        <tr>
-                            <th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th>
-                        </tr>
+                        <tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
                     </thead>
                     <tbody id="tablaLaboral">
                         <tr>
@@ -79,8 +75,8 @@
                 </table>
             </div>
 
-            <div class="section-title">III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
-            <div class="check-card row g-3 mx-0">
+            <div class="section-header">III. RIESGOS EXPUESTOS</div>
+            <div class="check-container row g-3 mx-0">
                 <div class="col-6 col-md-3 form-check"><input class="form-check-input check-rie" type="checkbox" value="RUIDO"> <label class="form-check-label">RUIDO</label></div>
                 <div class="col-6 col-md-3 form-check"><input class="form-check-input check-rie" type="checkbox" value="VIBRACIÓN"> <label class="form-check-label">VIBRACIÓN</label></div>
                 <div class="col-6 col-md-3 form-check"><input class="form-check-input check-rie" type="checkbox" value="RADIACIÓN"> <label class="form-check-label">RADIACIÓN</label></div>
@@ -91,13 +87,13 @@
                 <div class="col-6 col-md-3 form-check"><input class="form-check-input check-rie" type="checkbox" value="PSICOSOCIAL"> <label class="form-check-label">PSICOSOCIAL</label></div>
             </div>
 
-            <button class="btn-submit" onclick="guardarTodo()">TERMINAR Y GUARDAR REGISTRO 💾</button>
+            <button class="btn-final" onclick="finalizarRegistro()">TERMINAR Y GUARDAR REGISTRO 💾</button>
         </div>
     </div>
 
     <script>
-        const API_BASE = "https://historial-clinico-936s.onrender.com";
-        const paciente_id = localStorage.getItem("paciente_id");
+        const API_URL = "https://historial-clinico-936s.onrender.com";
+        const pacienteId = localStorage.getItem("paciente_id");
 
         function agregarFila() {
             const tr = document.createElement("tr");
@@ -111,7 +107,7 @@
             document.getElementById("tablaLaboral").appendChild(tr);
         }
 
-        async function guardarTodo() {
+        async function finalizarRegistro() {
             const historia = [];
             document.querySelectorAll("#tablaLaboral tr").forEach(tr => {
                 const fila = {
@@ -125,10 +121,10 @@
                 if(fila.emp) historia.push(fila);
             });
 
-            const seleccionados = Array.from(document.querySelectorAll(".check-rie:checked")).map(c => c.value);
+            const riesgos = Array.from(document.querySelectorAll(".check-rie:checked")).map(c => c.value).join(", ");
 
-            const payload = {
-                paciente_id: parseInt(paciente_id),
+            const data = {
+                paciente_id: parseInt(pacienteId),
                 fuma_si_no: document.getElementById("fuma_si_no").value,
                 fuma_detalle: (document.getElementById("fuma_detalle").value || "NINGUNO").toUpperCase(),
                 alcohol_si_no: document.getElementById("alcohol_si_no").value,
@@ -144,25 +140,25 @@
                 medicamentos_si_no: "NO",
                 medicamentos_detalle: "N/A",
                 historia_laboral: JSON.stringify(historia),
-                riesgos_vida_laboral: seleccionados.join(", ") || "NINGUNO"
+                riesgos_vida_laboral: riesgos || "NINGUNO"
             };
 
             try {
-                const response = await fetch(`${API_BASE}/declaraciones/p3/`, {
+                const response = await fetch(`${API_URL}/declaraciones/p3/`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(data)
                 });
 
                 if (response.ok) {
-                    alert("✅ ¡REGISTRO FINALIZADO CON ÉXITO!");
+                    alert("¡REGISTRO COMPLETADO EXITOSAMENTE!");
                     window.location.href = "index.html";
                 } else {
                     const err = await response.json();
-                    alert("❌ ERROR: " + JSON.stringify(err));
+                    alert("ERROR: " + JSON.stringify(err));
                 }
-            } catch (err) {
-                alert("📡 ERROR DE RED: VERIFIQUE QUE RENDER ESTÉ LIVE");
+            } catch (e) {
+                alert("ERROR DE RED: " + e.message);
             }
         }
     </script>
