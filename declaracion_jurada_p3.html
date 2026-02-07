@@ -28,12 +28,17 @@
         <form id="formP3">
             <h3>I. HÁBITOS</h3>
             <div class="habito-grid">
-                <div class="item-h"><label>FUMA</label><select id="h1"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r1" placeholder="CANTIDAD"></div>
-                <div class="item-h"><label>ALCOHOL</label><select id="h2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r2" placeholder="FRECUENCIA"></div>
-                <div class="item-h"><label>DROGAS</label><select id="h3"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r3" placeholder="TIPO"></div>
-                <div class="item-h"><label>PIJCHAR (COCA)</label><select id="h4"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-                <div class="item-h"><label>DEPORTES</label><select id="h5"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="r5" placeholder="CUAL/FRECUENCIA"></div>
-                <div class="item-h"><label>GRUPO SANGUÍNEO</label><input type="text" id="r10" placeholder="EJ. ORH+" required></div>
+                <div class="item-h"><label>FUMA</label><select id="fuma_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="fuma_detalle" placeholder="CANTIDAD"></div>
+                <div class="item-h"><label>ALCOHOL</label><select id="alcohol_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="alcohol_detalle" placeholder="FRECUENCIA"></div>
+                <div class="item-h"><label>DROGAS</label><select id="drogas_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="drogas_detalle" placeholder="TIPO"></div>
+                <div class="item-h"><label>PIJCHAR (COCA)</label><select id="pijchar_si_no"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+                <div class="item-h"><label>DEPORTES</label><select id="deportes_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="deportes_detalle" placeholder="CUAL/FRECUENCIA"></div>
+                <div class="item-h"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" placeholder="EJ. ORH+" required></div>
+            </div>
+
+            <div class="habito-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="item-h"><label>ACCIDENTES TRABAJO</label><select id="accidentes_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="accidentes_detalle" placeholder="DETALLE"></div>
+                <div class="item-h"><label>MEDICAMENTOS ACTUALES</label><select id="medicamentos_si_no"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="medicamentos_detalle" placeholder="DETALLE"></div>
             </div>
 
             <h3>II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</h3>
@@ -54,14 +59,14 @@
 
             <h3>III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</h3>
             <div class="riesgos-grid">
-                <div class="check-item"><input type="checkbox" id="rk1" value="RUIDO"> RUIDO</div>
-                <div class="check-item"><input type="checkbox" id="rk2" value="VIBRACION"> VIBRACIÓN</div>
-                <div class="check-item"><input type="checkbox" id="rk3" value="RADIACION"> RADIACIÓN</div>
-                <div class="check-item"><input type="checkbox" id="rk4" value="TEMPERATURAS"> TEMP. EXTREMAS</div>
-                <div class="check-item"><input type="checkbox" id="rk5" value="POLVOS"> POLVOS</div>
-                <div class="check-item"><input type="checkbox" id="rk6" value="GASES"> GASES/VAPORES</div>
-                <div class="check-item"><input type="checkbox" id="rk7" value="ERGONOMICOS"> ERGONÓMICOS</div>
-                <div class="check-item"><input type="checkbox" id="rk8" value="PSICOSOCIAL"> PSICOSOCIAL</div>
+                <div class="check-item"><input type="checkbox" class="riesgo_check" value="RUIDO"> RUIDO</div>
+                <div class="check-item"><input type="checkbox" class="riesgo_check" value="VIBRACION"> VIBRACIÓN</div>
+                <div class="check-item"><input type="checkbox" class="riesgo_check" value="RADIACION"> RADIACIÓN</div>
+                <div class="check-item"><input type="checkbox" class="riesgo_check" value="TEMPERATURAS"> TEMP. EXTREMAS</div>
+                <div class="check-item"><input type="checkbox" class="riesgo_check" value="POLVOS"> POLVOS</div>
+                <div class="check-item"><input type="checkbox" class="riesgo_check" value="GASES"> GASES/VAPORES</div>
+                <div class="check-item"><input type="checkbox" class="riesgo_check" value="ERGONOMICOS"> ERGONÓMICOS</div>
+                <div class="check-item"><input type="checkbox" class="riesgo_check" value="PSICOSOCIAL"> PSICOSOCIAL</div>
             </div>
 
             <button type="submit" id="btnFinalizar" class="btn-finalizar">TERMINAR Y GUARDAR REGISTRO 💾</button>
@@ -80,35 +85,38 @@
         const btn = document.getElementById('btnFinalizar');
         btn.disabled = true;
         
-        // Recolectar Historia Laboral
         const historia = [];
         document.querySelectorAll("#tablaLaboral tbody tr").forEach(tr => {
-            const inputs = tr.querySelectorAll("input, select");
-            if(inputs[1].value) { // Si hay nombre de empresa
+            const inps = tr.querySelectorAll("input, select");
+            if(inps[1].value) {
                 historia.push({
-                    edad: inputs[0].value, emp: inputs[1].value.toUpperCase(),
-                    ocu: inputs[2].value.toUpperCase(), tie: inputs[3].value.toUpperCase(),
-                    rie: inputs[4].value.toUpperCase(), epp: inputs[5].value
+                    edad: inps[0].value, emp: inps[1].value.toUpperCase(),
+                    ocu: inps[2].value.toUpperCase(), tie: inps[3].value.toUpperCase(),
+                    rie: inps[4].value.toUpperCase(), epp: inps[5].value
                 });
             }
         });
 
-        // Recolectar Riesgos Marcados
         const riesgos_marcados = [];
-        for(let i=1; i<=8; i++) {
-            if(document.getElementById(`rk${i}`).checked) riesgos_marcados.push(document.getElementById(`rk${i}`).value);
-        }
+        document.querySelectorAll(".riesgo_check:checked").forEach(ch => riesgos_marcados.push(ch.value));
 
         const payload = {
             paciente_id: parseInt(localStorage.getItem('paciente_id')),
-            h1: document.getElementById('h1').value, r1: document.getElementById('r1').value.toUpperCase() || "N/A",
-            h2: document.getElementById('h2').value, r2: document.getElementById('r2').value.toUpperCase() || "N/A",
-            h3: document.getElementById('h3').value, r3: document.getElementById('r3').value.toUpperCase() || "N/A",
-            h4: document.getElementById('h4').value, r4: "N/A",
-            h5: document.getElementById('h5').value, r5: document.getElementById('r5').value.toUpperCase() || "N/A",
-            h6: "RIESGOS", r6: riesgos_marcados.join(", "), 
-            h7: "N/A", r7: "N/A", h8: "N/A", r8: "N/A", h9: "N/A", r9: "N/A",
-            h10: "GRUPO", r10: document.getElementById('r10').value.toUpperCase(),
+            fuma_si_no: document.getElementById('fuma_si_no').value,
+            fuma_detalle: document.getElementById('fuma_detalle').value.toUpperCase() || "N/A",
+            alcohol_si_no: document.getElementById('alcohol_si_no').value,
+            alcohol_detalle: document.getElementById('alcohol_detalle').value.toUpperCase() || "N/A",
+            drogas_si_no: document.getElementById('drogas_si_no').value,
+            drogas_detalle: document.getElementById('drogas_detalle').value.toUpperCase() || "N/A",
+            pijchar_si_no: document.getElementById('pijchar_si_no').value,
+            deportes_si_no: document.getElementById('deportes_si_no').value,
+            deportes_detalle: document.getElementById('deportes_detalle').value.toUpperCase() || "N/A",
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
+            accidentes_si_no: document.getElementById('accidentes_si_no').value,
+            accidentes_detalle: document.getElementById('accidentes_detalle').value.toUpperCase() || "N/A",
+            medicamentos_si_no: document.getElementById('medicamentos_si_no').value,
+            medicamentos_detalle: document.getElementById('medicamentos_detalle').value.toUpperCase() || "N/A",
+            riesgos_vida_laboral: riesgos_marcados.join(", ") || "NINGUNO",
             historia_laboral: JSON.stringify(historia)
         };
 
@@ -117,7 +125,7 @@
                 method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload)
             });
             if(res.ok) {
-                alert("✅ REGISTRO DE HISTORIAL CLÍNICO FINALIZADO CON ÉXITO");
+                alert("✅ REGISTRO FINALIZADO CON ÉXITO");
                 window.location.href = "index.html"; 
             }
         } catch (err) { alert("Error de red"); }
