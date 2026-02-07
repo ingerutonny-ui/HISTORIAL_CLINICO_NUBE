@@ -77,12 +77,12 @@
             <table class="table align-middle">
                 <thead>
                     <tr>
-                        <th width="10%">EDAD INICIO</th>
-                        <th width="25%">EMPRESA</th>
-                        <th width="25%">OCUPACIÓN</th>
-                        <th width="10%">TIEMPO (AÑOS)</th>
-                        <th width="20%">RIESGOS</th>
-                        <th width="10%">EPP</th>
+                        <th>EDAD INICIO</th>
+                        <th>EMPRESA</th>
+                        <th>OCUPACIÓN</th>
+                        <th>TIEMPO (AÑOS)</th>
+                        <th>RIESGOS</th>
+                        <th>EPP</th>
                     </tr>
                 </thead>
                 <tbody id="tablaLaboral">
@@ -141,11 +141,11 @@
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
-            const empresa = tr.querySelector('[name="empresa"]').value;
-            if(empresa.trim() !== "") {
+            const emp = tr.querySelector('[name="empresa"]').value;
+            if(emp.trim() !== "") {
                 historia.push({
                     edad_inicio: parseInt(tr.querySelector('[name="edad_inicio"]').value) || 0,
-                    empresa: empresa.toUpperCase(),
+                    empresa: emp.toUpperCase(),
                     ocupacion: tr.querySelector('[name="ocupacion"]').value.toUpperCase(),
                     tiempo_anios: parseInt(tr.querySelector('[name="tiempo_anios"]').value) || 0,
                     riesgos: tr.querySelector('[name="riesgos"]').value.toUpperCase() || "NINGUNO",
@@ -176,8 +176,8 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) { alert("¡ÉXITO!"); window.location.href = "index.html"; }
-            else { alert("ERROR 500: Fallo en el servidor."); }
+            if (res.ok) { alert("¡REGISTRO EXITOSO!"); window.location.href = "index.html"; }
+            else { alert("ERROR 422: Datos incompatibles. Revise la consola."); }
         } catch (error) { alert("ERROR DE RED."); } finally { btn.disabled = false; btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾"; }
     };
 </script>
