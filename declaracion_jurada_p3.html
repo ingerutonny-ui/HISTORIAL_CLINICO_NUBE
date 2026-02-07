@@ -6,83 +6,58 @@
     <title>HC NUBE | PARTE 3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 40px 20px; }
-        .form-container { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 1100px; margin: auto; }
-        .section-title { font-weight: 800; color: #1e293b; border-left: 5px solid #24a174; padding-left: 15px; margin: 30px 0 20px; text-transform: uppercase; font-size: 16px; }
-        .form-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
-        .form-control, .form-select { border-radius: 12px; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; font-weight: 600; color: #1e293b; font-size: 13px; text-transform: uppercase; }
-        
-        .table { border-collapse: separate; border-spacing: 5px 0; width: 100%; }
-        .table thead th { background-color: #24a174; color: white; text-transform: uppercase; font-size: 10px; padding: 15px 5px; border-radius: 10px; text-align: center; border: none; }
-        .table tbody td { padding: 10px 2px; border: none; }
-        
-        .btn-add { background-color: #1e293b; border: none; border-radius: 10px; padding: 8px 18px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
-        .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; background: #f8fafc; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; }
-        .check-item { display: flex; align-items: center; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; }
-        .check-item input { margin-right: 8px; width: 16px; height: 16px; accent-color: #24a174; }
-        .btn-final { background-color: #24a174; border: none; border-radius: 15px; padding: 18px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 30px; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .form-container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 1000px; margin: auto; }
+        .section-title { font-weight: 800; color: #1e293b; border-left: 5px solid #24a174; padding-left: 15px; margin: 25px 0 15px; text-transform: uppercase; font-size: 14px; }
+        .form-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .form-control, .form-select { border-radius: 10px; background-color: #f8fafc; font-size: 13px; text-transform: uppercase; }
+        .btn-add { background-color: #1e293b; color: white; border: none; border-radius: 8px; padding: 5px 15px; font-size: 11px; font-weight: 700; margin-bottom: 10px; }
+        .btn-final { background-color: #24a174; border: none; border-radius: 12px; padding: 15px; width: 100%; color: white; font-weight: 800; margin-top: 20px; }
+        .footer-link { text-align: center; margin-top: 20px; display: block; font-size: 12px; color: #64748b; text-decoration: none; font-weight: 600; }
+        .table thead th { background-color: #24a174; color: white; font-size: 10px; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h3 class="text-center" style="font-weight: 800; color: #1e293b; margin-bottom: 30px;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h3>
+    <h4 class="text-center" style="font-weight: 800;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h4>
 
     <form id="formP3">
-        <div class="section-title">I. HÁBITOS</div>
+        <div class="section-title">I. HÁBITOS Y RIESGOS</div>
         <div class="row g-3">
             <div class="col-md-4">
-                <label class="form-label">FUMA</label>
-                <select id="fuma_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">ALCOHOL</label>
-                <select id="alcohol_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">DROGAS</label>
-                <select id="drogas_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">PIJCHAR (COCA)</label>
-                <select id="pijchar_si_no" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-            </div>
-            <div class="col-md-4">
                 <label class="form-label">DEPORTES</label>
-                <select id="deportes_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <select id="deportes_si_no" class="form-select mb-1"><option value="NO">NO</option><option value="SI">SI</option></select>
                 <input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?">
             </div>
             <div class="col-md-4">
-                <label class="form-label">GRUPO SANGUÍNEO</label>
-                <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
-            </div>
-            <div class="col-md-6">
                 <label class="form-label">ACCIDENTES LABORALES</label>
-                <select id="accidentes_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <select id="accidentes_si_no" class="form-select mb-1"><option value="NO">NO</option><option value="SI">SI</option></select>
                 <input type="text" id="accidentes_detalle" class="form-control" placeholder="DESCRIBA">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <label class="form-label">MEDICAMENTOS</label>
-                <select id="medicamentos_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <select id="medicamentos_si_no" class="form-select mb-1"><option value="NO">NO</option><option value="SI">SI</option></select>
                 <input type="text" id="medicamentos_detalle" class="form-control" placeholder="¿CUÁLES?">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">GRUPO SANGUÍNEO</label>
+                <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
             </div>
         </div>
 
         <div class="section-title">II. HISTORIA LABORAL</div>
-        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
+        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR NUEVA FILA</button>
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th style="width: 10%;">EDAD</th>
-                        <th style="width: 25%;">EMPRESA</th>
-                        <th style="width: 25%;">OCUPACIÓN</th>
-                        <th style="width: 10%;">TIEMPO</th>
-                        <th style="width: 20%;">RIESGOS</th>
-                        <th style="width: 10%;">EPP</th>
+                        <th>EDAD INICIO</th>
+                        <th>EMPRESA</th>
+                        <th>OCUPACIÓN</th>
+                        <th>TIEMPO (AÑOS)</th>
+                        <th>RIESGOS</th>
+                        <th>EPP</th>
                     </tr>
                 </thead>
                 <tbody id="tablaLaboral">
@@ -99,19 +74,17 @@
         </div>
 
         <div class="section-title">III. RIESGOS EXPUESTOS</div>
-        <div class="check-grid">
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="RUIDO"> RUIDO</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="VIBRACIÓN"> VIBRACIÓN</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="RADIACIÓN"> RADIACIÓN</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="POLVOS"> POLVOS</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="GASES/VAPORES"> GASES/VAPORES</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="ERGONÓMICOS"> ERGONÓMICOS</label>
-            <label class="check-item"><input type="checkbox" class="riesgo-check" value="PSICOSOCIAL"> PSICOSOCIAL</label>
+        <div class="row px-3" id="riesgosCheck">
+            <div class="col-md-3 form-check"><input class="form-check-input" type="checkbox" value="RUIDO"> RUIDO</div>
+            <div class="col-md-3 form-check"><input class="form-check-input" type="checkbox" value="VIBRACIÓN"> VIBRACIÓN</div>
+            <div class="col-md-3 form-check"><input class="form-check-input" type="checkbox" value="POLVOS"> POLVOS</div>
+            <div class="col-md-3 form-check"><input class="form-check-input" type="checkbox" value="GASES/VAPORES"> GASES/VAPORES</div>
         </div>
 
         <button type="submit" id="btnGuardar" class="btn-final">TERMINAR Y GUARDAR REGISTRO 💾</button>
     </form>
+
+    <a href="consulta_pacientes.html" class="footer-link">CONSULTAR REGISTROS EN NUBE</a>
 </div>
 
 <script>
@@ -135,33 +108,31 @@
         const btn = document.getElementById('btnGuardar');
         btn.innerText = "PROCESANDO..."; btn.disabled = true;
 
-        let historiaFilas = [];
+        let historia = "";
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
             const emp = tr.querySelector('[name="empresa"]').value;
-            if(emp.trim() !== "") {
-                const fila = `EDAD: ${tr.querySelector('[name="edad"]').value} | EMP: ${emp} | OCUP: ${tr.querySelector('[name="ocupacion"]').value} | TIEMPO: ${tr.querySelector('[name="tiempo"]').value} | RIESGO: ${tr.querySelector('[name="riesgos_f"]').value} | EPP: ${tr.querySelector('[name="epp_f"]').value}`;
-                historiaFilas.push(fila);
+            if(emp) {
+                historia += `${emp}(${tr.querySelector('[name="ocupacion"]').value}) - ${tr.querySelector('[name="tiempo"]').value} años. `;
             }
         });
 
+        const riesgos = Array.from(document.querySelectorAll('#riesgosCheck input:checked')).map(c => c.value).join(", ");
+
+        // EL PAYLOAD SE AJUSTA ESTRICTAMENTE A TU MODELS.PY
         const payload = {
             paciente_id: parseInt(PACIENTE_ID),
-            fuma_si_no: document.getElementById('fuma_si_no').value,
-            fuma_detalle: document.getElementById('fuma_detalle').value.toUpperCase() || "N/A",
-            alcohol_si_no: document.getElementById('alcohol_si_no').value,
-            alcohol_detalle: document.getElementById('alcohol_detalle').value.toUpperCase() || "N/A",
-            drogas_si_no: document.getElementById('drogas_si_no').value,
-            drogas_detalle: document.getElementById('drogas_detalle').value.toUpperCase() || "N/A",
-            pijchar_si_no: document.getElementById('pijchar_si_no').value,
             deportes_si_no: document.getElementById('deportes_si_no').value,
-            deportes_detalle: document.getElementById('deportes_detalle').value.toUpperCase() || "N/A",
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "N/A",
+            deportes_detalle: document.getElementById('deportes_detalle').value.toUpperCase() || "NINGUNO",
             accidentes_si_no: document.getElementById('accidentes_si_no').value,
-            accidentes_detalle: document.getElementById('accidentes_detalle').value.toUpperCase() || "N/A",
+            accidentes_detalle: document.getElementById('accidentes_detalle').value.toUpperCase() || "NINGUNO",
             medicamentos_si_no: document.getElementById('medicamentos_si_no').value,
-            medicamentos_detalle: document.getElementById('medicamentos_detalle').value.toUpperCase() || "N/A",
-            riesgos_vida_laboral: Array.from(document.querySelectorAll('.riesgo-check:checked')).map(c => c.value).join(", ") || "NINGUNO",
-            historia_laboral: historiaFilas.join(" || ") || "SIN REGISTROS"
+            medicamentos_detalle: document.getElementById('medicamentos_detalle').value.toUpperCase() || "NINGUNO",
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "N/A",
+            historia_laboral: historia || "SIN REGISTROS",
+            riesgos_vida_laboral: riesgos || "NINGUNO",
+            // Campos que tu SCHEMA pide pero tu MODEL NO TIENE (se envían para evitar 422, pero el model los ignorará)
+            fuma_si_no: "NO", fuma_detalle: "N/A", alcohol_si_no: "NO", alcohol_detalle: "N/A", 
+            drogas_si_no: "NO", drogas_detalle: "N/A", pijchar_si_no: "NO"
         };
 
         try {
@@ -170,20 +141,14 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) { 
-                alert("¡REGISTRO EXITOSO!"); 
-                window.location.href = "index.html"; 
-            } else { 
-                const err = await res.json();
-                console.log("Error del Servidor:", err);
-                alert("ERROR 422: Verifique la consola para detalles de campos."); 
+            if (res.ok) { alert("REGISTRO GUARDADO"); window.location.href = "index.html"; }
+            else { 
+                const err = await res.json(); 
+                console.error(err);
+                alert("ERROR EN SERVIDOR: Verifique datos."); 
             }
-        } catch (error) { 
-            alert("ERROR DE CONEXIÓN."); 
-        } finally { 
-            btn.disabled = false; 
-            btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾"; 
-        }
+        } catch (error) { alert("ERROR DE CONEXIÓN"); }
+        finally { btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾"; btn.disabled = false; }
     };
 </script>
 </body>
