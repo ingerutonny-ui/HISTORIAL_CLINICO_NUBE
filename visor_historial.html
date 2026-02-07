@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Visor Final Profesional</title>
+    <title>HC NUBE | Visor Final Sincronizado</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -17,17 +17,16 @@
         <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors">← Volver</button>
         <div class="text-right">
             <h2 class="text-xl font-black uppercase text-white tracking-tighter italic">Visor de Historial</h2>
-            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Corrección de Sincronización y Mapeo</p>
+            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Sección I (14 Campos) + Sincronización SI/NO</p>
         </div>
     </div>
 
     <div class="max-w-md mx-auto mb-12 text-center">
         <div class="relative inline-block w-full">
-            <input type="text" id="codigoBusqueda" placeholder="CÓDIGO DEL PACIENTE" 
+            <input type="text" id="codigoBusqueda" placeholder="CÓDIGO PACIENTE" 
                 class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 uppercase">
             <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all">🔍</button>
         </div>
-        <p id="msgEstado" class="text-[7px] mt-4 uppercase tracking-widest text-slate-600 italic"></p>
     </div>
 
     <div id="resultadoVisor" class="hidden max-w-xl mx-auto">
@@ -38,7 +37,7 @@
                 <span id="resCodigo" class="px-4 py-1 bg-emerald-500/10 border border-emerald-500/50 rounded-full text-emerald-400 text-[10px] font-black mt-2">---</span>
             </div>
             <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white shadow-xl shadow-emerald-900/20 transition-all">
-                👁️ Generar Formulario Final Sincronizado
+                👁️ Generar Formulario 22 Sistemas
             </button>
         </div>
     </div>
@@ -59,9 +58,6 @@
                     document.getElementById('resNombre').textContent = `${p.nombres} ${p.apellidos}`.toUpperCase();
                     document.getElementById('resCodigo').textContent = p.codigo_paciente.toUpperCase();
                     document.getElementById('resultadoVisor').classList.remove('hidden');
-                    document.getElementById('msgEstado').textContent = "REGISTRO ENCONTRADO";
-                } else {
-                    document.getElementById('msgEstado').textContent = "CÓDIGO NO ENCONTRADO";
                 }
             } catch (e) { console.error(e); }
         }
@@ -72,11 +68,12 @@
             const res = await fetch(`${API_BASE}/historial-completo/${pacienteIdActual}`);
             const d = await res.json();
 
-            // FUNCIÓN DE VALIDACIÓN ROBUSTA (MINÚSCULAS/MAYÚSCULAS/ESPACIOS)
+            // FUNCIÓN DE DETECCIÓN INFALIBLE DE "SI"
             const esPositivo = (valor) => {
                 if (!valor) return false;
                 const v = String(valor).trim().toUpperCase();
-                return (v === "SI" || v === "SÍ" || (v !== "NO" && v !== "N/A" && v !== "NORMAL" && v !== "NINGUNO" && v !== "---"));
+                // Si contiene "SI", "SÍ", o no es ninguno de los valores negativos estándar
+                return (v.includes("SI") || v.includes("SÍ") || (v !== "NO" && v !== "N/A" && v !== "NORMAL" && v !== "NINGUNO" && v !== "---" && v !== ""));
             };
 
             const drawHeader = (pdf) => {
@@ -86,20 +83,24 @@
                 pdf.setLineWidth(0.4); pdf.line(15, 25, 195, 25);
             };
 
-            // --- HOJA 1 ---
+            // --- SECCIÓN I: 14 CAMPOS DE FILIACIÓN ---
             drawHeader(doc);
             doc.autoTable({
                 startY: 28,
-                head: [[{content: 'I. AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' } }]],
+                head: [[{content: 'I. AFILIACIÓN DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' } }]],
                 body: [
-                    [{content: 'APELLIDOS Y NOMBRES', styles: {fontStyle: 'bold'}}, {content: `${d.paciente.nombres} ${d.paciente.apellidos}`.toUpperCase(), colSpan: 3}],
-                    [{content: 'EDAD', styles: {fontStyle: 'bold'}}, String(d.filiacion?.edad || '').toUpperCase(), {content: 'SEXO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.sexo || '').toUpperCase()],
-                    [{content: 'C.I.', styles: {fontStyle: 'bold'}}, String(d.paciente.ci || '').toUpperCase(), {content: 'PROFESIÓN / LABOR', styles: {fontStyle: 'bold'}}, String(d.filiacion?.profesion_oficio || '').toUpperCase()]
+                    [{content: '1. NOMBRES', styles: {fontStyle: 'bold'}}, d.paciente.nombres.toUpperCase(), {content: '2. APELLIDOS', styles: {fontStyle: 'bold'}}, d.paciente.apellidos.toUpperCase()],
+                    [{content: '3. EDAD', styles: {fontStyle: 'bold'}}, String(d.filiacion?.edad || '').toUpperCase(), {content: '4. SEXO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.sexo || '').toUpperCase()],
+                    [{content: '5. C.I.', styles: {fontStyle: 'bold'}}, String(d.paciente.ci || '').toUpperCase(), {content: '6. ESTADO CIVIL', styles: {fontStyle: 'bold'}}, String(d.filiacion?.estado_civil || '').toUpperCase()],
+                    [{content: '7. FECHA NAC.', styles: {fontStyle: 'bold'}}, String(d.filiacion?.fecha_nacimiento || '').toUpperCase(), {content: '8. LUGAR NAC.', styles: {fontStyle: 'bold'}}, String(d.filiacion?.lugar_nacimiento || '').toUpperCase()],
+                    [{content: '9. PROFESIÓN', styles: {fontStyle: 'bold'}}, String(d.filiacion?.profesion_oficio || '').toUpperCase(), {content: '10. TELÉFONO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.telefono || '').toUpperCase()],
+                    [{content: '11. DOMICILIO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.domicilio || '').toUpperCase(), {content: '12. CIUDAD', styles: {fontStyle: 'bold'}}, String(d.filiacion?.ciudad || '').toUpperCase()],
+                    [{content: '13. PAÍS', styles: {fontStyle: 'bold'}}, String(d.filiacion?.pais || '').toUpperCase(), {content: '14. EMAIL', styles: {fontStyle: 'bold'}}, String(d.paciente.email || 'N/A').toUpperCase()]
                 ],
-                theme: 'grid', styles: { fontSize: 8, cellPadding: 1.5 }
+                theme: 'grid', styles: { fontSize: 7, cellPadding: 1.2 }
             });
 
-            // RESTAURACIÓN DE LOS 22 CAMPOS DE LA SECCIÓN II
+            // --- SECCIÓN II: 22 SISTEMAS (HOJA 1) ---
             const mapaSistemas = [
                 { et: 'VISTA', sub: 'GLAUCOMA, MIOPÍA', dato: d.antecedentes?.vista },
                 { et: 'AUDITIVO', sub: 'SORDERA, OTITIS', dato: d.antecedentes?.auditivo },
@@ -126,12 +127,12 @@
             ];
 
             const bodySistemas = mapaSistemas.map(s => {
-                const tiene = esPositivo(s.dato);
+                const positivo = esPositivo(s.dato);
                 return [
                     { content: `${s.et}\n${s.sub}`, styles: { fontStyle: 'bold' } },
-                    tiene ? 'X' : '', 
-                    tiene ? '' : 'X', 
-                    tiene ? String(s.dato).toUpperCase() : 'NORMAL'
+                    positivo ? 'X' : '', 
+                    positivo ? '' : 'X', 
+                    positivo ? String(s.dato).toUpperCase() : 'NORMAL'
                 ];
             });
 
@@ -139,14 +140,14 @@
                 startY: doc.lastAutoTable.finalY + 4,
                 head: [[{content: 'II. SISTEMA / ANTECEDENTES Y RIESGOS', styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
                 body: bodySistemas,
-                theme: 'grid', styles: { fontSize: 6, cellPadding: 1 }
+                theme: 'grid', styles: { fontSize: 6, cellPadding: 0.8 }
             });
 
             // --- HOJA 2 ---
             doc.addPage();
             drawHeader(doc);
 
-            // SECCIÓN III: HÁBITOS CON RECONOCIMIENTO DE MINÚSCULAS
+            // SECCIÓN III: HÁBITOS
             doc.autoTable({
                 startY: 28,
                 head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' }}]],
@@ -157,36 +158,33 @@
                 theme: 'grid', styles: { fontSize: 8 }
             });
 
-            // CORRECCIÓN IV: HISTORIA LABORAL (EXTRACCIÓN DINÁMICA DE JSON)
-            const hLab = d.habitos?.historia_laboral || "EDAD:--- | EMP:--- | CARGO:--- | TIEMPO:---";
-            const partes = hLab.split('|').map(p => p.split(':')[1]?.trim() || '---');
+            // SECCIÓN IV: HISTORIA LABORAL (LIMPIA SIN ARRASTRE)
+            const hLab = d.habitos?.historia_laboral || "EDAD:--- | EMPRESA:--- | CARGO:--- | TIEMPO:---";
+            const hPartes = hLab.split('|').map(p => p.split(':')[1]?.trim() || '---');
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
                 head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)', colSpan: 6, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [[
-                    partes[0].toUpperCase(), // EDAD
-                    partes[1].toUpperCase(), // EMPRESA
-                    partes[2].toUpperCase(), // CARGO
-                    partes[3].toUpperCase(), // TIEMPO
-                    'N/A', 'SI'
+                    hPartes[0].toUpperCase(), hPartes[1].toUpperCase(), hPartes[2].toUpperCase(), hPartes[3].toUpperCase(), 'N/A', 'SI'
                 ]],
                 theme: 'grid', styles: { fontSize: 7.5 }
             });
 
+            // SECCIÓN V: RIESGOS
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'V. ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE LA VIDA LABORAL', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
+                head: [[{content: 'V. ANTECEDENTES DE RIESGOS EXPUESTOS', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [
                     [{content: 'QUÍMICOS:', styles: {fontStyle: 'bold', width: 45}}, String(d.habitos?.riesgos_vida_laboral || 'NINGUNO').toUpperCase()],
-                    [{content: 'OBSERVACIONES:', styles: {fontStyle: 'bold'}}, 'DECLARO BAJO JURAMENTO QUE LA INFORMACIÓN PROPORCIONADA ES VERÍDICA Y ACTUALIZADA.']
+                    [{content: 'OBSERVACIONES:', styles: {fontStyle: 'bold'}}, 'INFORMACIÓN VERÍDICA Y ACTUALIZADA.']
                 ],
                 theme: 'grid', styles: { fontSize: 8, cellPadding: 2.5 }
             });
 
             doc.setFontSize(8); doc.setFont(undefined, 'bold');
-            doc.text(`FECHA DE EMISIÓN: ${new Date().toLocaleDateString().toUpperCase()}`, 15, doc.lastAutoTable.finalY + 15);
-            doc.text("FIRMA DEL TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 15, { align: "right" });
+            doc.text(`EMITIDO: ${new Date().toLocaleDateString().toUpperCase()}`, 15, doc.lastAutoTable.finalY + 15);
+            doc.text("FIRMA TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 15, { align: "right" });
 
             window.open(URL.createObjectURL(doc.output('blob')), '_blank');
         }
