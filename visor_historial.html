@@ -17,13 +17,13 @@
         <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors">← Volver</button>
         <div class="text-right">
             <h2 class="text-xl font-black uppercase text-white tracking-tighter italic">Visor de Historial</h2>
-            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Sincronización de Datos SI/NO</p>
+            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Corrección de Sincronización y Mapeo</p>
         </div>
     </div>
 
     <div class="max-w-md mx-auto mb-12 text-center">
         <div class="relative inline-block w-full">
-            <input type="text" id="codigoBusqueda" placeholder="CÓDIGO (EJ: RC3209)" 
+            <input type="text" id="codigoBusqueda" placeholder="CÓDIGO DEL PACIENTE" 
                 class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 uppercase">
             <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all">🔍</button>
         </div>
@@ -38,7 +38,7 @@
                 <span id="resCodigo" class="px-4 py-1 bg-emerald-500/10 border border-emerald-500/50 rounded-full text-emerald-400 text-[10px] font-black mt-2">---</span>
             </div>
             <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white shadow-xl shadow-emerald-900/20 transition-all">
-                👁️ Generar Formulario Final (2 Hojas)
+                👁️ Generar Formulario Final Sincronizado
             </button>
         </div>
     </div>
@@ -72,6 +72,13 @@
             const res = await fetch(`${API_BASE}/historial-completo/${pacienteIdActual}`);
             const d = await res.json();
 
+            // FUNCIÓN DE VALIDACIÓN ROBUSTA (MINÚSCULAS/MAYÚSCULAS/ESPACIOS)
+            const esPositivo = (valor) => {
+                if (!valor) return false;
+                const v = String(valor).trim().toUpperCase();
+                return (v === "SI" || v === "SÍ" || (v !== "NO" && v !== "N/A" && v !== "NORMAL" && v !== "NINGUNO" && v !== "---"));
+            };
+
             const drawHeader = (pdf) => {
                 pdf.addImage('logo.png', 'PNG', 15, 10, 25, 12);
                 pdf.setFontSize(11); pdf.setFont(undefined, 'bold');
@@ -92,13 +99,7 @@
                 theme: 'grid', styles: { fontSize: 8, cellPadding: 1.5 }
             });
 
-            // LÓGICA DE DETECCIÓN "SI" MEJORADA
-            const validarSI = (valor) => {
-                if (!valor) return false;
-                const v = String(valor).toUpperCase().trim();
-                return (v.includes("SI") || (v !== "NO" && v !== "N/A" && v !== "NORMAL" && v !== "NINGUNO" && v !== "---"));
-            };
-
+            // RESTAURACIÓN DE LOS 22 CAMPOS DE LA SECCIÓN II
             const mapaSistemas = [
                 { et: 'VISTA', sub: 'GLAUCOMA, MIOPÍA', dato: d.antecedentes?.vista },
                 { et: 'AUDITIVO', sub: 'SORDERA, OTITIS', dato: d.antecedentes?.auditivo },
@@ -125,7 +126,7 @@
             ];
 
             const bodySistemas = mapaSistemas.map(s => {
-                const tiene = validarSI(s.dato);
+                const tiene = esPositivo(s.dato);
                 return [
                     { content: `${s.et}\n${s.sub}`, styles: { fontStyle: 'bold' } },
                     tiene ? 'X' : '', 
@@ -138,34 +139,36 @@
                 startY: doc.lastAutoTable.finalY + 4,
                 head: [[{content: 'II. SISTEMA / ANTECEDENTES Y RIESGOS', styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
                 body: bodySistemas,
-                theme: 'grid', styles: { fontSize: 6.5, cellPadding: 1 }
+                theme: 'grid', styles: { fontSize: 6, cellPadding: 1 }
             });
 
             // --- HOJA 2 ---
             doc.addPage();
             drawHeader(doc);
 
-            // CORRECCIÓN SECCIÓN III: HÁBITOS (RECONOCER "SI" EN ALCOHOL, TABACO, ETC)
-            const checkHabito = (val) => validarSI(val) ? 'SI' : 'NO';
-
+            // SECCIÓN III: HÁBITOS CON RECONOCIMIENTO DE MINÚSCULAS
             doc.autoTable({
                 startY: 28,
                 head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' }}]],
                 body: [
-                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, checkHabito(d.habitos?.alcohol_si_no), {content: 'TABACO', styles: {fontStyle: 'bold'}}, checkHabito(d.habitos?.fuma_si_no)],
-                    [{content: 'DROGAS / PIJCHAR', styles: {fontStyle: 'bold'}}, checkHabito(d.habitos?.pijchar_si_no), {content: 'OTROS', styles: {fontStyle: 'bold'}}, 'N/A']
+                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, esPositivo(d.habitos?.alcohol_si_no) ? 'SI' : 'NO', {content: 'TABACO', styles: {fontStyle: 'bold'}}, esPositivo(d.habitos?.fuma_si_no) ? 'SI' : 'NO'],
+                    [{content: 'DROGAS / PIJCHAR', styles: {fontStyle: 'bold'}}, esPositivo(d.habitos?.pijchar_si_no) ? 'SI' : 'NO', {content: 'OTROS', styles: {fontStyle: 'bold'}}, 'N/A']
                 ],
                 theme: 'grid', styles: { fontSize: 8 }
             });
+
+            // CORRECCIÓN IV: HISTORIA LABORAL (EXTRACCIÓN DINÁMICA DE JSON)
+            const hLab = d.habitos?.historia_laboral || "EDAD:--- | EMP:--- | CARGO:--- | TIEMPO:---";
+            const partes = hLab.split('|').map(p => p.split(':')[1]?.trim() || '---');
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
                 head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)', colSpan: 6, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [[
-                    String(d.filiacion?.edad || '---').toUpperCase(), 
-                    String(d.habitos?.historia_laboral?.split('|')[1]?.split(':')[1] || '---').trim().toUpperCase(), 
-                    String(d.habitos?.historia_laboral?.split('|')[2]?.split(':')[1] || '---').trim().toUpperCase(),
-                    String(d.habitos?.historia_laboral?.split('|')[3]?.split(':')[1] || '---').trim().toUpperCase(),
+                    partes[0].toUpperCase(), // EDAD
+                    partes[1].toUpperCase(), // EMPRESA
+                    partes[2].toUpperCase(), // CARGO
+                    partes[3].toUpperCase(), // TIEMPO
                     'N/A', 'SI'
                 ]],
                 theme: 'grid', styles: { fontSize: 7.5 }
@@ -176,7 +179,7 @@
                 head: [[{content: 'V. ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE LA VIDA LABORAL', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [
                     [{content: 'QUÍMICOS:', styles: {fontStyle: 'bold', width: 45}}, String(d.habitos?.riesgos_vida_laboral || 'NINGUNO').toUpperCase()],
-                    [{content: 'OBSERVACIONES:', styles: {fontStyle: 'bold'}}, 'DECLARO BAJO JURAMENTO QUE LA INFORMACIÓN PROPORCIONADA ES VERÍDICA.']
+                    [{content: 'OBSERVACIONES:', styles: {fontStyle: 'bold'}}, 'DECLARO BAJO JURAMENTO QUE LA INFORMACIÓN PROPORCIONADA ES VERÍDICA Y ACTUALIZADA.']
                 ],
                 theme: 'grid', styles: { fontSize: 8, cellPadding: 2.5 }
             });
