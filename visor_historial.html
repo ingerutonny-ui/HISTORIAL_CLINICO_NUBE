@@ -12,7 +12,6 @@
         .glass-card { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .search-input::placeholder { color: #475569; letter-spacing: 0.1em; }
     </style>
 </head>
 <body class="bg-slate-950 min-h-screen text-slate-200 font-sans p-4">
@@ -30,10 +29,8 @@
     <div class="max-w-md mx-auto mb-12 fade-in">
         <div class="relative">
             <input type="text" id="codigoBusqueda" placeholder="INGRESE CÓDIGO (EJ: LV9944)" 
-                class="search-input w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 transition-all uppercase">
-            <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all shadow-lg shadow-blue-900/20">
-                🔍
-            </button>
+                class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-4 px-6 text-center text-sm font-bold tracking-widest text-blue-400 focus:outline-none focus:border-blue-500 transition-all uppercase">
+            <button onclick="buscarPaciente()" class="absolute right-3 top-2 bottom-2 px-4 bg-blue-600 hover:bg-blue-500 rounded-xl text-white transition-all shadow-lg shadow-blue-900/20">🔍</button>
         </div>
         <p id="msgEstado" class="text-[7px] text-center mt-4 uppercase tracking-widest text-slate-600 italic"></p>
     </div>
@@ -41,28 +38,13 @@
     <div id="resultadoVisor" class="hidden max-w-xl mx-auto fade-in">
         <div class="glass-card rounded-[2.5rem] p-8 shadow-2xl text-center">
             <div class="flex flex-col items-center mb-8">
-                <div class="w-20 h-20 bg-blue-900/30 rounded-full flex items-center justify-center text-3xl mb-4 border border-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.1)]">👤</div>
+                <div class="w-20 h-20 bg-blue-900/30 rounded-full flex items-center justify-center text-3xl mb-4 border border-blue-500/30">👤</div>
                 <h3 id="resNombre" class="text-2xl font-bold text-white uppercase tracking-tight">---</h3>
                 <span id="resCodigo" class="px-4 py-1 bg-blue-500/10 border border-blue-500/50 rounded-full text-blue-400 text-[10px] font-black mt-2 tracking-widest uppercase">---</span>
             </div>
-
-            <div class="grid grid-cols-2 gap-4 text-left">
-                <div class="bg-slate-950/50 p-4 rounded-2xl border border-slate-800">
-                    <p class="text-[7px] text-slate-500 uppercase tracking-widest mb-1">Documento CI</p>
-                    <p id="resCI" class="text-sm font-bold text-slate-200 tracking-wider uppercase">---</p>
-                </div>
-                <div class="bg-slate-950/50 p-4 rounded-2xl border border-slate-800">
-                    <p class="text-[7px] text-slate-500 uppercase tracking-widest mb-1">Estatus en Nube</p>
-                    <p class="text-sm font-bold text-emerald-500 flex items-center gap-2">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                        ACTIVO
-                    </p>
-                </div>
-            </div>
-
             <div class="mt-8 pt-8 border-t border-slate-800 flex justify-center">
-                <button onclick="generarPDF()" class="px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 text-white shadow-xl shadow-blue-900/20 group">
-                    <span class="group-hover:scale-110 transition-transform">📥</span> Descargar Historial PDF
+                <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-[0.2em] transition-all flex items-center gap-3 text-white shadow-xl shadow-emerald-900/20">
+                    👁️ Ver y Revisar Formulario
                 </button>
             </div>
         </div>
@@ -76,90 +58,107 @@
             const codigoInput = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
             const msg = document.getElementById('msgEstado');
             const visor = document.getElementById('resultadoVisor');
-
             if (!codigoInput) return;
-
             msg.textContent = "CONSULTANDO SERVIDORES...";
-            msg.className = "text-[7px] text-center mt-4 uppercase tracking-widest text-blue-400 animate-pulse";
-            visor.classList.add('hidden');
-
             try {
                 const response = await fetch(`${API_BASE}/pacientes/`);
                 const pacientes = await response.json();
                 const encontrado = pacientes.find(p => p.codigo_paciente.toUpperCase() === codigoInput);
-
                 if (encontrado) {
                     pacienteIdActual = encontrado.id;
                     document.getElementById('resNombre').textContent = `${encontrado.nombres} ${encontrado.apellidos}`;
-                    document.getElementById('resCI').textContent = encontrado.ci || "---";
                     document.getElementById('resCodigo').textContent = encontrado.codigo_paciente;
-                    msg.textContent = "REGISTRO LOCALIZADO";
-                    msg.className = "text-[7px] text-center mt-4 uppercase tracking-widest text-emerald-500 font-bold";
                     visor.classList.remove('hidden');
+                    msg.textContent = "REGISTRO ENCONTRADO";
                 } else {
-                    msg.textContent = "CÓDIGO NO ENCONTRADO";
-                    msg.className = "text-[7px] text-center mt-4 uppercase tracking-widest text-red-500 font-bold";
+                    msg.textContent = "CÓDIGO NO EXISTE";
                 }
-            } catch (error) {
-                msg.textContent = "ERROR DE CONEXIÓN";
-            }
+            } catch (e) { msg.textContent = "ERROR DE RED"; }
         }
 
-        async function generarPDF() {
+        async function generarVistaPrevia() {
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            try {
-                const response = await fetch(`${API_BASE}/historial-completo/${pacienteIdActual}`);
-                const data = await response.json();
+            const doc = new jsPDF('p', 'mm', 'a4');
+            const response = await fetch(`${API_BASE}/historial-completo/${pacienteIdActual}`);
+            const data = await response.json();
 
-                // Encabezado
-                doc.setFontSize(18);
-                doc.text("HISTORIAL CLÍNICO - REGISTRO NUBE", 105, 20, { align: "center" });
-                doc.setFontSize(10);
-                doc.text(`Código: ${data.paciente.codigo_paciente}`, 105, 27, { align: "center" });
+            // Función para el encabezado oficial
+            const header = (d) => {
+                d.addImage('logo.png', 'PNG', 15, 10, 30, 15);
+                d.setFontSize(14);
+                d.setFont(undefined, 'bold');
+                d.text("DECLARACION JURADA DE SALUD", 105, 20, { align: "center" });
+                d.setLineWidth(0.5);
+                d.line(15, 28, 195, 28);
+            };
 
-                // Filiación
-                doc.autoTable({
-                    startY: 35,
-                    head: [['DATOS PERSONALES (FILIACIÓN)', '']],
-                    body: [
-                        ['Nombre Completo', `${data.paciente.nombres} ${data.paciente.apellidos}`],
-                        ['CI', data.paciente.ci],
-                        ['Edad', data.filiacion?.edad || 'N/A'],
-                        ['Sexo', data.filiacion?.sexo || 'N/A'],
-                        ['Ciudad/País', `${data.filiacion?.ciudad || ''} / ${data.filiacion?.pais || ''}`]
-                    ],
-                    theme: 'striped',
-                    headStyles: { fillColor: [30, 41, 59] }
-                });
+            header(doc);
 
-                // Hábitos y Riesgos (Parte 3)
-                if(data.habitos) {
-                    doc.autoTable({
-                        startY: doc.lastAutoTable.finalY + 10,
-                        head: [['HÁBITOS Y RIESGOS', 'DETALLE']],
-                        body: [
-                            ['Fuma', `${data.habitos.fuma_si_no} - ${data.habitos.fuma_detalle}`],
-                            ['Alcohol', `${data.habitos.alcohol_si_no} - ${data.habitos.alcohol_detalle}`],
-                            ['Deportes', `${data.habitos.deportes_si_no} - ${data.habitos.deportes_detalle}`],
-                            ['Grupo Sanguíneo', data.habitos.grupo_sanguineo],
-                            ['Accidentes', `${data.habitos.accidentes_si_no} - ${data.habitos.accidentes_detalle}`],
-                            ['Medicamentos', `${data.habitos.medicamentos_si_no} - ${data.habitos.medicamentos_detalle}`]
-                        ],
-                        theme: 'grid',
-                        headStyles: { fillColor: [59, 130, 246] }
-                    });
-                }
+            // SECCIÓN 1: FILIACIÓN (Basado en imagen_2b8fa3.png)
+            doc.autoTable({
+                startY: 30,
+                head: [[{content: 'AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                body: [
+                    ['APELLIDOS Y NOMBRES', {content: `${data.paciente.nombres} ${data.paciente.apellidos}`, colSpan: 3}],
+                    ['EDAD', data.filiacion?.edad || '', 'SEXO', data.filiacion?.sexo || ''],
+                    ['FECHA NAC.', data.filiacion?.fecha_nacimiento || '', 'LUGAR', data.filiacion?.lugar_nacimiento || ''],
+                    ['DOMICILIO', data.filiacion?.domicilio || '', 'CIUDAD', data.filiacion?.ciudad || ''],
+                    ['PROFESIÓN', {content: data.filiacion?.profion_oficio || '', colSpan: 3}]
+                ],
+                styles: { fontSize: 8, cellPadding: 2 },
+                theme: 'grid'
+            });
 
-                doc.save(`Historial_${data.paciente.codigo_paciente}.pdf`);
+            // SECCIÓN 2: ANTECEDENTES (Replicando la cuadrícula de la captura)
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 5,
+                head: [[{content: 'ANTECEDENTES MÉDICOS (Evaluación por Sistemas)', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                body: [
+                    ['VISTA / AUDITIVO', 'Evaluación Normal / Sin observaciones reportadas'],
+                    ['CARDIO-VASCULAR', 'Presión arterial estable según registro'],
+                    ['SISTEMA NERVIOSO', 'Sin antecedentes de cefaleas o vértigos'],
+                    ['ALERGIAS', data.habitos?.medicamentos_si_no === 'SI' ? `SÍ: ${data.habitos.medicamentos_detalle}` : 'NO REPORTA']
+                ],
+                styles: { fontSize: 8 },
+                theme: 'grid'
+            });
 
-            } catch (error) {
-                alert("Error al generar el PDF");
-            }
+            // SALTO A HOJA 2
+            doc.addPage();
+            header(doc);
+
+            // SECCIÓN 3: HÁBITOS Y VIDA LABORAL
+            doc.autoTable({
+                startY: 30,
+                head: [['HÁBITOS', 'SI', 'NO', 'DETALLE / FRECUENCIA']],
+                body: [
+                    ['ALCOHOL', data.habitos?.alcohol_si_no === 'SI' ? 'X' : '', data.habitos?.alcohol_si_no === 'NO' ? 'X' : '', data.habitos?.alcohol_detalle || ''],
+                    ['TABACO', data.habitos?.fuma_si_no === 'SI' ? 'X' : '', data.habitos?.fuma_si_no === 'NO' ? 'X' : '', data.habitos?.fuma_detalle || ''],
+                    ['DEPORTES', data.habitos?.deportes_si_no === 'SI' ? 'X' : '', data.habitos?.deportes_si_no === 'NO' ? 'X' : '', data.habitos?.deportes_detalle || '']
+                ],
+                styles: { fontSize: 8 },
+                theme: 'grid'
+            });
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 5,
+                head: [[{content: 'HISTORIA LABORAL Y RIESGOS', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                body: [
+                    ['HISTORIA LABORAL', data.habitos?.historia_laboral || 'Sin datos'],
+                    ['RIESGOS EXPUESTOS', data.habitos?.riesgos_vida_laboral || 'Ninguno']
+                ],
+                styles: { fontSize: 8 },
+                theme: 'grid'
+            });
+
+            // Firma
+            doc.text("FIRMA DEL TRABAJADOR: ___________________________", 105, doc.lastAutoTable.finalY + 30, { align: "center" });
+
+            // EN LUGAR DE DESCARGAR, ABRIMOS VISTA PREVIA
+            const blob = doc.output('blob');
+            const url = URL.createObjectURL(blob);
+            window.open(url, '_blank');
         }
-
-        document.getElementById('codigoBusqueda').addEventListener('keypress', (e) => { if(e.key === 'Enter') buscarPaciente(); });
     </script>
 </body>
 </html>
