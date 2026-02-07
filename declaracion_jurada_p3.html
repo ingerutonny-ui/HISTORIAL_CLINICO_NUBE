@@ -126,9 +126,9 @@
 
         let historiaArray = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
-            const emp = tr.querySelector('[name="empresa"]').value;
-            if(emp.trim() !== "") {
-                historiaArray.push(`EDAD:${tr.querySelector('[name="edad"]').value} | EMP:${emp} | CARGO:${tr.querySelector('[name="ocupacion"]').value} | TIEMPO:${tr.querySelector('[name="tiempo"]').value}`);
+            const empInput = tr.querySelector('[name="empresa"]');
+            if(empInput && empInput.value.trim() !== "") {
+                historiaArray.push(`EDAD:${tr.querySelector('[name="edad"]').value} | EMP:${empInput.value} | CARGO:${tr.querySelector('[name="ocupacion"]').value} | TIEMPO:${tr.querySelector('[name="tiempo"]').value}`);
             }
         });
 
@@ -155,6 +155,7 @@
         try {
             const res = await fetch(`${API_BASE}/declaraciones/p3/`, {
                 method: 'POST',
+                mode: 'cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
@@ -165,11 +166,11 @@
             } else {
                 const errorData = await res.json();
                 console.error("Error del servidor:", errorData);
-                alert("ERROR " + res.status + ": Revise los datos.");
+                alert("ERROR " + res.status + ": El servidor rechazó los datos.");
             }
         } catch (error) {
             console.error("Error de conexión:", error);
-            alert("ERROR DE RED: No se pudo contactar al servidor.");
+            alert("ERROR DE RED: No se pudo contactar al servidor. Verifique que el Backend esté activo.");
         } finally {
             btn.disabled = false;
             btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾";
