@@ -3,31 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Parte 3</title>
+    <title>HC NUBE | PARTE 3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f3f6f9; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 40px 20px; }
-        .form-container { background: white; padding: 40px; border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.03); max-width: 1000px; width: 100%; }
-        .section-title { font-weight: 800; color: #1e293b; border-left: 5px solid #24a174; padding-left: 15px; margin: 30px 0 20px; text-transform: uppercase; font-size: 16px; }
+        body { background-color: #f3f6f9; font-family: 'Segoe UI', sans-serif; padding: 40px 20px; }
+        .form-container { background: white; padding: 40px; border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.03); max-width: 1000px; margin: auto; }
+        .section-title { font-weight: 800; color: #112d4e; border-left: 5px solid #24a174; padding-left: 15px; margin: 30px 0 20px; text-transform: uppercase; font-size: 16px; }
         .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-bottom: 8px; }
-        .form-control, .form-select { border-radius: 15px; background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; font-weight: 600; color: #1e293b; font-size: 13px; }
-        .habito-card { background: #fcfdfe; border: 1px solid #f1f5f9; padding: 20px; border-radius: 20px; margin-bottom: 15px; }
-        .btn-add { background-color: #1e293b; border: none; border-radius: 12px; padding: 10px 20px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
-        .table { font-size: 12px; }
-        .table thead th { background: #1e293b; color: white; border: none; font-weight: 700; text-transform: uppercase; padding: 12px; }
+        /* Inputs con texto en MAYÚSCULAS y estilo original */
+        .form-control, .form-select { 
+            border-radius: 12px; 
+            background-color: #f8fafc; 
+            border: 1px solid #e2e8f0; 
+            padding: 12px; 
+            font-weight: 600; 
+            color: #112d4e; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+        }
+        .habito-card { background: #ffffff; border: 1px solid #f1f5f9; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .btn-add { background-color: #112d4e; border: none; border-radius: 12px; padding: 10px 20px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
+        /* Tabla con colores oscuros según captura */
+        .table thead th { background: #112d4e; color: white; border: none; font-weight: 700; text-transform: uppercase; padding: 12px; font-size: 11px; text-align: center; }
         .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; background: #f8fafc; padding: 25px; border-radius: 20px; }
-        .check-item { display: flex; align-items: center; font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .check-item { display: flex; align-items: center; font-size: 12px; font-weight: 700; color: #112d4e; text-transform: uppercase; }
         .check-item input { margin-right: 10px; width: 18px; height: 18px; accent-color: #24a174; }
-        .btn-final { background-color: #24a174; border: none; border-radius: 20px; padding: 20px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 40px; font-size: 15px; box-shadow: 0 10px 20px rgba(36, 161, 116, 0.2); }
+        .btn-final { background-color: #24a174; border: none; border-radius: 20px; padding: 20px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 40px; font-size: 15px; }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h2 class="text-center" style="font-weight: 800; color: #1e293b; margin-bottom: 40px;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
+    <h2 class="text-center" style="font-weight: 800; color: #112d4e; margin-bottom: 40px;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
 
     <form id="formP3">
-        <div class="section-title">I. HÁBITOS Y OTROS</div>
+        <div class="section-title">I. HÁBITOS</div>
         <div class="row g-3">
             <div class="col-md-4">
                 <div class="habito-card">
@@ -60,7 +70,7 @@
                 <div class="habito-card">
                     <label class="form-label">DEPORTES</label>
                     <select id="deportes" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?">
+                    <input type="text" id="deportes_detalle" class="form-control" placeholder="CUAL/FRECUENCIA">
                 </div>
             </div>
             <div class="col-md-4">
@@ -72,17 +82,17 @@
         </div>
 
         <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
-        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR NUEVA FILA</button>
+        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
         <div class="table-responsive">
             <table class="table table-bordered align-middle">
                 <thead>
                     <tr>
-                        <th width="100">EDAD INICIO</th>
+                        <th width="120">EDAD INICIO</th>
                         <th>EMPRESA</th>
                         <th>OCUPACIÓN</th>
-                        <th width="100">TIEMPO</th>
+                        <th width="120">TIEMPO (AÑOS)</th>
                         <th>RIESGOS</th>
-                        <th width="100">EPP</th>
+                        <th width="100">EPP (SI/NO)</th>
                     </tr>
                 </thead>
                 <tbody id="tablaLaboral">
@@ -118,6 +128,11 @@
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     const PACIENTE_ID = localStorage.getItem('paciente_id');
 
+    // Forzar mayúsculas en tiempo real
+    document.querySelectorAll('input[type="text"]').forEach(input => {
+        input.addEventListener('input', () => { input.value = input.value.toUpperCase(); });
+    });
+
     function addRow() {
         const row = `<tr>
             <td><input type="number" class="form-control" name="edad"></td>
@@ -128,6 +143,11 @@
             <td><select class="form-select" name="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
         </tr>`;
         document.getElementById('tablaLaboral').insertAdjacentHTML('beforeend', row);
+        
+        // Re-aplicar mayúsculas a la nueva fila
+        document.querySelectorAll('input[type="text"]').forEach(input => {
+            input.oninput = () => { input.value = input.value.toUpperCase(); };
+        });
     }
 
     document.getElementById('formP3').onsubmit = async (e) => {
@@ -141,31 +161,29 @@
             if(inputs[1].value) { 
                 historia_laboral.push({
                     edad_inicio: parseInt(inputs[0].value) || 0,
-                    empresa: inputs[1].value,
-                    ocupacion: inputs[2].value,
+                    empresa: inputs[1].value.toUpperCase(),
+                    ocupacion: inputs[2].value.toUpperCase(),
                     tiempo_anios: parseInt(inputs[3].value) || 0,
-                    riesgos: inputs[4].value || "NINGUNO",
+                    riesgos: inputs[4].value.toUpperCase() || "NINGUNO",
                     epp: inputs[5].value
                 });
             }
         });
 
-        const riesgos_expuestos = Array.from(document.querySelectorAll('.riesgo-check:checked')).map(c => c.value);
-
         const payload = {
             paciente_id: parseInt(PACIENTE_ID),
             fuma: document.getElementById('fuma').value,
-            fuma_detalle: document.getElementById('fuma_detalle').value || "N/A",
+            fuma_detalle: document.getElementById('fuma_detalle').value.toUpperCase() || "N/A",
             alcohol: document.getElementById('alcohol').value,
-            alcohol_detalle: document.getElementById('alcohol_detalle').value || "N/A",
+            alcohol_detalle: document.getElementById('alcohol_detalle').value.toUpperCase() || "N/A",
             drogas: document.getElementById('drogas').value,
-            drogas_detalle: document.getElementById('drogas_detalle').value || "N/A",
+            drogas_detalle: document.getElementById('drogas_detalle').value.toUpperCase() || "N/A",
             pijchar: document.getElementById('pijchar').value,
             deportes: document.getElementById('deportes').value,
-            deportes_detalle: document.getElementById('deportes_detalle').value || "N/A",
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value || "DESCONOCIDO",
+            deportes_detalle: document.getElementById('deportes_detalle').value.toUpperCase() || "N/A",
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "N/A",
             historia_laboral: historia_laboral,
-            riesgos_expuestos: riesgos_expuestos
+            riesgos_expuestos: Array.from(document.querySelectorAll('.riesgo-check:checked')).map(c => c.value)
         };
 
         try {
@@ -176,14 +194,15 @@
             });
 
             if (res.ok) {
-                alert("¡PROCESO FINALIZADO CON ÉXITO!");
+                alert("¡REGISTRO COMPLETADO EXITOSAMENTE!");
                 window.location.href = "index.html";
             } else {
                 const errorData = await res.json();
-                alert("ERROR EN EL SERVIDOR: " + JSON.stringify(errorData.detail));
+                console.error("Error Servidor:", errorData);
+                alert("ERROR EN SERVIDOR (500): Verifique los datos enviados.");
             }
         } catch (error) {
-            alert("ERROR DE RED: VERIFIQUE QUE RENDER ESTÉ LIVE");
+            alert("ERROR DE CONEXIÓN: NO SE PUDO ALCANZAR EL SERVIDOR");
         } finally {
             btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾";
             btn.disabled = false;
