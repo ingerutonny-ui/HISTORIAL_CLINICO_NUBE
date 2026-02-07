@@ -7,20 +7,31 @@ import json
 from . import models, schemas, crud
 from .database import SessionLocal, engine
 
+# Sincronización automática de la base de datos
 models.Base.metadata.create_all(bind=engine)
 with engine.begin() as conn:
-    try: conn.execute(text("ALTER TABLE habitos_p3 ADD COLUMN riesgos_vida_laboral TEXT"))
-    except: pass
+    try:
+        conn.execute(text("ALTER TABLE habitos_p3 ADD COLUMN riesgos_vida_laboral TEXT"))
+    except:
+        pass
 
 app = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
-    db = SessionLocal(); 
-    try: yield db
-    finally: db.close()
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-@app.get("/pacientes/", response_model=List[schemas.Paciente])
+@app.get("/pacientes/", response_model=list[schemas.Paciente])
 def read_pacientes(db: Session = Depends(get_db)):
     return crud.get_pacientes(db)
 
@@ -44,7 +55,9 @@ def save_p3(data: schemas.HabitosCreate, db: Session = Depends(get_db)):
 def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
     res = crud.get_historial_completo(db, paciente_id)
     p, f, a, h = res["paciente"], res["filiacion"], res["antecedentes"], res["habitos"]
-    if not p: raise HTTPException(status_code=404)
+    
+    if not p:
+        raise HTTPException(status_code=404)
 
     def get_v(obj, attr, default="S/D"):
         val = getattr(obj, attr, None)
@@ -62,7 +75,8 @@ def generar_reporte(paciente_id: int, db: Session = Depends(get_db)):
         try:
             items = json.loads(h.historia_laboral)
             filas_h = "".join([f"<tr><td>{i.get('edad','-')}</td><td>{i.get('emp','-')}</td><td>{i.get('ocu','-')}</td><td>{i.get('tie','-')}</td><td>{i.get('rie','-')}</td><td>{i.get('epp','-')}</td></tr>" for i in items])
-        except: pass
+        except:
+            pass
 
     html = f"""
     <!DOCTYPE html><html><head><meta charset="UTF-8"><style>
