@@ -12,14 +12,10 @@
         .section-title { font-weight: 800; border-left: 5px solid var(--primary-green); padding-left: 15px; margin: 30px 0 20px; font-size: 14px; text-transform: uppercase; }
         .form-label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 10px; background-color: #f1f5f9; border: 1px solid #e2e8f0; padding: 10px; font-weight: 600; font-size: 13px; text-transform: uppercase; }
-        
-        /* Estilo Tabla según captura */
         .table thead th { background-color: var(--primary-green); color: white; border: none; font-size: 10px; padding: 12px; text-align: center; }
-        .table td { padding: 8px 4px; border: none; }
-        
         .btn-add { background-color: var(--dark-blue); color: white; border: none; border-radius: 8px; padding: 6px 15px; font-size: 10px; font-weight: 700; margin-bottom: 15px; }
-        .btn-final { background-color: var(--primary-green); border: none; border-radius: 12px; padding: 15px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 25px; }
-        
+        .btn-final { background-color: var(--primary-green); border: none; border-radius: 12px; padding: 15px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 25px; cursor: pointer; }
+        .btn-final:disabled { background-color: #94a3b8; }
         .check-item { font-size: 11px; font-weight: 700; color: #475569; display: flex; align-items: center; margin-bottom: 10px; text-transform: uppercase; }
         .check-item input { margin-right: 8px; width: 16px; height: 16px; accent-color: var(--primary-green); }
     </style>
@@ -30,22 +26,22 @@
     <h3 class="text-center" style="font-weight: 800; margin-bottom: 25px;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h3>
 
     <form id="formP3">
-        <div class="section-title">I. HÁBITOS</div>
+        <div class="section-title">I. HÁBITOS Y RIESGOS</div>
         <div class="row g-3">
             <div class="col-md-4">
                 <label class="form-label">FUMA</label>
                 <select id="fuma_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD">
+                <input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD" value="N/A">
             </div>
             <div class="col-md-4">
                 <label class="form-label">ALCOHOL</label>
                 <select id="alcohol_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA">
+                <input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA" value="N/A">
             </div>
             <div class="col-md-4">
                 <label class="form-label">DROGAS</label>
                 <select id="drogas_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO">
+                <input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO" value="N/A">
             </div>
             <div class="col-md-4">
                 <label class="form-label">PIJCHAR (COCA)</label>
@@ -54,35 +50,35 @@
             <div class="col-md-4">
                 <label class="form-label">DEPORTES</label>
                 <select id="deportes_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?">
+                <input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?" value="N/A">
             </div>
             <div class="col-md-4">
                 <label class="form-label">GRUPO SANGUÍNEO</label>
-                <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
+                <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+" required>
             </div>
         </div>
 
-        <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
+        <div class="section-title">II. HISTORIA LABORAL</div>
         <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
         <div class="table-responsive">
             <table class="table">
                 <thead>
                     <tr>
-                        <th style="border-radius: 10px 0 0 10px;">EDAD INICIO</th>
+                        <th>EDAD INICIO</th>
                         <th>EMPRESA</th>
                         <th>OCUPACIÓN</th>
                         <th>TIEMPO (AÑOS)</th>
                         <th>RIESGOS</th>
-                        <th style="border-radius: 0 10px 10px 0;">EPP</th>
+                        <th>EPP</th>
                     </tr>
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td><input type="text" class="form-control" name="edad"></td>
-                        <td><input type="text" class="form-control" name="empresa"></td>
-                        <td><input type="text" class="form-control" name="ocupacion"></td>
-                        <td><input type="text" class="form-control" name="tiempo"></td>
-                        <td><input type="text" class="form-control" name="riesgos_f"></td>
+                        <td><input type="number" class="form-control" name="edad" value="0"></td>
+                        <td><input type="text" class="form-control" name="empresa" placeholder="EMPRESA"></td>
+                        <td><input type="text" class="form-control" name="ocupacion" placeholder="CARGO"></td>
+                        <td><input type="number" class="form-control" name="tiempo" value="0"></td>
+                        <td><input type="text" class="form-control" name="riesgos_f" placeholder="RIESGOS"></td>
                         <td><select class="form-select" name="epp_f"><option value="NO">NO</option><option value="SI">SI</option><option value="NC">NC</option></select></td>
                     </tr>
                 </tbody>
@@ -111,10 +107,10 @@
 
     function addRow() {
         const row = `<tr>
-            <td><input type="text" class="form-control" name="edad"></td>
+            <td><input type="number" class="form-control" name="edad" value="0"></td>
             <td><input type="text" class="form-control" name="empresa"></td>
             <td><input type="text" class="form-control" name="ocupacion"></td>
-            <td><input type="text" class="form-control" name="tiempo"></td>
+            <td><input type="number" class="form-control" name="tiempo" value="0"></td>
             <td><input type="text" class="form-control" name="riesgos_f"></td>
             <td><select class="form-select" name="epp_f"><option value="NO">NO</option><option value="SI">SI</option><option value="NC">NC</option></select></td>
         </tr>`;
@@ -126,33 +122,33 @@
         const btn = document.getElementById('btnGuardar');
         btn.innerText = "PROCESANDO..."; btn.disabled = true;
 
-        let historia = [];
+        if (!PACIENTE_ID) { alert("ERROR: No se encontró ID del paciente."); btn.disabled = false; return; }
+
+        let historiaArray = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
             const emp = tr.querySelector('[name="empresa"]').value;
-            if(emp) {
-                historia.push(`EMP: ${emp} | OCUP: ${tr.querySelector('[name="ocupacion"]').value} | TIEMPO: ${tr.querySelector('[name="tiempo"]').value}`);
+            if(emp.trim() !== "") {
+                historiaArray.push(`EDAD:${tr.querySelector('[name="edad"]').value} | EMP:${emp} | CARGO:${tr.querySelector('[name="ocupacion"]').value} | TIEMPO:${tr.querySelector('[name="tiempo"]').value}`);
             }
         });
 
-        // OBJETO CON TODOS LOS CAMPOS QUE EL BACKEND PIDE (SCHEMAS.PY)
         const payload = {
             paciente_id: parseInt(PACIENTE_ID),
             fuma_si_no: document.getElementById('fuma_si_no').value,
-            fuma_detalle: document.getElementById('fuma_detalle').value.toUpperCase() || "N/A",
+            fuma_detalle: document.getElementById('fuma_detalle').value || "N/A",
             alcohol_si_no: document.getElementById('alcohol_si_no').value,
-            alcohol_detalle: document.getElementById('alcohol_detalle').value.toUpperCase() || "N/A",
+            alcohol_detalle: document.getElementById('alcohol_detalle').value || "N/A",
             drogas_si_no: document.getElementById('drogas_si_no').value,
-            drogas_detalle: document.getElementById('drogas_detalle').value.toUpperCase() || "N/A",
+            drogas_detalle: document.getElementById('drogas_detalle').value || "N/A",
             pijchar_si_no: document.getElementById('pijchar_si_no').value,
             deportes_si_no: document.getElementById('deportes_si_no').value,
-            deportes_detalle: document.getElementById('deportes_detalle').value.toUpperCase() || "N/A",
-            // Campos obligatorios en Schema pero ocultos para simplificar
+            deportes_detalle: document.getElementById('deportes_detalle').value || "N/A",
             accidentes_si_no: "NO",
             accidentes_detalle: "N/A",
             medicamentos_si_no: "NO",
             medicamentos_detalle: "N/A",
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "N/A",
-            historia_laboral: historia.join(" || ") || "SIN REGISTROS",
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
+            historia_laboral: historiaArray.join(" || ") || "SIN REGISTROS",
             riesgos_vida_laboral: Array.from(document.querySelectorAll('.riesgo-check:checked')).map(c => c.value).join(", ") || "NINGUNO"
         };
 
@@ -162,18 +158,21 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) { 
-                alert("REGISTRO EXITOSO"); 
-                window.location.href = "index.html"; 
-            } else { 
-                const err = await res.json();
-                console.log(err);
-                alert("ERROR 500: Revisa la consola o el ID del paciente."); 
+
+            if (res.ok) {
+                alert("REGISTRO EXITOSO");
+                window.location.href = "index.html";
+            } else {
+                const errorData = await res.json();
+                console.error("Error del servidor:", errorData);
+                alert("ERROR " + res.status + ": Revise los datos.");
             }
-        } catch (error) { 
-            alert("ERROR DE RED"); 
-        } finally { 
-            btn.disabled = false; btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾"; 
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            alert("ERROR DE RED: No se pudo contactar al servidor.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾";
         }
     };
 </script>
