@@ -6,79 +6,44 @@
     <title>HC NUBE | PARTE 3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f3f6f9; font-family: 'Segoe UI', sans-serif; padding: 40px 20px; }
-        .form-container { background: white; padding: 40px; border-radius: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.03); max-width: 1000px; margin: auto; }
-        .section-title { font-weight: 800; color: #112d4e; border-left: 5px solid #24a174; padding-left: 15px; margin: 30px 0 20px; text-transform: uppercase; font-size: 16px; }
-        .form-label { font-size: 11px; font-weight: 700; color: #b0bac9; text-transform: uppercase; margin-bottom: 8px; }
-        /* Inputs con texto en MAYÚSCULAS y estilo original */
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 40px 20px; }
+        .form-container { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; }
+        .section-title { font-weight: 800; color: #1e293b; border-left: 5px solid #24a174; padding-left: 15px; margin: 30px 0 20px; text-transform: uppercase; font-size: 16px; }
+        .form-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
         .form-control, .form-select { 
             border-radius: 12px; 
-            background-color: #f8fafc; 
+            background-color: #f1f5f9; 
             border: 1px solid #e2e8f0; 
             padding: 12px; 
             font-weight: 600; 
-            color: #112d4e; 
+            color: #1e293b; 
             font-size: 13px; 
             text-transform: uppercase; 
         }
-        .habito-card { background: #ffffff; border: 1px solid #f1f5f9; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .btn-add { background-color: #112d4e; border: none; border-radius: 12px; padding: 10px 20px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 20px; }
-        /* Tabla con colores oscuros según captura */
-        .table thead th { background: #112d4e; color: white; border: none; font-weight: 700; text-transform: uppercase; padding: 12px; font-size: 11px; text-align: center; }
-        .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; background: #f8fafc; padding: 25px; border-radius: 20px; }
-        .check-item { display: flex; align-items: center; font-size: 12px; font-weight: 700; color: #112d4e; text-transform: uppercase; }
-        .check-item input { margin-right: 10px; width: 18px; height: 18px; accent-color: #24a174; }
-        .btn-final { background-color: #24a174; border: none; border-radius: 20px; padding: 20px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 40px; font-size: 15px; }
+        .habito-card { background: #ffffff; border: 1px solid #f1f5f9; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
+        .btn-add { background-color: #475569; border: none; border-radius: 10px; padding: 8px 18px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
+        .table thead th { background: #f8fafc; color: #1e293b; border: 1px solid #e2e8f0; font-weight: 700; text-transform: uppercase; padding: 12px; font-size: 11px; text-align: center; }
+        .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; background: #f8fafc; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; }
+        .check-item { display: flex; align-items: center; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; }
+        .check-item input { margin-right: 8px; width: 16px; height: 16px; accent-color: #24a174; }
+        .btn-final { background-color: #24a174; border: none; border-radius: 15px; padding: 18px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 30px; font-size: 14px; transition: 0.3s; }
+        .btn-final:hover { background-color: #1d8661; transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <h2 class="text-center" style="font-weight: 800; color: #112d4e; margin-bottom: 40px;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h2>
+    <h3 class="text-center" style="font-weight: 800; color: #1e293b; margin-bottom: 30px;">PARTE 3: HÁBITOS Y ANTECEDENTES LABORALES</h3>
 
     <form id="formP3">
         <div class="section-title">I. HÁBITOS</div>
         <div class="row g-3">
-            <div class="col-md-4">
-                <div class="habito-card">
-                    <label class="form-label">FUMA</label>
-                    <select id="fuma" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="habito-card">
-                    <label class="form-label">ALCOHOL</label>
-                    <select id="alcohol" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="habito-card">
-                    <label class="form-label">DROGAS</label>
-                    <select id="drogas" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="habito-card">
-                    <label class="form-label">PIJCHAR (COCA)</label>
-                    <select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="habito-card">
-                    <label class="form-label">DEPORTES</label>
-                    <select id="deportes" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input type="text" id="deportes_detalle" class="form-control" placeholder="CUAL/FRECUENCIA">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="habito-card">
-                    <label class="form-label">GRUPO SANGUÍNEO</label>
-                    <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
-                </div>
-            </div>
+            <div class="col-md-4"><div class="habito-card"><label class="form-label">FUMA</label><select id="fuma" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD"></div></div>
+            <div class="col-md-4"><div class="habito-card"><label class="form-label">ALCOHOL</label><select id="alcohol" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA"></div></div>
+            <div class="col-md-4"><div class="habito-card"><label class="form-label">DROGAS</label><select id="drogas" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO"></div></div>
+            <div class="col-md-4"><div class="habito-card"><label class="form-label">PIJCHAR (COCA)</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div></div>
+            <div class="col-md-4"><div class="habito-card"><label class="form-label">DEPORTES</label><select id="deportes" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?"></div></div>
+            <div class="col-md-4"><div class="habito-card"><label class="form-label">GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+"></div></div>
         </div>
 
         <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
@@ -87,10 +52,10 @@
             <table class="table table-bordered align-middle">
                 <thead>
                     <tr>
-                        <th width="120">EDAD INICIO</th>
+                        <th width="100">EDAD INICIO</th>
                         <th>EMPRESA</th>
                         <th>OCUPACIÓN</th>
-                        <th width="120">TIEMPO (AÑOS)</th>
+                        <th width="100">TIEMPO (AÑOS)</th>
                         <th>RIESGOS</th>
                         <th width="100">EPP (SI/NO)</th>
                     </tr>
@@ -108,7 +73,7 @@
             </table>
         </div>
 
-        <div class="section-title">III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
+        <div class="section-title">III. RIESGOS EXPUESTOS</div>
         <div class="check-grid">
             <label class="check-item"><input type="checkbox" class="riesgo-check" value="RUIDO"> RUIDO</label>
             <label class="check-item"><input type="checkbox" class="riesgo-check" value="VIBRACIÓN"> VIBRACIÓN</label>
@@ -128,9 +93,11 @@
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     const PACIENTE_ID = localStorage.getItem('paciente_id');
 
-    // Forzar mayúsculas en tiempo real
-    document.querySelectorAll('input[type="text"]').forEach(input => {
-        input.addEventListener('input', () => { input.value = input.value.toUpperCase(); });
+    // Forzar mayúsculas en inputs de texto
+    document.addEventListener('input', (e) => {
+        if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
+            e.target.value = e.target.value.toUpperCase();
+        }
     });
 
     function addRow() {
@@ -143,29 +110,24 @@
             <td><select class="form-select" name="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
         </tr>`;
         document.getElementById('tablaLaboral').insertAdjacentHTML('beforeend', row);
-        
-        // Re-aplicar mayúsculas a la nueva fila
-        document.querySelectorAll('input[type="text"]').forEach(input => {
-            input.oninput = () => { input.value = input.value.toUpperCase(); };
-        });
     }
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnGuardar');
-        btn.innerText = "GUARDANDO..."; btn.disabled = true;
+        btn.innerText = "PROCESANDO ENVÍO..."; btn.disabled = true;
 
-        const historia_laboral = [];
+        const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
-            const inputs = tr.querySelectorAll('input, select');
-            if(inputs[1].value) { 
-                historia_laboral.push({
-                    edad_inicio: parseInt(inputs[0].value) || 0,
-                    empresa: inputs[1].value.toUpperCase(),
-                    ocupacion: inputs[2].value.toUpperCase(),
-                    tiempo_anios: parseInt(inputs[3].value) || 0,
-                    riesgos: inputs[4].value.toUpperCase() || "NINGUNO",
-                    epp: inputs[5].value
+            const ins = tr.querySelectorAll('input, select');
+            if(ins[1].value) { 
+                historia.push({
+                    edad_inicio: parseInt(ins[0].value) || 0,
+                    empresa: ins[1].value.toUpperCase(),
+                    ocupacion: ins[2].value.toUpperCase(),
+                    tiempo_anios: parseInt(ins[3].value) || 0,
+                    riesgos: ins[4].value.toUpperCase() || "NINGUNO",
+                    epp: ins[5].value
                 });
             }
         });
@@ -182,27 +144,27 @@
             deportes: document.getElementById('deportes').value,
             deportes_detalle: document.getElementById('deportes_detalle').value.toUpperCase() || "N/A",
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "N/A",
-            historia_laboral: historia_laboral,
+            historia_laboral: historia,
             riesgos_expuestos: Array.from(document.querySelectorAll('.riesgo-check:checked')).map(c => c.value)
         };
 
         try {
             const res = await fetch(`${API_BASE}/declaraciones/p3/`, {
                 method: 'POST',
+                mode: 'cors', // Forzar modo CORS
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("¡REGISTRO COMPLETADO EXITOSAMENTE!");
+                alert("¡REGISTRO EXITOSO! VOLVIENDO AL MENÚ.");
                 window.location.href = "index.html";
             } else {
-                const errorData = await res.json();
-                console.error("Error Servidor:", errorData);
-                alert("ERROR EN SERVIDOR (500): Verifique los datos enviados.");
+                const err = await res.json();
+                alert("ERROR SERVIDOR: " + JSON.stringify(err.detail));
             }
         } catch (error) {
-            alert("ERROR DE CONEXIÓN: NO SE PUDO ALCANZAR EL SERVIDOR");
+            alert("FALLO DE CONEXIÓN: El servidor en Render no responde o hay bloqueo de CORS.");
         } finally {
             btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾";
             btn.disabled = false;
