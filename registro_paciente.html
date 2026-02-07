@@ -15,7 +15,6 @@
         #codigo_contenedor { border: 2px dashed #d1eadd; border-radius: 18px; padding: 15px; margin-top: 20px; display: none; background-color: #f9fdfc; color: #24a174; font-weight: 800; font-size: 16px; letter-spacing: 1px; }
         .btn-registrar { background-color: #24a174; border: none; border-radius: 20px; padding: 18px; font-weight: 700; width: 100%; color: white; margin-top: 30px; box-shadow: 0 4px 15px rgba(36, 161, 116, 0.15); }
         .btn-consultar { background-color: transparent; border: none; padding: 15px; width: 100%; margin-top: 10px; color: #b0bac9; font-size: 11px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
-        .fecha-texto { color: #cbd5e1; font-size: 12px; font-weight: 700; margin-top: 5px; text-transform: uppercase; }
         #seccionLista { display: none; width: 100%; max-width: 450px; margin-top: 20px; background: white; padding: 30px; border-radius: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
         .paciente-fila { padding: 15px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
         .paciente-nombre { font-size: 13px; font-weight: 700; color: #1e293b; text-transform: uppercase; }
@@ -26,10 +25,9 @@
     <a href="index.html" class="btn-volver">— VOLVER AL MENÚ DE ENFERMERÍA</a>
 
     <div class="registro-container">
-        <div class="mb-2"><img src="https://cdn-icons-png.flaticon.com/512/1048/1048953.png" width="40" alt="icon"></div>
         <h2 style="font-weight:800; color:#1e293b; font-size: 22px; margin-bottom: 0;">REGISTRO DE PACIENTE</h2>
         <p style="color:#b0bac9; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 0;">MÓDULO DE ENFERMERÍA</p>
-        <p id="fechaActual" class="fecha-texto"></p>
+        <p id="fechaActual" class="text-muted small fw-bold mt-2"></p>
         
         <form id="formRegistro">
             <label class="form-label">NOMBRES</label>
@@ -38,7 +36,7 @@
             <input type="text" id="apellidos" class="form-control" required autocomplete="off">
             <label class="form-label">DOCUMENTO DE IDENTIDAD (CI)</label>
             <input type="text" id="ci" class="form-control" required autocomplete="off">
-            <div id="codigo_contenedor">CÓDIGO GENERADO: <span id="codigo_val"></span></div>
+            <div id="codigo_contenedor">CÓDIGO: <span id="codigo_val"></span></div>
             <button type="submit" id="btnRegistrar" class="btn-registrar">GUARDAR REGISTRO FINAL</button>
             <button type="button" id="btnConsultar" class="btn-consultar">CONSULTAR REGISTROS EN NUBE</button>
         </form>
@@ -52,21 +50,14 @@
 
     <script>
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
-        
-        document.getElementById('fechaActual').innerText = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        document.getElementById('fechaActual').innerText = new Date().toLocaleDateString();
 
-        const inN = document.getElementById('nombres'), 
-              inA = document.getElementById('apellidos'), 
-              inCI = document.getElementById('ci'), 
-              codCont = document.getElementById('codigo_contenedor'), 
-              codVal = document.getElementById('codigo_val');
+        const inN = document.getElementById('nombres'), inA = document.getElementById('apellidos'), inCI = document.getElementById('ci'), codCont = document.getElementById('codigo_contenedor'), codVal = document.getElementById('codigo_val');
 
         function genCod() {
             if(inN.value.trim() && inA.value.trim()) {
                 const initials = (inN.value[0] || "") + (inA.value[0] || "");
-                if(!codVal.innerText) {
-                    codVal.innerText = initials.toUpperCase() + Math.floor(1000 + Math.random() * 9000);
-                }
+                if(!codVal.innerText) codVal.innerText = initials.toUpperCase() + Math.floor(1000 + Math.random() * 9000);
                 codCont.style.display = 'block';
             }
         }
@@ -77,15 +68,9 @@
         document.getElementById('formRegistro').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btnRegistrar');
-            btn.innerText = "PROCESANDO...";
-            btn.disabled = true;
+            btn.innerText = "PROCESANDO..."; btn.disabled = true;
             
-            const payload = { 
-                nombres: inN.value.trim(), 
-                apellidos: inA.value.trim(), 
-                ci: inCI.value.trim(), 
-                codigo_paciente: codVal.innerText 
-            };
+            const payload = { nombres: inN.value.trim(), apellidos: inA.value.trim(), ci: inCI.value.trim(), codigo_paciente: codVal.innerText };
 
             try {
                 const res = await fetch(`${API_BASE}/pacientes/`, {
@@ -93,52 +78,28 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 if (res.ok) {
-                    const dataServer = await res.json();
-                    localStorage.setItem('paciente_id', dataServer.id); 
-                    localStorage.setItem('paciente_nombre', payload.nombres + " " + payload.apellidos);
-                    localStorage.setItem('paciente_ci', payload.ci);
-                    localStorage.setItem('paciente_codigo', payload.codigo_paciente);
-                    
+                    const data = await res.json();
+                    localStorage.setItem('paciente_id', data.id);
                     alert("¡PACIENTE REGISTRADO CORRECTAMENTE!");
-                    window.location.href = "declaracion_jurada_p1.html"; 
+                    window.location.href = "declaracion_jurada_p1.html";
                 } else {
-                    const errorData = await res.json();
-                    alert("ERROR DEL SERVIDOR: " + (errorData.detail || "Error desconocido"));
+                    const error = await res.json();
+                    alert("ERROR: " + JSON.stringify(error.detail));
                 }
-            } catch (error) { 
-                alert("ERROR DE RED: REINTENTE CON CTRL+F5"); 
-            } finally { 
-                btn.innerText = "GUARDAR REGISTRO FINAL"; 
-                btn.disabled = false;
-            }
+            } catch (error) { alert("ERROR DE CONEXIÓN AL SERVIDOR"); }
+            finally { btn.innerText = "GUARDAR REGISTRO FINAL"; btn.disabled = false; }
         };
 
         document.getElementById('btnConsultar').onclick = async () => {
-            const lista = document.getElementById('listaContenido'), 
-                  seccion = document.getElementById('seccionLista');
-            seccion.style.display = 'block';
-            lista.innerHTML = '<p class="text-muted small text-center">Buscando...</p>';
+            document.getElementById('seccionLista').style.display = 'block';
+            const lista = document.getElementById('listaContenido');
+            lista.innerHTML = 'BUSCANDO...';
             try {
-                // Se asegura el uso de la barra al final para evitar el error 405 en Render
                 const res = await fetch(`${API_BASE}/pacientes/`);
-                if (!res.ok) throw new Error("Error en respuesta");
                 const data = await res.json();
-                
-                if (!data || data.length === 0) {
-                    lista.innerHTML = '<p class="text-muted small text-center">NO HAY REGISTROS.</p>';
-                } else {
-                    lista.innerHTML = data.map(p => `
-                        <div class="paciente-fila">
-                            <span class="paciente-nombre">${p.nombres} ${p.apellidos}</span>
-                            <span class="paciente-id-box">${p.codigo_paciente}</span>
-                        </div>`).join('');
-                }
-            } catch (e) { 
-                console.error(e);
-                lista.innerHTML = '<p class="text-danger small text-center">ERROR AL CONECTAR CON LA NUBE.</p>';
-            }
+                lista.innerHTML = data.map(p => `<div class="paciente-fila"><span class="paciente-nombre">${p.nombres} ${p.apellidos}</span><span class="paciente-id-box">${p.codigo_paciente}</span></div>`).join('');
+            } catch (e) { lista.innerHTML = 'ERROR AL CARGAR'; }
         };
     </script>
 </body>
