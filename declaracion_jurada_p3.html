@@ -10,6 +10,8 @@
         .form-container { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; }
         .section-title { font-weight: 800; color: #1e293b; border-left: 5px solid #24a174; padding-left: 15px; margin: 30px 0 20px; text-transform: uppercase; font-size: 16px; }
         .form-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
+        
+        /* Inputs con forzado de MAYÚSCULAS */
         .form-control, .form-select { 
             border-radius: 12px; 
             background-color: #f8fafc; 
@@ -20,12 +22,23 @@
             font-size: 13px; 
             text-transform: uppercase; 
         }
-        .habito-card { background: #ffffff; border: 1px solid #f1f5f9; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
+
+        /* DISEÑO DE TABLA REPARADO: Sin barra larga, con divisiones claras en VERDE */
+        .table { border-collapse: separate; border-spacing: 0 10px; }
+        .table thead th { 
+            background-color: #24a174; 
+            color: white; 
+            text-transform: uppercase; 
+            font-size: 11px; 
+            padding: 15px; 
+            border: none;
+            text-align: center;
+        }
+        .table thead th:first-child { border-radius: 10px 0 0 10px; }
+        .table thead th:last-child { border-radius: 0 10px 10px 0; }
+        .table tbody td { background: white; border: none; padding: 10px; }
+
         .btn-add { background-color: #1e293b; border: none; border-radius: 10px; padding: 8px 18px; color: white; font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 15px; }
-        
-        /* Ajuste de color en cabecera de tabla a VERDE según solicitud */
-        .table thead th { background: #24a174; color: white; border: none; font-weight: 700; text-transform: uppercase; padding: 12px; font-size: 11px; text-align: center; }
-        
         .check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; background: #f8fafc; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; }
         .check-item { display: flex; align-items: center; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; }
         .check-item input { margin-right: 8px; width: 16px; height: 16px; accent-color: #24a174; }
@@ -40,34 +53,56 @@
     <form id="formP3">
         <div class="section-title">I. HÁBITOS</div>
         <div class="row g-3">
-            <div class="col-md-4"><div class="habito-card"><label class="form-label">FUMA</label><select id="fuma" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD"></div></div>
-            <div class="col-md-4"><div class="habito-card"><label class="form-label">ALCOHOL</label><select id="alcohol" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA"></div></div>
-            <div class="col-md-4"><div class="habito-card"><label class="form-label">DROGAS</label><select id="drogas" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO"></div></div>
-            <div class="col-md-4"><div class="habito-card"><label class="form-label">PIJCHAR (COCA)</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div></div>
-            <div class="col-md-4"><div class="habito-card"><label class="form-label">DEPORTES</label><select id="deportes" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select><input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?"></div></div>
-            <div class="col-md-4"><div class="habito-card"><label class="form-label">GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+"></div></div>
+            <div class="col-md-4">
+                <label class="form-label">FUMA</label>
+                <select id="fuma" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="fuma_detalle" class="form-control" placeholder="CANTIDAD">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">ALCOHOL</label>
+                <select id="alcohol" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="alcohol_detalle" class="form-control" placeholder="FRECUENCIA">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">DROGAS</label>
+                <select id="drogas" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="drogas_detalle" class="form-control" placeholder="TIPO">
+            </div>
+            <div class="col-md-4 mt-3">
+                <label class="form-label">PIJCHAR (COCA)</label>
+                <select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+            </div>
+            <div class="col-md-4 mt-3">
+                <label class="form-label">DEPORTES</label>
+                <select id="deportes" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?">
+            </div>
+            <div class="col-md-4 mt-3">
+                <label class="form-label">GRUPO SANGUÍNEO</label>
+                <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+">
+            </div>
         </div>
 
-        <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
+        <div class="section-title">II. HISTORIA LABORAL</div>
         <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
         <div class="table-responsive">
-            <table class="table table-bordered align-middle">
+            <table class="table align-middle">
                 <thead>
                     <tr>
-                        <th width="100">EDAD INICIO</th>
+                        <th width="120">EDAD INICIO</th>
                         <th>EMPRESA</th>
                         <th>OCUPACIÓN</th>
-                        <th width="100">TIEMPO (AÑOS)</th>
+                        <th width="120">TIEMPO (AÑOS)</th>
                         <th>RIESGOS</th>
-                        <th width="100">EPP (SI/NO)</th>
+                        <th width="120">EPP (SI/NO)</th>
                     </tr>
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td><input type="number" class="form-control" name="edad" value="0"></td>
-                        <td><input type="text" class="form-control" name="empresa"></td>
-                        <td><input type="text" class="form-control" name="ocupacion"></td>
-                        <td><input type="number" class="form-control" name="tiempo" value="0"></td>
+                        <td><input type="number" class="form-control" name="edad_inicio" required></td>
+                        <td><input type="text" class="form-control" name="empresa" required></td>
+                        <td><input type="text" class="form-control" name="ocupacion" required></td>
+                        <td><input type="number" class="form-control" name="tiempo_anios" required></td>
                         <td><input type="text" class="form-control" name="riesgos"></td>
                         <td><select class="form-select" name="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
                     </tr>
@@ -95,7 +130,6 @@
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     const PACIENTE_ID = localStorage.getItem('paciente_id');
 
-    // Forzar Mayúsculas
     document.addEventListener('input', (e) => {
         if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
             e.target.value = e.target.value.toUpperCase();
@@ -104,10 +138,10 @@
 
     function addRow() {
         const row = `<tr>
-            <td><input type="number" class="form-control" name="edad" value="0"></td>
-            <td><input type="text" class="form-control" name="empresa"></td>
-            <td><input type="text" class="form-control" name="ocupacion"></td>
-            <td><input type="number" class="form-control" name="tiempo" value="0"></td>
+            <td><input type="number" class="form-control" name="edad_inicio" required></td>
+            <td><input type="text" class="form-control" name="empresa" required></td>
+            <td><input type="text" class="form-control" name="ocupacion" required></td>
+            <td><input type="number" class="form-control" name="tiempo_anios" required></td>
             <td><input type="text" class="form-control" name="riesgos"></td>
             <td><select class="form-select" name="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
         </tr>`;
@@ -121,15 +155,21 @@
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
-            const ins = tr.querySelectorAll('input, select');
-            if(ins[1].value.trim() !== "") { 
+            const edad = tr.querySelector('[name="edad_inicio"]').value;
+            const empresa = tr.querySelector('[name="empresa"]').value;
+            const ocupacion = tr.querySelector('[name="ocupacion"]').value;
+            const tiempo = tr.querySelector('[name="tiempo_anios"]').value;
+            const riesgos = tr.querySelector('[name="riesgos"]').value;
+            const epp = tr.querySelector('[name="epp"]').value;
+
+            if(empresa.trim() !== "") {
                 historia.push({
-                    edad_inicio: parseInt(ins[0].value) || 0,
-                    empresa: ins[1].value.toUpperCase(),
-                    ocupacion: ins[2].value.toUpperCase(),
-                    tiempo_anios: parseInt(ins[3].value) || 0,
-                    riesgos: ins[4].value.toUpperCase() || "NINGUNO",
-                    epp: ins[5].value
+                    edad_inicio: parseInt(edad),
+                    empresa: empresa.toUpperCase(),
+                    ocupacion: ocupacion.toUpperCase(),
+                    tiempo_anios: parseInt(tiempo),
+                    riesgos: riesgos.toUpperCase() || "NINGUNO",
+                    epp: epp
                 });
             }
         });
@@ -158,12 +198,11 @@
             });
 
             if (res.ok) {
-                alert("¡REGISTRO FINALIZADO CON ÉXITO!");
+                alert("¡REGISTRO COMPLETADO!");
                 window.location.href = "index.html";
             } else {
                 const err = await res.json();
-                console.error(err);
-                alert("ERROR 500: Verifique que la tabla laboral tenga EDAD y TIEMPO como números.");
+                alert("ERROR EN SERVIDOR (500): Verifique los datos enviados.");
             }
         } catch (error) {
             alert("ERROR DE RED: No se pudo conectar con el servidor.");
