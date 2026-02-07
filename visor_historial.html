@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | Visor Final Sincronizado</title>
+    <title>HC NUBE | Visor Sincronizado V3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -17,7 +17,7 @@
         <button onclick="location.href='index.html'" class="text-[10px] uppercase tracking-widest text-slate-500 hover:text-white transition-colors">← Volver</button>
         <div class="text-right">
             <h2 class="text-xl font-black uppercase text-white tracking-tighter italic">Visor de Historial</h2>
-            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Sección I (14 Campos) + Sincronización SI/NO</p>
+            <p class="text-[8px] text-emerald-500 uppercase tracking-widest">Sincronización Sección IV y SI/NO</p>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
                 <span id="resCodigo" class="px-4 py-1 bg-emerald-500/10 border border-emerald-500/50 rounded-full text-emerald-400 text-[10px] font-black mt-2">---</span>
             </div>
             <button onclick="generarVistaPrevia()" class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-[9px] font-bold uppercase tracking-widest text-white shadow-xl shadow-emerald-900/20 transition-all">
-                👁️ Generar Formulario 22 Sistemas
+                👁️ Generar Formulario Sincronizado
             </button>
         </div>
     </div>
@@ -68,12 +68,11 @@
             const res = await fetch(`${API_BASE}/historial-completo/${pacienteIdActual}`);
             const d = await res.json();
 
-            // FUNCIÓN DE DETECCIÓN INFALIBLE DE "SI"
-            const esPositivo = (valor) => {
-                if (!valor) return false;
-                const v = String(valor).trim().toUpperCase();
-                // Si contiene "SI", "SÍ", o no es ninguno de los valores negativos estándar
-                return (v.includes("SI") || v.includes("SÍ") || (v !== "NO" && v !== "N/A" && v !== "NORMAL" && v !== "NINGUNO" && v !== "---" && v !== ""));
+            // DETECTOR DE SI/NO MEJORADO (Elimina el error de minúsculas y espacios)
+            const esSi = (val) => {
+                if (!val) return false;
+                const v = String(val).trim().toUpperCase();
+                return (v.startsWith("SI") || v.startsWith("SÍ") || (v !== "NO" && v !== "N/A" && v !== "NORMAL" && v !== "NINGUNO" && v !== ""));
             };
 
             const drawHeader = (pdf) => {
@@ -83,24 +82,24 @@
                 pdf.setLineWidth(0.4); pdf.line(15, 25, 195, 25);
             };
 
-            // --- SECCIÓN I: 14 CAMPOS DE FILIACIÓN ---
+            // HOJA 1 - FILIACIÓN (14 CAMPOS)
             drawHeader(doc);
             doc.autoTable({
                 startY: 28,
                 head: [[{content: 'I. AFILIACIÓN DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' } }]],
                 body: [
-                    [{content: '1. NOMBRES', styles: {fontStyle: 'bold'}}, d.paciente.nombres.toUpperCase(), {content: '2. APELLIDOS', styles: {fontStyle: 'bold'}}, d.paciente.apellidos.toUpperCase()],
-                    [{content: '3. EDAD', styles: {fontStyle: 'bold'}}, String(d.filiacion?.edad || '').toUpperCase(), {content: '4. SEXO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.sexo || '').toUpperCase()],
-                    [{content: '5. C.I.', styles: {fontStyle: 'bold'}}, String(d.paciente.ci || '').toUpperCase(), {content: '6. ESTADO CIVIL', styles: {fontStyle: 'bold'}}, String(d.filiacion?.estado_civil || '').toUpperCase()],
-                    [{content: '7. FECHA NAC.', styles: {fontStyle: 'bold'}}, String(d.filiacion?.fecha_nacimiento || '').toUpperCase(), {content: '8. LUGAR NAC.', styles: {fontStyle: 'bold'}}, String(d.filiacion?.lugar_nacimiento || '').toUpperCase()],
-                    [{content: '9. PROFESIÓN', styles: {fontStyle: 'bold'}}, String(d.filiacion?.profesion_oficio || '').toUpperCase(), {content: '10. TELÉFONO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.telefono || '').toUpperCase()],
-                    [{content: '11. DOMICILIO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.domicilio || '').toUpperCase(), {content: '12. CIUDAD', styles: {fontStyle: 'bold'}}, String(d.filiacion?.ciudad || '').toUpperCase()],
-                    [{content: '13. PAÍS', styles: {fontStyle: 'bold'}}, String(d.filiacion?.pais || '').toUpperCase(), {content: '14. EMAIL', styles: {fontStyle: 'bold'}}, String(d.paciente.email || 'N/A').toUpperCase()]
+                    [{content: 'NOMBRES', styles: {fontStyle: 'bold'}}, d.paciente.nombres.toUpperCase(), {content: 'APELLIDOS', styles: {fontStyle: 'bold'}}, d.paciente.apellidos.toUpperCase()],
+                    [{content: 'EDAD', styles: {fontStyle: 'bold'}}, String(d.filiacion?.edad || '---').toUpperCase(), {content: 'SEXO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.sexo || '---').toUpperCase()],
+                    [{content: 'C.I.', styles: {fontStyle: 'bold'}}, String(d.paciente.ci || '---').toUpperCase(), {content: 'ESTADO CIVIL', styles: {fontStyle: 'bold'}}, String(d.filiacion?.estado_civil || '---').toUpperCase()],
+                    [{content: 'FECHA NAC.', styles: {fontStyle: 'bold'}}, String(d.filiacion?.fecha_nacimiento || '---').toUpperCase(), {content: 'LUGAR NAC.', styles: {fontStyle: 'bold'}}, String(d.filiacion?.lugar_nacimiento || '---').toUpperCase()],
+                    [{content: 'PROFESIÓN', styles: {fontStyle: 'bold'}}, String(d.filiacion?.profesion_oficio || '---').toUpperCase(), {content: 'TELÉFONO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.telefono || '---').toUpperCase()],
+                    [{content: 'DOMICILIO', styles: {fontStyle: 'bold'}}, String(d.filiacion?.domicilio || '---').toUpperCase(), {content: 'CIUDAD', styles: {fontStyle: 'bold'}}, String(d.filiacion?.ciudad || '---').toUpperCase()],
+                    [{content: 'PAÍS', styles: {fontStyle: 'bold'}}, String(d.filiacion?.pais || '---').toUpperCase(), {content: 'EMAIL', styles: {fontStyle: 'bold'}}, String(d.paciente.email || 'N/A').toUpperCase()]
                 ],
                 theme: 'grid', styles: { fontSize: 7, cellPadding: 1.2 }
             });
 
-            // --- SECCIÓN II: 22 SISTEMAS (HOJA 1) ---
+            // SECCIÓN II: 22 SISTEMAS
             const mapaSistemas = [
                 { et: 'VISTA', sub: 'GLAUCOMA, MIOPÍA', dato: d.antecedentes?.vista },
                 { et: 'AUDITIVO', sub: 'SORDERA, OTITIS', dato: d.antecedentes?.auditivo },
@@ -127,7 +126,7 @@
             ];
 
             const bodySistemas = mapaSistemas.map(s => {
-                const positivo = esPositivo(s.dato);
+                const positivo = esSi(s.dato);
                 return [
                     { content: `${s.et}\n${s.sub}`, styles: { fontStyle: 'bold' } },
                     positivo ? 'X' : '', 
@@ -143,30 +142,34 @@
                 theme: 'grid', styles: { fontSize: 6, cellPadding: 0.8 }
             });
 
-            // --- HOJA 2 ---
+            // HOJA 2
             doc.addPage();
             drawHeader(doc);
 
-            // SECCIÓN III: HÁBITOS
+            // SECCIÓN III: HÁBITOS (Sincronizado)
             doc.autoTable({
                 startY: 28,
                 head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' }}]],
                 body: [
-                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, esPositivo(d.habitos?.alcohol_si_no) ? 'SI' : 'NO', {content: 'TABACO', styles: {fontStyle: 'bold'}}, esPositivo(d.habitos?.fuma_si_no) ? 'SI' : 'NO'],
-                    [{content: 'DROGAS / PIJCHAR', styles: {fontStyle: 'bold'}}, esPositivo(d.habitos?.pijchar_si_no) ? 'SI' : 'NO', {content: 'OTROS', styles: {fontStyle: 'bold'}}, 'N/A']
+                    [{content: 'ALCOHOL', styles: {fontStyle: 'bold'}}, esSi(d.habitos?.alcohol_si_no) ? 'SI' : 'NO', {content: 'TABACO', styles: {fontStyle: 'bold'}}, esSi(d.habitos?.fuma_si_no) ? 'SI' : 'NO'],
+                    [{content: 'DROGAS / PIJCHAR', styles: {fontStyle: 'bold'}}, esSi(d.habitos?.pijchar_si_no) ? 'SI' : 'NO', {content: 'OTROS', styles: {fontStyle: 'bold'}}, 'N/A']
                 ],
                 theme: 'grid', styles: { fontSize: 8 }
             });
 
-            // SECCIÓN IV: HISTORIA LABORAL (LIMPIA SIN ARRASTRE)
-            const hLab = d.habitos?.historia_laboral || "EDAD:--- | EMPRESA:--- | CARGO:--- | TIEMPO:---";
-            const hPartes = hLab.split('|').map(p => p.split(':')[1]?.trim() || '---');
+            // SECCIÓN IV: HISTORIA LABORAL (Extracción limpia)
+            const hlRaw = d.habitos?.historia_laboral || "";
+            const hPartes = hlRaw.includes('|') ? hlRaw.split('|').map(p => p.split(':')[1]?.trim() || '---') : ['---','---','---','---'];
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
                 head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)', colSpan: 6, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [[
-                    hPartes[0].toUpperCase(), hPartes[1].toUpperCase(), hPartes[2].toUpperCase(), hPartes[3].toUpperCase(), 'N/A', 'SI'
+                    String(hPartes[0]).toUpperCase(), 
+                    String(hPartes[1]).toUpperCase(), 
+                    String(hPartes[2]).toUpperCase(), 
+                    String(hPartes[3]).toUpperCase(), 
+                    'N/A', 'SI'
                 ]],
                 theme: 'grid', styles: { fontSize: 7.5 }
             });
@@ -177,13 +180,13 @@
                 head: [[{content: 'V. ANTECEDENTES DE RIESGOS EXPUESTOS', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [
                     [{content: 'QUÍMICOS:', styles: {fontStyle: 'bold', width: 45}}, String(d.habitos?.riesgos_vida_laboral || 'NINGUNO').toUpperCase()],
-                    [{content: 'OBSERVACIONES:', styles: {fontStyle: 'bold'}}, 'INFORMACIÓN VERÍDICA Y ACTUALIZADA.']
+                    [{content: 'OBSERVACIONES:', styles: {fontStyle: 'bold'}}, 'DECLARACIÓN JURADA DE SALUD.']
                 ],
                 theme: 'grid', styles: { fontSize: 8, cellPadding: 2.5 }
             });
 
             doc.setFontSize(8); doc.setFont(undefined, 'bold');
-            doc.text(`EMITIDO: ${new Date().toLocaleDateString().toUpperCase()}`, 15, doc.lastAutoTable.finalY + 15);
+            doc.text(`FECHA: ${new Date().toLocaleDateString().toUpperCase()}`, 15, doc.lastAutoTable.finalY + 15);
             doc.text("FIRMA TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 15, { align: "right" });
 
             window.open(URL.createObjectURL(doc.output('blob')), '_blank');
