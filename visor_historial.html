@@ -8,25 +8,25 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="bg-slate-950 text-white p-6">
+<body class="bg-[#050a15] text-white p-6 font-sans">
 
-    <div class="max-w-xl mx-auto space-y-6">
-        <div class="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-2xl">
-            <h2 class="text-center text-xl font-bold mb-6 tracking-widest">BUSCADOR DE HISTORIALES</h2>
+    <div class="max-w-xl mx-auto space-y-4">
+        <div class="bg-[#0f172a] p-8 rounded-2xl border border-slate-800 shadow-2xl text-center">
+            <h2 class="text-xl font-black mb-6 tracking-tighter italic uppercase">Buscador de Historiales</h2>
             <div class="flex gap-2">
-                <input type="text" id="codigoBusqueda" placeholder="CÓDIGO PACIENTE" 
-                    class="flex-1 bg-slate-950 border border-slate-700 rounded-xl py-4 px-6 text-center text-blue-400 font-bold uppercase">
+                <input type="text" id="codigoBusqueda" placeholder="CÓDIGO (Ej: RA3372)" 
+                    class="flex-1 bg-slate-900 border border-slate-700 rounded-xl py-4 px-6 text-center text-blue-400 font-bold uppercase focus:border-blue-500 outline-none">
                 <button onclick="buscarPaciente()" class="bg-blue-600 hover:bg-blue-500 px-8 rounded-xl font-bold transition-all">BUSCAR</button>
             </div>
         </div>
 
-        <div id="resultadoVisor" class="hidden bg-slate-900 p-8 rounded-3xl border border-slate-800 text-center animate-pulse">
-            <div class="mb-4">
-                <p class="text-xs text-slate-500 uppercase tracking-widest">Paciente Encontrado</p>
-                <h3 id="resNombre" class="text-2xl font-black text-white mt-1">---</h3>
-                <span id="resCodigo" class="inline-block bg-blue-500/10 text-blue-400 border border-blue-500/20 px-4 py-1 rounded-full text-xs font-bold mt-2">---</span>
+        <div id="resultadoVisor" class="hidden bg-[#0f172a] p-8 rounded-2xl border border-emerald-900/30 text-center">
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-emerald-500 text-2xl">👤</div>
+                <h3 id="resNombre" class="text-2xl font-black text-white uppercase tracking-tight">---</h3>
+                <p id="resCodigo" class="text-blue-400 font-bold text-sm tracking-widest mt-1">---</p>
             </div>
-            <button onclick="generarVistaPrevia()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-black uppercase tracking-tighter transition-all">
+            <button onclick="generarVistaPrevia()" class="w-full bg-emerald-600 hover:bg-emerald-500 py-4 rounded-xl font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-900/20">
                 GENERAR PDF PROFESIONAL
             </button>
         </div>
@@ -34,12 +34,11 @@
 
     <script>
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
-        let datosPacienteActual = null; // Variable única de control
+        let d = null; // Purga inicial de buffer
 
-        // 1. LIMPIEZA TOTAL AL BUSCAR
         async function buscarPaciente() {
-            // Reset de seguridad
-            datosPacienteActual = null;
+            // LIMPIEZA TOTAL ANTES DE EMPEZAR
+            d = null; 
             document.getElementById('resultadoVisor').classList.add('hidden');
             
             const codigo = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
@@ -52,55 +51,51 @@
                 
                 if (p) {
                     const resFull = await fetch(`${API_BASE}/historial-completo/${p.id}`);
-                    datosPacienteActual = await resFull.json();
+                    d = await resFull.json(); // Carga de datos nuevos
                     
-                    document.getElementById('resNombre').textContent = `${datosPacienteActual.paciente.nombres} ${datosPacienteActual.paciente.apellidos}`.toUpperCase();
-                    document.getElementById('resCodigo').textContent = datosPacienteActual.paciente.codigo_paciente.toUpperCase();
+                    document.getElementById('resNombre').textContent = `${d.paciente.nombres} ${d.paciente.apellidos}`.toUpperCase();
+                    document.getElementById('resCodigo').textContent = d.paciente.codigo_paciente.toUpperCase();
                     document.getElementById('resultadoVisor').classList.remove('hidden');
                 } else {
-                    alert("Paciente no encontrado");
+                    alert("PACIENTE NO REGISTRADO");
                 }
-            } catch (e) { alert("Error de conexión con el servidor"); }
+            } catch (e) { alert("ERROR DE CONEXIÓN CON EL SERVIDOR"); }
         }
 
         async function generarVistaPrevia() {
-            if (!datosPacienteActual) return;
+            if (!d) return;
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
-            const d = datosPacienteActual; // Alias para el registro actual
 
-            // DETECCIÓN DE "SI" REFORZADA: Solo si el texto es distinto a los negativos conocidos
-            const checkSi = (val) => {
-                if (!val) return false;
-                const v = String(val).trim().toUpperCase();
-                const negativos = ["NO", "N/A", "NORMAL", "NINGUNO", "SIN RIESGOS", "---", "NORMAL.", ""];
+            // LÓGICA DE DETECCIÓN "SI": Ignora explícitamente los valores negativos o vacíos
+            const esPositivo = (valor) => {
+                if (!valor) return false;
+                const v = String(valor).trim().toUpperCase();
+                const negativos = ["NO", "NORMAL", "N/A", "NINGUNO", "SIN RIESGOS", "---", "NORMAL.", ""];
                 return !negativos.includes(v);
             };
 
-            const drawHeader = (pdf) => {
-                pdf.setFontSize(14); pdf.setFont(undefined, 'bold');
-                pdf.text("DECLARACIÓN JURADA DE SALUD - HISTORIAL CLÍNICO", 105, 18, { align: "center" });
-                pdf.setLineWidth(0.5); pdf.line(15, 22, 195, 22);
-            };
+            // SECCIÓN I: AFILIACIÓN (Sin números, estructura limpia)
+            doc.setFontSize(14); doc.setFont(undefined, 'bold');
+            doc.text("DECLARACION JURADA DE SALUD", 105, 15, { align: "center" });
+            doc.setLineWidth(0.4); doc.line(15, 20, 195, 20);
 
-            // HOJA 1: FILIACIÓN (14 CAMPOS)
-            drawHeader(doc);
             doc.autoTable({
-                startY: 25,
-                head: [[{content: 'I. DATOS DE FILIACIÓN', colSpan: 4, styles: {fillColor: [50, 50, 50]}}]],
+                startY: 23,
+                head: [[{content: 'I. AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
                 body: [
-                    ['NOMBRES:', d.paciente.nombres.toUpperCase(), 'C.I.:', String(d.paciente.ci || '---')],
-                    ['EDAD:', String(d.filiacion?.edad || '---'), 'SEXO:', String(d.filiacion?.sexo || '---').toUpperCase()],
-                    ['PROFESIÓN:', String(d.filiacion?.profesion_oficio || '---').toUpperCase(), 'TELÉFONO:', String(d.filiacion?.telefono || '---')],
-                    ['FECHA NAC:', String(d.filiacion?.fecha_nacimiento || '---'), 'LUGAR NAC:', String(d.filiacion?.lugar_nacimiento || '---').toUpperCase()],
-                    ['DOMICILIO:', String(d.filiacion?.domicilio || '---').toUpperCase(), 'CIUDAD:', String(d.filiacion?.ciudad || '---').toUpperCase()],
-                    ['PAÍS:', String(d.filiacion?.pais || '---').toUpperCase(), 'EMAIL:', String(d.paciente.email || 'N/A').toUpperCase()]
+                    ['APELLIDOS Y NOMBRES', `${d.paciente.apellidos} ${d.paciente.nombres}`.toUpperCase(), '', ''],
+                    ['EDAD', String(d.filiacion?.edad || '---'), 'SEXO', String(d.filiacion?.sexo || '---').toUpperCase()],
+                    ['FECHA NACIMIENTO', String(d.filiacion?.fecha_nacimiento || '---'), 'LUGAR', String(d.filiacion?.lugar_nacimiento || '---').toUpperCase()],
+                    ['C.I.', String(d.paciente.ci || '---'), 'ESTADO CIVIL', String(d.filiacion?.estado_civil || '---').toUpperCase()],
+                    ['DOMICILIO', String(d.filiacion?.domicilio || '---').toUpperCase(), 'CIUDAD / PAÍS', `${d.filiacion?.ciudad || '---'} / ${d.filiacion?.pais || '---'}`.toUpperCase()],
+                    ['TELÉFONO', String(d.filiacion?.telefono || '---'), 'PROFESIÓN / LABOR', String(d.filiacion?.profesion_oficio || '---').toUpperCase()]
                 ],
-                theme: 'grid', styles: { fontSize: 7.5 }
+                theme: 'grid', styles: { fontSize: 7.5, cellPadding: 1.5 }
             });
 
-            // II. SISTEMAS (22 CAMPOS CON DETECCIÓN SI/NO)
-            const mapSist = [
+            // SECCIÓN II: SISTEMAS (22 FILAS)
+            const sistemas = [
                 { n: 'VISTA', v: d.antecedentes?.vista }, { n: 'AUDITIVO', v: d.antecedentes?.auditivo },
                 { n: 'RESPIRATORIO', v: d.antecedentes?.respiratorio }, { n: 'CARDIO-VASCULARES', v: d.antecedentes?.cardio },
                 { n: 'ESTÓMAGO/HÍGADO', v: d.antecedentes?.estomago }, { n: 'SANGRE', v: d.antecedentes?.sangre },
@@ -109,55 +104,69 @@
                 { n: 'ENDOCRINOLÓGICOS', v: d.antecedentes?.endocrino }, { n: 'REUMATOLÓGICOS', v: d.antecedentes?.reumato },
                 { n: 'GENERALES', v: d.antecedentes?.generales }, { n: 'DERMATOLÓGICAS', v: d.antecedentes?.dermato },
                 { n: 'ALERGIA', v: d.habitos?.alergias_detalle }, { n: 'INFECCIONES', v: d.antecedentes?.infecciones },
-                { n: 'CIRUGÍAS', v: d.antecedentes?.cirugias }, { n: 'ACCIDENTES TRABAJO', v: d.habitos?.accidentes_detalle },
+                { n: 'CIRUGÍAS', v: d.antecedentes?.cirugias }, { n: 'ACCIDENTES DE TRABAJO', v: d.habitos?.accidentes_detalle },
                 { n: 'ACCIDENTES PERS.', v: d.antecedentes?.accidentes_p }, { n: 'MEDICAMENTOS', v: d.habitos?.medicamentos_detalle },
                 { n: 'GRUPO SANGUÍNEO', v: d.habitos?.grupo_sanguineo }, { n: 'DEPORTES', v: d.habitos?.deportes_detalle }
             ];
 
-            const bodySist = mapSist.map(s => {
-                const esSi = checkSi(s.v);
-                return [s.n, esSi ? 'X' : '', esSi ? '' : 'X', esSi ? String(s.v).toUpperCase() : 'NORMAL'];
+            const bodySist = sistemas.map(s => {
+                const pos = esPositivo(s.v);
+                return [s.n, pos ? 'X' : '', pos ? '' : 'X', pos ? String(s.v).toUpperCase() : 'NORMAL'];
             });
 
             doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'II. SISTEMAS / RIESGOS', styles: {fillColor: [0, 168, 120]}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
+                startY: doc.lastAutoTable.finalY + 4,
+                head: [[{content: 'II. SISTEMA / ANTECEDENTES Y RIESGOS', styles: {fillColor: [0, 180, 140]}}, 'SI', 'NO', 'OBSERVACIONES / DETALLES']],
                 body: bodySist,
-                theme: 'grid', styles: { fontSize: 6.5 }
+                theme: 'grid', styles: { fontSize: 6.5, cellPadding: 1 }
             });
 
-            // III. HISTORIA LABORAL (LIMPIEZA DE PIPE '|')
-            const hl = d.habitos?.historia_laboral || "";
-            let p1 = '---', p2 = '---', p3 = '---', p4 = '---';
-            if(hl.includes('|')) {
-                const partes = hl.split('|');
-                p1 = partes[0]?.split(':')[1]?.trim() || '---';
-                p2 = partes[1]?.split(':')[1]?.trim() || '---';
-                p3 = partes[2]?.split(':')[1]?.trim() || '---';
-                p4 = partes[3]?.split(':')[1]?.trim() || '---';
-            }
+            // HOJA 2
+            doc.addPage();
+            doc.text("DECLARACION JURADA DE SALUD", 105, 15, { align: "center" });
 
+            // SECCIÓN III: HÁBITOS
             doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES', colSpan: 4, styles: {fillColor: [50, 50, 50]}}]],
-                body: [['EMPRESA:', p2.toUpperCase(), 'CARGO:', p3.toUpperCase()], ['TIEMPO:', p4.toUpperCase(), 'RIESGOS:', 'SI']],
-                theme: 'grid', styles: { fontSize: 8 }
-            });
-
-            // IV. RIESGOS EXPUESTOS
-            doc.autoTable({
-                startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'V. RIESGOS EN VIDA LABORAL', colSpan: 2, styles: {fillColor: [0, 168, 120]}}]],
+                startY: 23,
+                head: [[{content: 'III. HÁBITOS Y VIDA PERSONAL', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
                 body: [
-                    ['QUÍMICOS:', String(d.habitos?.riesgos_vida_laboral || 'NINGUNO').toUpperCase()],
-                    ['OBSERVACIONES:', 'DECLARACIÓN JURADA FINAL.']
+                    ['ALCOHOL', String(d.habitos?.alcohol_si_no || 'NO').toUpperCase(), 'TABACO', String(d.habitos?.fuma_si_no || 'NO').toUpperCase()],
+                    ['DROGAS / PIJCHAR', String(d.habitos?.pijchar_si_no || 'NO').toUpperCase(), 'OTROS', 'N/A']
                 ],
                 theme: 'grid', styles: { fontSize: 8 }
             });
 
-            doc.setFontSize(8);
-            doc.text(`FECHA EMISIÓN: ${new Date().toLocaleDateString()}`, 15, doc.lastAutoTable.finalY + 10);
-            doc.text("FIRMA TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 10, { align: "right" });
+            // SECCIÓN IV: HISTORIA LABORAL (Extracción segura sin repetir "Senado")
+            const hl = d.habitos?.historia_laboral || "";
+            let emp = '---', carg = '---', tiemp = '---';
+            if(hl.includes('|')) {
+                const parts = hl.split('|');
+                emp = parts[1]?.split(':')[1]?.trim() || '---';
+                carg = parts[2]?.split(':')[1]?.trim() || '---';
+                tiemp = parts[3]?.split(':')[1]?.trim() || '---';
+            }
+
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 5,
+                head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL)', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                body: [['EMPRESA', emp.toUpperCase(), 'CARGO', carg.toUpperCase()], ['TIEMPO', tiemp.toUpperCase(), 'RIESGOS', 'SI']],
+                theme: 'grid', styles: { fontSize: 8 }
+            });
+
+            // SECCIÓN V: RIESGOS EXPUESTOS
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 5,
+                head: [[{content: 'V. ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE LA VIDA LABORAL', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                body: [
+                    ['QUÍMICOS:', String(d.habitos?.riesgos_vida_laboral || 'NINGUNO').toUpperCase()],
+                    ['OBSERVACIONES:', 'DECLARO QUE LA INFORMACIÓN PROPORCIONADA ES VERÍDICA Y ACTUALIZADA.']
+                ],
+                theme: 'grid', styles: { fontSize: 8 }
+            });
+
+            doc.setFontSize(9);
+            doc.text(`FECHA DE EMISIÓN: ${new Date().toLocaleDateString()}`, 15, doc.lastAutoTable.finalY + 15);
+            doc.text("FIRMA DEL TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 15, { align: "right" });
 
             window.open(URL.createObjectURL(doc.output('blob')), '_blank');
         }
