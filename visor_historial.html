@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISOR HC NUBE | CORRECCIÓN FINAL</title>
+    <title>VISOR HC NUBE | CORRECCIÓN PDF NEGRITA Y LOGO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
@@ -31,70 +31,85 @@
 
     <script>
         const API_BASE = 'https://historial-clinico-936s.onrender.com';
-        let d = null; // VARIABLE GLOBAL ÚNICA
+        let d = null; 
+
+        // Función para convertir imagen a Base64 para jsPDF
+        function getBase64Image(url) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.setAttribute('crossOrigin', 'anonymous');
+                img.onload = () => {
+                    const canvas = document.createElement("canvas");
+                    canvas.width = img.width; canvas.height = img.height;
+                    const ctx = canvas.getContext("2d");
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL("image/png"));
+                };
+                img.onerror = error => reject(error);
+                img.src = url;
+            });
+        }
 
         async function buscarPaciente() {
-            // 1. PURGA INMEDIATA DE DATOS ANTERIORES
             d = null; 
             document.getElementById('resultadoVisor').classList.add('hidden');
-            
             const codigo = document.getElementById('codigoBusqueda').value.trim().toUpperCase();
             if (!codigo) return;
-
             try {
-                // Forzar limpieza de caché en la petición
                 const response = await fetch(`${API_BASE}/pacientes/?t=${new Date().getTime()}`);
                 const pacientes = await response.json();
                 const p = pacientes.find(x => x.codigo_paciente.toUpperCase() === codigo);
-                
                 if (p) {
                     const resFull = await fetch(`${API_BASE}/historial-completo/${p.id}?t=${new Date().getTime()}`);
                     d = await resFull.json();
-                    
-                    // Solo si d tiene datos, mostramos el visor
                     document.getElementById('resNombre').textContent = `${d.paciente.nombres} ${d.paciente.apellidos}`.toUpperCase();
                     document.getElementById('resCodigo').textContent = d.paciente.codigo_paciente.toUpperCase();
                     document.getElementById('resultadoVisor').classList.remove('hidden');
-                } else {
-                    alert("CÓDIGO NO ENCONTRADO EN LA BASE DE DATOS");
-                }
-            } catch (e) { alert("ERROR DE COMUNICACIÓN CON EL BACKEND"); }
+                } else { alert("CÓDIGO NO ENCONTRADO"); }
+            } catch (e) { alert("ERROR DE COMUNICACIÓN"); }
         }
 
         async function generarVistaPrevia() {
-            if (!d) return; // Si no hay datos frescos, no hace nada
+            if (!d) return;
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
+            
+            let logoBase64 = "";
+            try { logoBase64 = await getBase64Image('logo.png'); } catch(e) { console.log("Logo no encontrado"); }
 
-            // LÓGICA DE DETECCIÓN DE "SI" REFORZADA
             const esSi = (val) => {
                 if (!val) return false;
                 const v = String(val).trim().toUpperCase();
-                // Si el valor es "SI", "SÍ" o tiene contenido que no sea "NO/NORMAL/NA"
                 return (v === "SI" || v === "SÍ" || (v !== "NO" && v !== "NORMAL" && v !== "N/A" && v !== "---" && v !== "NINGUNO" && v !== ""));
             };
 
-            // CABECERA
-            doc.setFontSize(14); doc.setFont(undefined, 'bold');
-            doc.text("DECLARACION JURADA DE SALUD", 105, 15, { align: "center" });
-            doc.setLineWidth(0.4); doc.line(15, 18, 195, 18);
+            const agregarCabecera = () => {
+                if (logoBase64) doc.addImage(logoBase64, 'PNG', 15, 8, 20, 10);
+                doc.setFontSize(14); doc.setFont("helvetica", "bold");
+                doc.text("DECLARACION JURADA DE SALUD", 110, 15, { align: "center" });
+                doc.setLineWidth(0.4); doc.line(15, 20, 195, 20);
+            };
 
-            // SECCIÓN I: FILIACIÓN
+            agregarCabecera();
+
             doc.autoTable({
-                startY: 22,
-                head: [[{content: 'I. AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                startY: 25,
+                head: [[{content: 'I. AFILIACION DEL TRABAJADOR', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold' } }]],
                 body: [
                     ['APELLIDOS Y NOMBRES', `${d.paciente.apellidos} ${d.paciente.nombres}`.toUpperCase(), 'EDAD', String(d.filiacion?.edad || '---')],
                     ['SEXO', String(d.filiacion?.sexo || '---').toUpperCase(), 'C.I.', String(d.paciente.ci || '---')],
                     ['FECHA NACIMIENTO', String(d.filiacion?.fecha_nacimiento || '---'), 'LUGAR', String(d.filiacion?.lugar_nacimiento || '---').toUpperCase()],
                     ['DOMICILIO', String(d.filiacion?.domicilio || '---').toUpperCase(), 'CIUDAD / PAIS', `${d.filiacion?.ciudad || '---'} / ${d.filiacion?.pais || '---'}`.toUpperCase()],
                     ['ESTADO CIVIL', String(d.filiacion?.estado_civil || '---').toUpperCase(), 'TELÉFONO', String(d.filiacion?.telefono || '---')],
-                    ['PROFESIÓN / LABOR', String(d.filiacion?.profesion_oficio || '---').toUpperCase(), '', '']
+                    ['PROFESIÓN / LABOR', String(d.filiacion?.profesion_oficio || '---').toUpperCase(), 'N° CASA/DEPTO', String(d.filiacion?.n_casa || '---').toUpperCase()]
                 ],
-                theme: 'grid', styles: { fontSize: 8 }
+                theme: 'grid', styles: { fontSize: 8, font: "helvetica" },
+                columnStyles: { 
+                    0: { fontStyle: 'bold', fillColor: [250, 250, 250], cellWidth: 40 }, 
+                    2: { fontStyle: 'bold', fillColor: [250, 250, 250], cellWidth: 35 } 
+                }
             });
 
-            // SECCIÓN II: SISTEMAS (22 CAMPOS)
             const sistMap = [
                 { n: 'VISTA', v: d.antecedentes?.vista }, { n: 'AUDITIVO', v: d.antecedentes?.auditivo },
                 { n: 'RESPIRATORIO', v: d.antecedentes?.respiratorio }, { n: 'CARDIO-VASCULARES', v: d.antecedentes?.cardio },
@@ -116,52 +131,52 @@
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 4,
-                head: [[{content: 'II. ANTECEDENTES Y RIESGOS', styles: {fillColor: [0, 160, 130]}}, 'SI', 'NO', 'DETALLES']],
+                head: [[{content: 'II. ANTECEDENTES Y RIESGOS', styles: {fillColor: [0, 160, 130], fontStyle: 'bold'}}, 'SI', 'NO', 'DETALLES']],
                 body: bodySist,
-                theme: 'grid', styles: { fontSize: 6.5 }
+                theme: 'grid', styles: { fontSize: 7, font: "helvetica" },
+                columnStyles: { 0: { fontStyle: 'bold', fillColor: [250, 250, 250] } }
             });
 
-            // HOJA 2
             doc.addPage();
-            doc.text("DECLARACION JURADA DE SALUD", 105, 15, { align: "center" });
+            agregarCabecera();
 
-            // SECCIÓN III: HÁBITOS (RECONOCER "SI" EN ALCOHOL/FUMA/PIJCHA)
             doc.autoTable({
-                startY: 22,
-                head: [[{content: 'III. HÁBITOS', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                startY: 25,
+                head: [[{content: 'III. HÁBITOS', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [
                     ['ALCOHOL', esSi(d.habitos?.alcohol_si_no) ? 'SI' : 'NO', 'TABACO', esSi(d.habitos?.fuma_si_no) ? 'SI' : 'NO'],
                     ['DROGAS / PIJCHAR', esSi(d.habitos?.pijchar_si_no) ? 'SI' : 'NO', 'OTROS', 'N/A']
                 ],
-                theme: 'grid', styles: { fontSize: 8 }
+                theme: 'grid', styles: { fontSize: 8, font: "helvetica" },
+                columnStyles: { 0: { fontStyle: 'bold' }, 2: { fontStyle: 'bold' } }
             });
 
-            // SECCIÓN IV: HISTORIA LABORAL (PARSER DINÁMICO)
             const hl = d.habitos?.historia_laboral || "";
             const parts = hl.split('|').map(p => p.split(':')[1]?.trim() || '---');
 
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                head: [[{content: 'IV. ANTECEDENTES OCUPACIONALES', colSpan: 4, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [
                     ['EMPRESA', String(parts[1] || '---').toUpperCase(), 'CARGO', String(parts[2] || '---').toUpperCase()],
                     ['TIEMPO', String(parts[3] || '---').toUpperCase(), 'RIESGOS', 'SI']
                 ],
-                theme: 'grid', styles: { fontSize: 8 }
+                theme: 'grid', styles: { fontSize: 8, font: "helvetica" },
+                columnStyles: { 0: { fontStyle: 'bold' }, 2: { fontStyle: 'bold' } }
             });
 
-            // SECCIÓN V: RIESGOS
             doc.autoTable({
                 startY: doc.lastAutoTable.finalY + 5,
-                head: [[{content: 'V. RIESGOS EXPUESTOS', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0}}]],
+                head: [[{content: 'V. RIESGOS EXPUESTOS', colSpan: 2, styles: {fillColor: [240, 240, 240], textColor: 0, fontStyle: 'bold'}}]],
                 body: [
                     ['RIESGOS QUÍMICOS:', String(d.habitos?.riesgos_vida_laboral || 'NINGUNO').toUpperCase()],
                     ['OBSERVACIONES:', 'DECLARO QUE LOS DATOS SON VERÍDICOS Y ACTUALIZADOS.']
                 ],
-                theme: 'grid', styles: { fontSize: 8 }
+                theme: 'grid', styles: { fontSize: 8, font: "helvetica" },
+                columnStyles: { 0: { fontStyle: 'bold', cellWidth: 40 } }
             });
 
-            doc.setFontSize(9);
+            doc.setFontSize(9); doc.setFont("helvetica", "bold");
             doc.text(`FECHA: ${new Date().toLocaleDateString()}`, 15, doc.lastAutoTable.finalY + 15);
             doc.text("FIRMA TRABAJADOR: ___________________________", 195, doc.lastAutoTable.finalY + 15, { align: "right" });
 
