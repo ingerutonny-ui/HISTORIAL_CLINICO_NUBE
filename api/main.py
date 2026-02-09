@@ -4,10 +4,8 @@ from sqlalchemy.orm import Session
 from . import models, schemas, database
 
 models.Base.metadata.create_all(bind=database.engine)
-
 app = FastAPI()
 
-# ELIMINA BLOQUEO DE CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -31,17 +29,16 @@ def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_
     db.refresh(db_paciente)
     return db_paciente
 
-# RUTA CORREGIDA PARA EL BOTÓN DE LA PARTE 1
 @app.post("/filiacion/")
 def save_filiacion(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
     new_entry = models.DeclaracionJurada(**data.dict())
     db.add(new_entry)
     db.commit()
-    return {"status": "success", "message": "Parte 1 guardada"}
+    return {"status": "success"}
 
 @app.post("/declaraciones/p2/")
 def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
     new_entry = models.AntecedentesP2(**data.dict())
     db.add(new_entry)
     db.commit()
-    return {"status": "success", "message": "Parte 2 guardada"}
+    return {"status": "success"}
