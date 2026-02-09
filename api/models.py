@@ -13,10 +13,17 @@ class DeclaracionJurada(Base):
     __tablename__ = "filiacion"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    edad = Column(Integer); sexo = Column(String); fecha_nacimiento = Column(Date)
-    estado_civil = Column(String); lugar_nacimiento = Column(String)
-    domicilio = Column(String); n_casa = Column(String); zona_barrio = Column(String)
-    ciudad = Column(String); pais = Column(String); telefono = Column(String)
+    edad = Column(Integer)
+    sexo = Column(String)
+    fecha_nacimiento = Column(Date)
+    estado_civil = Column(String)
+    lugar_nacimiento = Column(String)
+    domicilio = Column(String)
+    n_casa = Column(String)
+    zona_barrio = Column(String)
+    ciudad = Column(String)
+    pais = Column(String)
+    telefono = Column(String)
     profesion_oficio = Column(String)
 
 class AntecedentesP2(Base):
