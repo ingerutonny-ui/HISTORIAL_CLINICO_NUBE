@@ -23,31 +23,44 @@
 <div class="form-container">
     <div class="header-p2">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" class="logo-img">
-        <h4 class="fw-bold m-0">2. ANTECEDENTES PATOLÓGICOS</h4>
+        <h4 class="fw-bold m-0 text-uppercase">2. Antecedentes Patológicos</h4>
         <div class="page-indicator">(2/3)</div>
     </div>
+
     <form id="formP2">
-        <div id="camposContainer" class="grid-layout"></div>
-        <button type="submit" id="btnSiguiente" class="btn-next">SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)</button>
+        <div id="camposContainer" class="grid-layout">
+            </div>
+        <button type="submit" id="btnSiguiente" class="btn-next">Siguiente: Hoja 3 (Hábitos y Trabajo)</button>
     </form>
 </div>
 
 <script>
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     
-    // Lista de 22 campos sincronizada con el error "Field required" de tus capturas
+    // Lista exacta de 22 campos requeridos por el servidor
     const camposMapeados = [
-        { id: "vista", label: "VISTA" }, { id: "auditivo", label: "AUDITIVO" },
-        { id: "respiratorio", label: "RESPIRATORIO" }, { id: "cardio", label: "CARDIO-VASCULARES" },
-        { id: "estomago", label: "ESTÓMAGO/HÍGADO" }, { id: "sangre", label: "SANGRE" },
-        { id: "genito", label: "GENITO-URINARIO" }, { id: "nervioso", label: "SISTEMA NERVIOSO" },
-        { id: "psiquiatrico", label: "PSIQUIÁTRICOS" }, { id: "osteo", label: "OSTEOMUSCULARES" },
-        { id: "endocrino", label: "ENDOCRINOLÓGICOS" }, { id: "reumato", label: "REUMATOLÓGICOS" },
-        { id: "generales", label: "GENERALES" }, { id: "dermato", label: "DERMATOLÓGICAS" },
-        { id: "alergias", label: "ALERGIA" }, { id: "infecciosas", label: "INFECCIONES" },
-        { id: "cirugias", label: "CIRUGÍAS" }, { id: "acc_trabajo", label: "ACCIDENTES DE TRABAJO" },
-        { id: "acc_personales", label: "ACCIDENTES PERS." }, { id: "medicamentos", label: "MEDICAMENTOS" },
-        { id: "urinario", label: "APARATO URINARIO" }, { id: "familiares", label: "ANTECEDENTES FAMILIARES" }
+        { id: "vista", label: "Vista (Lentes/Glaucoma)" },
+        { id: "auditivo", label: "Auditivo (Sordera/Vértigo)" },
+        { id: "respiratorio", label: "Respiratorios (Asma/TBC)" },
+        { id: "cardio", label: "Cardiovasculares (HTA)" },
+        { id: "estomago", label: "Digestivos (Gastritis)" },
+        { id: "sangre", label: "Sangre (Anemia)" },
+        { id: "genito", label: "Genitourinario" },
+        { id: "nervioso", label: "Sistema Nervioso" },
+        { id: "psiquiatrico", label: "Psiquiátricos" },
+        { id: "osteo", label: "Osteomusculares" },
+        { id: "endocrino", label: "Sistema Endocrino" },
+        { id: "reumato", label: "Reumatológicos" },
+        { id: "generales", label: "Generales" },
+        { id: "dermato", label: "Piel/Dermatológicas" },
+        { id: "alergias", label: "Alergias" },
+        { id: "infecciosas", label: "Infecciosas (Chagas)" },
+        { id: "cirugias", label: "Cirugías" },
+        { id: "acc_trabajo", label: "Accidentes Trabajo" },
+        { id: "acc_personales", label: "Accidentes Particulares" },
+        { id: "medicamentos", label: "Medicamentos" },
+        { id: "urinario", label: "Aparato Urinario" },
+        { id: "familiares", label: "Antecedentes Familiares" }
     ];
 
     const container = document.getElementById('camposContainer');
@@ -55,7 +68,10 @@
         container.innerHTML += `
             <div class="item-card">
                 <span class="item-label">${index + 1}. ${campo.label}</span>
-                <select class="select-custom" id="sel_${campo.id}"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <select class="select-custom" id="sel_${campo.id}">
+                    <option value="NO">NO</option>
+                    <option value="SI">SI</option>
+                </select>
                 <input type="text" class="input-custom" id="det_${campo.id}" placeholder="DETALLE O NORMAL">
             </div>`;
     });
@@ -63,20 +79,26 @@
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnSiguiente');
-        btn.disabled = true; btn.innerText = "GUARDANDO...";
+        btn.disabled = true;
+        btn.innerText = "Guardando...";
+
         const paciente_id = localStorage.getItem('paciente_id');
-        
-        // El servidor requiere "otros" y "linfatico" también por defecto si no están en el mapeo visual
+        if (!paciente_id) {
+            alert("Error: ID de paciente no encontrado.");
+            btn.disabled = false;
+            return;
+        }
+
         const payload = { 
             paciente_id: parseInt(paciente_id),
             otros: "NORMAL",
             linfatico: "NORMAL"
         };
 
-        camposMapeados.forEach(c => {
-            const esSi = document.getElementById(`sel_${c.id}`).value === 'SI';
-            const detalle = document.getElementById(`det_${c.id}`).value.trim();
-            payload[c.id] = esSi ? (detalle || "SI") : "NORMAL";
+        camposMapeados.forEach(campo => {
+            const selectVal = document.getElementById(`sel_${campo.id}`).value;
+            const detalleVal = document.getElementById(`det_${campo.id}`).value.trim();
+            payload[campo.id] = (selectVal === 'SI') ? (detalleVal || 'SI') : 'NORMAL';
         });
 
         try {
@@ -85,17 +107,19 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
             if (res.ok) {
                 window.location.href = "declaracion_jurada_p3.html";
             } else {
-                const err = await res.json();
-                alert("Error de validación: " + JSON.stringify(err.detail));
+                const errorData = await res.json();
+                alert("Error al guardar: " + JSON.stringify(errorData.detail));
                 btn.disabled = false;
-                btn.innerText = "REINTENTAR GUARDAR";
+                btn.innerText = "Reintentar Guardar";
             }
         } catch (error) {
-            alert("Error de conexión con Render");
+            alert("Error de conexión con el servidor.");
             btn.disabled = false;
+            btn.innerText = "Reintentar Guardar";
         }
     };
 </script>
