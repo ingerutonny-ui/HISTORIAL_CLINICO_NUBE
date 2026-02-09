@@ -31,30 +31,29 @@
         <button type="submit" id="btnSiguiente" class="btn-next">GUARDAR Y CONTINUAR</button>
     </form>
 </div>
-
 <script>
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     const camposMapeados = [
-        { id: "vista", label: "VISTA" }, { id: "auditivo", label: "AUDITIVO" },
-        { id: "respiratorio", label: "RESPIRATORIO" }, { id: "cardio", label: "CARDIO-VASCULARES" },
-        { id: "estomago", label: "ESTÓMAGO/HÍGADO" }, { id: "sangre", label: "SANGRE" },
-        { id: "genito", label: "GENITO-URINARIO" }, { id: "nervioso", label: "SISTEMA NERVIOSO" },
-        { id: "psiquiatrico", label: "PSIQUIÁTRICOS" }, { id: "osteo", label: "OSTEOMUSCULARES" },
-        { id: "endocrino", label: "ENDOCRINOLÓGICOS" }, { id: "reumato", label: "REUMATOLÓGICOS" },
-        { id: "generales", label: "GENERALES" }, { id: "dermato", label: "DERMATOLÓGICAS" },
-        { id: "alergias", label: "ALERGIAS" }, { id: "infecciosas", label: "INFECCIOSAS" },
-        { id: "cirugias", label: "CIRUGÍAS" }, { id: "acc_trabajo", label: "ACCIDENTES TRABAJO" },
-        { id: "acc_personales", label: "ACCIDENTES PERS." }, { id: "medicamentos", label: "MEDICAMENTOS" },
-        { id: "familiares", label: "ANTECEDENTES FAMILIARES" }, { id: "otros", label: "OTROS ESPECIFICOS" }
+        { id: "vista", label: "1. VISTA" }, { id: "auditivo", label: "2. AUDITIVO" },
+        { id: "respiratorio", label: "3. RESPIRATORIO" }, { id: "cardio", label: "4. CARDIO-VASCULARES" },
+        { id: "estomago", label: "5. ESTÓMAGO/HÍGADO" }, { id: "sangre", label: "6. SANGRE" },
+        { id: "genito", label: "7. GENITO-URINARIO" }, { id: "nervioso", label: "8. SISTEMA NERVIOSO" },
+        { id: "psiquiatrico", label: "9. PSIQUIÁTRICOS" }, { id: "osteo", label: "10. OSTEOMUSCULARES" },
+        { id: "endocrino", label: "11. ENDOCRINOLÓGICOS" }, { id: "reumato", label: "12. REUMATOLÓGICOS" },
+        { id: "generales", label: "13. GENERALES" }, { id: "dermato", label: "14. DERMATOLÓGICAS" },
+        { id: "alergias", label: "15. ALERGIAS" }, { id: "infecciosas", label: "16. INFECCIOSAS" },
+        { id: "cirugias", label: "17. CIRUGÍAS" }, { id: "acc_trabajo", label: "18. ACCIDENTES TRABAJO" },
+        { id: "acc_personales", label: "19. ACCIDENTES PERS." }, { id: "medicamentos", label: "20. MEDICAMENTOS" },
+        { id: "familiares", label: "21. ANTECEDENTES FAMILIARES" }, { id: "otros", label: "22. OTROS ESPECIFICOS" }
     ];
 
     const container = document.getElementById('camposContainer');
-    camposMapeados.forEach((campo, index) => {
+    camposMapeados.forEach(campo => {
         container.innerHTML += `
             <div class="item-card">
-                <span class="item-label">${index + 1}. ${campo.label}</span>
+                <span class="item-label">${campo.label}</span>
                 <select class="select-custom" id="sel_${campo.id}"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" class="input-custom" id="det_${campo.id}" value="NORMAL">
+                <input type="text" class="input-custom" id="det_${campo.id}" placeholder="NORMAL" value="NORMAL">
             </div>`;
     });
 
@@ -62,11 +61,13 @@
         e.preventDefault();
         const btn = document.getElementById('btnSiguiente');
         btn.disabled = true; btn.innerText = "GUARDANDO...";
+        
         const payload = { paciente_id: parseInt(localStorage.getItem('paciente_id')) };
         camposMapeados.forEach(c => {
             const esSi = document.getElementById(`sel_${c.id}`).value === 'SI';
             payload[c.id] = esSi ? (document.getElementById(`det_${c.id}`).value || "SI") : "NORMAL";
         });
+
         try {
             const res = await fetch(`${API_BASE}/declaraciones/p2/`, {
                 method: 'POST',
@@ -74,8 +75,15 @@
                 body: JSON.stringify(payload)
             });
             if (res.ok) window.location.href = "declaracion_jurada_p3.html";
-            else { const err = await res.json(); alert("Error: " + JSON.stringify(err.detail)); btn.disabled = false; btn.innerText = "GUARDAR Y CONTINUAR"; }
-        } catch (error) { alert("Error de conexión con el servidor"); btn.disabled = false; btn.innerText = "GUARDAR Y CONTINUAR"; }
+            else {
+                const err = await res.json();
+                alert("Error de validación: " + JSON.stringify(err.detail));
+                btn.disabled = false; btn.innerText = "GUARDAR Y CONTINUAR";
+            }
+        } catch (error) {
+            alert("Error de conexión con el servidor");
+            btn.disabled = false; btn.innerText = "GUARDAR Y CONTINUAR";
+        }
     };
 </script>
 </body>
