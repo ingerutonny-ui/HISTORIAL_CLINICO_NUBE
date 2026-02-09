@@ -30,15 +30,16 @@ class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    p1 = Column(String); d1 = Column(String); p2 = Column(String); d2 = Column(String)
-    p3 = Column(String); d3 = Column(String); p4 = Column(String); d4 = Column(String)
-    p5 = Column(String); d5 = Column(String); p6 = Column(String); d6 = Column(String)
-    p7 = Column(String); d7 = Column(String); p8 = Column(String); d8 = Column(String)
-    p9 = Column(String); d9 = Column(String); p10 = Column(String); d10 = Column(String)
-    p11 = Column(String); d11 = Column(String); p12 = Column(String); d12 = Column(String)
-    p13 = Column(String); d13 = Column(String); p14 = Column(String); d14 = Column(String)
-    p15 = Column(String); d15 = Column(String); p16 = Column(String); d16 = Column(String)
-    p17 = Column(String); d17 = Column(String); p18 = Column(String); d18 = Column(String)
+    # Mapeo directo para que el Visor PDF no falle
+    vista = Column(String); auditivo = Column(String)
+    respiratorio = Column(String); cardio = Column(String)
+    estomago = Column(String); sangre = Column(String)
+    genito = Column(String); nervioso = Column(String)
+    psiquiatrico = Column(String); osteo = Column(String)
+    endocrino = Column(String); reumato = Column(String)
+    generales = Column(String); dermato = Column(String)
+    infecciones = Column(String); cirugias = Column(String)
+    accidentes_p = Column(String); otros = Column(String)
 
 class HabitosRiesgosP3(Base):
     __tablename__ = "habitos_riesgos_p3"
@@ -58,5 +59,7 @@ class HabitosRiesgosP3(Base):
     accidentes_detalle = Column(String)
     medicamentos_si_no = Column(String)
     medicamentos_detalle = Column(String)
+    alergias_si_no = Column(String)  # Añadido para consistencia con el PDF
+    alergias_detalle = Column(String)
     riesgos_vida_laboral = Column(String)
     historia_laboral = Column(String)
