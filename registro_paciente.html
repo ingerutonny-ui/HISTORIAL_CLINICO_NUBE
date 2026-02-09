@@ -8,35 +8,34 @@
         body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
         .card-main { width: 100%; max-width: 450px; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); text-align: center; }
         .label-custom { font-size: 11px; font-weight: 800; color: #334155; text-transform: uppercase; margin-bottom: 8px; display: block; text-align: left; }
-        .form-control { border-radius: 12px; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 15px; text-transform: uppercase; font-weight: 600; }
-        .form-control:focus { border-color: #22c55e; box-shadow: none; background: #fff; }
+        .form-control { border-radius: 12px; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 15px; text-transform: uppercase; font-weight: 600; margin-bottom: 15px; }
         .code-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 15px; padding: 20px; margin: 25px 0; }
-        .code-val { font-size: 28px; font-weight: 900; color: #1e293b; letter-spacing: 1px; }
-        .btn-ohs { background-color: #22c55e; border: none; border-radius: 15px; padding: 18px; font-weight: 800; color: white; width: 100%; font-size: 16px; transition: 0.3s; }
-        .btn-ohs:hover { background-color: #16a34a; transform: translateY(-2px); }
+        .code-val { font-size: 28px; font-weight: 900; color: #1e293b; }
+        .btn-ohs { background-color: #22c55e; border: none; border-radius: 15px; padding: 18px; font-weight: 800; color: white; width: 100%; font-size: 16px; }
+        .btn-consultar { background: none; border: 1px solid #cbd5e1; color: #64748b; font-size: 11px; font-weight: 700; padding: 10px; border-radius: 12px; margin-top: 20px; width: 100%; transition: 0.3s; }
+        .btn-consultar:hover { background: #f1f5f9; }
+        .list-box { margin-top: 15px; text-align: left; font-size: 12px; max-height: 120px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 10px; }
     </style>
 </head>
 <body>
 <div class="card-main">
-    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="65">
+    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="60">
     <h4 class="mt-4" style="font-weight: 900; color: #1e293b;">REGISTRO DE PACIENTE</h4>
-    <div class="mt-4 mb-3">
+    <div class="mt-4">
         <label class="label-custom">Nombres</label>
-        <input type="text" id="nom" class="form-control" oninput="this.value=this.value.toUpperCase(); gen()">
-    </div>
-    <div class="mb-3">
+        <input type="text" id="nom" class="form-control" placeholder="EJ. MONICA" oninput="this.value=this.value.toUpperCase(); gen()">
         <label class="label-custom">Apellidos</label>
-        <input type="text" id="ape" class="form-control" oninput="this.value=this.value.toUpperCase(); gen()">
-    </div>
-    <div class="mb-3">
-        <label class="label-custom">Documento de Identidad (CI)</label>
+        <input type="text" id="ape" class="form-control" placeholder="EJ. MEDINA" oninput="this.value=this.value.toUpperCase(); gen()">
+        <label class="label-custom">CI</label>
         <input type="number" id="ci" class="form-control" oninput="gen()">
     </div>
     <div class="code-box">
-        <div style="font-size: 10px; font-weight: 800; color: #64748b; margin-bottom: 5px;">CÓDIGO GENERADO</div>
         <div id="v_cod" class="code-val">----</div>
     </div>
     <button class="btn-ohs" id="btnS" onclick="save()">GUARDAR REGISTRO FINAL</button>
+    
+    <div id="lista" class="list-box" style="display:none;"></div>
+    <button class="btn-consultar" onclick="listar()">CONSULTAR BASE DE DATOS</button>
 </div>
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
@@ -44,35 +43,34 @@
         const n = document.getElementById('nom').value.trim();
         const a = document.getElementById('ape').value.trim();
         const c = document.getElementById('ci').value.trim();
-        if(n && a && c) {
-            document.getElementById('v_cod').innerText = n[0] + a[0] + c.slice(-4);
-        }
+        if(n && a && c) document.getElementById('v_cod').innerText = n[0] + a[0] + c.slice(-4);
     }
     async function save() {
-        const payload = {
-            nombre: document.getElementById('nom').value,
-            apellido: document.getElementById('ape').value,
-            ci: document.getElementById('ci').value,
-            codigo_paciente: document.getElementById('v_cod').innerText
-        };
+        const payload = { nombre: document.getElementById('nom').value, apellido: document.getElementById('ape').value, ci: document.getElementById('ci').value, codigo_paciente: document.getElementById('v_cod').innerText };
         const b = document.getElementById('btnS');
-        b.innerText = "PROCESANDO..."; b.disabled = true;
+        b.innerText = "PROCESANDO...";
         try {
-            const r = await fetch(`${API}/pacientes/`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload)
-            });
+            const r = await fetch(`${API}/pacientes/`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
             if(r.ok) {
-                const data = await r.json();
-                localStorage.setItem('p_id', data.id);
+                const d = await r.json();
+                localStorage.setItem('p_id', d.id);
                 localStorage.setItem('p_nom', payload.nombre + " " + payload.apellido);
                 localStorage.setItem('p_ci', payload.ci);
                 localStorage.setItem('p_cod', payload.codigo_paciente);
                 window.location.href = "declaracion_jurada_p1.html";
             }
         } catch(e) { alert("ERROR DE CONEXIÓN"); }
-        finally { b.innerText = "GUARDAR REGISTRO FINAL"; b.disabled = false; }
+        finally { b.innerText = "GUARDAR REGISTRO FINAL"; }
+    }
+    async function listar() {
+        const div = document.getElementById('lista');
+        div.style.display = 'block';
+        div.innerHTML = '<small>CARGANDO...</small>';
+        try {
+            const r = await fetch(`${API}/pacientes/`);
+            const d = await r.json();
+            div.innerHTML = d.map(p => `<div class="p-1 border-bottom">${p.nombre} ${p.apellido} - <b>${p.codigo_paciente}</b></div>`).join('');
+        } catch(e) { div.innerHTML = '<small class="text-danger">ERROR</small>'; }
     }
 </script>
 </body>
