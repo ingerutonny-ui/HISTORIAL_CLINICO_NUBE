@@ -2,73 +2,127 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HC NUBE | REGISTRO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background: #f8fafc; font-family: sans-serif; }
-        .card-reg { max-width: 450px; margin: 50px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .btn-green { background: #22c55e; color: white; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; }
+        body { background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .registro-card { max-width: 500px; margin: 50px auto; background: white; padding: 40px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .logo-container { text-align: center; margin-bottom: 25px; }
+        .form-label { font-size: 0.75rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin-bottom: 8px; }
+        .form-control { border-radius: 12px; padding: 12px; border: 1px solid #e2e8f0; background-color: #f8fafc; font-size: 0.9rem; }
+        .btn-primary { background-color: #22c55e; border: none; border-radius: 15px; padding: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; width: 100%; margin-top: 20px; }
+        .btn-primary:hover { background-color: #16a34a; transform: translateY(-2px); }
+        .codigo-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 15px; padding: 20px; text-align: center; margin: 25px 0; }
+        .codigo-label { font-size: 0.7rem; color: #64748b; font-weight: 700; display: block; margin-bottom: 5px; }
+        .codigo-text { font-size: 1.8rem; font-weight: 900; color: #1e293b; }
     </style>
 </head>
 <body>
-<div class="card-reg">
-    <div class="text-center mb-4">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50">
-        <h5 class="mt-2">REGISTRO DE PACIENTE</h5>
+
+<div class="container">
+    <div class="registro-card">
+        <div class="logo-container">
+            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" height="70">
+            <h2 class="mt-3" style="font-size: 1.4rem; font-weight: 800; color: #1e293b;">REGISTRO DE PACIENTE</h2>
+            <p class="text-muted" style="font-size: 0.85rem;">MÓDULO DE ENFERMERÍA</p>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Nombres</label>
+            <input type="text" id="nombres" class="form-control" placeholder="EJ. RUBEN" oninput="generarCodigo()">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Apellidos</label>
+            <input type="text" id="apellidos" class="form-control" placeholder="EJ. ALARCON" oninput="generarCodigo()">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Documento de Identidad (CI)</label>
+            <input type="number" id="ci" class="form-control" placeholder="INGRESE CI" oninput="generarCodigo()">
+        </div>
+
+        <div class="codigo-box">
+            <span class="codigo-label">CÓDIGO GENERADO</span>
+            <div id="codigo_paciente" class="codigo-text">----</div>
+        </div>
+
+        <button class="btn btn-primary" id="btnGuardar" onclick="guardarPaciente()">GUARDAR REGISTRO FINAL</button>
+        
+        <div class="mt-4 text-center">
+            <a href="#" onclick="cargarPacientes()" style="font-size: 0.75rem; color: #64748b; text-decoration: none; font-weight: 700;">CONSULTAR REGISTROS EN NUBE</a>
+        </div>
+
+        <div id="listaPacientes" class="mt-3" style="display:none; max-height: 200px; overflow-y: auto; border-top: 1px solid #eee; padding-top: 15px;">
+        </div>
     </div>
-    <div class="mb-3">
-        <label class="small fw-bold">NOMBRES</label>
-        <input type="text" id="nombres" class="form-control" oninput="generar()">
-    </div>
-    <div class="mb-3">
-        <label class="small fw-bold">APELLIDOS</label>
-        <input type="text" id="apellidos" class="form-control" oninput="generar()">
-    </div>
-    <div class="mb-3">
-        <label class="small fw-bold">CI</label>
-        <input type="number" id="ci" class="form-control" oninput="generar()">
-    </div>
-    <div class="p-3 bg-light border text-center mb-3">
-        <small>CÓDIGO:</small> <span id="cod" class="fw-bold">----</span>
-    </div>
-    <button class="btn-green" id="btnG" onclick="enviar()">GUARDAR REGISTRO FINAL</button>
 </div>
 
 <script>
-    const API = 'https://historial-clinico-936s.onrender.com';
+    const API_URL = 'https://historial-clinico-936s.onrender.com';
 
-    function generar() {
-        const n = document.getElementById('nombres').value;
-        const a = document.getElementById('apellidos').value;
-        const c = document.getElementById('ci').value;
-        if(n && a && c) {
-            document.getElementById('cod').innerText = n[0].toUpperCase() + a[0].toUpperCase() + c.slice(-4);
+    function generarCodigo() {
+        const nom = document.getElementById('nombres').value.trim();
+        const ape = document.getElementById('apellidos').value.trim();
+        const ci = document.getElementById('ci').value.trim();
+        if (nom && ape && ci) {
+            const code = nom[0].toUpperCase() + ape[0].toUpperCase() + ci.slice(-4);
+            document.getElementById('codigo_paciente').innerText = code;
         }
     }
 
-    async function enviar() {
-        const btn = document.getElementById('btnG');
+    async function guardarPaciente() {
+        const btn = document.getElementById('btnGuardar');
         const payload = {
             nombre: document.getElementById('nombres').value.toUpperCase(),
             apellido: document.getElementById('apellidos').value.toUpperCase(),
             ci: document.getElementById('ci').value,
-            codigo_paciente: document.getElementById('cod').innerText
+            codigo_paciente: document.getElementById('codigo_paciente').innerText
         };
 
         btn.innerText = "PROCESANDO...";
+        btn.disabled = true;
+
         try {
-            const res = await fetch(`${API}/pacientes/`, {
+            const response = await fetch(`${API_URL}/pacientes/`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if(res.ok) {
-                const data = await res.json();
-                localStorage.setItem('paciente_id', data.id);
+
+            if (response.ok) {
+                const paciente = await response.json();
+                localStorage.setItem('paciente_id', paciente.id);
+                localStorage.setItem('paciente_nombre', `${payload.nombre} ${payload.apellido}`);
+                localStorage.setItem('paciente_codigo', payload.codigo_paciente);
                 window.location.href = "declaracion_jurada_p1.html";
-            } else { alert("Error en el servidor"); }
-        } catch(e) { alert("Error de conexión"); }
-        finally { btn.innerText = "GUARDAR REGISTRO FINAL"; }
+            } else {
+                alert("Error al guardar: Verifique que el Backend esté activo.");
+            }
+        } catch (error) {
+            alert("Error crítico de conexión con el servidor.");
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "GUARDAR REGISTRO FINAL";
+        }
+    }
+
+    async function cargarPacientes() {
+        const lista = document.getElementById('listaPacientes');
+        lista.style.display = 'block';
+        lista.innerHTML = '<p class="text-center small">CARGANDO...</p>';
+        try {
+            const res = await fetch(`${API_URL}/pacientes/`);
+            const data = await res.json();
+            lista.innerHTML = '<p class="fw-bold small mb-2">PACIENTES EN NUBE:</p>' + 
+                data.map(p => `<div class="d-flex justify-content-between small mb-1 border-bottom pb-1">
+                    <span>${p.nombre} ${p.apellido}</span>
+                    <span class="badge bg-success">${p.codigo_paciente}</span>
+                </div>`).join('');
+        } catch (e) {
+            lista.innerHTML = '<p class="text-danger small">ERROR AL CARGAR</p>';
+        }
     }
 </script>
 </body>
