@@ -21,17 +21,25 @@ def get_db():
     finally:
         db.close()
 
+@app.post("/pacientes/")
+def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
+    db_paciente = models.Paciente(**paciente.dict())
+    db.add(db_paciente)
+    db.commit()
+    db.refresh(db_paciente)
+    return db_paciente
+
 @app.get("/pacientes/")
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
 @app.post("/filiacion/")
-def save_filiacion(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
+def save_p1(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
     try:
-        new_row = models.DeclaracionJurada(**data.dict())
-        db.add(new_row)
+        new_entry = models.DeclaracionJurada(**data.dict())
+        db.add(new_entry)
         db.commit()
-        return {"status": "success"}
+        return {"status": "ok"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -41,6 +49,6 @@ def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
         new_entry = models.AntecedentesP2(**data.dict())
         db.add(new_entry)
         db.commit()
-        return {"status": "success"}
+        return {"status": "ok"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
