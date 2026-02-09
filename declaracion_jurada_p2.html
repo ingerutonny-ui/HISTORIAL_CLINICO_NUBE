@@ -28,21 +28,21 @@
     </div>
     <form id="formP2">
         <div id="camposContainer" class="grid-layout"></div>
-        <button type="submit" id="btnSiguiente" class="btn-next">SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)</button>
+        <button type="submit" id="btnSiguiente" class="btn-next">GUARDAR Y CONTINUAR</button>
     </form>
 </div>
 
 <script>
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     
-    // Lista exacta de 22 campos visibles
+    // Lista exacta de 22 campos basada en tu PDF y Captura de error
     const camposMapeados = [
-        { id: "vista", label: "VISTA (LENTES/GLAUCOMA)" },
-        { id: "auditivo", label: "AUDITIVO (SORDERA/VERTIGO)" },
-        { id: "respiratorio", label: "RESPIRATORIOS (ASMA/TBC)" },
-        { id: "cardio", label: "CARDIOVASCULARES (HTA)" },
+        { id: "vista", label: "VISTA" },
+        { id: "auditivo", label: "AUDITIVO" },
+        { id: "respiratorio", label: "RESPIRATORIO" },
+        { id: "cardio", label: "CARDIO-VASCULARES" },
         { id: "estomago", label: "ESTÓMAGO/HÍGADO" },
-        { id: "sangre", label: "SANGRE (ANEMIA)" },
+        { id: "sangre", label: "SANGRE" },
         { id: "genito", label: "GENITO-URINARIO" },
         { id: "nervioso", label: "SISTEMA NERVIOSO" },
         { id: "psiquiatrico", label: "PSIQUIÁTRICOS" },
@@ -51,10 +51,10 @@
         { id: "reumato", label: "REUMATOLÓGICOS" },
         { id: "generales", label: "GENERALES" },
         { id: "dermato", label: "DERMATOLÓGICAS" },
-        { id: "alergias", label: "ALERGIA" },
-        { id: "infecciosas", label: "INFECCIONES" },
+        { id: "alergias", label: "ALERGIAS" },
+        { id: "infecciosas", label: "INFECCIOSAS" },
         { id: "cirugias", label: "CIRUGÍAS" },
-        { id: "acc_trabajo", label: "ACCIDENTES DE TRABAJO" },
+        { id: "acc_trabajo", label: "ACCIDENTES TRABAJO" },
         { id: "acc_personales", label: "ACCIDENTES PERS." },
         { id: "medicamentos", label: "MEDICAMENTOS" },
         { id: "familiares", label: "ANTECEDENTES FAMILIARES" },
@@ -80,12 +80,8 @@
         btn.disabled = true;
         btn.innerText = "GUARDANDO...";
         
-        const paciente_id = localStorage.getItem('paciente_id');
-        // El payload debe incluir los 24 campos requeridos por el esquema del backend
         const payload = { 
-            paciente_id: parseInt(paciente_id),
-            urinario: "NORMAL", // Campo extra requerido por esquema
-            linfatico: "NORMAL"  // Campo extra requerido por esquema
+            paciente_id: parseInt(localStorage.getItem('paciente_id')) 
         };
         
         camposMapeados.forEach(c => {
@@ -105,14 +101,14 @@
                 window.location.href = "declaracion_jurada_p3.html";
             } else {
                 const err = await res.json();
-                alert("Error al guardar: " + JSON.stringify(err.detail));
+                alert("Error: " + JSON.stringify(err.detail));
                 btn.disabled = false;
-                btn.innerText = "SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)";
+                btn.innerText = "GUARDAR Y CONTINUAR";
             }
         } catch (error) {
-            alert("Error de red o conexión con el servidor");
+            alert("Error de conexión con el servidor");
             btn.disabled = false;
-            btn.innerText = "SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)";
+            btn.innerText = "GUARDAR Y CONTINUAR";
         }
     };
 </script>
