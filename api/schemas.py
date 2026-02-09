@@ -34,25 +34,15 @@ class AntecedentesCreate(BaseModel):
     psiquiatrico: str; osteo: str; dermato: str; alergias: str
     cirugias: str; acc_trabajo: str; acc_personales: str; medicamentos: str
     infecciosas: str; urinario: str; endocrino: str; linfatico: str
-    familiares: str; reumato: str; otros: str
+    familiares: str; reumato: str; otros: str; generales: str
 
 class HabitosCreate(BaseModel):
     paciente_id: int
-    fuma_si_no: str
-    fuma_detalle: str
-    alcohol_si_no: str
-    alcohol_detalle: str
-    drogas_si_no: str
-    drogas_detalle: str
-    pijchar_si_no: str
-    deportes_si_no: str
-    deportes_detalle: str
-    grupo_sanguineo: str
-    accidentes_si_no: str
-    accidentes_detalle: str
-    medicamentos_si_no: str
-    medicamentos_detalle: str
-    alergias_si_no: str
-    alergias_detalle: str
-    riesgos_vida_laboral: str
-    historia_laboral: str
+    fuma_si_no: str; fuma_detalle: str
+    alcohol_si_no: str; alcohol_detalle: str
+    drogas_si_no: str; drogas_detalle: str
+    pijchar_si_no: str; deportes_si_no: str; deportes_detalle: str
+    grupo_sanguineo: str; accidentes_si_no: str; accidentes_detalle: str
+    medicamentos_si_no: str; medicamentos_detalle: str
+    alergias_si_no: str; alergias_detalle: str
+    riesgos_vida_laboral: str; historia_laboral: str
