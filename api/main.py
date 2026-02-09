@@ -23,7 +23,12 @@ def get_db():
 
 @app.post("/pacientes/")
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    db_paciente = models.Paciente(**paciente.dict())
+    db_paciente = models.Paciente(
+        nombre=paciente.nombre,
+        apellido=paciente.apellido,
+        ci=paciente.ci,
+        codigo_paciente=paciente.codigo_paciente
+    )
     db.add(db_paciente)
     db.commit()
     db.refresh(db_paciente)
@@ -35,20 +40,14 @@ def list_pacientes(db: Session = Depends(get_db)):
 
 @app.post("/filiacion/")
 def save_p1(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
-    try:
-        new_entry = models.DeclaracionJurada(**data.dict())
-        db.add(new_entry)
-        db.commit()
-        return {"status": "ok"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    new_entry = models.DeclaracionJurada(**data.dict())
+    db.add(new_entry)
+    db.commit()
+    return {"status": "ok"}
 
 @app.post("/declaraciones/p2/")
 def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
-    try:
-        new_entry = models.AntecedentesP2(**data.dict())
-        db.add(new_entry)
-        db.commit()
-        return {"status": "ok"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    new_entry = models.AntecedentesP2(**data.dict())
+    db.add(new_entry)
+    db.commit()
+    return {"status": "ok"}
