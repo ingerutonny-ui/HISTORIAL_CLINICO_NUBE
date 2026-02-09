@@ -1,33 +1,26 @@
-from sqlalchemy import create_engine, text
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# URL configurada en Render
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+# Usaremos SQLite dentro del disco persistente /data que configuramos en Render
+# Esto garantiza que los datos NO se borren al reiniciar
+DATABASE_PATH = "/data/historial_clinico.db"
 
-# Corrección de protocolo
-if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
-    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
+# Si estamos en local (fuera de Render), usamos una ruta temporal
+if not os.path.exists("/data"):
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./historial_clinico_nube.db"
+else:
+    SQLALCHEMY_DATABASE_URL = f"sqlite:///{DATABASE_PATH}"
 
-# Motor de conexión seguro
+# Motor de conexión para SQLite
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"sslmode": "require"},
-    pool_pre_ping=True,
-    pool_recycle=300
+    SQLALCHEMY_DATABASE_URL, 
+    connect_args={"check_same_thread": False}
 )
 
-# --- BLOQUE DE LIMPIEZA FINAL PARA EL CAMBIO A "CI" ---
-with engine.connect() as conn:
-    try:
-        conn.execute(text("DROP TABLE IF EXISTS declaraciones_juradas CASCADE;"))
-        conn.execute(text("DROP TABLE IF EXISTS pacientes CASCADE;"))
-        conn.commit()
-        print("Tablas reseteadas para usar el campo 'ci' con éxito.")
-    except Exception as e:
-        print(f"Aviso en limpieza: {e}")
-# -----------------------------------------------------
+# Se elimina el bloque de limpieza (DROP TABLE) para que los datos sean PERMANENTES
+# Ya no se resetearán las tablas al iniciar el servidor
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
