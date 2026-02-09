@@ -6,70 +6,60 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; color: #444; }
-        .form-container { background: white; padding: 30px; border-radius: 20px; max-width: 1100px; margin: 20px auto; border: 1px solid #e0e0e0; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .form-container { background: white; padding: 30px; border-radius: 20px; max-width: 1100px; margin: 20px auto; border: 1px solid #e0e0e0; }
         .header-section { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; border-bottom: 2px solid #27ae60; padding-bottom: 15px; }
         .center-title { text-align: center; flex-grow: 1; }
-        .center-title h2 { font-size: 20px; margin: 0; color: #2c3e50; text-transform: uppercase; letter-spacing: 1px; }
-        .page-indicator { color: #95a5a6; font-size: 14px; white-space: nowrap; }
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .field-card { background: #fdfdfd; padding: 10px; border-radius: 10px; border: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
-        .field-label { font-size: 11px; flex: 1; text-transform: uppercase; color: #666; }
-        .select-box { width: 65px; border: 1px solid #27ae60; border-radius: 5px; font-size: 11px; padding: 3px; }
-        .input-box { flex: 1.5; border: 1px solid #ccc; border-radius: 5px; padding: 4px 8px; font-size: 11px; text-transform: uppercase; background: #fff; }
-        .btn-send { background: #27ae60; color: white; border: none; border-radius: 10px; padding: 15px; width: 100%; font-size: 14px; text-transform: uppercase; margin-top: 25px; cursor: pointer; }
-        .btn-send:disabled { background: #95a5a6; }
+        .center-title h2 { font-size: 19px; margin: 0; color: #2c3e50; text-transform: uppercase; font-weight: 500; }
+        .page-indicator { color: #95a5a6; font-size: 14px; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .field-card { background: #fdfdfd; padding: 8px; border-radius: 8px; border: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
+        .field-label { font-size: 10px; flex: 1; text-transform: uppercase; color: #555; }
+        .select-box { width: 60px; border: 1px solid #27ae60; border-radius: 4px; font-size: 10px; padding: 2px; }
+        .input-box { flex: 1.5; border: 1px solid #ccc; border-radius: 4px; padding: 3px 6px; font-size: 10px; text-transform: uppercase; }
+        .btn-send { background: #27ae60; color: white; border: none; border-radius: 8px; padding: 12px; width: 100%; font-size: 13px; text-transform: uppercase; margin-top: 20px; }
     </style>
 </head>
 <body>
 <div class="form-container">
     <div class="header-section">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50">
-        <div class="center-title">
-            <h2>2. Antecedentes Patológicos</h2>
-        </div>
-        <div class="page-indicator">PARTE 2 / 3</div>
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="45">
+        <div class="center-title"><h2>2. Antecedentes Patológicos</h2></div>
+        <div class="page-indicator">2 / 3</div>
     </div>
-
     <form id="formP2">
         <div id="mainGrid" class="grid-layout"></div>
-        <button type="submit" id="submitBtn" class="btn-send">Guardar y Continuar a Parte 3</button>
+        <button type="submit" id="submitBtn" class="btn-send">Guardar y Continuar</button>
     </form>
 </div>
-
 <script>
     const API_URL = 'https://historial-clinico-936s.onrender.com';
     const fields = [
-        {id: "vista", n: "1. VISTA"}, {id: "auditivo", n: "2. AUDITIVO"},
-        {id: "respiratorio", n: "3. RESPIRATORIO"}, {id: "cardio", n: "4. CARDIOVASCULARES"},
-        {id: "digestivos", n: "5. DIGESTIVOS"}, {id: "sangre", n: "6. SANGRE"},
-        {id: "genitourinario", n: "7. GENITOURINARIO"}, {id: "sistema_nervioso", n: "8. SISTEMA NERVIOSO"},
-        {id: "psiquiatricos", n: "9. PSIQUIÁTRICOS"}, {id: "osteomusculares", n: "10. OSTEOMUSCULARES"},
-        {id: "reumatologicos", n: "11. REUMATOLÓGICOS"}, {id: "dermatologicas", n: "12. DERMATOLÓGICAS"},
-        {id: "alergias", n: "13. ALERGIAS"}, {id: "cirugias", n: "14. CIRUGÍAS"},
-        {id: "infecciones", n: "15. INFECCIONES"}, {id: "acc_personales", n: "16. ACCIDENTES PERS."},
-        {id: "acc_trabajo", n: "17. ACCIDENTES TRABAJO"}, {id: "medicamentos", n: "18. MEDICAMENTOS"},
-        {id: "endocrino", n: "19. ENDOCRINO"}, {id: "familiares", n: "20. ANTECEDENTES FAM."},
-        {id: "otros_especificos", n: "21. OTROS ESPECÍFICOS"}, {id: "generales", n: "22. GENERALES"}
+        {id:"vista", n:"1. VISTA"}, {id:"auditivo", n:"2. AUDITIVO"}, {id:"respiratorio", n:"3. RESPIRATORIO"},
+        {id:"cardio", n:"4. CARDIOVASCULARES"}, {id:"digestivos", n:"5. DIGESTIVOS"}, {id:"sangre", n:"6. SANGRE"},
+        {id:"genitourinario", n:"7. GENITOURINARIO"}, {id:"sistema_nervioso", n:"8. SISTEMA NERVIOSO"},
+        {id:"psiquiatricos", n:"9. PSIQUIÁTRICOS"}, {id:"osteomusculares", n:"10. OSTEOMUSCULARES"},
+        {id:"reumatologicos", n:"11. REUMATOLÓGICOS"}, {id:"dermatologicas", n:"12. DERMATOLÓGICAS"},
+        {id:"alergias", n:"13. ALERGIAS"}, {id:"cirugias", n:"14. CIRUGÍAS"}, {id:"infecciones", n:"15. INFECCIONES"},
+        {id:"acc_personales", n:"16. ACCIDENTES PERS."}, {id:"acc_trabajo", n:"17. ACCIDENTES TRABAJO"},
+        {id:"medicamentos", n:"18. MEDICAMENTOS"}, {id:"endocrino", n:"19. ENDOCRINO"},
+        {id:"familiares", n:"20. ANTECEDENTES FAM."}, {id:"otros_especificos", n:"21. OTROS ESPECÍFICOS"},
+        {id:"generales", n:"22. GENERALES"}
     ];
-
     document.getElementById('mainGrid').innerHTML = fields.map(f => `
         <div class="field-card">
             <span class="field-label">${f.n}</span>
-            <select class="select-box" id="sel_${f.id}"><option value="NO">NO</option><option value="SI">SI</option></select>
-            <input type="text" class="input-box" id="det_${f.id}" value="NORMAL">
+            <select class="select-box" id="s_${f.id}"><option value="NO">NO</option><option value="SI">SI</option></select>
+            <input type="text" class="input-box" id="d_${f.id}" value="NORMAL">
         </div>`).join('');
-
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('submitBtn');
-        btn.disabled = true; btn.innerText = "ENVIANDO DATOS...";
-
+        btn.disabled = true; btn.innerText = "PROCESANDO...";
         const payload = { paciente_id: parseInt(localStorage.getItem('paciente_id')) };
         fields.forEach(f => {
-            const isSi = document.getElementById(`sel_${f.id}`).value === 'SI';
-            payload[f.id] = isSi ? document.getElementById(`det_${f.id}`).value.toUpperCase() : "NORMAL";
+            const si = document.getElementById(`s_${f.id}`).value === 'SI';
+            payload[f.id] = si ? document.getElementById(`d_${f.id}`).value.toUpperCase() : "NORMAL";
         });
-
         try {
             const res = await fetch(`${API_URL}/declaraciones/p2/`, {
                 method: 'POST',
@@ -77,12 +67,9 @@
                 body: JSON.stringify(payload)
             });
             if (res.ok) window.location.href = "declaracion_jurada_p3.html";
-            else alert("Error 422/500: Discrepancia en campos del servidor.");
-        } catch (err) {
-            alert("Error de conexión con el servidor Render.");
-        } finally {
-            btn.disabled = false; btn.innerText = "Guardar y Continuar a Parte 3";
-        }
+            else alert("Error en el servidor. Verifique logs en Render.");
+        } catch (err) { alert("Error de conexión."); }
+        finally { btn.disabled = false; btn.innerText = "Guardar y Continuar"; }
     };
 </script>
 </body>
