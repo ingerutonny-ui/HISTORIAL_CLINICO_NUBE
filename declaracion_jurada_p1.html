@@ -3,61 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | PARTE 1 (1/3)</title>
+    <title>HC NUBE | PARTE 1</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; }
-        .form-container { background: white; padding: 40px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 1000px; margin: auto; }
-        .header-logo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .logo-img { height: 70px; width: auto; }
-        .section-title { color: #1e293b; font-weight: 800; border-bottom: 3px solid #24a174; display: inline-block; padding-bottom: 5px; margin-bottom: 25px; }
-        .info-header { background: #f1f5f9; padding: 20px; border-radius: 20px; margin-bottom: 30px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; text-align: center; }
-        .info-box { border: 2px dashed #cbd5e1; padding: 10px; border-radius: 15px; }
-        .info-label { display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
-        .info-value { font-size: 1.1rem; font-weight: 800; color: #24a174; }
-        .form-label { font-size: 0.85rem; font-weight: 600; color: #475569; margin-bottom: 5px; }
-        .form-control, .form-select { border-radius: 12px; border: 1px solid #e2e8f0; padding: 12px; font-weight: 500; background-color: #f8fafc; }
-        .form-control:focus { border-color: #24a174; box-shadow: 0 0 0 3px rgba(36, 161, 116, 0.1); }
-        .btn-submit { background-color: #24a174; border: none; border-radius: 15px; padding: 18px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; margin-top: 30px; }
-        .btn-submit:hover { background-color: #1d825d; transform: translateY(-2px); }
-        .page-indicator { float: right; color: #94a3b8; font-weight: 700; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; }
+        .form-container { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); max-width: 950px; margin: 40px auto; border: 1px solid #e0e0e0; }
+        .header-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .logo-img { height: 50px; }
+        .title-group { text-align: right; }
+        .main-title { font-size: 22px; font-weight: 800; color: #2c3e50; margin: 0; }
+        .sub-title { font-size: 14px; font-weight: 700; color: #27ae60; margin: 0; }
+        
+        .patient-summary { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 15px; margin-bottom: 25px; }
+        .summary-card { border: 1px dashed #bdc3c7; border-radius: 12px; padding: 10px; text-align: center; background: #fafafa; }
+        .summary-label { display: block; font-size: 10px; font-weight: 700; color: #7f8c8d; text-transform: uppercase; margin-bottom: 2px; }
+        .summary-data { font-size: 14px; font-weight: 700; color: #2c3e50; }
+
+        .section-header { border-left: 4px solid #27ae60; padding-left: 10px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .section-header h5 { font-size: 16px; font-weight: 800; margin: 0; color: #2c3e50; }
+        .page-num { font-size: 14px; color: #95a5a6; font-weight: 700; }
+
+        label { font-size: 11px; font-weight: 700; color: #576574; margin-bottom: 4px; }
+        .form-control, .form-select { border-radius: 8px; border: 1px solid #dcdde1; padding: 8px 12px; font-size: 13px; background-color: #fcfcfc; transition: all 0.2s; }
+        .form-control:focus { border-color: #27ae60; box-shadow: 0 0 0 0.2rem rgba(39, 174, 96, 0.1); background-color: #fff; }
+
+        .btn-submit { background-color: #27ae60; border: none; border-radius: 10px; padding: 14px; width: 100%; color: white; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 25px; transition: 0.3s; }
+        .btn-submit:hover { background-color: #219150; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
 <div class="form-container">
-    <div class="header-logo">
+    <div class="header-section">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" class="logo-img">
-        <div class="text-end">
-            <h2 class="fw-bold m-0" style="color: #1e293b;">DECLARACIÓN JURADA DE SALUD</h2>
-            <p class="text-success fw-bold m-0">PARTE 1: AFILIACIÓN DEL TRABAJADOR</p>
+        <div class="title-group">
+            <h1 class="main-title">DECLARACIÓN JURADA DE SALUD</h1>
+            <p class="sub-title">PARTE 1: AFILIACIÓN DEL TRABAJADOR</p>
         </div>
     </div>
 
-    <div class="info-header">
-        <div class="info-box">
-            <span class="info-label">Apellidos y Nombres</span>
-            <span id="display_nombre" class="info-value">---</span>
+    <div class="patient-summary">
+        <div class="summary-card">
+            <span class="summary-label">Apellidos y Nombres</span>
+            <span id="display_nombre" class="summary-data">Cargando...</span>
         </div>
-        <div class="info-box">
-            <span class="info-label">CI</span>
-            <span id="display_ci" class="info-value">---</span>
+        <div class="summary-card">
+            <span class="summary-label">CI</span>
+            <span id="display_ci" class="summary-data">---</span>
         </div>
-        <div class="info-box">
-            <span class="info-label">Código</span>
-            <span id="display_codigo" class="info-value">---</span>
+        <div class="summary-card">
+            <span class="summary-label">Código</span>
+            <span id="display_codigo" class="summary-data">---</span>
         </div>
     </div>
 
-    <h4 class="section-title">I. FILIACIÓN <span class="page-indicator">1 / 2</span></h4>
+    <div class="section-header">
+        <h5>I. FILIACIÓN</h5>
+        <span class="page-num">1 / 2</span>
+    </div>
 
     <form id="formFiliacion" class="row g-3">
         <div class="col-md-3">
-            <label class="form-label">1. Edad</label>
+            <label>1. Edad</label>
             <input type="number" id="edad" class="form-control" required>
         </div>
         <div class="col-md-3">
-            <label class="form-label">2. Sexo</label>
+            <label>2. Sexo</label>
             <select id="sexo" class="form-select" required>
                 <option value="">Seleccione...</option>
                 <option value="MASCULINO">MASCULINO</option>
@@ -65,42 +76,42 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label class="form-label">3. Fecha Nacimiento</label>
+            <label>3. Fecha Nacimiento</label>
             <input type="date" id="fecha_nacimiento" class="form-control" required>
         </div>
         <div class="col-md-3">
-            <label class="form-label">4. Lugar Nacimiento</label>
-            <input type="text" id="lugar_nacimiento" class="form-control" placeholder="Ciudad/País" required>
+            <label>4. Lugar Nacimiento</label>
+            <input type="text" id="lugar_nacimiento" class="form-control" required>
         </div>
 
         <div class="col-md-6">
-            <label class="form-label">5. Domicilio (Av./Calle)</label>
+            <label>5. Domicilio (Av./Calle)</label>
             <input type="text" id="domicilio" class="form-control" required>
         </div>
         <div class="col-md-3">
-            <label class="form-label">6. Nº Casa / Depto</label>
+            <label>6. Nº Casa / Depto</label>
             <input type="text" id="n_casa" class="form-control" required>
         </div>
         <div class="col-md-3">
-            <label class="form-label">7. Zona / Barrio</label>
+            <label>7. Zona / Barrio</label>
             <input type="text" id="zona_barrio" class="form-control" required>
         </div>
 
         <div class="col-md-4">
-            <label class="form-label">8. Ciudad</label>
+            <label>8. Ciudad</label>
             <input type="text" id="ciudad" class="form-control" required>
         </div>
         <div class="col-md-4">
-            <label class="form-label">9. País</label>
+            <label>9. País</label>
             <input type="text" id="pais" class="form-control" value="BOLIVIA" required>
         </div>
         <div class="col-md-4">
-            <label class="form-label">10. Teléfono</label>
+            <label>10. Teléfono</label>
             <input type="text" id="telefono" class="form-control" required>
         </div>
 
         <div class="col-md-6">
-            <label class="form-label">11. Estado Civil</label>
+            <label>11. Estado Civil</label>
             <select id="estado_civil" class="form-select" required>
                 <option value="SOLTERO/A">SOLTERO/A</option>
                 <option value="CASADO/A">CASADO/A</option>
@@ -110,12 +121,12 @@
             </select>
         </div>
         <div class="col-md-6">
-            <label class="form-label">12. Profesión / Labor</label>
+            <label>12. Profesión / Labor</label>
             <input type="text" id="profesion_oficio" class="form-control" required>
         </div>
 
-        <div class="col-12">
-            <button type="submit" class="btn-submit">GUARDAR Y CONTINUAR A ANTECEDENTES</button>
+        <div class="col-12 text-center">
+            <button type="submit" id="btnGuardar" class="btn-submit">GUARDAR Y CONTINUAR A ANTECEDENTES</button>
         </div>
     </form>
 </div>
@@ -123,7 +134,6 @@
 <script>
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
 
-    // Cargar datos del paciente desde localStorage
     window.onload = () => {
         const nombre = localStorage.getItem('paciente_nombre');
         const apellido = localStorage.getItem('paciente_apellido');
@@ -132,21 +142,20 @@
         const id = localStorage.getItem('paciente_id');
 
         if (!id) {
-            alert("Sesión no válida. Regrese al inicio.");
             window.location.href = "index.html";
             return;
         }
 
-        document.getElementById('display_nombre').innerText = `${apellido} ${nombre}`;
+        document.getElementById('display_nombre').innerText = `${apellido} ${nombre}`.replace('null', '').trim();
         document.getElementById('display_ci').innerText = ci;
         document.getElementById('display_codigo').innerText = codigo;
     };
 
     document.getElementById('formFiliacion').onsubmit = async (e) => {
         e.preventDefault();
-        const btn = e.target.querySelector('button');
+        const btn = document.getElementById('btnGuardar');
         btn.disabled = true;
-        btn.innerText = "PROCESANDO...";
+        btn.innerText = "GUARDANDO...";
 
         const payload = {
             paciente_id: parseInt(localStorage.getItem('paciente_id')),
@@ -174,13 +183,13 @@
             if (res.ok) {
                 window.location.href = "declaracion_jurada_p2.html";
             } else {
-                const errorData = await res.json();
-                alert("Error en el servidor: " + JSON.stringify(errorData.detail));
+                const err = await res.json();
+                alert("Error: " + JSON.stringify(err.detail));
                 btn.disabled = false;
                 btn.innerText = "GUARDAR Y CONTINUAR A ANTECEDENTES";
             }
         } catch (error) {
-            alert("Error de conexión con el servidor. Verifique su internet.");
+            alert("Error de conexión con el servidor");
             btn.disabled = false;
             btn.innerText = "GUARDAR Y CONTINUAR A ANTECEDENTES";
         }
