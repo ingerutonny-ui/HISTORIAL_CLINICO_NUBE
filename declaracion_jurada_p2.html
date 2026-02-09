@@ -18,38 +18,99 @@
 </head>
 <body>
 <div class="form-container">
-    <h4 class="text-center fw-bold mb-4">2. ANTECEDENTES PATOLÓGICOS (22 CAMPOS)</h4>
+    <h4 class="text-center fw-bold mb-4">2. ANTECEDENTES PATOLÓGICOS</h4>
     <form id="formP2">
         <div id="camposContainer" class="grid-layout">
             </div>
-        <button type="submit" class="btn-next">SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)</button>
+        <button type="submit" id="btnSiguiente" class="btn-next">SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)</button>
     </form>
 </div>
 
 <script>
-    const titulos = [
-        "VISTA (LENTES/GLAUCOMA)", "AUDITIVO (SORDERA/VERTIGO)", "RESPIRATORIOS (ASMA/TBC)", "CARDIOVASCULARES (HTA)",
-        "DIGESTIVOS (GASTRITIS)", "SANGRE (ANEMIA)", "GENITOURINARIO", "SISTEMA NERVIOSO",
-        "PSIQUIATRICOS", "OSTEOMUSCULARES", "PIEL/DERMATOLOGICAS", "ALERGIAS",
-        "CIRUGIAS", "ACCIDENTES TRABAJO", "ACCIDENTES PARTICULARES", "MEDICAMENTOS",
-        "INFECCIOSAS (CHAGAS)", "APARATO URINARIO", "SISTEMA ENDOCRINO", "SISTEMA LINFATICO",
-        "ANTECEDENTES FAMILIARES", "OTROS ESPECIFICOS"
+    const API_BASE = 'https://historial-clinico-936s.onrender.com';
+    
+    // Mapeo exacto con schemas.py y models.py
+    const camposMapeados = [
+        { id: "vista", label: "VISTA (LENTES/GLAUCOMA)" },
+        { id: "auditivo", label: "AUDITIVO (SORDERA/VERTIGO)" },
+        { id: "respiratorio", label: "RESPIRATORIOS (ASMA/TBC)" },
+        { id: "cardio", label: "CARDIOVASCULARES (HTA)" },
+        { id: "estomago", label: "DIGESTIVOS (GASTRITIS)" },
+        { id: "sangre", label: "SANGRE (ANEMIA)" },
+        { id: "genito", label: "GENITOURINARIO" },
+        { id: "nervioso", label: "SISTEMA NERVIOSO" },
+        { id: "psiquiatrico", label: "PSIQUIATRICOS" },
+        { id: "osteo", label: "OSTEOMUSCULARES" },
+        { id: "dermato", label: "PIEL/DERMATOLOGICAS" },
+        { id: "reumato", label: "ALERGIAS" }, // Sincronizado con esquema anterior
+        { id: "cirugias", label: "CIRUGIAS" },
+        { id: "accidentes_p", label: "ACCIDENTES TRABAJO" },
+        { id: "otros", label: "ACCIDENTES PARTICULARES" },
+        { id: "generales", label: "MEDICAMENTOS" },
+        { id: "infecciones", label: "INFECCIOSAS (CHAGAS)" },
+        { id: "endocrino", label: "SISTEMA ENDOCRINO" }
     ];
 
     const container = document.getElementById('camposContainer');
-    titulos.forEach((titulo, index) => {
+    camposMapeados.forEach((campo, index) => {
         container.innerHTML += `
             <div class="item-card">
-                <span class="item-label">${index + 1}. ${titulo}</span>
-                <select class="select-custom" name="estado_${index}"><option value="NO">NO</option><option value="SI">SI</option></select>
-                <input type="text" class="input-custom" name="detalle_${index}" placeholder="DETALLE O NORMAL">
+                <span class="item-label">${index + 1}. ${campo.label}</span>
+                <select class="select-custom" id="sel_${campo.id}">
+                    <option value="NO">NO</option>
+                    <option value="SI">SI</option>
+                </select>
+                <input type="text" class="input-custom" id="det_${campo.id}" placeholder="DETALLE O NORMAL">
             </div>`;
     });
 
-    document.getElementById('formP2').onsubmit = (e) => {
+    document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
-        // Lógica de guardado en localStorage y salto a P3
-        window.location.href = "declaracion_jurada_p3.html";
+        const btn = document.getElementById('btnSiguiente');
+        btn.disabled = true;
+        btn.innerText = "GUARDANDO EN NUBE...";
+
+        const paciente_id = localStorage.getItem('paciente_id');
+        
+        const payload = {
+            paciente_id: parseInt(paciente_id),
+            vista: document.getElementById('sel_vista').value === 'SI' ? document.getElementById('det_vista').value : 'NORMAL',
+            auditivo: document.getElementById('sel_auditivo').value === 'SI' ? document.getElementById('det_auditivo').value : 'NORMAL',
+            respiratorio: document.getElementById('sel_respiratorio').value === 'SI' ? document.getElementById('det_respiratorio').value : 'NORMAL',
+            cardio: document.getElementById('sel_cardio').value === 'SI' ? document.getElementById('det_cardio').value : 'NORMAL',
+            estomago: document.getElementById('sel_estomago').value === 'SI' ? document.getElementById('det_estomago').value : 'NORMAL',
+            sangre: document.getElementById('sel_sangre').value === 'SI' ? document.getElementById('det_sangre').value : 'NORMAL',
+            genito: document.getElementById('sel_genito').value === 'SI' ? document.getElementById('det_genito').value : 'NORMAL',
+            nervioso: document.getElementById('sel_nervioso').value === 'SI' ? document.getElementById('det_nervioso').value : 'NORMAL',
+            psiquiatrico: document.getElementById('sel_psiquiatrico').value === 'SI' ? document.getElementById('det_psiquiatrico').value : 'NORMAL',
+            osteo: document.getElementById('sel_osteo').value === 'SI' ? document.getElementById('det_osteo').value : 'NORMAL',
+            endocrino: document.getElementById('sel_endocrino').value === 'SI' ? document.getElementById('det_endocrino').value : 'NORMAL',
+            reumato: document.getElementById('sel_reumato').value === 'SI' ? document.getElementById('det_reumato').value : 'NORMAL',
+            generales: document.getElementById('sel_generales').value === 'SI' ? document.getElementById('det_generales').value : 'NORMAL',
+            dermato: document.getElementById('sel_dermato').value === 'SI' ? document.getElementById('det_dermato').value : 'NORMAL',
+            infecciones: document.getElementById('sel_infecciones').value === 'SI' ? document.getElementById('det_infecciones').value : 'NORMAL',
+            cirugias: document.getElementById('sel_cirugias').value === 'SI' ? document.getElementById('det_cirugias').value : 'NORMAL',
+            accidentes_p: document.getElementById('sel_accidentes_p').value === 'SI' ? document.getElementById('det_accidentes_p').value : 'NORMAL',
+            otros: document.getElementById('sel_otros').value === 'SI' ? document.getElementById('det_otros').value : 'NORMAL'
+        };
+
+        try {
+            const res = await fetch(`${API_BASE}/declaraciones/p2/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                window.location.href = "declaracion_jurada_p3.html";
+            } else {
+                alert("Error al guardar antecedentes");
+                btn.disabled = false;
+                btn.innerText = "SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)";
+            }
+        } catch (error) {
+            alert("Error de conexión");
+            btn.disabled = false;
+        }
     };
 </script>
 </body>
