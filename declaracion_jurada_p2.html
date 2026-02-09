@@ -2,47 +2,36 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | PARTE 2 (2/3)</title>
+    <title>HC NUBE | P2</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
-        .form-container { background: white; padding: 30px; border-radius: 20px; max-width: 1100px; margin: 20px auto; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .header-section { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #22c55e; padding-bottom: 15px; margin-bottom: 25px; }
-        .title-center { flex: 1; text-align: center; }
-        .title-center h2 { font-size: 1.2rem; font-weight: 700; color: #1e293b; text-transform: uppercase; margin: 0; }
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .field-card { display: flex; align-items: center; background: #ffffff; padding: 10px; border-radius: 10px; border: 1px solid #e2e8f0; transition: border-color 0.2s; }
-        .field-card:hover { border-color: #22c55e; }
-        .label-text { font-size: 11px; font-weight: 700; color: #475569; flex: 1; text-transform: uppercase; }
-        .select-yn { width: 60px; font-size: 11px; font-weight: bold; border: 1px solid #22c55e; border-radius: 5px; cursor: pointer; padding: 3px; }
-        .input-detail { flex: 1.5; font-size: 11px; border: 1px solid #cbd5e1; border-radius: 5px; padding: 4px 8px; margin-left: 8px; text-transform: uppercase; outline: none; }
-        .input-detail:focus { border-color: #22c55e; box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1); }
-        .btn-next { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: 700; text-transform: uppercase; margin-top: 25px; transition: 0.3s; }
-        .btn-next:hover { background: #16a34a; transform: scale(1.01); }
+        body { background: #f4f7f6; font-family: sans-serif; }
+        .box { background: white; padding: 25px; border-radius: 15px; max-width: 1000px; margin: 20px auto; }
+        .header { display: flex; align-items: center; border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 20px; }
+        .t-center { flex: 1; text-align: center; text-transform: uppercase; font-weight: bold; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .row-item { display: flex; align-items: center; background: #fafafa; padding: 8px; border: 1px solid #eee; border-radius: 5px; }
+        .lbl { font-size: 10px; flex: 1; }
+        .sel { width: 55px; font-size: 10px; }
+        .inp { flex: 1.5; font-size: 10px; margin-left: 5px; text-transform: uppercase; }
+        .btn-g { background: #22c55e; color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; margin-top: 20px; }
     </style>
 </head>
 <body>
-
-<div class="form-container">
-    <div class="header-section">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50">
-        <div class="title-center">
-            <h2>2. Antecedentes Patológicos</h2>
-        </div>
-        <div style="font-size: 12px; font-weight: bold; color: #94a3b8;">PARTE 2 / 3</div>
+<div class="box">
+    <div class="header">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="40">
+        <div class="t-center">2. Antecedentes Patológicos</div>
+        <div style="font-size: 10px;">P2 / 3</div>
     </div>
-
-    <form id="p2Form">
-        <div id="fieldsGrid" class="grid-layout">
-            </div>
-        <button type="submit" id="btnSubmit" class="btn-next">Guardar y Continuar a Parte 3</button>
+    <form id="fP2">
+        <div id="grid" class="grid"></div>
+        <button type="submit" id="bg" class="btn-g">GUARDAR Y CONTINUAR</button>
     </form>
 </div>
-
 <script>
-    const API_URL = 'https://historial-clinico-936s.onrender.com';
-    const items = [
+    const API = 'https://historial-clinico-936s.onrender.com';
+    const campos = [
         {id:"vista", n:"1. VISTA"}, {id:"auditivo", n:"2. AUDITIVO"}, {id:"respiratorio", n:"3. RESPIRATORIO"},
         {id:"cardio", n:"4. CARDIOVASCULARES"}, {id:"digestivos", n:"5. DIGESTIVOS"}, {id:"sangre", n:"6. SANGRE"},
         {id:"genitourinario", n:"7. GENITOURINARIO"}, {id:"sistema_nervioso", n:"8. SISTEMA NERVIOSO"},
@@ -55,68 +44,29 @@
         {id:"generales", n:"22. GENERALES"}
     ];
 
-    const grid = document.getElementById('fieldsGrid');
-    grid.innerHTML = items.map(item => `
-        <div class="field-card">
-            <span class="label-text">${item.n}</span>
-            <select class="select-yn" id="s_${item.id}" onchange="toggleInp('${item.id}')">
-                <option value="NO">NO</option>
-                <option value="SI">SI</option>
-            </select>
-            <input type="text" class="input-detail" id="d_${item.id}" value="NORMAL">
-        </div>
-    `).join('');
+    document.getElementById('grid').innerHTML = campos.map(c => `
+        <div class="row-item">
+            <span class="lbl">${c.n}</span>
+            <select class="sel" id="s_${c.id}"><option value="NO">NO</option><option value="SI">SI</option></select>
+            <input type="text" class="inp" id="d_${c.id}" value="NORMAL">
+        </div>`).join('');
 
-    function toggleInp(id) {
-        const sel = document.getElementById(`s_${id}`);
-        const inp = document.getElementById(`d_${id}`);
-        if (sel.value === "NO") {
-            inp.value = "NORMAL";
-        } else {
-            if (inp.value === "NORMAL") inp.value = "";
-            inp.focus();
-        }
-    }
-
-    document.getElementById('p2Form').onsubmit = async (e) => {
+    document.getElementById('fP2').onsubmit = async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btnSubmit');
-        const pacId = localStorage.getItem('paciente_id');
-
-        if (!pacId) {
-            alert("Error: No se encontró ID de paciente. Inicie el registro de nuevo.");
-            window.location.href = "registro_paciente.html";
-            return;
-        }
-
-        btn.innerText = "SINCRONIZANDO CON NUBE...";
-        btn.disabled = true;
-
-        const data = { paciente_id: parseInt(pacId) };
-        items.forEach(item => {
-            const isSi = document.getElementById(`s_${item.id}`).value === "SI";
-            data[item.id] = isSi ? document.getElementById(`d_${item.id}`).value.toUpperCase() : "NORMAL";
+        const data = { paciente_id: parseInt(localStorage.getItem('paciente_id')) };
+        campos.forEach(c => {
+            const si = document.getElementById(`s_${c.id}`).value === 'SI';
+            data[c.id] = si ? document.getElementById(`d_${c.id}`).value.toUpperCase() : "NORMAL";
         });
 
         try {
-            const response = await fetch(`${API_URL}/declaraciones/p2/`, {
+            const res = await fetch(`${API}/declaraciones/p2/`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-
-            if (response.ok) {
-                window.location.href = "declaracion_jurada_p3.html";
-            } else {
-                const err = await response.json();
-                alert("Error de validación (422): Revise que todos los campos existan en el Backend.");
-            }
-        } catch (error) {
-            alert("Error de red al intentar guardar.");
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "Guardar y Continuar a Parte 3";
-        }
+            if(res.ok) window.location.href = "declaracion_jurada_p3.html";
+        } catch(e) { alert("Error de red"); }
     };
 </script>
 </body>
