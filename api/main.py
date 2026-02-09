@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, database
 
-# Crea las tablas al iniciar el servidor
-models.Base.metadata.create_all(bind=database.engine)
+# Creación de tablas corregida
+database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
