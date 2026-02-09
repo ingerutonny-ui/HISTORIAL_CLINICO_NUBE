@@ -31,9 +31,10 @@ class AntecedentesCreate(BaseModel):
     paciente_id: int
     vista: str; auditivo: str; respiratorio: str; cardio: str
     estomago: str; sangre: str; genito: str; nervioso: str
-    psiquiatrico: str; osteo: str; endocrino: str; reumato: str
-    generales: str; dermato: str; infecciones: str; cirugias: str
-    accidentes_p: str; otros: str
+    psiquiatrico: str; osteo: str; dermato: str; alergias: str
+    cirugias: str; acc_trabajo: str; acc_personales: str; medicamentos: str
+    infecciosas: str; urinario: str; endocrino: str; linfatico: str
+    familiares: str; reumato: str; otros: str
 
 class HabitosCreate(BaseModel):
     paciente_id: int
