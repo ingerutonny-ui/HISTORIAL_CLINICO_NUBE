@@ -18,7 +18,7 @@
 </head>
 <body>
 <div class="form-container">
-    <h4 class="text-center fw-bold mb-4">2. ANTECEDENTES PATOLÓGICOS</h4>
+    <h4 class="text-center fw-bold mb-4">2. ANTECEDENTES PATOLÓGICOS (22 CAMPOS)</h4>
     <form id="formP2">
         <div id="camposContainer" class="grid-layout">
             </div>
@@ -29,7 +29,7 @@
 <script>
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     
-    // Mapeo exacto con schemas.py y models.py
+    // Lista de los 22 campos exactos requeridos
     const camposMapeados = [
         { id: "vista", label: "VISTA (LENTES/GLAUCOMA)" },
         { id: "auditivo", label: "AUDITIVO (SORDERA/VERTIGO)" },
@@ -42,13 +42,17 @@
         { id: "psiquiatrico", label: "PSIQUIATRICOS" },
         { id: "osteo", label: "OSTEOMUSCULARES" },
         { id: "dermato", label: "PIEL/DERMATOLOGICAS" },
-        { id: "reumato", label: "ALERGIAS" }, // Sincronizado con esquema anterior
+        { id: "alergias", label: "ALERGIAS" },
         { id: "cirugias", label: "CIRUGIAS" },
-        { id: "accidentes_p", label: "ACCIDENTES TRABAJO" },
-        { id: "otros", label: "ACCIDENTES PARTICULARES" },
-        { id: "generales", label: "MEDICAMENTOS" },
-        { id: "infecciones", label: "INFECCIOSAS (CHAGAS)" },
-        { id: "endocrino", label: "SISTEMA ENDOCRINO" }
+        { id: "acc_trabajo", label: "ACCIDENTES TRABAJO" },
+        { id: "acc_personales", label: "ACCIDENTES PARTICULARES" },
+        { id: "medicamentos", label: "MEDICAMENTOS" },
+        { id: "infecciosas", label: "INFECCIOSAS (CHAGAS)" },
+        { id: "urinario", label: "APARATO URINARIO" },
+        { id: "endocrino", label: "SISTEMA ENDOCRINO" },
+        { id: "linfatico", label: "SISTEMA LINFATICO" },
+        { id: "familiares", label: "ANTECEDENTES FAMILIARES" },
+        { id: "otros", label: "OTROS ESPECIFICOS" }
     ];
 
     const container = document.getElementById('camposContainer');
@@ -68,31 +72,23 @@
         e.preventDefault();
         const btn = document.getElementById('btnSiguiente');
         btn.disabled = true;
-        btn.innerText = "GUARDANDO EN NUBE...";
+        btn.innerText = "GUARDANDO...";
 
         const paciente_id = localStorage.getItem('paciente_id');
-        
-        const payload = {
-            paciente_id: parseInt(paciente_id),
-            vista: document.getElementById('sel_vista').value === 'SI' ? document.getElementById('det_vista').value : 'NORMAL',
-            auditivo: document.getElementById('sel_auditivo').value === 'SI' ? document.getElementById('det_auditivo').value : 'NORMAL',
-            respiratorio: document.getElementById('sel_respiratorio').value === 'SI' ? document.getElementById('det_respiratorio').value : 'NORMAL',
-            cardio: document.getElementById('sel_cardio').value === 'SI' ? document.getElementById('det_cardio').value : 'NORMAL',
-            estomago: document.getElementById('sel_estomago').value === 'SI' ? document.getElementById('det_estomago').value : 'NORMAL',
-            sangre: document.getElementById('sel_sangre').value === 'SI' ? document.getElementById('det_sangre').value : 'NORMAL',
-            genito: document.getElementById('sel_genito').value === 'SI' ? document.getElementById('det_genito').value : 'NORMAL',
-            nervioso: document.getElementById('sel_nervioso').value === 'SI' ? document.getElementById('det_nervioso').value : 'NORMAL',
-            psiquiatrico: document.getElementById('sel_psiquiatrico').value === 'SI' ? document.getElementById('det_psiquiatrico').value : 'NORMAL',
-            osteo: document.getElementById('sel_osteo').value === 'SI' ? document.getElementById('det_osteo').value : 'NORMAL',
-            endocrino: document.getElementById('sel_endocrino').value === 'SI' ? document.getElementById('det_endocrino').value : 'NORMAL',
-            reumato: document.getElementById('sel_reumato').value === 'SI' ? document.getElementById('det_reumato').value : 'NORMAL',
-            generales: document.getElementById('sel_generales').value === 'SI' ? document.getElementById('det_generales').value : 'NORMAL',
-            dermato: document.getElementById('sel_dermato').value === 'SI' ? document.getElementById('det_dermato').value : 'NORMAL',
-            infecciones: document.getElementById('sel_infecciones').value === 'SI' ? document.getElementById('det_infecciones').value : 'NORMAL',
-            cirugias: document.getElementById('sel_cirugias').value === 'SI' ? document.getElementById('det_cirugias').value : 'NORMAL',
-            accidentes_p: document.getElementById('sel_accidentes_p').value === 'SI' ? document.getElementById('det_accidentes_p').value : 'NORMAL',
-            otros: document.getElementById('sel_otros').value === 'SI' ? document.getElementById('det_otros').value : 'NORMAL'
-        };
+        if (!paciente_id) {
+            alert("Error: ID de paciente no encontrado.");
+            btn.disabled = false;
+            return;
+        }
+
+        const payload = { paciente_id: parseInt(paciente_id) };
+
+        camposMapeados.forEach(campo => {
+            const selectVal = document.getElementById(`sel_${campo.id}`).value;
+            const detalleVal = document.getElementById(`det_${campo.id}`).value.trim();
+            // Si es SI, guarda el detalle. Si es NO, guarda 'NORMAL'.
+            payload[campo.id] = (selectVal === 'SI') ? (detalleVal || 'SI (SIN DETALLE)') : 'NORMAL';
+        });
 
         try {
             const res = await fetch(`${API_BASE}/declaraciones/p2/`, {
@@ -103,12 +99,12 @@
             if (res.ok) {
                 window.location.href = "declaracion_jurada_p3.html";
             } else {
-                alert("Error al guardar antecedentes");
+                const error = await res.json();
+                alert("Error al guardar: " + JSON.stringify(error.detail));
                 btn.disabled = false;
-                btn.innerText = "SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)";
             }
         } catch (error) {
-            alert("Error de conexión");
+            alert("Error de conexión con el servidor");
             btn.disabled = false;
         }
     };
