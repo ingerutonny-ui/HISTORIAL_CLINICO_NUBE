@@ -26,12 +26,12 @@ def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
 @app.post("/filiacion/")
-def save_p1(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
+def save_filiacion(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
     try:
-        new_entry = models.DeclaracionJurada(**data.dict())
-        db.add(new_entry)
+        new_row = models.DeclaracionJurada(**data.dict())
+        db.add(new_row)
         db.commit()
-        return {"status": "ok"}
+        return {"status": "success"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -41,6 +41,6 @@ def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
         new_entry = models.AntecedentesP2(**data.dict())
         db.add(new_entry)
         db.commit()
-        return {"status": "ok"}
+        return {"status": "success"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
