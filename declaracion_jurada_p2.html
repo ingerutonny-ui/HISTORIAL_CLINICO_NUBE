@@ -23,18 +23,17 @@
 <div class="form-container">
     <div class="header-p2">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" class="logo-img">
-        <h4 class="fw-bold m-0">2. ANTECEDENTES PATOLÓGICOS</h4>
+        <h4 class="fw-bold m-0 text-uppercase">2. Antecedentes Patológicos</h4>
         <div class="page-indicator">(2/3)</div>
     </div>
     <form id="formP2">
         <div id="camposContainer" class="grid-layout"></div>
-        <button type="submit" id="btnSiguiente" class="btn-next">SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)</button>
+        <button type="submit" id="btnSiguiente" class="btn-next">Siguiente: Hoja 3 (Hábitos y Trabajo)</button>
     </form>
 </div>
 
 <script>
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
-    
     const camposMapeados = [
         { id: "vista", label: "VISTA (LENTES/GLAUCOMA)" },
         { id: "auditivo", label: "AUDITIVO (SORDERA/VERTIGO)" },
@@ -76,20 +75,18 @@
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnSiguiente');
-        btn.disabled = true;
-        btn.innerText = "GUARDANDO...";
+        btn.disabled = true; btn.innerText = "GUARDANDO...";
         
-        const paciente_id = localStorage.getItem('paciente_id');
         const payload = { 
-            paciente_id: parseInt(paciente_id),
+            paciente_id: parseInt(localStorage.getItem('paciente_id')),
             otros: "NORMAL",
             generales: "NORMAL"
         };
         
         camposMapeados.forEach(c => {
             const esSi = document.getElementById(`sel_${c.id}`).value === 'SI';
-            const detalle = document.getElementById(`det_${c.id}`).value.trim();
-            payload[c.id] = esSi ? (detalle !== "NORMAL" ? detalle : "SI") : "NORMAL";
+            const det = document.getElementById(`det_${c.id}`).value.trim();
+            payload[c.id] = esSi ? (det === "NORMAL" ? "SI" : det) : "NORMAL";
         });
 
         try {
@@ -98,18 +95,15 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) {
-                window.location.href = "declaracion_jurada_p3.html";
-            } else {
+            if (res.ok) window.location.href = "declaracion_jurada_p3.html";
+            else { 
                 const err = await res.json();
-                alert("Error de validación: " + JSON.stringify(err.detail));
-                btn.disabled = false;
-                btn.innerText = "SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)";
+                alert("Error: " + JSON.stringify(err.detail));
+                btn.disabled = false; btn.innerText = "Siguiente: Hoja 3";
             }
         } catch (error) {
-            alert("Error de conexión con el servidor");
-            btn.disabled = false;
-            btn.innerText = "SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)";
+            alert("Error de conexión");
+            btn.disabled = false; btn.innerText = "Siguiente: Hoja 3";
         }
     };
 </script>
