@@ -7,11 +7,6 @@ class PacienteCreate(BaseModel):
     ci: str
     codigo_paciente: str
 
-class Paciente(PacienteCreate):
-    id: int
-    class Config:
-        orm_mode = True
-
 class FiliacionCreate(BaseModel):
     paciente_id: int
     edad: int
@@ -39,15 +34,15 @@ class AntecedentesCreate(BaseModel):
     sistema_nervioso: str
     psiquiatricos: str
     osteomusculares: str
-    endocrino: str
+    reumatologicos: str
+    dermatologicas: str
     alergias: str
     cirugias: str
-    acc_trabajo: str
+    infecciones: str
     acc_personales: str
+    acc_trabajo: str
     medicamentos: str
-    infecciosas: str
-    ap_urinario: str
-    linfatico: str
-    reumatologicos: str
-    otros: str
+    endocrino: str
+    familiares: str
+    otros_especificos: str
     generales: str
