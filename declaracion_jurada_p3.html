@@ -53,6 +53,11 @@
                 <input type="text" id="deportes_detalle" class="form-control" placeholder="¿CUÁL?" value="N/A">
             </div>
             <div class="col-md-4">
+                <label class="form-label">ALERGIAS</label>
+                <select id="alergias_si_no" class="form-select mb-2"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="alergias_detalle" class="form-control" placeholder="DETALLE" value="N/A">
+            </div>
+            <div class="col-md-4">
                 <label class="form-label">GRUPO SANGUÍNEO</label>
                 <input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+" required>
             </div>
@@ -143,6 +148,8 @@
             pijchar_si_no: document.getElementById('pijchar_si_no').value,
             deportes_si_no: document.getElementById('deportes_si_no').value,
             deportes_detalle: document.getElementById('deportes_detalle').value || "N/A",
+            alergias_si_no: document.getElementById('alergias_si_no').value,
+            alergias_detalle: document.getElementById('alergias_detalle').value || "N/A",
             accidentes_si_no: "NO",
             accidentes_detalle: "N/A",
             medicamentos_si_no: "NO",
@@ -155,7 +162,6 @@
         try {
             const res = await fetch(`${API_BASE}/declaraciones/p3/`, {
                 method: 'POST',
-                mode: 'cors',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
@@ -165,12 +171,10 @@
                 window.location.href = "index.html";
             } else {
                 const errorData = await res.json();
-                console.error("Error del servidor:", errorData);
-                alert("ERROR " + res.status + ": El servidor rechazó los datos.");
+                alert("ERROR AL GUARDAR: " + JSON.stringify(errorData.detail));
             }
         } catch (error) {
-            console.error("Error de conexión:", error);
-            alert("ERROR DE RED: No se pudo contactar al servidor. Verifique que el Backend esté activo.");
+            alert("ERROR DE RED: Verifique su conexión.");
         } finally {
             btn.disabled = false;
             btn.innerText = "TERMINAR Y GUARDAR REGISTRO 💾";
