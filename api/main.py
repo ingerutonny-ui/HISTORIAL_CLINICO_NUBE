@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, database
 
-# RECONSTRUCCIÓN AUTOMÁTICA DE TABLAS (EVITA ERROR DE BASE DE DATOS PERDIDA)
+# Crea las tablas al iniciar el servidor
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
