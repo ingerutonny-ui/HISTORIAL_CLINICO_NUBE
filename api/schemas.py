@@ -1,4 +1,4 @@
-from pinfo import BaseModel
+from pydantic import BaseModel
 from typing import Optional
 
 class PacienteBase(BaseModel):
