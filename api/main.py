@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, database
 
-models.Base.metadata.create_all(bind=database.engine)
+database.Base.metadata.create_all(bind=database.engine)
+
 app = FastAPI()
 
 app.add_middleware(
@@ -22,32 +23,24 @@ def get_db():
         db.close()
 
 @app.post("/pacientes/")
-def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    db_paciente = models.Paciente(
-        nombre=paciente.nombre,
-        apellido=paciente.apellido,
-        ci=paciente.ci,
-        codigo_paciente=paciente.codigo_paciente
-    )
+def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
+    db_paciente = models.Paciente(**paciente.dict())
     db.add(db_paciente)
     db.commit()
     db.refresh(db_paciente)
     return db_paciente
 
 @app.get("/pacientes/")
-def list_pacientes(db: Session = Depends(get_db)):
+def listar_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
-@app.post("/filiacion/")
-def save_p1(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
-    new_entry = models.DeclaracionJurada(**data.dict())
-    db.add(new_entry)
-    db.commit()
-    return {"status": "ok"}
-
 @app.post("/declaraciones/p2/")
-def save_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
-    new_entry = models.AntecedentesP2(**data.dict())
-    db.add(new_entry)
-    db.commit()
-    return {"status": "ok"}
+def guardar_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
+    try:
+        nueva_p2 = models.AntecedentesP2(**data.dict())
+        db.add(nueva_p2)
+        db.commit()
+        return {"status": "success"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
