@@ -31,6 +31,7 @@
         <button type="submit" id="btnSiguiente" class="btn-next">GUARDAR Y CONTINUAR</button>
     </form>
 </div>
+
 <script>
     const API_BASE = 'https://historial-clinico-936s.onrender.com';
     const camposMapeados = [
@@ -73,8 +74,8 @@
                 body: JSON.stringify(payload)
             });
             if (res.ok) window.location.href = "declaracion_jurada_p3.html";
-            else { const err = await res.json(); alert("Error: " + JSON.stringify(err.detail)); btn.disabled = false; }
-        } catch (error) { alert("Error de red"); btn.disabled = false; }
+            else { const err = await res.json(); alert("Error: " + JSON.stringify(err.detail)); btn.disabled = false; btn.innerText = "GUARDAR Y CONTINUAR"; }
+        } catch (error) { alert("Error de conexión con el servidor"); btn.disabled = false; btn.innerText = "GUARDAR Y CONTINUAR"; }
     };
 </script>
 </body>
