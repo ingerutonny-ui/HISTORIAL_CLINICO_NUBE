@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional, List
+from typing import Optional
 from datetime import date
 
 class PacienteCreate(BaseModel):
@@ -29,10 +29,11 @@ class FiliacionCreate(BaseModel):
 
 class AntecedentesCreate(BaseModel):
     paciente_id: int
-    p1: str; d1: str; p2: str; d2: str; p3: str; d3: str; p4: str; d4: str; p5: str; d5: str
-    p6: str; d6: str; p7: str; d7: str; p8: str; d8: str; p9: str; d9: str; p10: str; d10: str
-    p11: str; d11: str; p12: str; d12: str; p13: str; d13: str; p14: str; d14: str; p15: str; d15: str
-    p16: str; d16: str; p17: str; d17: str; p18: str; d18: str
+    vista: str; auditivo: str; respiratorio: str; cardio: str
+    estomago: str; sangre: str; genito: str; nervioso: str
+    psiquiatrico: str; osteo: str; endocrino: str; reumato: str
+    generales: str; dermato: str; infecciones: str; cirugias: str
+    accidentes_p: str; otros: str
 
 class HabitosCreate(BaseModel):
     paciente_id: int
@@ -50,5 +51,7 @@ class HabitosCreate(BaseModel):
     accidentes_detalle: str
     medicamentos_si_no: str
     medicamentos_detalle: str
+    alergias_si_no: str
+    alergias_detalle: str
     riesgos_vida_laboral: str
     historia_laboral: str
