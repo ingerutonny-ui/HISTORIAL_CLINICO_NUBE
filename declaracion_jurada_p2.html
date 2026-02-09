@@ -3,55 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2</title>
+    <title>HC NUBE | PARTE 2 (2/3)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .form-container { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-width: 1100px; margin: 20px auto; }
-        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .item-card { background: #f8fafc; padding: 8px; border-radius: 10px; border: 1px solid #eee; display: flex; align-items: center; gap: 10px; }
-        .item-label { font-size: 11px; font-weight: bold; flex: 1; }
-        .select-custom { width: 70px; background: #24a174; color: white; border-radius: 5px; border: none; font-size: 11px; padding: 4px; }
-        .input-custom { flex: 1.5; border-radius: 5px; border: 1px solid #ccc; padding: 4px; font-size: 11px; }
-        .btn-next { background: #24a174; color: white; width: 100%; padding: 12px; border-radius: 10px; font-weight: bold; margin-top: 20px; border: none; }
+        body { background-color: #f8fafc; font-family: 'Segoe UI', sans-serif; padding: 20px; }
+        .form-container { background: white; padding: 30px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 1200px; margin: auto; }
+        .header-p2 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        .logo-img { height: 60px; width: auto; }
+        .page-indicator { font-weight: 800; color: #64748b; font-size: 1.2rem; }
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .item-card { background: #f8fafc; padding: 10px 15px; border-radius: 15px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+        .item-label { font-size: 10px; font-weight: 700; color: #64748b; flex: 1; text-transform: uppercase; }
+        .select-custom { width: 80px; background: #24a174; color: white; border-radius: 8px; border: none; font-weight: 700; font-size: 11px; padding: 5px; }
+        .input-custom { flex: 1; border-radius: 8px; border: 1px solid #e2e8f0; padding: 5px 10px; font-size: 11px; text-transform: uppercase; }
+        .btn-next { background-color: #24a174; border: none; border-radius: 15px; padding: 15px; width: 100%; color: white; font-weight: 800; text-transform: uppercase; margin-top: 20px; }
     </style>
 </head>
 <body>
 <div class="form-container">
-    <h5 class="text-center fw-bold">2. ANTECEDENTES PATOLÓGICOS (2/3)</h5>
+    <div class="header-p2">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" class="logo-img">
+        <h4 class="fw-bold m-0">2. ANTECEDENTES PATOLÓGICOS</h4>
+        <div class="page-indicator">(2/3)</div>
+    </div>
     <form id="formP2">
         <div id="camposContainer" class="grid-layout"></div>
-        <button type="submit" id="btnNext" class="btn-next">GUARDAR Y CONTINUAR</button>
+        <button type="submit" id="btnSiguiente" class="btn-next">SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)</button>
     </form>
 </div>
+
 <script>
-    const API = 'https://historial-clinico-936s.onrender.com';
-    const campos = [
-        {id:"vista", l:"VISTA"}, {id:"auditivo", l:"AUDITIVO"}, {id:"respiratorio", l:"RESPIRATORIO"},
-        {id:"cardio", l:"CARDIOVASCULARES"}, {id:"estomago", l:"DIGESTIVOS"}, {id:"sangre", l:"SANGRE"},
-        {id:"genito", l:"GENITOURINARIO"}, {id:"nervioso", l:"SISTEMA NERVIOSO"}, {id:"psiquiatrico", l:"PSIQUIATRICOS"},
-        {id:"osteo", l:"OSTEOMUSCULARES"}, {id:"dermato", l:"DERMATOLOGICAS"}, {id:"alergias", l:"ALERGIAS"},
-        {id:"cirugias", l:"CIRUGIAS"}, {id:"acc_trabajo", l:"ACC. TRABAJO"}, {id:"acc_personales", l:"ACC. PERSONALES"},
-        {id:"medicamentos", l:"MEDICAMENTOS"}, {id:"infecciosas", l:"INFECCIOSAS"}, {id:"urinario", l:"AP. URINARIO"},
-        {id:"endocrino", l:"ENDOCRINO"}, {id:"linfatico", l:"LINFATICO"}, {id:"familiares", l:"FAMILIARES"},
-        {id:"reumato", l:"REUMATOLOGICOS"}, {id:"otros", l:"OTROS"}, {id:"generales", l:"GENERALES"}
+    const API_BASE = 'https://historial-clinico-936s.onrender.com';
+    
+    const camposMapeados = [
+        { id: "vista", label: "VISTA (LENTES/GLAUCOMA)" },
+        { id: "auditivo", label: "AUDITIVO (SORDERA/VERTIGO)" },
+        { id: "respiratorio", label: "RESPIRATORIOS (ASMA/TBC)" },
+        { id: "cardio", label: "CARDIOVASCULARES (HTA)" },
+        { id: "estomago", label: "DIGESTIVOS (GASTRITIS)" },
+        { id: "sangre", label: "SANGRE (ANEMIA)" },
+        { id: "genito", label: "GENITOURINARIO" },
+        { id: "nervioso", label: "SISTEMA NERVIOSO" },
+        { id: "psiquiatrico", label: "PSIQUIATRICOS" },
+        { id: "osteo", label: "OSTEOMUSCULARES" },
+        { id: "dermato", label: "PIEL/DERMATOLOGICAS" },
+        { id: "alergias", label: "ALERGIAS" },
+        { id: "cirugias", label: "CIRUGIAS" },
+        { id: "acc_trabajo", label: "ACCIDENTES TRABAJO" },
+        { id: "acc_personales", label: "ACCIDENTES PARTICULARES" },
+        { id: "medicamentos", label: "MEDICAMENTOS" },
+        { id: "infecciosas", label: "INFECCIOSAS (CHAGAS)" },
+        { id: "urinario", label: "APARATO URINARIO" },
+        { id: "endocrino", label: "SISTEMA ENDOCRINO" },
+        { id: "linfatico", label: "SISTEMA LINFATICO" },
+        { id: "familiares", label: "ANTECEDENTES FAMILIARES" },
+        { id: "reumato", label: "REUMATOLOGICOS" }
     ];
+
     const container = document.getElementById('camposContainer');
-    campos.forEach(c => {
-        container.innerHTML += `<div class="item-card"><span class="item-label">${c.l}</span>
-            <select class="select-custom" id="s_${c.id}"><option value="NO">NO</option><option value="SI">SI</option></select>
-            <input type="text" class="input-custom" id="d_${c.id}" value="NORMAL"></div>`;
+    camposMapeados.forEach((campo, index) => {
+        container.innerHTML += `
+            <div class="item-card">
+                <span class="item-label">${index + 1}. ${campo.label}</span>
+                <select class="select-custom" id="sel_${campo.id}">
+                    <option value="NO">NO</option>
+                    <option value="SI">SI</option>
+                </select>
+                <input type="text" class="input-custom" id="det_${campo.id}" value="NORMAL">
+            </div>`;
     });
+
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
-        const b = document.getElementById('btnNext'); b.disabled = true;
-        const payload = { paciente_id: parseInt(localStorage.getItem('paciente_id')) };
-        campos.forEach(c => { payload[c.id] = document.getElementById(`s_${c.id}`).value === 'SI' ? document.getElementById(`d_${c.id}`).value : 'NORMAL'; });
+        const btn = document.getElementById('btnSiguiente');
+        btn.disabled = true;
+        btn.innerText = "GUARDANDO...";
+        
+        const paciente_id = localStorage.getItem('paciente_id');
+        const payload = { 
+            paciente_id: parseInt(paciente_id),
+            otros: "NORMAL",
+            generales: "NORMAL"
+        };
+        
+        camposMapeados.forEach(c => {
+            const esSi = document.getElementById(`sel_${c.id}`).value === 'SI';
+            const detalle = document.getElementById(`det_${c.id}`).value.trim();
+            payload[c.id] = esSi ? (detalle !== "NORMAL" ? detalle : "SI") : "NORMAL";
+        });
+
         try {
-            const r = await fetch(`${API}/declaraciones/p2/`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-            if(r.ok) window.location.href = "declaracion_jurada_p3.html";
-            else alert("Error en servidor");
-        } catch(e) { alert("Error red"); }
-        b.disabled = false;
+            const res = await fetch(`${API_BASE}/declaraciones/p2/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                window.location.href = "declaracion_jurada_p3.html";
+            } else {
+                const err = await res.json();
+                alert("Error de validación: " + JSON.stringify(err.detail));
+                btn.disabled = false;
+                btn.innerText = "SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)";
+            }
+        } catch (error) {
+            alert("Error de conexión con el servidor");
+            btn.disabled = false;
+            btn.innerText = "SIGUIENTE: HOJA 3 (HÁBITOS Y TRABAJO)";
+        }
     };
 </script>
 </body>
