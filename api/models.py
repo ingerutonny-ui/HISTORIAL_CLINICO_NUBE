@@ -57,8 +57,16 @@ class HabitosRiesgosP3(Base):
     __tablename__ = "declaraciones_p3"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # Sincronizado con tu HTML P3
-    fuma = Column(String, default="NO")
-    bebe_alcohol = Column(String, default="NO")
-    deporte = Column(String, default="NINGUNO")
-    observaciones = Column(Text, default="SIN OBSERVACIONES")
+    fuma = Column(String)
+    fuma_cantidad = Column(String)
+    alcohol = Column(String)
+    alcohol_frecuencia = Column(String)
+    drogas = Column(String)
+    drogas_tipo = Column(String)
+    coca = Column(String)
+    deporte = Column(String)
+    deporte_detalle = Column(String)
+    grupo_sanguineo = Column(String)
+    historia_laboral = Column(Text)  # Guardará el JSON de la tabla
+    riesgos_expuestos = Column(Text) # Guardará los riesgos marcados
+    observaciones = Column(Text)
