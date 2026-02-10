@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>HC NUBE | Buscador</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen">
+
+    <div class="bg-slate-900/40 border-2 border-slate-800 p-12 rounded-[2.5rem] w-full max-w-lg text-center shadow-2xl">
+        <h2 class="text-white text-2xl font-black italic uppercase tracking-widest mb-8">Buscador de Historiales</h2>
+        
+        <div class="flex gap-3">
+            <input type="text" id="codInput" 
+                class="w-full bg-black border border-slate-700 rounded-2xl px-6 py-4 text-white text-center font-bold tracking-[0.2em] focus:border-blue-500 outline-none transition-all placeholder:text-slate-800"
+                placeholder="CÓDIGO (RA3372)"
+                oninput="this.value = this.value.toUpperCase()">
+            
+            <button onclick="buscarPorCodigo()"
+                class="bg-blue-600 hover:bg-blue-500 text-white font-black px-8 py-4 rounded-2xl text-sm uppercase tracking-widest transition-all active:scale-95">
+                Buscar
+            </button>
+        </div>
+
+        <button onclick="location.href='visor_historial.html'" class="mt-8 text-slate-600 text-[10px] font-bold uppercase tracking-widest hover:text-slate-400">
+            Cancelar y volver
+        </button>
+    </div>
+
+    <script>
+        const API = 'https://historial-clinico-936s.onrender.com';
+
+        async function buscarPorCodigo() {
+            const cod = document.getElementById('codInput').value;
+            if(!cod) return alert("Ingrese un código");
+
+            try {
+                const r = await fetch(`${API}/pacientes/`);
+                const pacientes = await r.json();
+                const encontrado = pacientes.find(p => p.codigo_paciente === cod);
+
+                if(encontrado) {
+                    alert("PACIENTE ENCONTRADO: " + encontrado.nombre + " " + encontrado.apellido);
+                    // Aquí podrías redirigir a la ficha técnica
+                } else {
+                    alert("CÓDIGO NO ENCONTRADO EN LA NUBE");
+                }
+            } catch(e) {
+                alert("Error de conexión");
+            }
+        }
+    </script>
+</body>
+</html>
