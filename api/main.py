@@ -5,7 +5,7 @@ from . import models, schemas, database, crud
 
 app = FastAPI()
 
-# Configuración de CORS para permitir la conexión desde GitHub Pages
+# Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,10 +14,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Creación de tablas en la base de datos (PostgreSQL en Render)
+# Creación de tablas en el DISK configurado en database.py
 models.Base.metadata.create_all(bind=database.engine)
 
-# Dependencia para obtener la sesión de la base de datos
+# Dependencia para la sesión de base de datos
 def get_db():
     db = database.SessionLocal()
     try:
@@ -56,5 +56,5 @@ def guardar_p3(data: schemas.HabitosP3Create, db: Session = Depends(get_db)):
     try:
         return crud.create_habitos(db=db, habitos=data)
     except Exception as e:
-        # Este error 500 es el que capturamos si fallan las nuevas columnas
+        # Captura errores si fallan las columnas de P3
         raise HTTPException(status_code=500, detail=f"Error en P3: {str(e)}")
