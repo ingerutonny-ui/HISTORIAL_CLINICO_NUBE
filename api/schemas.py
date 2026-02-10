@@ -33,6 +33,7 @@ class FiliacionCreate(BaseModel):
 
 class AntecedentesCreate(BaseModel):
     paciente_id: int
+    # Permitimos que reciba cualquier estructura de datos del formulario P2
     model_config = ConfigDict(extra='allow')
 
 class HabitosP3Create(BaseModel):
