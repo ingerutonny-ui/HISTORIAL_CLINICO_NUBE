@@ -8,10 +8,14 @@ database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
-# Configuración de CORS estricta pero funcional para despliegue
+# Configuración de CORS corregida para GitHub Pages
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://ingerutonny-ui.github.io",
+        "http://localhost:8080",
+        "*" 
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -26,12 +30,17 @@ def get_db():
 
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    return crud.create_paciente(db=db, paciente=paciente)
+    try:
+        return crud.create_paciente(db=db, paciente=paciente)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/pacientes/", response_model=list[schemas.Paciente])
 def listar_pacientes(db: Session = Depends(get_db)):
-    pacientes = crud.get_pacientes(db)
-    return pacientes
+    try:
+        return crud.get_pacientes(db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/filiacion/")
 def guardar_p1(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
