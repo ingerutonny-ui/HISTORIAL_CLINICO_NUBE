@@ -13,7 +13,7 @@
         .code-val { font-size: 28px; font-weight: 900; color: #1e293b; }
         .btn-ohs { background-color: #22c55e; border: none; border-radius: 15px; padding: 18px; font-weight: 800; color: white; width: 100%; cursor: pointer; }
         .btn-db { background: none; border: 1px solid #cbd5e1; color: #64748b; font-size: 11px; font-weight: 700; padding: 10px; border-radius: 12px; margin-top: 20px; width: 100%; cursor: pointer; }
-        .list-container { margin-top: 15px; text-align: left; max-height: 150px; overflow-y: auto; display: none; border-top: 1px solid #eee; padding-top: 10px; }
+        .list-container { margin-top: 15px; text-align: left; max-height: 200px; overflow-y: auto; display: none; border: 1px solid #eee; border-radius: 10px; padding: 10px; background: #fff; }
     </style>
 </head>
 <body>
@@ -35,40 +35,63 @@
 </div>
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
+
     function gen() {
         const n = document.getElementById('nom').value;
         const a = document.getElementById('ape').value;
         const c = document.getElementById('ci').value;
-        if(n && a && c) document.getElementById('v_cod').innerText = n[0]+a[0]+c.slice(-4);
-    }
-    async function save() {
-        const payload = { nombre: document.getElementById('nom').value, apellido: document.getElementById('ape').value, ci: document.getElementById('ci').value, codigo_paciente: document.getElementById('v_cod').innerText };
-        const r = await fetch(`${API}/pacientes/`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
-        if(r.ok) {
-            const d = await r.json();
-            localStorage.setItem('p_id', d.id);
-            localStorage.setItem('p_nom', payload.nombre + " " + payload.apellido);
-            localStorage.setItem('p_ci', payload.ci);
-            localStorage.setItem('p_cod', payload.codigo_paciente);
-            window.location.href = "declaracion_jurada_p1.html";
+        if(n && a && c) {
+            document.getElementById('v_cod').innerText = n[0] + a[0] + c.slice(-4);
         }
     }
+
+    async function save() {
+        const payload = { 
+            nombre: document.getElementById('nom').value, 
+            apellido: document.getElementById('ape').value, 
+            ci: document.getElementById('ci').value, 
+            codigo_paciente: document.getElementById('v_cod').innerText 
+        };
+        try {
+            const r = await fetch(`${API}/pacientes/`, { 
+                method: 'POST', 
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(payload) 
+            });
+            if(r.ok) {
+                const d = await r.json();
+                localStorage.setItem('p_id', d.id);
+                localStorage.setItem('p_nom', payload.nombre + " " + payload.apellido);
+                localStorage.setItem('p_ci', payload.ci);
+                localStorage.setItem('p_cod', payload.codigo_paciente);
+                window.location.href = "declaracion_jurada_p1.html";
+            }
+        } catch (e) {
+            alert("Error al guardar: " + e.message);
+        }
+    }
+
     async function listar() {
         const div = document.getElementById('lista');
         div.style.display = 'block'; 
-        div.innerHTML = "Cargando...";
+        div.innerHTML = "<div style='font-size:11px;'>Cargando registros...</div>";
         try {
             const r = await fetch(`${API}/pacientes/`);
-            if(!r.ok) throw new Error("Error en respuesta");
+            if(!r.ok) throw new Error("Error de conexión con el servidor");
             const d = await r.json();
-            div.innerHTML = ""; // Limpiar el "Cargando..."
+            div.innerHTML = ""; 
             if(d.length === 0) {
-                div.innerHTML = "<div style='font-size:11px; padding:5px;'>No hay registros</div>";
+                div.innerHTML = "<div style='font-size:11px; padding:5px;'>No hay registros en la base de datos.</div>";
             } else {
-                div.innerHTML = d.map(p => `<div style="font-size:11px; padding:5px; border-bottom:1px solid #eee;">${p.nombre} ${p.apellido} - <b>${p.codigo_paciente}</b></div>`).join('');
+                div.innerHTML = d.map(p => `
+                    <div style="font-size:11px; padding:8px; border-bottom:1px solid #f0f0f0;">
+                        <span style="color:#64748b;">[${p.id}]</span> <b>${p.nombre} ${p.apellido}</b><br>
+                        <small style="color:#22c55e;">CÓDIGO: ${p.codigo_paciente}</small>
+                    </div>
+                `).join('');
             }
         } catch(e) { 
-            div.innerHTML = "Error al conectar: " + e.message; 
+            div.innerHTML = "<div style='color:red; font-size:11px;'>Error: " + e.message + "</div>"; 
         }
     }
 </script>
