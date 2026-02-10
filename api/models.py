@@ -30,7 +30,6 @@ class AntecedentesP2(Base):
     __tablename__ = "declaraciones_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # Coincidencia exacta con los IDs de tu HTML
     vista = Column(String, default="NORMAL")
     auditivo = Column(String, default="NORMAL")
     respiratorio = Column(String, default="NORMAL")
@@ -58,7 +57,8 @@ class HabitosRiesgosP3(Base):
     __tablename__ = "declaraciones_p3"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
+    # Sincronizado con tu HTML P3
     fuma = Column(String, default="NO")
     bebe_alcohol = Column(String, default="NO")
-    deporte = Column(String, default="NO")
-    observaciones = Column(Text, default="")
+    deporte = Column(String, default="NINGUNO")
+    observaciones = Column(Text, default="SIN OBSERVACIONES")
