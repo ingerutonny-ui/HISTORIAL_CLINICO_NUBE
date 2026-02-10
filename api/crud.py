@@ -13,26 +13,38 @@ def get_pacientes(db: Session):
     return db.query(models.Paciente).all()
 
 def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
-    db_filiacion = models.DeclaracionJurada(**filiacion.model_dump())
-    db.add(db_filiacion)
-    db.commit()
-    db.refresh(db_filiacion)
-    return db_filiacion
+    try:
+        # Extraemos los datos y filtramos solo los que el modelo DeclaracionJurada acepta
+        data = filiacion.model_dump()
+        db_filiacion = models.DeclaracionJurada(**data)
+        db.add(db_filiacion)
+        db.commit()
+        db.refresh(db_filiacion)
+        return db_filiacion
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
 
 def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
-    db_ant = models.AntecedentesP2(**antecedentes.model_dump())
-    db.add(db_ant)
-    db.commit()
-    db.refresh(db_ant)
-    return db_ant
+    try:
+        data = antecedentes.model_dump()
+        db_ant = models.AntecedentesP2(**data)
+        db.add(db_ant)
+        db.commit()
+        db.refresh(db_ant)
+        return db_ant
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error en P2: {str(e)}")
 
 def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
     try:
-        db_hab = models.HabitosRiesgosP3(**habitos.model_dump())
+        data = habitos.model_dump()
+        db_hab = models.HabitosRiesgosP3(**data)
         db.add(db_hab)
         db.commit()
         db.refresh(db_hab)
         return db_hab
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error BD: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
