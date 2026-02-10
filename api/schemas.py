@@ -61,6 +61,6 @@ class HabitosP3Create(BaseModel):
     paciente_id: int
     fuma: Optional[str] = "NO"
     bebe_alcohol: Optional[str] = "NO"
-    deporte: Optional[str] = "NO"
-    observaciones: Optional[str] = ""
+    deporte: Optional[str] = "NINGUNO"
+    observaciones: Optional[str] = "SIN OBSERVACIONES"
     model_config = ConfigDict(extra='allow')
