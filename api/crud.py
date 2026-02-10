@@ -2,19 +2,25 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 from fastapi import HTTPException
 
-# --- OPERACIONES DE PACIENTE ---
+# --- OPERACIONES DE PACIENTE (P0 - REGISTRO INICIAL) ---
 
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
-    db_paciente = models.Paciente(**paciente.model_dump())
-    db.add(db_paciente)
-    db.commit()
-    db.refresh(db_paciente)
-    return db_paciente
+    try:
+        db_paciente = models.Paciente(**paciente.model_dump())
+        db.add(db_paciente)
+        db.commit()
+        db.refresh(db_paciente)
+        return db_paciente
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error al crear paciente: {str(e)}")
 
 def get_pacientes(db: Session):
+    # Esta función es la que alimenta la "Pantalla de Consulta"
+    # Si devuelve vacío, es que no hay registros en la tabla 'pacientes'
     return db.query(models.Paciente).all()
 
-# --- OPERACIONES DE FORMULARIOS ---
+# --- OPERACIONES DE FORMULARIOS (P1, P2, P3) ---
 
 def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
@@ -26,7 +32,7 @@ def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
         return db_filiacion
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error en P1: {str(e)}")
 
 def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     try:
@@ -38,13 +44,12 @@ def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
         return db_ant
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P2: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error en P2: {str(e)}")
 
 def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
     try:
-        # Extraemos los datos del esquema validado
+        # Aquí procesamos la Parte 3 con historia laboral y riesgos
         data = habitos.model_dump()
-        # Creamos la instancia del modelo con los nuevos campos de P3
         db_hab = models.HabitosRiesgosP3(**data)
         db.add(db_hab)
         db.commit()
@@ -52,5 +57,5 @@ def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
         return db_hab
     except Exception as e:
         db.rollback()
-        # Aquí capturamos si hay inconsistencia con las columnas de models.py
-        raise HTTPException(status_code=400, detail=f"Error en P3 (CRUD): {str(e)}")
+        # Captura errores de discrepancia de columnas en Render
+        raise HTTPException(status_code=500, detail=f"Error en P3: {str(e)}")
