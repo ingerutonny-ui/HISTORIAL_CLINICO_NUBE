@@ -3,19 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, database, crud
 
-# Crear tablas al iniciar
-database.Base.metadata.create_all(bind=database.engine)
+# Forzar creación de tablas en la base de datos de Render
+try:
+    models.Base.metadata.create_all(bind=database.engine)
+except Exception as e:
+    print(f"Error al crear tablas: {e}")
 
 app = FastAPI()
 
-# Configuración de CORS corregida para GitHub Pages
+# Configuración de CORS Total para evitar bloqueos de GitHub Pages
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://ingerutonny-ui.github.io",
-        "http://localhost:8080",
-        "*" 
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,17 +27,18 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/pacientes/", response_model=list[schemas.Paciente])
+def listar_pacientes(db: Session = Depends(get_db)):
+    try:
+        pacientes = crud.get_pacientes(db)
+        return pacientes
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     try:
         return crud.create_paciente(db=db, paciente=paciente)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/pacientes/", response_model=list[schemas.Paciente])
-def listar_pacientes(db: Session = Depends(get_db)):
-    try:
-        return crud.get_pacientes(db)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
