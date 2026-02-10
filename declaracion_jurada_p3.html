@@ -2,37 +2,54 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HC NUBE | PARTE 3</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HISTORIAL CLÍNICO NUBE | PARTE 3</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; }
-        .form-container { max-width: 1100px; margin: 20px auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .section-header { color: #064e3b; font-weight: 800; border-left: 5px solid #22c55e; padding-left: 10px; margin: 20px 0; text-transform: uppercase; }
-        .label-custom { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 5px; }
-        .form-control, .form-select { font-size: 12px; text-transform: uppercase; border-radius: 8px; }
-        .btn-add { background: #64748b; color: white; font-size: 11px; font-weight: 700; border: none; padding: 8px 15px; border-radius: 10px; margin-bottom: 10px; }
-        .btn-save { background: #22c55e; color: white; width: 100%; padding: 15px; border-radius: 50px; font-weight: 800; border: none; margin-top: 20px; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .form-container { max-width: 1000px; margin: 30px auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .section-header { border-left: 5px solid #22c55e; padding-left: 15px; margin-bottom: 25px; margin-top: 30px; }
+        .section-header h3 { color: #1e293b; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; margin: 0; }
+        .label-custom { font-size: 0.7rem; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        .form-control, .form-select { border-radius: 8px; font-size: 0.85rem; text-transform: uppercase; border: 1px solid #e2e8f0; }
+        .form-control:focus { border-color: #22c55e; box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.25); }
+        .btn-add { background-color: #64748b; color: white; border: none; padding: 5px 15px; border-radius: 5px; font-size: 0.75rem; font-weight: 700; margin-bottom: 15px; transition: 0.3s; }
+        .btn-add:hover { background-color: #475569; }
+        .table-custom { font-size: 0.8rem; }
+        .table-custom th { background-color: #f8fafc; color: #1e293b; font-weight: 700; text-align: center; }
+        .btn-save { background-color: #22c55e; color: white; border: none; padding: 15px; border-radius: 50px; width: 100%; font-weight: 800; font-size: 1rem; margin-top: 40px; transition: 0.3s; }
+        .btn-save:hover { background-color: #16a34a; transform: translateY(-2px); }
+        .check-group { background: #f8fafc; padding: 20px; border-radius: 12px; }
+        .form-check-label { font-size: 0.8rem; font-weight: 600; color: #334155; }
     </style>
 </head>
 <body>
+
 <div class="form-container">
-    <div class="section-header">I. HÁBITOS</div>
+    <div class="text-center mb-4">
+        <h2 style="font-weight: 900; color: #1e293b;">3. HÁBITOS Y RIESGOS LABORALES</h2>
+        <p class="text-muted" style="font-size: 0.9rem;">Complete la información final del historial médico legal</p>
+    </div>
+
     <form id="formP3">
+        <div class="section-header">
+            <h3>I. HÁBITOS</h3>
+        </div>
         <div class="row g-3">
             <div class="col-md-4">
                 <label class="label-custom">FUMA</label>
                 <select id="fuma" class="form-select"><option>NO</option><option>SI</option></select>
-                <input type="text" id="fuma_cant" class="form-control mt-1" placeholder="CANTIDAD">
+                <input type="text" id="fuma_cant" class="form-control mt-2" placeholder="CANTIDAD">
             </div>
             <div class="col-md-4">
                 <label class="label-custom">ALCOHOL</label>
                 <select id="alcohol" class="form-select"><option>NO</option><option>SI</option></select>
-                <input type="text" id="alc_frec" class="form-control mt-1" placeholder="FRECUENCIA">
+                <input type="text" id="alc_frec" class="form-control mt-2" placeholder="FRECUENCIA">
             </div>
             <div class="col-md-4">
                 <label class="label-custom">DROGAS</label>
                 <select id="drogas" class="form-select"><option>NO</option><option>SI</option></select>
-                <input type="text" id="dro_tipo" class="form-control mt-1" placeholder="TIPO">
+                <input type="text" id="dro_tipo" class="form-control mt-2" placeholder="TIPO">
             </div>
             <div class="col-md-4">
                 <label class="label-custom">PIJCHAR (COCA)</label>
@@ -41,7 +58,7 @@
             <div class="col-md-4">
                 <label class="label-custom">DEPORTES</label>
                 <select id="dep" class="form-select"><option>NO</option><option>SI</option></select>
-                <input type="text" id="dep_det" class="form-control mt-1" placeholder="CUAL/FRECUENCIA">
+                <input type="text" id="dep_det" class="form-control mt-2" placeholder="CUAL/FRECUENCIA">
             </div>
             <div class="col-md-4">
                 <label class="label-custom">GRUPO SANGUÍNEO</label>
@@ -49,19 +66,28 @@
             </div>
         </div>
 
-        <div class="section-header">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
+        <div class="section-header">
+            <h3>II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</h3>
+        </div>
         <button type="button" class="btn-add" onclick="agregarFila()">+ AGREGAR FILA</button>
         <div class="table-responsive">
-            <table class="table table-bordered align-middle" style="font-size: 11px;">
-                <thead class="table-light">
-                    <tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
+            <table class="table table-bordered table-custom align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">EDAD INICIO</th>
+                        <th style="width: 25%;">EMPRESA</th>
+                        <th style="width: 20%;">OCUPACIÓN</th>
+                        <th style="width: 15%;">TIEMPO (AÑOS)</th>
+                        <th style="width: 20%;">RIESGOS</th>
+                        <th style="width: 10%;">EPP</th>
+                    </tr>
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
                         <td><input type="number" class="form-control e-ini"></td>
                         <td><input type="text" class="form-control emp"></td>
                         <td><input type="text" class="form-control ocu"></td>
-                        <td><input type="number" class="form-control tie"></td>
+                        <td><input type="text" class="form-control tie"></td>
                         <td><input type="text" class="form-control rie"></td>
                         <td><select class="form-select epp"><option>NO</option><option>SI</option></select></td>
                     </tr>
@@ -69,12 +95,20 @@
             </table>
         </div>
 
-        <div class="section-header">III. RIESGOS EXPUESTOS</div>
-        <div class="row px-3">
-            <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="RUIDO"> RUIDO</div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="POLVOS"> POLVOS</div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="VIBRACION"> VIBRACIÓN</div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="ERGONOMICOS"> ERGONÓMICOS</div>
+        <div class="section-header">
+            <h3>III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</h3>
+        </div>
+        <div class="check-group">
+            <div class="row g-3">
+                <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="RUIDO"> <label class="form-check-label">RUIDO</label></div>
+                <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="VIBRACION"> <label class="form-check-label">VIBRACIÓN</label></div>
+                <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="RADIACION"> <label class="form-check-label">RADIACIÓN</label></div>
+                <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="TEMP. EXTREMAS"> <label class="form-check-label">TEMP. EXTREMAS</label></div>
+                <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="POLVOS"> <label class="form-check-label">POLVOS</label></div>
+                <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="GASES/VAPORES"> <label class="form-check-label">GASES/VAPORES</label></div>
+                <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="ERGONOMICOS"> <label class="form-check-label">ERGONÓMICOS</label></div>
+                <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="PSICOSOCIAL"> <label class="form-check-label">PSICOSOCIAL</label></div>
+            </div>
         </div>
 
         <button type="submit" id="btnF" class="btn-save">TERMINAR Y GUARDAR REGISTRO 💾</button>
@@ -84,23 +118,31 @@
 <script>
     function agregarFila() {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="number" class="form-control e-ini"></td><td><input type="text" class="form-control emp"></td><td><input type="text" class="form-control ocu"></td><td><input type="number" class="form-control tie"></td><td><input type="text" class="form-control rie"></td><td><select class="form-select epp"><option>NO</option><option>SI</option></select></td>`;
+        tr.innerHTML = `<td><input type="number" class="form-control e-ini"></td><td><input type="text" class="form-control emp"></td><td><input type="text" class="form-control ocu"></td><td><input type="text" class="form-control tie"></td><td><input type="text" class="form-control rie"></td><td><select class="form-select epp"><option>NO</option><option>SI</option></select></td>`;
         document.getElementById('tablaLaboral').appendChild(tr);
     }
 
     const API = 'https://historial-clinico-936s.onrender.com';
+    
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const b = document.getElementById('btnF');
-        b.innerText = "GUARDANDO..."; b.disabled = true;
+        b.innerText = "PROCESANDO REGISTRO FINAL...";
+        b.disabled = true;
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
-            historia.push({
-                edad: tr.querySelector('.e-ini').value,
-                empresa: tr.querySelector('.emp').value,
-                cargo: tr.querySelector('.ocu').value
-            });
+            const e_ini = tr.querySelector('.e-ini').value;
+            if(e_ini) {
+                historia.push({
+                    edad: e_ini,
+                    empresa: tr.querySelector('.emp').value,
+                    cargo: tr.querySelector('.ocu').value,
+                    tiempo: tr.querySelector('.tie').value,
+                    riesgos: tr.querySelector('.rie').value,
+                    epp: tr.querySelector('.epp').value
+                });
+            }
         });
 
         const riesgos = Array.from(document.querySelectorAll('.r-check:checked')).map(c => c.value);
@@ -128,10 +170,18 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            if(r.ok) { alert("GUARDADO EXITOSO"); window.location.href="registro_paciente.html"; }
-            else { alert("ERROR AL GUARDAR P3. REVISA EL BACKEND."); }
-        } catch(e) { alert("ERROR DE CONEXIÓN"); }
-        finally { b.innerText = "TERMINAR Y GUARDAR REGISTRO 💾"; b.disabled = false; }
+            if(r.ok) { 
+                alert("REGISTRO GUARDADO CON ÉXITO EN LA NUBE"); 
+                window.location.href="registro_paciente.html"; 
+            } else { 
+                alert("ERROR AL GUARDAR P3. VERIFIQUE EL SERVIDOR."); 
+            }
+        } catch(e) { 
+            alert("ERROR DE CONEXIÓN CON RENDER."); 
+        } finally { 
+            b.innerText = "TERMINAR Y GUARDAR REGISTRO 💾"; 
+            b.disabled = false; 
+        }
     };
 </script>
 </body>
