@@ -30,11 +30,35 @@ class AntecedentesP2(Base):
     __tablename__ = "declaraciones_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # Campos simplificados para evitar errores de mapeo
-    datos_p2 = Column(Text, default="{}") 
+    # Coincidencia exacta con los IDs de tu HTML
+    vista = Column(String, default="NORMAL")
+    auditivo = Column(String, default="NORMAL")
+    respiratorio = Column(String, default="NORMAL")
+    cardio = Column(String, default="NORMAL")
+    digestivos = Column(String, default="NORMAL")
+    sangre = Column(String, default="NORMAL")
+    genitourinario = Column(String, default="NORMAL")
+    sistema_nervioso = Column(String, default="NORMAL")
+    psiquiatricos = Column(String, default="NORMAL")
+    osteomusculares = Column(String, default="NORMAL")
+    reumatologicos = Column(String, default="NORMAL")
+    dermatologicas = Column(String, default="NORMAL")
+    alergias = Column(String, default="NORMAL")
+    cirugias = Column(String, default="NORMAL")
+    infecciones = Column(String, default="NORMAL")
+    acc_personales = Column(String, default="NORMAL")
+    acc_trabajo = Column(String, default="NORMAL")
+    medicamentos = Column(String, default="NORMAL")
+    endocrino = Column(String, default="NORMAL")
+    familiares = Column(String, default="NORMAL")
+    otros_especificos = Column(String, default="NORMAL")
+    generales = Column(String, default="NORMAL")
 
 class HabitosRiesgosP3(Base):
     __tablename__ = "declaraciones_p3"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    datos_p3 = Column(Text, default="{}")
+    fuma = Column(String, default="NO")
+    bebe_alcohol = Column(String, default="NO")
+    deporte = Column(String, default="NO")
+    observaciones = Column(Text, default="")
