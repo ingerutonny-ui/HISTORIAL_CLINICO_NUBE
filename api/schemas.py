@@ -13,7 +13,7 @@ class PacienteCreate(PacienteBase):
 class Paciente(PacienteBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class FiliacionCreate(BaseModel):
     paciente_id: int
