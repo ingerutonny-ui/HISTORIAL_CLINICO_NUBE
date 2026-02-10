@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import Optional
+from typing import Optional, Any
 
 class PacienteBase(BaseModel):
     nombre: str
@@ -17,18 +17,18 @@ class Paciente(PacienteBase):
 
 class FiliacionCreate(BaseModel):
     paciente_id: int
-    edad: Optional[str] = ""
+    edad: Any = ""
     sexo: Optional[str] = ""
     fecha_nacimiento: Optional[str] = ""
     lugar_nacimiento: Optional[str] = ""
     domicilio: Optional[str] = ""
     n_casa: Optional[str] = ""
-    zona: Optional[str] = ""
+    zona_barrio: Optional[str] = ""  # Coincide con tu HTML
     ciudad: Optional[str] = ""
     pais: Optional[str] = ""
     telefono: Optional[str] = ""
     estado_civil: Optional[str] = ""
-    profesion: Optional[str] = ""
+    profesion_oficio: Optional[str] = "" # Coincide con tu HTML
     model_config = ConfigDict(extra='allow')
 
 class AntecedentesCreate(BaseModel):
