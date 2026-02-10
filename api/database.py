@@ -3,19 +3,24 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# URL interna de Render configurada previamente
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL_INTERNAL")
+# 1. Definimos la ruta al archivo en tu DISK de Render
+# Ajusta 'database_disk' si el nombre de tu Mount Path es distinto
+DB_PATH = "/opt/render/project/src/data/historial.db"
 
-if not SQLALCHEMY_DATABASE_URL:
-    SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+# Asegurar que el directorio exista para evitar errores de escritura
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
-if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
-    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{DB_PATH}"
 
+# 2. Motor específico para SQLite
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    pool_pre_ping=True
+    SQLALCHEMY_DATABASE_URL, 
+    connect_args={"check_same_thread": False}  # Requerido para SQLite
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
+
+# 3. Crear las tablas automáticamente al conectar
+from . import models
+models.Base.metadata.create_all(bind=engine)
