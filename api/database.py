@@ -3,18 +3,19 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# URL interna para comunicación privada en Render
+# Intentar usar la URL interna guardada en Render
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL_INTERNAL")
 
-# Si no existe la interna, usar la general (emergencia)
+# Si no existe, usar la URL por defecto como respaldo
 if not SQLALCHEMY_DATABASE_URL:
     SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Corrección de protocolo para SQLAlchemy
+# Corregir el prefijo para compatibilidad con SQLAlchemy
 if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
     SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# Motor sin SSL forzado (la red interna de Render es segura por defecto)
+# Crear el motor de base de datos
+# Al ser conexión interna, no requiere parámetros de SSL manuales
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
     pool_pre_ping=True
