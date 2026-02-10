@@ -55,12 +55,21 @@
     }
     async function listar() {
         const div = document.getElementById('lista');
-        div.style.display = 'block'; div.innerHTML = "Cargando...";
+        div.style.display = 'block'; 
+        div.innerHTML = "Cargando...";
         try {
             const r = await fetch(`${API}/pacientes/`);
+            if(!r.ok) throw new Error("Error en respuesta");
             const d = await r.json();
-            div.innerHTML = d.map(p => `<div style="font-size:11px; padding:5px; border-bottom:1px solid #eee;">${p.nombre} ${p.apellido} - <b>${p.codigo_paciente}</b></div>`).join('');
-        } catch(e) { div.innerHTML = "Error al conectar"; }
+            div.innerHTML = ""; // Limpiar el "Cargando..."
+            if(d.length === 0) {
+                div.innerHTML = "<div style='font-size:11px; padding:5px;'>No hay registros</div>";
+            } else {
+                div.innerHTML = d.map(p => `<div style="font-size:11px; padding:5px; border-bottom:1px solid #eee;">${p.nombre} ${p.apellido} - <b>${p.codigo_paciente}</b></div>`).join('');
+            }
+        } catch(e) { 
+            div.innerHTML = "Error al conectar: " + e.message; 
+        }
     }
 </script>
 </body>
