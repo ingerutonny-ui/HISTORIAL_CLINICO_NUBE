@@ -16,12 +16,14 @@ def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     db_filiacion = models.DeclaracionJurada(**filiacion.model_dump())
     db.add(db_filiacion)
     db.commit()
+    db.refresh(db_filiacion)
     return db_filiacion
 
 def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     db_ant = models.AntecedentesP2(**antecedentes.model_dump())
     db.add(db_ant)
     db.commit()
+    db.refresh(db_ant)
     return db_ant
 
 def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
