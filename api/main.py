@@ -3,10 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, database, crud
 
+# Crear tablas al iniciar
 database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
+# Configuración de CORS estricta pero funcional para despliegue
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,7 +30,8 @@ def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_d
 
 @app.get("/pacientes/", response_model=list[schemas.Paciente])
 def listar_pacientes(db: Session = Depends(get_db)):
-    return crud.get_pacientes(db)
+    pacientes = crud.get_pacientes(db)
+    return pacientes
 
 @app.post("/filiacion/")
 def guardar_p1(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
