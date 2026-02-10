@@ -13,7 +13,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# CREACIÓN DE TABLAS: Se hace aquí para evitar el error circular
+# CREACIÓN DE TABLAS AL INICIAR
+# Se hace aquí para que database.py no tenga que importar a models.py
 models.Base.metadata.create_all(bind=database.engine)
 
 def get_db():
