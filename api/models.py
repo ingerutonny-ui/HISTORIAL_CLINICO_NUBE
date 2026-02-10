@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, ForeignKey, Text, Boolean
 from .database import Base
 
 class Paciente(Base):
@@ -57,7 +57,6 @@ class HabitosRiesgosP3(Base):
     __tablename__ = "declaraciones_p3"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # Sección I: Hábitos (Basado en captura)
     fuma = Column(String, default="NO")
     fuma_cantidad = Column(String, default="")
     alcohol = Column(String, default="NO")
@@ -68,7 +67,6 @@ class HabitosRiesgosP3(Base):
     deporte = Column(String, default="NO")
     deporte_detalle = Column(String, default="")
     grupo_sanguineo = Column(String, default="")
-    # Sección II e III: Datos Estructurados (JSON)
     historia_laboral = Column(Text, default="[]") 
     riesgos_expuestos = Column(Text, default="[]")
     observaciones = Column(Text, default="SIN OBSERVACIONES")
