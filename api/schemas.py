@@ -13,11 +13,11 @@ class PacienteCreate(PacienteBase):
 
 class Paciente(PacienteBase):
     id: int
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, extra='allow')
 
 class FiliacionCreate(BaseModel):
     paciente_id: int
-    edad: Any = ""
+    edad: Optional[Any] = ""
     sexo: Optional[str] = ""
     fecha_nacimiento: Optional[str] = ""
     lugar_nacimiento: Optional[str] = ""
@@ -59,17 +59,17 @@ class AntecedentesCreate(BaseModel):
 
 class HabitosP3Create(BaseModel):
     paciente_id: int
-    fuma: str = "NO"
+    fuma: Optional[str] = "NO"
     fuma_cantidad: Optional[str] = ""
-    alcohol: str = "NO"
+    alcohol: Optional[str] = "NO"
     alcohol_frecuencia: Optional[str] = ""
-    drogas: str = "NO"
+    drogas: Optional[str] = "NO"
     drogas_tipo: Optional[str] = ""
-    coca: str = "NO"
-    deporte: str = "NO"
+    coca: Optional[str] = "NO"
+    deporte: Optional[str] = "NO"
     deporte_detalle: Optional[str] = ""
     grupo_sanguineo: Optional[str] = ""
-    historia_laboral: str = "[]"
-    riesgos_expuestos: str = "[]"
-    observaciones: str = ""
+    historia_laboral: Optional[str] = "[]"
+    riesgos_expuestos: Optional[str] = "[]"
+    observaciones: Optional[str] = ""
     model_config = ConfigDict(extra='allow')
