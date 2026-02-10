@@ -18,13 +18,13 @@ class DeclaracionJurada(Base):
     fecha_nacimiento = Column(String)
     lugar_nacimiento = Column(String)
     domicilio = Column(String)
-    n_casa = Column(String)
-    zona = Column(String) # Unificado de zona_barrio a zona
+    n_casa = Column(String, default="")
+    zona = Column(String, default="")
     ciudad = Column(String)
     pais = Column(String)
-    telefono = Column(String)
+    telefono = Column(String, default="")
     estado_civil = Column(String)
-    profesion = Column(String) # Unificado de profesion_oficio a profesion
+    profesion = Column(String, default="")
 
 class AntecedentesP2(Base):
     __tablename__ = "declaraciones_p2"
@@ -36,7 +36,7 @@ class AntecedentesP2(Base):
     auditivo_obs = Column(Text, default="")
     respiratorio = Column(String)
     respiratorio_obs = Column(Text, default="")
-    cardiovasculares = Column(String) # Unificado de cardio
+    cardiovasculares = Column(String)
     cardiovasculares_obs = Column(Text, default="")
     digestivos = Column(String)
     digestivos_obs = Column(Text, default="")
@@ -56,13 +56,13 @@ class AntecedentesP2(Base):
     alergias_obs = Column(Text, default="")
     cirugias = Column(String)
     cirugias_obs = Column(Text, default="")
-    accidentes_trabajo = Column(String) # Unificado de acc_trabajo
+    accidentes_trabajo = Column(String)
     accidentes_trabajo_obs = Column(Text, default="")
-    accidentes_pers = Column(String) # Unificado de acc_personales
+    accidentes_pers = Column(String)
     accidentes_pers_obs = Column(Text, default="")
     medicamentos = Column(String)
     medicamentos_obs = Column(Text, default="")
-    infecciosas = Column(String) # Unificado de infecciones
+    infecciosas = Column(String)
     infecciosas_obs = Column(Text, default="")
     ap_urinario = Column(String, default="NO")
     ap_urinario_obs = Column(Text, default="")
@@ -82,4 +82,4 @@ class HabitosRiesgosP3(Base):
     fuma = Column(String)
     bebe_alcohol = Column(String)
     deporte = Column(String)
-    observaciones = Column(Text)
+    observaciones = Column(Text, default="")
