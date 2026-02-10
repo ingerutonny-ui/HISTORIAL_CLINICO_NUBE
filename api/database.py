@@ -6,14 +6,15 @@ from sqlalchemy.orm import sessionmaker
 # URL de conexión desde las variables de entorno de Render
 SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
-if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
-    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
+# Forzar el uso de postgresql:// y configuración de SSL para Render
+if SQLALCHEMY_DATABASE_URL:
+    if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
+        SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# Motor optimizado para PostgreSQL en la nube
+# El argumento connect_args con sslmode es vital para evitar el Error 500
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    pool_size=10,
-    max_overflow=20,
+    connect_args={"sslmode": "require"},
     pool_pre_ping=True
 )
 
