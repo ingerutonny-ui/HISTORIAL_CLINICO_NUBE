@@ -23,12 +23,12 @@ class FiliacionCreate(BaseModel):
     lugar_nacimiento: Optional[str] = ""
     domicilio: Optional[str] = ""
     n_casa: Optional[str] = ""
-    zona_barrio: Optional[str] = ""  # Coincide con tu HTML
+    zona_barrio: Optional[str] = ""
     ciudad: Optional[str] = ""
     pais: Optional[str] = ""
     telefono: Optional[str] = ""
     estado_civil: Optional[str] = ""
-    profesion_oficio: Optional[str] = "" # Coincide con tu HTML
+    profesion_oficio: Optional[str] = ""
     model_config = ConfigDict(extra='allow')
 
 class AntecedentesCreate(BaseModel):
