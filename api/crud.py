@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 from fastapi import HTTPException
 
-# --- OPERACIONES DE PACIENTE (P0 - REGISTRO INICIAL) ---
+# --- OPERACIONES DE PACIENTE (P0) ---
 
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
     try:
@@ -13,10 +13,9 @@ def create_paciente(db: Session, paciente: schemas.PacienteCreate):
         return db_paciente
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error al crear paciente: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 def get_pacientes(db: Session):
-    # Recupera todos los pacientes del DISK (/data/historial.db)
     return db.query(models.Paciente).all()
 
 # --- OPERACIONES DE FORMULARIOS (P1, P2, P3) ---
@@ -24,7 +23,7 @@ def get_pacientes(db: Session):
 def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
         data = filiacion.model_dump()
-        # Filtramos para que solo entren campos definidos en el modelo DeclaracionJurada
+        # Mapeo forzado para asegurar compatibilidad con modelos de 75 líneas
         db_filiacion = models.DeclaracionJurada(**{
             k: v for k, v in data.items() 
             if hasattr(models.DeclaracionJurada, k)
@@ -35,8 +34,7 @@ def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
         return db_filiacion
     except Exception as e:
         db.rollback()
-        # Cambiado a 400 para capturar errores de validación de datos
-        raise HTTPException(status_code=400, detail=f"Error en P1 (Filiación): {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error P1: {str(e)}")
 
 def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     try:
@@ -51,7 +49,7 @@ def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
         return db_ant
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P2 (Antecedentes): {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error P2: {str(e)}")
 
 def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
     try:
@@ -66,4 +64,4 @@ def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
         return db_hab
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P3 (Hábitos/Riesgos): {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error P3: {str(e)}")
