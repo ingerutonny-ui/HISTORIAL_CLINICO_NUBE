@@ -24,10 +24,9 @@ def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     db.commit()
     return db_ant
 
-def create_habitos(db: Session, habitos: schemas.HabitosCreate):
+def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
     try:
-        data = habitos.model_dump()
-        db_hab = models.HabitosRiesgosP3(**data)
+        db_hab = models.HabitosRiesgosP3(**habitos.model_dump())
         db.add(db_hab)
         db.commit()
         db.refresh(db_hab)
@@ -35,11 +34,3 @@ def create_habitos(db: Session, habitos: schemas.HabitosCreate):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error BD: {str(e)}")
-
-def get_historial_completo(db: Session, paciente_id: int):
-    return {
-        "paciente": db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first(),
-        "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first(),
-        "antecedentes": db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first(),
-        "habitos": db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
-    }
