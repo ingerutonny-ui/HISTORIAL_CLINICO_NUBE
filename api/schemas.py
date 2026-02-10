@@ -22,64 +22,64 @@ class FiliacionCreate(BaseModel):
     fecha_nacimiento: str
     lugar_nacimiento: str
     domicilio: str
-    n_casa: str
-    zona: str
+    n_casa: Optional[str] = ""
+    zona: Optional[str] = ""
     ciudad: str
     pais: str
-    telefono: str
+    telefono: Optional[str] = ""
     estado_civil: str
-    profesion: str
+    profesion: Optional[str] = ""
 
 class AntecedentesCreate(BaseModel):
     paciente_id: int
     vista: str
-    vista_obs: str
+    vista_obs: Optional[str] = ""
     auditivo: str
-    auditivo_obs: str
+    auditivo_obs: Optional[str] = ""
     respiratorio: str
-    respiratorio_obs: str
+    respiratorio_obs: Optional[str] = ""
     cardiovasculares: str
-    cardiovasculares_obs: str
+    cardiovasculares_obs: Optional[str] = ""
     digestivos: str
-    digestivos_obs: str
+    digestivos_obs: Optional[str] = ""
     sangre: str
-    sangre_obs: str
+    sangre_obs: Optional[str] = ""
     genitourinario: str
-    genitourinario_obs: str
+    genitourinario_obs: Optional[str] = ""
     sistema_nervioso: str
-    sistema_nervioso_obs: str
+    sistema_nervioso_obs: Optional[str] = ""
     psiquiatricos: str
-    psiquiatricos_obs: str
+    psiquiatricos_obs: Optional[str] = ""
     osteomusculares: str
-    osteomusculares_obs: str
+    osteomusculares_obs: Optional[str] = ""
     endocrino: str
-    endocrino_obs: str
+    endocrino_obs: Optional[str] = ""
     alergias: str
-    alergias_obs: str
+    alergias_obs: Optional[str] = ""
     cirugias: str
-    cirugias_obs: str
+    cirugias_obs: Optional[str] = ""
     accidentes_trabajo: str
-    accidentes_trabajo_obs: str
+    accidentes_trabajo_obs: Optional[str] = ""
     accidentes_pers: str
-    accidentes_pers_obs: str
+    accidentes_pers_obs: Optional[str] = ""
     medicamentos: str
-    medicamentos_obs: str
+    medicamentos_obs: Optional[str] = ""
     infecciosas: str
-    infecciosas_obs: str
-    ap_urinario: str
-    ap_urinario_obs: str
-    linfatico: str
-    linfatico_obs: str
+    infecciosas_obs: Optional[str] = ""
+    ap_urinario: Optional[str] = "NO"
+    ap_urinario_obs: Optional[str] = ""
+    linfatico: Optional[str] = "NO"
+    linfatico_obs: Optional[str] = ""
     reumatologicos: str
-    reumatologicos_obs: str
-    otros: str
-    otros_obs: str
+    reumatologicos_obs: Optional[str] = ""
+    otros: Optional[str] = "NO"
+    otros_obs: Optional[str] = ""
     generales: str
-    generales_obs: str
+    generales_obs: Optional[str] = ""
 
 class HabitosP3Create(BaseModel):
     paciente_id: int
     fuma: str
     bebe_alcohol: str
     deporte: str
-    observaciones: str
+    observaciones: Optional[str] = ""
