@@ -3,15 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, database, crud
 
-# Forzar creación de tablas en la base de datos de Render
+# Intentar crear tablas de forma segura
 try:
     models.Base.metadata.create_all(bind=database.engine)
-except Exception as e:
-    print(f"Error al crear tablas: {e}")
+except Exception:
+    pass
 
 app = FastAPI()
 
-# Configuración de CORS Total para evitar bloqueos de GitHub Pages
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,8 +29,7 @@ def get_db():
 @app.get("/pacientes/", response_model=list[schemas.Paciente])
 def listar_pacientes(db: Session = Depends(get_db)):
     try:
-        pacientes = crud.get_pacientes(db)
-        return pacientes
+        return crud.get_pacientes(db)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
