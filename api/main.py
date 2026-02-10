@@ -3,14 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, database, crud
 
-# Sincronización de tablas
-try:
-    models.Base.metadata.create_all(bind=database.engine)
-except Exception as e:
-    print(f"ERROR CRÍTICO BD: {e}")
-
 app = FastAPI()
 
+# CORS abierto para GitHub Pages
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,6 +13,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Crear tablas solo si no existen
+models.Base.metadata.create_all(bind=database.engine)
 
 def get_db():
     db = database.SessionLocal()
@@ -31,8 +29,8 @@ def listar_pacientes(db: Session = Depends(get_db)):
     try:
         return crud.get_pacientes(db)
     except Exception as e:
-        # Esto nos dirá exactamente qué falla en los logs de Render
-        raise HTTPException(status_code=500, detail=f"Error de conexión: {str(e)}")
+        # Esto enviará el detalle real del error a la consola del navegador
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/pacientes/", response_model=schemas.Paciente)
 def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
