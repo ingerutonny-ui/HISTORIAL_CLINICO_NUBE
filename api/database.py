@@ -3,26 +3,28 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Obtener URL de Render
+# URL de conexión de Render
 raw_url = os.getenv("DATABASE_URL")
 
-def fix_render_url(url: str):
+def get_final_url(url: str):
     if not url:
         return url
-    # SQLAlchemy requiere postgresql:// en lugar de postgres://
+    # Corregir prefijo para SQLAlchemy
     if url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql://", 1)
-    # Eliminar cualquier parámetro previo de sslmode para evitar duplicados
-    if "?sslmode=" in url:
-        url = url.split("?sslmode=")[0]
+    # Limpiar parámetros previos
+    if "?" in url:
+        url = url.split("?")[0]
     return url
 
-SQLALCHEMY_DATABASE_URL = fix_render_url(raw_url)
+SQLALCHEMY_DATABASE_URL = get_final_url(raw_url)
 
-# Conexión forzada con SSL requerida por Render
+# Configuración de motor específica para PostgreSQL en Render
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
-    connect_args={"sslmode": "require"},
+    connect_args={
+        "sslmode": "require"
+    },
     pool_pre_ping=True,
     pool_recycle=300
 )
