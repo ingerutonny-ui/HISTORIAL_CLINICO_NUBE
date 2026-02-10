@@ -13,8 +13,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Sincronización automática de tablas
-models.Base.metadata.create_all(bind=database.engine)
+# Intentar crear tablas al iniciar
+try:
+    models.Base.metadata.create_all(bind=database.engine)
+except Exception as e:
+    print(f"Error de conexión inicial: {e}")
 
 def get_db():
     db = database.SessionLocal()
@@ -23,25 +26,12 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/pacientes/", response_model=list[schemas.Paciente])
+@app.get("/pacientes/")
 def listar_pacientes(db: Session = Depends(get_db)):
     try:
         return crud.get_pacientes(db)
     except Exception as e:
+        # Esto mostrará el error real en la consola del navegador
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.post("/pacientes/", response_model=schemas.Paciente)
-def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    return crud.create_paciente(db=db, paciente=paciente)
-
-@app.post("/filiacion/")
-def guardar_p1(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
-    return crud.create_filiacion(db=db, filiacion=data)
-
-@app.post("/declaraciones/p2/")
-def guardar_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
-    return crud.create_antecedentes(db=db, antecedentes=data)
-
-@app.post("/declaraciones/p3/")
-def guardar_p3(data: schemas.HabitosP3Create, db: Session = Depends(get_db)):
-    return crud.create_habitos(db=db, habitos=data)
+# ... resto de tus endpoints de guardado (P1, P2, P3)
