@@ -2,6 +2,8 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 from fastapi import HTTPException
 
+# --- OPERACIONES DE PACIENTE ---
+
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
     db_paciente = models.Paciente(**paciente.model_dump())
     db.add(db_paciente)
@@ -12,9 +14,10 @@ def create_paciente(db: Session, paciente: schemas.PacienteCreate):
 def get_pacientes(db: Session):
     return db.query(models.Paciente).all()
 
+# --- OPERACIONES DE FORMULARIOS ---
+
 def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
-        # Extraemos los datos y filtramos solo los que el modelo DeclaracionJurada acepta
         data = filiacion.model_dump()
         db_filiacion = models.DeclaracionJurada(**data)
         db.add(db_filiacion)
@@ -39,7 +42,9 @@ def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
 
 def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
     try:
+        # Extraemos los datos del esquema validado
         data = habitos.model_dump()
+        # Creamos la instancia del modelo con los nuevos campos de P3
         db_hab = models.HabitosRiesgosP3(**data)
         db.add(db_hab)
         db.commit()
@@ -47,4 +52,5 @@ def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
         return db_hab
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
+        # Aquí capturamos si hay inconsistencia con las columnas de models.py
+        raise HTTPException(status_code=400, detail=f"Error en P3 (CRUD): {str(e)}")
