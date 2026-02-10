@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, database, crud
 
-# Creación de tablas
 database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
@@ -41,5 +40,4 @@ def guardar_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
 
 @app.post("/declaraciones/p3/")
 def guardar_p3(data: schemas.HabitosP3Create, db: Session = Depends(get_db)):
-    # Nota: Usamos la función de crud correspondiente
     return crud.create_habitos(db=db, habitos=data)
