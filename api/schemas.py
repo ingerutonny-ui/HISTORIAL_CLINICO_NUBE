@@ -59,8 +59,17 @@ class AntecedentesCreate(BaseModel):
 
 class HabitosP3Create(BaseModel):
     paciente_id: int
-    fuma: Optional[str] = "NO"
-    bebe_alcohol: Optional[str] = "NO"
-    deporte: Optional[str] = "NINGUNO"
-    observaciones: Optional[str] = "SIN OBSERVACIONES"
+    fuma: str = "NO"
+    fuma_cantidad: Optional[str] = ""
+    alcohol: str = "NO"
+    alcohol_frecuencia: Optional[str] = ""
+    drogas: str = "NO"
+    drogas_tipo: Optional[str] = ""
+    coca: str = "NO"
+    deporte: str = "NO"
+    deporte_detalle: Optional[str] = ""
+    grupo_sanguineo: Optional[str] = ""
+    historia_laboral: str = "[]"
+    riesgos_expuestos: str = "[]"
+    observaciones: str = ""
     model_config = ConfigDict(extra='allow')
