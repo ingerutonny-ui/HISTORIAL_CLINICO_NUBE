@@ -9,7 +9,7 @@ class PacienteCreate(BaseModel):
     model_config = ConfigDict(extra='allow')
 
 class FiliacionCreate(BaseModel):
-    paciente_id: Any
+    paciente_id: int
     edad: Optional[Any] = None
     sexo: Optional[Any] = None
     fecha_nacimiento: Optional[Any] = None
@@ -25,9 +25,9 @@ class FiliacionCreate(BaseModel):
     model_config = ConfigDict(extra='allow')
 
 class AntecedentesCreate(BaseModel):
-    paciente_id: Any
+    paciente_id: int
     model_config = ConfigDict(extra='allow')
 
 class HabitosP3Create(BaseModel):
-    paciente_id: Any
+    paciente_id: int
     model_config = ConfigDict(extra='allow')
