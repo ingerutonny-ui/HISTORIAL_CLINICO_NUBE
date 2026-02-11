@@ -24,7 +24,7 @@
 
 <div class="toolbar">
     <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger px-4">SALIR</button>
-    <button onclick="descargarPDF()" class="btn btn-success px-4 fw-bold">DESCARGAR PDF COMPLETO</button>
+    <button onclick="descargarPDF()" class="btn btn-success px-4 fw-bold">DESCARGAR PDF</button>
 </div>
 
 <div id="hoja-pdf">
@@ -75,7 +75,7 @@
         <tbody id="grid-p3"></tbody>
     </table>
 
-    <div class="row mt-5 text-center" style="font-size: 9pt;">
+    <div class="row mt-5 text-center">
         <div class="col-6"><br>__________________________<br>FIRMA DEL TRABAJADOR<br><b id="nom-firma"></b></div>
         <div class="col-6"><br>__________________________<br>MÉDICO EVALUADOR</div>
     </div>
@@ -85,22 +85,38 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
-    async function cargarReporte() {
+    async function cargarData() {
         try {
             const res = await fetch(`${API}/pacientes/`);
             const lista = await res.json();
             const p = lista.find(i => i.id == p_id || i.codigo_paciente == p_id);
 
             if(p) {
-                // 1. MAPEADO P1 (Basado en consola image_d25698.png)
-                const full = `${p.apellido || ''} ${p.nombre || ''}`.trim();
-                document.getElementById('full_nombre').innerText = full;
-                document.getElementById('nom-firma').innerText = full;
-                document.getElementById('ci').innerText = p.ci || '---';
+                // P1: AFILIACIÓN - Nombres y Empresa
+                document.getElementById('full_nombre').innerText = `${p.apellido || ''} ${p.nombre || ''}`.trim();
+                document.getElementById('nom-firma').innerText = `${p.apellido || ''} ${p.nombre || ''}`.trim();
                 document.getElementById('empresa').innerText = p.empresa || '---';
-                document.getElementById('edad').innerText = p.edad || '---';
+                
+                // P1: Identidad y Edad
+                document.getElementById('ci').innerText = p.ci || '---';
+                document.getElementById('edad').innerText = p.edad ? p.edad + " AÑOS" : '---';
+                
+                // P1: Género (M/F)
+                const gen = (p.genero || '').toUpperCase();
+                document.getElementById('sex-m').innerText = gen.includes('M') ? '[ X ]' : '[   ]';
+                document.getElementById('sex-f').innerText = gen.includes('F') ? '[ X ]' : '[   ]';
+
+                // P1: Fecha y Lugar
                 document.getElementById('fecha_nacimiento').innerText = p.fecha_nacimiento || '---';
                 document.getElementById('lugar_nacimiento').innerText = p.lugar_nacimiento || '---';
+                if(p.fecha_nacimiento && p.fecha_nacimiento.includes('-')) {
+                    const f = p.fecha_nacimiento.split('-');
+                    document.getElementById('f-anio').innerText = f[0];
+                    document.getElementById('f-mes').innerText = f[1];
+                    document.getElementById('f-dia').innerText = f[2];
+                }
+
+                // P1: Localización y Otros
                 document.getElementById('direccion').innerText = p.direccion || '---';
                 document.getElementById('barrio').innerText = p.barrio || '---';
                 document.getElementById('pais').innerText = p.pais || 'BOLIVIA';
@@ -111,20 +127,8 @@
                 document.getElementById('contacto_emergencia').innerText = p.contacto_emergencia || '---';
                 document.getElementById('relacion_contacto').innerText = p.relacion_contacto || '---';
 
-                // Sexo y Fecha
-                const g = (p.genero || '').toUpperCase();
-                document.getElementById('sex-m').innerText = g.includes('M') ? '[ X ]' : '[   ]';
-                document.getElementById('sex-f').innerText = g.includes('F') ? '[ X ]' : '[   ]';
-
-                if(p.fecha_nacimiento && p.fecha_nacimiento.includes('-')) {
-                    const f = p.fecha_nacimiento.split('-');
-                    document.getElementById('f-anio').innerText = f[0];
-                    document.getElementById('f-mes').innerText = f[1];
-                    document.getElementById('f-dia').innerText = f[2];
-                }
-
-                // 2. MAPEADO P2 (Basado en schemas.py image_c6fd73.png)
-                const p2Campos = [
+                // P2: ANTECEDENTES (Basado en schemas.py)
+                const p2 = [
                     ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias],
                     ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
                     ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia],
@@ -137,30 +141,30 @@
                     ['AUDICION', p.audicion], ['F. RESPIRATORIA', p.f_respiratoria]
                 ];
                 let h2 = "";
-                for(let i=0; i<p2Campos.length; i+=2) {
+                for(let i=0; i<p2.length; i+=2) {
                     h2 += `<tr>
-                        <td class="bg-titulo" style="width:20%">${p2Campos[i][0]}</td><td style="width:30%">${p2Campos[i][1] || 'NO'}</td>
-                        <td class="bg-titulo" style="width:20%">${p2Campos[i+1][0]}</td><td style="width:30%">${p2Campos[i+1][1] || 'NO'}</td>
+                        <td class="bg-titulo" style="width:20%">${p2[i][0]}</td><td style="width:30%">${p2[i][1] || 'NO'}</td>
+                        <td class="bg-titulo" style="width:20%">${p2[i+1][0]}</td><td style="width:30%">${p2[i+1][1] || 'NO'}</td>
                     </tr>`;
                 }
                 document.getElementById('grid-p2').innerHTML = h2;
 
-                // 3. MAPEADO P3
-                const p3Campos = [
+                // P3: HÁBITOS
+                const p3 = [
                     ['FUMA', p.fuma], ['ALCOHOL', p.alcohol],
                     ['DROGAS', p.drogas], ['DEPORTES', p.deportes],
                     ['GRUPO SANGUINEO', p.grupo_sanguineo]
                 ];
-                document.getElementById('grid-p3').innerHTML = p3Campos.map(c => `<tr><td class="bg-titulo" style="width:40%">${c[0]}</td><td style="width:60%">${c[1] || '---'}</td></tr>`).join('');
+                document.getElementById('grid-p3').innerHTML = p3.map(x => `<tr><td class="bg-titulo" style="width:40%">${x[0]}</td><td style="width:60%">${x[1] || '---'}</td></tr>`).join('');
             }
-        } catch(e) { console.error("Fallo de mapeo:", e); }
+        } catch(e) { console.error("Error cargando reporte:", e); }
     }
 
     function descargarPDF() {
         const element = document.getElementById('hoja-pdf');
-        html2pdf().set({ margin:0, filename:'Historial_Completo.pdf', html2canvas:{scale:3}, jsPDF:{unit:'mm', format:'a4'} }).from(element).save();
+        html2pdf().set({ margin:0, filename:'Reporte_Final.pdf', html2canvas:{scale:3}, jsPDF:{unit:'mm', format:'a4'} }).from(element).save();
     }
-    window.onload = cargarReporte;
+    window.onload = cargarData;
 </script>
 </body>
 </html>
