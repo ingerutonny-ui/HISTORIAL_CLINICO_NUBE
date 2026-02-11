@@ -7,13 +7,9 @@ from . import models, database
 # 1. INICIALIZACIÓN DE DB
 database.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI(
-    title="HISTORIAL_CLINICO_NUBE",
-    description="Sistema Robusto de Historias Clínicas",
-    version="2.0.0"
-)
+app = FastAPI(title="HISTORIAL_CLINICO_NUBE", version="2.5.0")
 
-# 2. CORS PARA GITHUB PAGES Y RENDER
+# 2. CORS TOTAL
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 3. SESIÓN DE BASE DE DATOS
+# 3. SESIÓN DB
 def get_db():
     db = database.SessionLocal()
     try:
@@ -31,26 +27,26 @@ def get_db():
         db.close()
 
 @app.get("/")
-def check_service():
-    return {"status": "online", "mode": "Strict Learning Active"}
+def root():
+    return {"status": "online", "database": str(database.SQLALCHEMY_DATABASE_URL)}
 
-# --- RUTA 1: REGISTRO DE PACIENTES (P0) ---
+# --- RUTA 1: REGISTRO PACIENTES (P0) ---
 @app.post("/pacientes/")
 async def create_paciente(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        ci_str = str(data.get("ci", ""))
+        ci_recibido = str(data.get("ci", ""))
         
-        # Evitar el error de CI duplicado (Unique Constraint)
-        existente = db.query(models.Paciente).filter(models.Paciente.ci == ci_str).first()
+        # Si el paciente ya existe por CI, lo devolvemos para evitar el error 'Unique'
+        existente = db.query(models.Paciente).filter(models.Paciente.ci == ci_recibido).first()
         if existente:
             return existente
             
         db_obj = models.Paciente(
-            nombre=data.get("nombre"),
-            apellido=data.get("apellido"),
-            ci=ci_str,
-            codigo_paciente=data.get("codigo_paciente")
+            nombre=str(data.get("nombre", "")),
+            apellido=str(data.get("apellido", "")),
+            ci=ci_recibido,
+            codigo_paciente=str(data.get("codigo_paciente", ""))
         )
         db.add(db_obj)
         db.commit()
@@ -58,68 +54,50 @@ async def create_paciente(request: Request, db: Session = Depends(get_db)):
         return db_obj
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error en P0: {str(e)}")
 
-# --- RUTA 2: PARTE 1 - FILIACIÓN (MAPEO TOLERANTE A ERRORES) ---
+# --- RUTA 2: PARTE 1 - FILIACIÓN (SOLUCIÓN ERROR 400) ---
 @app.post("/filiacion/")
 async def create_filiacion(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
         
-        # Mapeo que busca múltiples nombres posibles para evitar el Error 400
+        # FORZAMOS TODO A STRING para que coincida con models.py y SQLite
+        # El error 400 ocurre porque el HTML envía 'edad' como Integer
         db_obj = models.DeclaracionJurada(
             paciente_id=data.get("paciente_id"),
             edad=str(data.get("edad", "")),
             sexo=str(data.get("sexo", "")),
             fecha_nacimiento=str(data.get("fecha_nacimiento", "")),
             lugar_nacimiento=str(data.get("lugar_nacimiento", "")),
-            domicilio=str(data.get("domicilio", data.get("domicilio_actual", ""))),
-            n_casa=str(data.get("n_casa", data.get("n_casa_input", ""))),
-            zona_barrio=str(data.get("zona_barrio", data.get("zona", ""))),
+            domicilio=str(data.get("domicilio", "")),
+            n_casa=str(data.get("n_casa", "")),
+            zona_barrio=str(data.get("zona_barrio", "")),
             ciudad=str(data.get("ciudad", "")),
             pais=str(data.get("pais", "")),
-            telefono=str(data.get("telefono", data.get("celular", ""))),
+            telefono=str(data.get("telefono", "")),
             estado_civil=str(data.get("estado_civil", "")),
-            profesion_oficio=str(data.get("profesion_oficio", data.get("profesion", "")))
+            profesion_oficio=str(data.get("profesion_oficio", ""))
         )
         
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "message": "Filiación guardada"}
+        return {"status": "success", "detail": "P1 Guardada"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
+        print(f"DEBUG ERROR P1: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 3: PARTE 2 - ANTECEDENTES (TODOS LOS CAMPOS) ---
+# --- RUTA 3: PARTE 2 - ANTECEDENTES (22 CAMPOS) ---
 @app.post("/declaraciones/p2/")
 async def create_p2(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        db_obj = models.AntecedentesP2(
-            paciente_id=data.get("paciente_id"),
-            vista=str(data.get("vista", "NORMAL")),
-            auditivo=str(data.get("auditivo", "NORMAL")),
-            respiratorio=str(data.get("respiratorio", "NORMAL")),
-            cardio=str(data.get("cardio", "NORMAL")),
-            digestivos=str(data.get("digestivos", "NORMAL")),
-            sangre=str(data.get("sangre", "NORMAL")),
-            genitourinario=str(data.get("genitourinario", "NORMAL")),
-            sistema_nervioso=str(data.get("sistema_nervioso", "NORMAL")),
-            psiquiatricos=str(data.get("psiquiatricos", "NORMAL")),
-            osteomusculares=str(data.get("osteomusculares", "NORMAL")),
-            reumatologicos=str(data.get("reumatologicos", "NORMAL")),
-            dermatologicas=str(data.get("dermatologicas", "NORMAL")),
-            alergias=str(data.get("alergias", "NORMAL")),
-            cirugias=str(data.get("cirugias", "NORMAL")),
-            infecciones=str(data.get("infecciones", "NORMAL")),
-            acc_personales=str(data.get("acc_personales", "NORMAL")),
-            acc_trabajo=str(data.get("acc_trabajo", "NORMAL")),
-            medicamentos=str(data.get("medicamentos", "NORMAL")),
-            endocrino=str(data.get("endocrino", "NORMAL")),
-            familiares=str(data.get("familiares", "NORMAL")),
-            otros_especificos=str(data.get("otros_especificos", "NORMAL")),
-            generales=str(data.get("generales", "NORMAL"))
-        )
+        
+        # Limpiamos los datos para asegurar que todos sean Strings antes de guardar
+        campos_p2 = {k: str(v) if k != 'paciente_id' else v for k, v in data.items()}
+        
+        db_obj = models.AntecedentesP2(**campos_p2)
         db.add(db_obj)
         db.commit()
         return {"status": "success"}
@@ -127,11 +105,12 @@ async def create_p2(request: Request, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 4: PARTE 3 - HÁBITOS (REFORZADO) ---
+# --- RUTA 4: PARTE 3 - HÁBITOS Y RIESGOS ---
 @app.post("/declaraciones/p3/")
 async def create_p3(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
+        
         db_obj = models.HabitosRiesgosP3(
             paciente_id=data.get("paciente_id"),
             fuma=str(data.get("fuma", "")),
@@ -148,6 +127,7 @@ async def create_p3(request: Request, db: Session = Depends(get_db)):
             riesgos_expuestos=str(data.get("riesgos_expuestos", "[]")),
             observaciones=str(data.get("observaciones", ""))
         )
+        
         db.add(db_obj)
         db.commit()
         return {"status": "success"}
@@ -157,5 +137,5 @@ async def create_p3(request: Request, db: Session = Depends(get_db)):
 
 # --- RUTA 5: CONSULTA ---
 @app.get("/pacientes/")
-def list_all(db: Session = Depends(get_db)):
+def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
