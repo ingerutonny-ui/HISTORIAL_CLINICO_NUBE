@@ -30,7 +30,7 @@ def get_db():
 def check():
     return {"status": "online", "db": "connected"}
 
-# --- RUTA 1: PACIENTES (EVITA DUPLICADOS DE CI) ---
+# --- RUTA 1: PACIENTES ---
 @app.post("/pacientes/")
 async def create_paciente(request: Request, db: Session = Depends(get_db)):
     try:
@@ -40,8 +40,8 @@ async def create_paciente(request: Request, db: Session = Depends(get_db)):
         if existente:
             return existente
         db_obj = models.Paciente(
-            nombre=str(data.get("nombre", "")),
-            apellido=str(data.get("apellido", "")),
+            nombre=str(data.get("nombre", "")).upper(),
+            apellido=str(data.get("apellido", "")).upper(),
             ci=ci_val,
             codigo_paciente=str(data.get("codigo_paciente", ""))
         )
@@ -53,39 +53,54 @@ async def create_paciente(request: Request, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 2: FILIACIÓN (CORRECCIÓN DE ERROR 400 DEFINITIVA) ---
+# --- RUTA 2: FILIACIÓN (LÓGICA DE ACTUALIZACIÓN AUTOMÁTICA) ---
 @app.post("/filiacion/")
 async def create_filiacion(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        
-        # Validamos que el paciente_id exista, de lo contrario no podemos guardar la P1
         p_id = data.get("paciente_id")
+        
         if not p_id:
-            raise ValueError("Falta el ID del paciente en la solicitud")
+            raise ValueError("ID de paciente no encontrado")
 
-        db_obj = models.DeclaracionJurada(
-            paciente_id=int(p_id),
-            edad=str(data.get("edad", "")),
-            sexo=str(data.get("sexo", "")),
-            fecha_nacimiento=str(data.get("fecha_nacimiento", "")),
-            lugar_nacimiento=str(data.get("lugar_nacimiento", "")),
-            domicilio=str(data.get("domicilio", "")),
-            n_casa=str(data.get("n_casa", "")),
-            zona_barrio=str(data.get("zona_barrio", "")),
-            ciudad=str(data.get("ciudad", "")),
-            pais=str(data.get("pais", "")),
-            telefono=str(data.get("telefono", "")),
-            estado_civil=str(data.get("estado_civil", "")),
-            profesion_oficio=str(data.get("profesion_oficio", ""))
-        )
-        db.add(db_obj)
-        db.commit()
-        return {"status": "success"}
+        # BUSCAMOS SI YA EXISTE FILIACIÓN PARA ESTE PACIENTE
+        # Esto evita el Error 400 al reintentar con el mismo paciente
+        filiacion_existente = db.query(models.DeclaracionJurada).filter(
+            models.DeclaracionJurada.paciente_id == int(p_id)
+        ).first()
+
+        datos_filiacion = {
+            "paciente_id": int(p_id),
+            "edad": str(data.get("edad", "")),
+            "sexo": str(data.get("sexo", "")),
+            "fecha_nacimiento": str(data.get("fecha_nacimiento", "")),
+            "lugar_nacimiento": str(data.get("lugar_nacimiento", "")),
+            "domicilio": str(data.get("domicilio", "")),
+            "n_casa": str(data.get("n_casa", "")),
+            "zona_barrio": str(data.get("zona_barrio", "")),
+            "ciudad": str(data.get("ciudad", "")),
+            "pais": str(data.get("pais", "")),
+            "telefono": str(data.get("telefono", "")),
+            "estado_civil": str(data.get("estado_civil", "")),
+            "profesion_oficio": str(data.get("profesion_oficio", ""))
+        }
+
+        if filiacion_existente:
+            # ACTUALIZAR EXISTENTE
+            for key, value in datos_filiacion.items():
+                setattr(filiacion_existente, key, value)
+            db.commit()
+            return {"status": "success", "message": "Actualizado"}
+        else:
+            # CREAR NUEVO
+            db_obj = models.DeclaracionJurada(**datos_filiacion)
+            db.add(db_obj)
+            db.commit()
+            return {"status": "success", "message": "Creado"}
+
     except Exception as e:
         db.rollback()
-        # Esto nos dirá exactamente qué campo falla en los logs de Render
-        raise HTTPException(status_code=400, detail=f"Error en validacion: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
 
 # --- RUTA 3: P2 ---
 @app.post("/declaraciones/p2/")
@@ -105,22 +120,7 @@ async def create_p2(request: Request, db: Session = Depends(get_db)):
 async def create_p3(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        db_obj = models.HabitosRiesgosP3(
-            paciente_id=data.get("paciente_id"),
-            fuma=str(data.get("fuma", "")),
-            fuma_cantidad=str(data.get("fuma_cantidad", "")),
-            alcohol=str(data.get("alcohol", "")),
-            alcohol_frecuencia=str(data.get("alcohol_frecuencia", "")),
-            drogas=str(data.get("drogas", "")),
-            drogas_tipo=str(data.get("drogas_tipo", "")),
-            coca=str(data.get("coca", "")),
-            deporte=str(data.get("deporte", "")),
-            deporte_detalle=str(data.get("deporte_detalle", "")),
-            grupo_sanguineo=str(data.get("grupo_sanguineo", "")),
-            historia_laboral=str(data.get("historia_laboral", "[]")),
-            riesgos_expuestos=str(data.get("riesgos_expuestos", "[]")),
-            observaciones=str(data.get("observaciones", ""))
-        )
+        db_obj = models.HabitosRiesgosP3(**data)
         db.add(db_obj)
         db.commit()
         return {"status": "success"}
