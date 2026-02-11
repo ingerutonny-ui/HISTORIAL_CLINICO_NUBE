@@ -4,79 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VISOR DE HISTORIALES | NUBE</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background-color: #050a18; font-family: 'Segoe UI', sans-serif; color: #ffffff; }
         .main-container { max-width: 1100px; margin: 40px auto; padding: 20px; }
-        
-        /* Contenedor principal con fondo oscuro pero tabla clara */
         .glass-card { 
-            background: #ffffff; /* Fondo blanco para la tabla */
+            background: #ffffff; 
             border-radius: 15px; 
-            padding: 0; 
             overflow: hidden;
             border: 4px solid #1e293b; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-
-        .table-custom { 
-            margin-bottom: 0;
-            color: #000000; /* Letras Negras */
-        }
-        
-        .table-custom thead { 
-            background-color: #e2e8f0; /* Barra superior clara */
-        }
-
-        .table-custom th { 
-            color: #1e293b; 
-            text-transform: uppercase; 
-            font-size: 0.75rem; 
-            font-weight: 800;
-            padding: 15px;
-            border: none;
-        }
-
-        .table-custom td {
-            padding: 15px;
-            vertical-align: middle;
-            border-bottom: 1px solid #e2e8f0;
-            font-weight: 600;
-        }
-
-        /* Resalte para el nombre */
-        .nombre-paciente {
-            color: #000000;
-            font-weight: 800;
-            text-transform: uppercase;
-        }
-
-        .btn-pdf { 
-            background-color: #ef4444; 
-            color: white; 
-            border: none; 
-            font-size: 0.7rem; 
-            font-weight: 800;
-            padding: 5px 12px;
-            border-radius: 5px;
-        }
-
-        .status-badge { 
-            background: #22c55e; 
-            color: white; 
-            padding: 4px 8px; 
-            border-radius: 4px; 
-            font-size: 0.65rem; 
-            font-weight: 800;
-        }
-
-        .badge-codigo {
-            background: #1e293b;
-            color: #38bdf8;
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
+        .table-custom { margin-bottom: 0; color: #000000; }
+        .table-custom thead { background-color: #e2e8f0; }
+        .table-custom th { color: #1e293b; text-transform: uppercase; font-size: 0.75rem; font-weight: 800; padding: 15px; }
+        .table-custom td { padding: 15px; vertical-align: middle; border-bottom: 1px solid #e2e8f0; font-weight: 600; }
+        .nombre-paciente { color: #000000; font-weight: 800; text-transform: uppercase; font-size: 0.9rem; }
+        .btn-pdf { background-color: #ef4444; color: white; border: none; font-size: 0.7rem; font-weight: 800; padding: 5px 12px; border-radius: 5px; }
+        .status-badge { background: #22c55e; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.65rem; font-weight: 800; }
+        .badge-codigo { background: #1e293b; color: #38bdf8; padding: 4px 8px; border-radius: 4px; }
     </style>
 </head>
 <body>
@@ -87,7 +35,7 @@
             <i class="fas fa-arrow-left"></i> VOLVER AL INICIO
         </a>
         <h2 class="fw-bold mt-3">LISTA DE PACIENTES REGISTRADOS</h2>
-        <p style="color: #94a3b8;">Base de datos en la nube</p>
+        <p style="color: #94a3b8;">Gestión de Declaraciones Juradas</p>
     </div>
 
     <div class="glass-card">
@@ -96,7 +44,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>NOMBRE DEL PACIENTE</th>
+                        <th>APELLIDOS Y NOMBRES</th>
                         <th>CÉDULA (CI)</th>
                         <th>CÓDIGO</th>
                         <th>ESTADO</th>
@@ -115,7 +63,7 @@
 
     async function cargarPacientes() {
         const tbody = document.getElementById('tablaPacientes');
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Conectando con Render...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Cargando datos de la nube...</td></tr>';
 
         try {
             const response = await fetch(`${API}/pacientes/`);
@@ -131,21 +79,22 @@
                     <td><span class="badge badge-codigo">${p.codigo_paciente || '---'}</span></td>
                     <td><span class="status-badge">REGISTRADO</span></td>
                     <td class="text-center">
-                        <button onclick="generarPDF(${p.id})" class="btn-pdf">
-                            <i class="fas fa-file-pdf"></i> PDF
+                        <button onclick="prepararPDF(${p.id})" class="btn-pdf">
+                            <i class="fas fa-file-pdf"></i> GENERAR PDF
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         } catch (error) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error de red.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error de conexión.</td></tr>';
         }
     }
 
-    function generarPDF(id) {
+    function prepararPDF(id) {
         localStorage.setItem('p_id', id);
-        alert("Paciente seleccionado ID: " + id + ". Iniciando PDF...");
+        // Redirigimos a la página que armará el diseño del PDF
+        window.location.href = "generar_reporte.html";
     }
 
     window.onload = cargarPacientes;
