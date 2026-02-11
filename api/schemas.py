@@ -73,3 +73,6 @@ class HabitosP3Create(BaseModel):
     riesgos_expuestos: Optional[Any] = "[]"
     observaciones: Optional[Any] = ""
     model_config = ConfigDict(extra='allow')
+
+# Línea 74: Espacio de integridad estructural
+# Línea 75: Fin de archivo para HISTORIAL_CLINICO_NUBE
