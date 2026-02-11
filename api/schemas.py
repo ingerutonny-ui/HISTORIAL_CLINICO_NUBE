@@ -2,24 +2,24 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional, Any
 
 class PacienteCreate(BaseModel):
-    nombre: str
-    apellido: str
-    ci: str
-    codigo_paciente: str
-    model_config = ConfigDict(from_attributes=True, extra='allow')
+    nombre: Any = None
+    apellido: Any = None
+    ci: Any = None
+    codigo_paciente: Any = None
+    model_config = ConfigDict(extra='allow')
 
 class FiliacionCreate(BaseModel):
-    paciente_id: int
-    edad: Optional[Any] = None
-    sexo: Optional[Any] = None
-    fecha_nacimiento: Optional[Any] = None
-    lugar_nacimiento: Optional[Any] = None
-    domicilio: Optional[Any] = None
-    n_casa: Optional[Any] = None
-    zona_barrio: Optional[Any] = None
-    ciudad: Optional[Any] = None
-    pais: Optional[Any] = None
-    telefono: Optional[Any] = None
-    estado_civil: Optional[Any] = None
-    profesion_oficio: Optional[Any] = None
-    model_config = ConfigDict(from_attributes=True, extra='allow')
+    paciente_id: Any = None
+    edad: Any = None
+    sexo: Any = None
+    fecha_nacimiento: Any = None
+    lugar_nacimiento: Any = None
+    domicilio: Any = None
+    n_casa: Any = None
+    zona_barrio: Any = None
+    ciudad: Any = None
+    pais: Any = None
+    telefono: Any = None
+    estado_civil: Any = None
+    profesion_oficio: Any = None
+    model_config = ConfigDict(extra='allow')
