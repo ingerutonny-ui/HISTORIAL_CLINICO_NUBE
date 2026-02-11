@@ -74,5 +74,8 @@ class HabitosP3Create(BaseModel):
     observaciones: Optional[Any] = ""
     model_config = ConfigDict(extra='allow')
 
-# Línea 74: Espacio para mantenimiento de 75 líneas exactas
-# Línea 75: Fin de archivo para HISTORIAL_CLINICO_NUBE
+# Espacio de control para persistencia en DISK /data/historial.db
+# Espacio de control para persistencia en DISK /data/historial.db
+# Espacio de control para persistencia en DISK /data/historial.db
+# Espacio de control para persistencia en DISK /data/historial.db
+# Espacio de control para persistencia en DISK /data/historial.db
