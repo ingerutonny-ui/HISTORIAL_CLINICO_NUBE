@@ -1,12 +1,19 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, Any
 
-class PacienteCreate(BaseModel):
+class PacienteBase(BaseModel):
     nombre: str
     apellido: str
     ci: str
     codigo_paciente: str
     model_config = ConfigDict(extra='allow')
+
+class PacienteCreate(PacienteBase):
+    pass
+
+class Paciente(PacienteBase):
+    id: int
+    model_config = ConfigDict(from_attributes=True, extra='allow')
 
 class FiliacionCreate(BaseModel):
     paciente_id: int
