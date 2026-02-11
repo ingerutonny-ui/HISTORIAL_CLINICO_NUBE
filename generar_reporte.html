@@ -33,7 +33,7 @@
             <td style="width: 20%; text-align: center; border: 1px solid black;"><b>LOGO</b></td>
             <td style="width: 60%; text-align: center; border: 1px solid black;">
                 <h5 style="margin:0;">PROYECTO HISTORIAL CLÍNICO NUBE</h5>
-                <p style="margin:0; font-size: 8pt;">DECLARACIÓN JURADA DE SALUD - REPORTE DE EVALUACIÓN</p>
+                <p style="margin:0; font-size: 8pt;">DECLARACIÓN JURADA DE SALUD - REPORTE OFICIAL</p>
             </td>
             <td style="width: 20%; font-size: 8pt; padding: 5px; border: 1px solid black;">
                 ID: <b id="reg_codigo"></b><br>
@@ -112,18 +112,25 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
-    async function cargarReporteFinal() {
+    async function cargarReporte() {
         document.getElementById('reg_fecha').innerText = new Date().toLocaleDateString();
         try {
-            // Intentar traer los datos detallados
-            const res = await fetch(`${API}/pacientes/${p_id}`);
-            const p = await res.json();
+            // INTENTO 1: Buscar en la lista general (MÁS SEGURO según tus capturas)
+            const resLista = await fetch(`${API}/pacientes/`);
+            const lista = await resLista.json();
+            
+            // Buscamos al paciente por ID dentro de la lista que sí carga
+            let p = lista.find(item => item.id == p_id);
 
-            // DEPURA: Esto te dirá en la consola si los datos están llegando o no
-            console.log("DATOS RECIBIDOS DEL SERVIDOR:", p);
+            // INTENTO 2: Si no está en la lista, probar el individual (por si acaso)
+            if (!p) {
+                const resInd = await fetch(`${API}/pacientes/${p_id}`);
+                p = await resInd.json();
+            }
 
-            if(p) {
-                // Mapeo P1
+            console.log("PACIENTE RECUPERADO:", p);
+
+            if(p && !p.detail) {
                 document.getElementById('p1_nombre').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
                 document.getElementById('firma_p').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
                 document.getElementById('reg_codigo').innerText = p.codigo_paciente || 'S/N';
@@ -142,7 +149,6 @@
                 document.getElementById('p1_emergencia').innerText = p.contacto_emergencia || '---';
                 document.getElementById('p1_parentesco').innerText = p.relacion_contacto || '---';
 
-                // Mapeo P2
                 const p2Keys = [
                     ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias], ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
                     ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia], ['GASTRITIS', p.gastritis], ['CORAZON', p.corazon],
@@ -160,23 +166,24 @@
                 h2 += `<tr><td class="label">PRESIÓN ART.</td><td class="valor">${p.presion_valor || '---'}</td><td class="label">OBSERVACIONES</td><td class="valor">${p.observaciones_p2 || 'NINGUNA'}</td></tr>`;
                 document.getElementById('p2_grid').innerHTML = h2;
 
-                // Mapeo P3
                 const p3Keys = [['FUMA', p.fuma], ['ALCOHOL', p.alcohol], ['DROGAS', p.drogas], ['DEPORTES', p.deportes], ['GRUPO SANGUINEO', p.grupo_sanguineo]];
                 document.getElementById('p3_grid').innerHTML = p3Keys.map(k => `<tr><td class="label">${k[0]}:</td><td class="valor" colspan="3">${k[1] || '---'}</td></tr>`).join('');
+            } else {
+                alert("Error: El servidor no reconoce este ID de paciente. Regresa al visor e intenta de nuevo.");
             }
-        } catch(e) { console.error("Error cargando reporte:", e); }
+        } catch(e) { console.error("Error crítico:", e); }
     }
 
     function descargarPDF() {
         const element = document.getElementById('hoja-pdf');
         html2pdf().set({ 
             margin: 10, 
-            filename: 'Reporte_Clinico.pdf', 
+            filename: 'Reporte_Final.pdf', 
             html2canvas: { scale: 3 }, 
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
         }).from(element).save();
     }
-    window.onload = cargarReporteFinal;
+    window.onload = cargarReporte;
 </script>
 </body>
 </html>
