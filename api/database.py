@@ -3,9 +3,10 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Ruta absoluta al DISK de Render para evitar errores de escritura
+# Ruta absoluta al DISK de Render
 SQLALCHEMY_DATABASE_URL = "sqlite:////data/historial.db"
 
+# Si la carpeta /data no existe (entorno local), usa una local
 if not os.path.exists("/data"):
     SQLALCHEMY_DATABASE_URL = "sqlite:///./historial.db"
 
