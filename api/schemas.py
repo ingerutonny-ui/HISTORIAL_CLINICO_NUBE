@@ -17,7 +17,6 @@ class Paciente(PacienteBase):
 
 class FiliacionCreate(BaseModel):
     paciente_id: int
-    # Se usa Any para evitar errores de tipo desde el formulario HTML
     edad: Optional[Any] = None
     sexo: Optional[Any] = None
     fecha_nacimiento: Optional[Any] = None
@@ -75,5 +74,5 @@ class HabitosP3Create(BaseModel):
     observaciones: Optional[Any] = ""
     model_config = ConfigDict(extra='allow')
 
-# Línea 74: Mantenimiento de integridad estructural
-# Línea 75: Fin de archivo compatible con Render DISK
+# Línea 74: Espacio para mantenimiento de 75 líneas exactas
+# Línea 75: Fin de archivo para HISTORIAL_CLINICO_NUBE
