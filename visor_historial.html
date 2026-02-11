@@ -10,58 +10,72 @@
         body { background-color: #050a18; font-family: 'Segoe UI', sans-serif; color: #ffffff; }
         .main-container { max-width: 1100px; margin: 40px auto; padding: 20px; }
         
+        /* Contenedor principal con fondo oscuro pero tabla clara */
         .glass-card { 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(10px); 
-            border-radius: 20px; 
-            padding: 30px; 
-            border: 1px solid rgba(255, 255, 255, 0.15); 
+            background: #ffffff; /* Fondo blanco para la tabla */
+            border-radius: 15px; 
+            padding: 0; 
+            overflow: hidden;
+            border: 4px solid #1e293b; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Títulos */
-        .text-muted { color: #94a3b8 !important; } 
-        .text-info { color: #38bdf8 !important; } 
-        
-        .table-dark-custom { 
-            background: transparent; 
-            color: #f8fafc; 
+        .table-custom { 
+            margin-bottom: 0;
+            color: #000000; /* Letras Negras */
         }
         
-        .table-dark-custom th { 
-            background: rgba(255, 255, 255, 0.1); 
-            color: #38bdf8; /* Encabezados en Cyan */
+        .table-custom thead { 
+            background-color: #e2e8f0; /* Barra superior clara */
+        }
+
+        .table-custom th { 
+            color: #1e293b; 
             text-transform: uppercase; 
             font-size: 0.75rem; 
-            letter-spacing: 1.5px; 
-            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
+            font-weight: 800;
+            padding: 15px;
+            border: none;
         }
 
-        /* ESTE ES EL CAMBIO CLAVE: Nombre en Amarillo Neón */
+        .table-custom td {
+            padding: 15px;
+            vertical-align: middle;
+            border-bottom: 1px solid #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* Resalte para el nombre */
         .nombre-paciente {
-            color: #facc15 !important; 
+            color: #000000;
             font-weight: 800;
             text-transform: uppercase;
-            font-size: 1rem;
         }
 
-        .btn-action { 
-            padding: 6px 15px; 
-            border-radius: 8px; 
-            font-size: 0.8rem; 
-            font-weight: 700; 
-            transition: 0.3s; 
-        }
-        
-        .btn-pdf { background-color: #ef4444; color: white; border: none; }
-        .btn-pdf:hover { background-color: #dc2626; transform: translateY(-2px); }
-
-        .status-badge { 
-            padding: 5px 10px; 
-            border-radius: 6px; 
+        .btn-pdf { 
+            background-color: #ef4444; 
+            color: white; 
+            border: none; 
             font-size: 0.7rem; 
             font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 5px;
+        }
+
+        .status-badge { 
             background: #22c55e; 
             color: white; 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            font-size: 0.65rem; 
+            font-weight: 800;
+        }
+
+        .badge-codigo {
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 4px 8px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -73,12 +87,12 @@
             <i class="fas fa-arrow-left"></i> VOLVER AL INICIO
         </a>
         <h2 class="fw-bold mt-3">LISTA DE PACIENTES REGISTRADOS</h2>
-        <p class="text-muted">Gestión de historiales médicos en la nube</p>
+        <p style="color: #94a3b8;">Base de datos en la nube</p>
     </div>
 
     <div class="glass-card">
         <div class="table-responsive">
-            <table class="table table-dark-custom align-middle">
+            <table class="table table-custom">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -101,7 +115,7 @@
 
     async function cargarPacientes() {
         const tbody = document.getElementById('tablaPacientes');
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-info">Conectando...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center">Conectando con Render...</td></tr>';
 
         try {
             const response = await fetch(`${API}/pacientes/`);
@@ -111,13 +125,13 @@
             pacientes.forEach(p => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="text-white-50 small">#${p.id}</td>
+                    <td style="color: #64748b;">#${p.id}</td>
                     <td class="nombre-paciente">${p.nombre}</td>
-                    <td class="text-white">${p.ci}</td>
-                    <td><span class="badge bg-dark border border-info text-info">${p.codigo_paciente || '---'}</span></td>
+                    <td>${p.ci}</td>
+                    <td><span class="badge badge-codigo">${p.codigo_paciente || '---'}</span></td>
                     <td><span class="status-badge">REGISTRADO</span></td>
                     <td class="text-center">
-                        <button onclick="generarPDF(${p.id})" class="btn-action btn-pdf">
+                        <button onclick="generarPDF(${p.id})" class="btn-pdf">
                             <i class="fas fa-file-pdf"></i> PDF
                         </button>
                     </td>
@@ -125,13 +139,13 @@
                 tbody.appendChild(tr);
             });
         } catch (error) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-danger text-center">Error al cargar datos.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error de red.</td></tr>';
         }
     }
 
     function generarPDF(id) {
         localStorage.setItem('p_id', id);
-        alert("Generando PDF para ID: " + id);
+        alert("Paciente seleccionado ID: " + id + ". Iniciando PDF...");
     }
 
     window.onload = cargarPacientes;
