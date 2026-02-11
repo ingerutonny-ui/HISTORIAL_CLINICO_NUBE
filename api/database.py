@@ -1,36 +1,16 @@
 import os
-import time
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# 1. DEFINICIÓN DE LA RUTA AL DISCO PERSISTENTE (DISK de Render)
-# Esta es la ruta que configuramos para que NO se borren los pacientes
-SQLALCHEMY_DATABASE_URL = "sqlite:////data/historial.db"
+# Usamos la URL de PostgreSQL que Render te proporciona en Variables de Entorno
+# Si no existe, usamos una por defecto para evitar que el sistema falle al arrancar
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:pass@localhost/dbname")
 
-# 2. VERIFICACIÓN DE ENTORNO
-# Si no estamos en Render (carpeta /data no existe), usamos ruta local
-if not os.path.exists("/data"):
-    SQLALCHEMY_DATABASE_URL = "sqlite:///./historial.db"
+# Ajuste para compatibilidad con SQLAlchemy 2.0 y Render
+if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
+    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# 3. CONFIGURACIÓN DEL MOTOR CON MANEJO DE BLOQUEOS (Timeout)
-# "check_same_thread": False es necesario para que FastAPI maneje múltiples pedidos
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False, "timeout": 30}
-)
-
-# 4. OPTIMIZACIÓN PARA SQLITE (Modo WAL)
-# Esto evita que la base de datos se ponga "lenta" o se bloquee al escribir
-@event.listens_for(engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA journal_mode=WAL")
-    cursor.execute("PRAGMA synchronous=NORMAL")
-    cursor.close()
-
-# 5. CONFIGURACIÓN DE LA SESIÓN
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# 6. BASE PARA LOS MODELOS
 Base = declarative_base()
