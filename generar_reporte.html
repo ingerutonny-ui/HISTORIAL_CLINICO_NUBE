@@ -2,85 +2,85 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>SISTEMA MÉDICO | DECLARACIÓN JURADA</title>
+    <title>REPORTE OFICIAL | HISTORIAL CLÍNICO</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #323639; padding: 20px; font-family: 'Times New Roman', Times, serif; }
+        body { background-color: #323639; padding: 20px; font-family: Arial, sans-serif; }
         .toolbar { width: 210mm; margin: 0 auto 10px auto; display: flex; justify-content: space-between; }
         #hoja-pdf { 
-            width: 210mm; min-height: 297mm; padding: 15mm; 
+            width: 210mm; min-height: 297mm; padding: 10mm; 
             margin: auto; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
         }
-        .tabla-pdf { width: 100%; border-collapse: collapse; margin-bottom: 12px; }
-        .tabla-pdf td { border: 1px solid #000; padding: 4px 8px; font-size: 10pt; vertical-align: middle; }
-        .bg-titulo { background-color: #e2efda !important; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 11pt; }
-        .label-bold { font-weight: bold; width: 30%; }
-        .dato-centrado { text-align: center; width: 70%; }
-        .header-info { font-size: 9pt; text-align: right; }
-        .firma-box { margin-top: 50px; text-align: center; }
-        .linea-firma { border-top: 1px solid #000; width: 200px; margin: 0 auto 5px auto; }
+        .tabla-oficial { width: 100%; border-collapse: collapse; margin-bottom: 0px; table-layout: fixed; }
+        .tabla-oficial td { border: 1px solid #000; padding: 2px 4px; font-size: 8pt; vertical-align: top; overflow: hidden; }
+        .bg-titulo { background-color: #d9e1f2 !important; font-weight: bold; text-transform: uppercase; }
+        .label-sm { font-size: 7pt; font-weight: bold; display: block; color: #000; }
+        .dato-v { font-size: 9pt; color: #000; display: block; min-height: 12px; font-weight: normal; }
+        .text-center { text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="toolbar">
     <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger px-4">SALIR</button>
-    <button onclick="descargarPDF()" class="btn btn-success px-4 fw-bold">DESCARGAR DJ EN PDF</button>
+    <button onclick="descargarPDF()" class="btn btn-success px-4 fw-bold">DESCARGAR PDF</button>
 </div>
 
 <div id="hoja-pdf">
-    <div class="d-flex justify-content-between align-items-start mb-4">
-        <div style="width: 100px; border: 1px solid #ccc; height: 80px; text-align:center; padding-top:25px; font-size: 8pt; color: #666;">TU LOGO AQUÍ</div>
-        <div class="text-center flex-grow-1">
-            <h4 class="fw-bold m-0">PROYECTO EN LA NUBE</h4>
-            <p class="m-0">SISTEMA DE GESTIÓN DE HISTORIAL CLÍNICO</p>
-            <h5 class="mt-3 fw-bold text-decoration-underline">DECLARACIÓN JURADA DE SALUD Y ANTECEDENTES</h5>
-        </div>
-        <div class="header-info">
-            Fecha: <span id="pdf-fecha"></span><br>
-            ID: <b id="pdf-id"></b>
-        </div>
-    </div>
-
-    <table class="tabla-pdf">
-        <tr><td colspan="2" class="bg-titulo">I. DATOS DE FILIACIÓN</td></tr>
-        <tr><td class="label-bold">Nombres:</td><td class="dato-centrado" id="nombre"></td></tr>
-        <tr><td class="label-bold">C.I.:</td><td class="dato-centrado" id="ci"></td></tr>
-        <tr><td class="label-bold">Fecha Nac.:</td><td class="dato-centrado" id="fecha_nacimiento"></td></tr>
-        <tr><td class="label-bold">Edad:</td><td class="dato-centrado" id="edad"></td></tr>
-        <tr><td class="label-bold">Género:</td><td class="dato-centrado" id="genero"></td></tr>
-        <tr><td class="label-bold">Estado Civil:</td><td class="dato-centrado" id="estado_civil"></td></tr>
-        <tr><td class="label-bold">Ocupación:</td><td class="dato-centrado" id="ocupacion"></td></tr>
-        <tr><td class="label-bold">Empresa:</td><td class="dato-centrado" id="empresa"></td></tr>
-        <tr><td class="label-bold">Dirección:</td><td class="dato-centrado" id="direccion"></td></tr>
-        <tr><td class="label-bold">Teléfono:</td><td class="dato-centrado" id="telefono"></td></tr>
-        <tr><td class="label-bold">E-mail:</td><td class="dato-centrado" id="email"></td></tr>
-        <tr><td class="label-bold">Contacto Emerg.:</td><td class="dato-centrado" id="contacto_emergencia"></td></tr>
-        <tr><td class="label-bold">Relación Cont.:</td><td class="dato-centrado" id="relacion_contacto"></td></tr>
-        <tr><td class="label-bold">Lugar Nac.:</td><td class="dato-centrado" id="lugar_nacimiento"></td></tr>
+    <table class="tabla-oficial">
+        <tr><td colspan="12" class="bg-titulo">AFILIACION DEL TRABAJADOR</td></tr>
+        <tr>
+            <td colspan="4"><span class="label-sm">APELLIDOS Y NOMBRES</span><span class="dato-v" id="nombre"></span></td>
+            <td colspan="8"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">EDAD</span><span class="dato-v" id="edad"></span></td>
+            <td colspan="2" class="text-center bg-titulo">SEXO</td>
+            <td colspan="2" class="text-center"><span class="label-sm">MASCULINO</span><span id="sex-m"></span></td>
+            <td colspan="2" class="text-center"><span class="label-sm">FEMENINO</span><span id="sex-f"></span></td>
+            <td colspan="4"><span class="label-sm">DOCUMENTO DE IDENTIDAD</span><span class="dato-v" id="ci"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">FECHA DE NACIMIENTO</span><span class="dato-v" id="fecha_nacimiento"></span></td>
+            <td colspan="1" class="text-center"><span class="label-sm">DÍA</span><span id="f-dia">---</span></td>
+            <td colspan="1" class="text-center"><span class="label-sm">MES</span><span id="f-mes">---</span></td>
+            <td colspan="2" class="text-center"><span class="label-sm">AÑO</span><span id="f-anio">---</span></td>
+            <td colspan="6"><span class="label-sm">LUGAR:</span><span class="dato-v" id="lugar_nacimiento"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">DOMICILIO:</span></td>
+            <td colspan="6"><span class="label-sm">AV./CALLE</span><span class="dato-v" id="direccion"></span></td>
+            <td colspan="4"><span class="label-sm">NUMERO</span><span class="dato-v">---</span></td>
+        </tr>
+        <tr>
+            <td colspan="4"><span class="label-sm">BARRIO</span><span class="dato-v">---</span></td>
+            <td colspan="4"><span class="label-sm">CIUDAD</span><span class="dato-v">---</span></td>
+            <td colspan="4"><span class="label-sm">PAÍS</span><span class="dato-v">BOLIVIA</span></td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="label-sm">TELÉFONO</span><span class="dato-v" id="telefono"></span></td>
+            <td colspan="9"></td>
+        </tr>
+        <tr>
+            <td colspan="5"><span class="label-sm">ESTADO CIVIL</span><span class="dato-v" id="estado_civil"></span></td>
+            <td colspan="7"><span class="label-sm">PROFESION O LABOR</span><span class="dato-v" id="ocupacion"></span></td>
+        </tr>
     </table>
 
-    <table class="tabla-pdf">
+    <table class="tabla-oficial" style="margin-top: 10px;">
         <tr><td colspan="4" class="bg-titulo">II. ANTECEDENTES PATOLÓGICOS Y CLÍNICOS</td></tr>
         <tbody id="grid-p2"></tbody>
     </table>
 
-    <table class="tabla-pdf">
-        <tr><td colspan="4" class="bg-titulo">III. HÁBITOS Y RIESGOS EXPUESTOS</td></tr>
+    <table class="tabla-oficial" style="margin-top: 10px;">
+        <tr><td colspan="4" class="bg-titulo">III. HÁBITOS Y RIESGOS</td></tr>
         <tbody id="grid-p3"></tbody>
     </table>
 
-    <div class="row mt-5">
-        <div class="col-6 firma-box">
-            <div class="linea-firma"></div>
-            <span style="font-size: 9pt;">Firma del Paciente</span><br>
-            <b id="f-paciente" style="font-size: 10pt;"></b>
-        </div>
-        <div class="col-6 firma-box">
-            <div class="linea-firma"></div>
-            <span style="font-size: 9pt;">Sello y Firma Médico Responsable</span>
-        </div>
+    <div class="row mt-5 text-center" style="font-size: 9pt;">
+        <div class="col-6"><br><br>__________________________<br>FIRMA DEL TRABAJADOR<br><b id="nom-firma"></b></div>
+        <div class="col-6"><br><br>__________________________<br>MÉDICO EVALUADOR</div>
     </div>
 </div>
 
@@ -88,68 +88,58 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
-    async function cargarDatos() {
+    async function cargarDataReal() {
         if(!p_id) return;
         try {
             const res = await fetch(`${API}/pacientes/`);
             const lista = await res.json();
-            const p = lista.find(item => item.id == p_id);
+            const p = lista.find(i => i.id == p_id);
 
             if(p) {
-                document.getElementById('pdf-id').innerText = p.codigo_paciente || p.id;
-                document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString();
-                document.getElementById('f-paciente').innerText = p.nombre || '';
+                // Mapeo Directo P1
+                document.getElementById('nombre').innerText = p.nombre || '';
+                document.getElementById('nom-firma').innerText = p.nombre || '';
+                document.getElementById('ci').innerText = p.ci || '';
+                document.getElementById('edad').innerText = p.edad || '';
+                document.getElementById('fecha_nacimiento').innerText = p.fecha_nacimiento || '';
+                document.getElementById('lugar_nacimiento').innerText = p.lugar_nacimiento || '';
+                document.getElementById('direccion').innerText = p.direccion || '';
+                document.getElementById('telefono').innerText = p.telefono || '';
+                document.getElementById('estado_civil').innerText = p.estado_civil || '';
+                document.getElementById('ocupacion').innerText = p.ocupacion || '';
 
-                // Llenar P1
-                const camposP1 = ['nombre','ci','fecha_nacimiento','edad','genero','estado_civil','ocupacion','empresa','direccion','telefono','email','contacto_emergencia','relacion_contacto', 'lugar_nacimiento'];
-                camposP1.forEach(c => {
-                    const el = document.getElementById(c);
-                    if(el) el.innerText = p[c] || '---';
-                });
+                // Género
+                document.getElementById('sex-m').innerText = p.genero === 'MASCULINO' ? '[ X ]' : '[   ]';
+                document.getElementById('sex-f').innerText = p.genero === 'FEMENINO' ? '[ X ]' : '[   ]';
 
-                // Llenar P2 (22 campos en 2 columnas)
+                // Mapeo P2 (Solo campos existentes en el backend)
                 const p2 = [
-                    ['Alergias', p.alergias], ['Cirugías', p.cirugias], ['Diabetes', p.diabetes], ['Hipertensión', p.hipertension],
-                    ['Asma', p.asma], ['Traumatismos', p.traumatismos], ['Medicamentos', p.medicamentos], ['Vacunas', p.vacunas],
-                    ['Enf. Infancia', p.enf_infancia], ['Hosp. Previas', p.hospitalizaciones], ['TBC', p.tbc], ['Chagas', p.chagas],
-                    ['Gastritis', p.gastritis], ['Epilepsia', p.epilepsia], ['Visión', p.vision], ['Audición', p.audicion],
-                    ['Corazón', p.corazon], ['Riñones', p.rinones], ['Varices', p.varices], ['F. Respiratoria', p.f_respiratoria],
-                    ['Presión Art.', p.presion_valor], ['Observaciones', p.observaciones_p2]
+                    ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias], ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
+                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia], ['GASTRITIS', p.gastritis], ['CORAZON', p.corazon],
+                    ['RIÑONES', p.rinones], ['VARICES', p.varices], ['TBC', p.tbc], ['CHAGAS', p.chagas],
+                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIONES', p.hospitalizaciones], ['MEDICAMENTOS', p.medicamentos], ['VACUNAS', p.vacunas]
                 ];
-                let htmlP2 = "";
+                let h2 = "";
                 for(let i=0; i<p2.length; i+=2){
-                    htmlP2 += `<tr>
-                        <td class="label-bold" style="width:25%">${p2[i][0]}:</td><td style="width:25%; text-align:center;">${p2[i][1] || 'NO'}</td>
-                        <td class="label-bold" style="width:25%">${p2[i+1] ? p2[i+1][0] + ':' : ''}</td><td style="width:25%; text-align:center;">${p2[i+1] ? (p2[i+1][1] || 'NO') : ''}</td>
+                    h2 += `<tr>
+                        <td class="bg-titulo" style="width:20%">${p2[i][0]}</td><td style="width:30%">${p2[i][1] || 'NO'}</td>
+                        <td class="bg-titulo" style="width:20%">${p2[i+1][0]}</td><td style="width:30%">${p2[i+1][1] || 'NO'}</td>
                     </tr>`;
                 }
-                document.getElementById('grid-p2').innerHTML = htmlP2;
+                document.getElementById('grid-p2').innerHTML = h2;
 
-                // Llenar P3
-                const p3 = [['Fuma', p.fuma], ['Alcohol', p.alcohol], ['Drogas', p.drogas], ['Deportes', p.deportes], ['Grupo Sanguíneo', p.grupo_sanguineo]];
-                let htmlP3 = "";
-                for(let i=0; i<p3.length; i+=2){
-                    htmlP3 += `<tr>
-                        <td class="label-bold" style="width:25%">${p3[i][0]}:</td><td style="width:25%; text-align:center;">${p3[i][1] || 'NO'}</td>
-                        <td class="label-bold" style="width:25%">${p3[i+1] ? p3[i+1][0] + ':' : ''}</td><td style="width:25%; text-align:center;">${p3[i+1] ? (p3[i+1][1] || '---') : ''}</td>
-                    </tr>`;
-                }
-                document.getElementById('grid-p3').innerHTML = htmlP3;
+                // Mapeo P3
+                const p3 = [['FUMA', p.fuma], ['ALCOHOL', p.alcohol], ['DROGAS', p.drogas], ['DEPORTES', p.deportes]];
+                document.getElementById('grid-p3').innerHTML = p3.map(k => `<tr><td class="bg-titulo" style="width:40%">${k[0]}</td><td style="width:60%">${k[1] || 'NO'}</td></tr>`).join('');
             }
-        } catch(e) { console.error("Error al cargar datos:", e); }
+        } catch(e) { console.error("Error cargando:", e); }
     }
 
     function descargarPDF() {
-        const elemento = document.getElementById('hoja-pdf');
-        const opt = { 
-            margin: 0, 
-            filename: `Declaracion_Jurada_${p_id}.pdf`, 
-            html2canvas: { scale: 3 }, 
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-        };
-        html2pdf().set(opt).from(elemento).save();
+        const element = document.getElementById('hoja-pdf');
+        html2pdf().set({ margin:0, filename:'Reporte.pdf', html2canvas:{scale:3}, jsPDF:{unit:'mm', format:'a4'} }).from(element).save();
     }
-    window.onload = cargarDatos;
+    window.onload = cargarDataReal;
 </script>
 </body>
 </html>
