@@ -4,10 +4,8 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
-# Crea las tablas automáticamente en PostgreSQL
 models.Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="HISTORIAL CLINICO NUBE API")
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -23,10 +21,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-@app.get("/")
-def home():
-    return {"status": "online", "message": "API de Historial Clínico funcionando"}
 
 @app.post("/pacientes/")
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
