@@ -3,78 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISOR DE ARCHIVOS | NUBE</title>
+    <title>VISOR DE ARCHIVOS | HISTORIAL</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { 
-            background-color: #050a18; 
-            font-family: 'Segoe UI', sans-serif; 
-            color: white; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .main-container { text-align: center; width: 100%; max-width: 900px; padding: 20px; }
+        body { background-color: #050a18; color: white; font-family: 'Segoe UI', sans-serif; min-height: 100vh; }
+        .main-container { padding: 50px 20px; text-align: center; }
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
-            border-radius: 25px;
+            border-radius: 20px;
             padding: 40px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: 0.3s;
             cursor: pointer;
             text-decoration: none;
             color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: block;
+            height: 100%;
         }
         .glass-card:hover {
+            background: rgba(255, 255, 255, 0.15);
             transform: translateY(-10px);
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             border-color: #00d4ff;
         }
-        .icon-box {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            background: linear-gradient(45deg, #00d4ff, #0055ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .btn-back { color: #00d4ff; text-decoration: none; font-size: 0.9rem; margin-bottom: 20px; display: inline-block; }
+        .icon-box { font-size: 3rem; margin-bottom: 15px; color: #00d4ff; }
+        .hidden { display: none; }
+        /* Estilo para la tabla de pacientes */
+        .table-container { background: white; color: black; border-radius: 15px; padding: 20px; margin-top: 30px; }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> VOLVER AL INICIO</a>
-    <h1 class="fw-bold mb-1">VISOR DE ARCHIVOS</h1>
-    <p class="text-muted mb-5">SELECCIONE EL MÉTODO DE CONSULTA</p>
+<div class="container main-container">
+    <div id="menu-principal">
+        <a href="index.html" class="text-info text-decoration-none small">← VOLVER AL INICIO</a>
+        <h1 class="fw-bold mt-3">VISOR DE ARCHIVOS</h1>
+        <p class="text-muted mb-5">SELECCIONE EL MÉTODO DE CONSULTA</p>
 
-    <div class="row g-4">
-        <div class="col-md-6">
-            <a href="buscador_codigo.html" class="glass-card">
-                <div class="icon-box"><i class="fas fa-id-badge"></i></div>
-                <h4>BUSCADOR RÁPIDO</h4>
-                <p class="small text-muted">CONSULTA POR CÓDIGO DE PACIENTE</p>
-            </a>
-        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-5">
+                <a href="buscador_codigo.html" class="glass-card">
+                    <div class="icon-box"><i class="fas fa-search"></i></div>
+                    <h4>BUSCADOR RÁPIDO</h4>
+                    <p class="small text-muted">CONSULTA POR CÓDIGO DE PACIENTE</p>
+                </a>
+            </div>
 
-        <div class="col-md-6">
-            <a href="lista_pacientes.html" class="glass-card">
-                <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                <h4>LISTA DE PACIENTES</h4>
-                <p class="small text-muted">VER BASE DE DATOS COMPLETA</p>
-            </a>
+            <div class="col-md-5">
+                <div onclick="mostrarTabla()" class="glass-card">
+                    <div class="icon-box"><i class="fas fa-list-ul"></i></div>
+                    <h4>LISTA DE PACIENTES</h4>
+                    <p class="small text-muted">VER BASE DE DATOS COMPLETA</p>
+                </div>
+            </div>
         </div>
     </div>
-    
-    <p class="mt-5 text-muted small" style="letter-spacing: 2px;">PROTOCOLO DE SEGURIDAD DE DATOS ACTIVO</p>
+
+    <div id="seccion-tabla" class="hidden">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <button onclick="volverAlMenu()" class="btn btn-outline-info">← VOLVER AL MENÚ</button>
+            <h2 class="m-0">LISTA DE PACIENTES REGISTRADOS</h2>
+            <span></span>
+        </div>
+        
+        <div class="table-container shadow-lg">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>APELLIDOS Y NOMBRES</th>
+                        <th>CÉDULA (CI)</th>
+                        <th>CÓDIGO</th>
+                        <th>ESTADO</th>
+                        <th>ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-pacientes-body">
+                    </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+
+<script>
+    const API = 'https://historial-clinico-936s.onrender.com';
+
+    function mostrarTabla() {
+        document.getElementById('menu-principal').classList.add('hidden');
+        document.getElementById('seccion-tabla').classList.remove('hidden');
+        cargarPacientes();
+    }
+
+    function volverAlMenu() {
+        document.getElementById('seccion-tabla').classList.add('hidden');
+        document.getElementById('menu-principal').classList.remove('hidden');
+    }
+
+    async function cargarPacientes() {
+        const body = document.getElementById('lista-pacientes-body');
+        body.innerHTML = '<tr><td colspan="6" class="text-center">Cargando datos...</td></tr>';
+        
+        try {
+            const res = await fetch(`${API}/pacientes/`);
+            const pacientes = await res.json();
+            
+            body.innerHTML = '';
+            pacientes.forEach(p => {
+                body.innerHTML += `
+                    <tr>
+                        <td>#${p.id}</td>
+                        <td class="fw-bold">${p.nombre}</td>
+                        <td>${p.ci}</td>
+                        <td><span class="badge bg-primary">${p.codigo_paciente || '---'}</span></td>
+                        <td><span class="badge bg-success">REGISTRADO</span></td>
+                        <td>
+                            <button onclick="verReporte(${p.id})" class="btn btn-danger btn-sm">
+                                <i class="fas fa-file-pdf"></i> GENERAR PDF
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (error) {
+            body.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error al conectar con la base de datos</td></tr>';
+        }
+    }
+
+    function verReporte(id) {
+        localStorage.setItem('p_id', id);
+        window.location.href = 'generar_reporte.html';
+    }
+</script>
 
 </body>
 </html>
