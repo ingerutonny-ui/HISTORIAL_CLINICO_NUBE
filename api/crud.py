@@ -13,9 +13,6 @@ def create_paciente(db: Session, paciente: schemas.PacienteCreate):
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-def get_pacientes(db: Session):
-    return db.query(models.Paciente).all()
-
 def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
         db_filiacion = models.DeclaracionJurada(**filiacion.model_dump())
