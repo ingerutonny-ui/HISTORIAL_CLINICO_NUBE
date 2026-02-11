@@ -28,6 +28,7 @@ def read_root():
 
 @app.post("/filiacion/")
 def guardar_filiacion(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
+    # Esta ruta procesa el formulario de la captura image_3b09fe.png
     return crud.create_filiacion(db=db, filiacion=data)
 
 @app.post("/pacientes/")
