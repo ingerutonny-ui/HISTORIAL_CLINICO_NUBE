@@ -18,28 +18,30 @@
             border: 1px solid rgba(255, 255, 255, 0.15); 
         }
 
-        /* Títulos y textos secundarios con más brillo */
-        .text-muted { color: #cbd5e1 !important; } /* Gris muy claro, casi blanco */
-        .text-info { color: #38bdf8 !important; } /* Cyan brillante */
+        /* Títulos */
+        .text-muted { color: #94a3b8 !important; } 
+        .text-info { color: #38bdf8 !important; } 
         
         .table-dark-custom { 
             background: transparent; 
             color: #f8fafc; 
-            font-size: 0.9rem; 
         }
         
         .table-dark-custom th { 
             background: rgba(255, 255, 255, 0.1); 
-            color: #ffffff; /* Letras de encabezado blancas puras */
+            color: #38bdf8; /* Encabezados en Cyan */
             text-transform: uppercase; 
             font-size: 0.75rem; 
             letter-spacing: 1.5px; 
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid rgba(56, 189, 248, 0.3);
         }
 
-        .table-dark-custom td {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 15px 10px;
+        /* ESTE ES EL CAMBIO CLAVE: Nombre en Amarillo Neón */
+        .nombre-paciente {
+            color: #facc15 !important; 
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 1rem;
         }
 
         .btn-action { 
@@ -51,7 +53,7 @@
         }
         
         .btn-pdf { background-color: #ef4444; color: white; border: none; }
-        .btn-pdf:hover { background-color: #dc2626; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+        .btn-pdf:hover { background-color: #dc2626; transform: translateY(-2px); }
 
         .status-badge { 
             padding: 5px 10px; 
@@ -60,14 +62,6 @@
             font-weight: 800;
             background: #22c55e; 
             color: white; 
-        }
-
-        .badge-codigo {
-            background: rgba(56, 189, 248, 0.2);
-            color: #38bdf8;
-            border: 1px solid #38bdf8;
-            padding: 4px 8px;
-            font-weight: 700;
         }
     </style>
 </head>
@@ -78,8 +72,8 @@
         <a href="index.html" class="text-decoration-none text-info small fw-bold">
             <i class="fas fa-arrow-left"></i> VOLVER AL INICIO
         </a>
-        <h2 class="fw-bold mt-3 text-white">LISTA DE PACIENTES REGISTRADOS</h2>
-        <p class="text-muted">Base de datos sincronizada en tiempo real con el servidor Render</p>
+        <h2 class="fw-bold mt-3">LISTA DE PACIENTES REGISTRADOS</h2>
+        <p class="text-muted">Gestión de historiales médicos en la nube</p>
     </div>
 
     <div class="glass-card">
@@ -107,42 +101,37 @@
 
     async function cargarPacientes() {
         const tbody = document.getElementById('tablaPacientes');
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-info">Iniciando conexión con la nube...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-info">Conectando...</td></tr>';
 
         try {
             const response = await fetch(`${API}/pacientes/`);
             const pacientes = await response.json();
 
             tbody.innerHTML = '';
-            if(pacientes.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay pacientes registrados.</td></tr>';
-                return;
-            }
-
             pacientes.forEach(p => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td class="text-info fw-bold">#${p.id}</td>
-                    <td class="fw-bold text-white text-uppercase">${p.nombre}</td>
-                    <td class="text-white-50">${p.ci}</td>
-                    <td><span class="badge badge-codigo">${p.codigo_paciente || '---'}</span></td>
-                    <td><span class="status-badge"><i class="fas fa-check-circle me-1"></i> COMPLETO</span></td>
+                    <td class="text-white-50 small">#${p.id}</td>
+                    <td class="nombre-paciente">${p.nombre}</td>
+                    <td class="text-white">${p.ci}</td>
+                    <td><span class="badge bg-dark border border-info text-info">${p.codigo_paciente || '---'}</span></td>
+                    <td><span class="status-badge">REGISTRADO</span></td>
                     <td class="text-center">
                         <button onclick="generarPDF(${p.id})" class="btn-action btn-pdf">
-                            <i class="fas fa-file-pdf me-1"></i> GENERAR PDF
+                            <i class="fas fa-file-pdf"></i> PDF
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
         } catch (error) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-danger text-center fw-bold">ERROR: El servidor de Render no responde.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-danger text-center">Error al cargar datos.</td></tr>';
         }
     }
 
     function generarPDF(id) {
         localStorage.setItem('p_id', id);
-        alert("Generando reporte para el ID: " + id + "\nPróximo paso: Motor de PDF.");
+        alert("Generando PDF para ID: " + id);
     }
 
     window.onload = cargarPacientes;
