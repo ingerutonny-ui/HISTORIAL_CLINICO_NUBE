@@ -2,10 +2,10 @@ from pydantic import BaseModel, ConfigDict
 from typing import Optional, Any
 
 class PacienteCreate(BaseModel):
-    nombre: str
-    apellido: str
-    ci: str
-    codigo_paciente: str
+    nombre: Any
+    apellido: Any
+    ci: Any
+    codigo_paciente: Any
     model_config = ConfigDict(extra='allow')
 
 class FiliacionCreate(BaseModel):
