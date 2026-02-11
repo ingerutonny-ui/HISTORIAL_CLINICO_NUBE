@@ -4,12 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database
 
-# 1. INICIALIZACIÓN DE BASE DE DATOS EN DISK PERSISTENTE
 database.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI(title="HISTORIAL_CLINICO_NUBE", version="1.2.0")
+app = FastAPI()
 
-# 2. CONFIGURACIÓN CORS TOTAL (Indispensable para GitHub Pages)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,7 +16,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 3. SESIÓN DE BASE DE DATOS
 def get_db():
     db = database.SessionLocal()
     try:
@@ -27,10 +24,9 @@ def get_db():
         db.close()
 
 @app.get("/")
-def root():
-    return {"status": "online", "storage": "DISK_ACTIVE", "version": "Full_111_Lines"}
+def health_check():
+    return {"status": "active", "storage": "disk"}
 
-# --- RUTA 1: REGISTRO DE PACIENTES (P0) ---
 @app.post("/pacientes/")
 async def create_paciente(request: Request, db: Session = Depends(get_db)):
     try:
@@ -49,34 +45,32 @@ async def create_paciente(request: Request, db: Session = Depends(get_db)):
         db.rollback()
         raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 2: PARTE 1 - FILIACIÓN (MAPEO EXPLÍCITO) ---
 @app.post("/filiacion/")
 async def create_filiacion(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
         db_obj = models.DeclaracionJurada(
             paciente_id=data.get("paciente_id"),
-            edad=str(data.get("edad")),
-            sexo=str(data.get("sexo")),
-            fecha_nacimiento=str(data.get("fecha_nacimiento")),
-            lugar_nacimiento=str(data.get("lugar_nacimiento")),
-            domicilio=str(data.get("domicilio")),
-            n_casa=str(data.get("n_casa")),
-            zona_barrio=str(data.get("zona_barrio")),
-            ciudad=str(data.get("ciudad")),
-            pais=str(data.get("pais")),
-            telefono=str(data.get("telefono")),
-            estado_civil=str(data.get("estado_civil")),
-            profesion_oficio=str(data.get("profesion_oficio"))
+            edad=str(data.get("edad", "")),
+            sexo=str(data.get("sexo", "")),
+            fecha_nacimiento=str(data.get("fecha_nacimiento", "")),
+            lugar_nacimiento=str(data.get("lugar_nacimiento", "")),
+            domicilio=str(data.get("domicilio", "")),
+            n_casa=str(data.get("n_casa", "")),
+            zona_barrio=str(data.get("zona_barrio", "")),
+            ciudad=str(data.get("ciudad", "")),
+            pais=str(data.get("pais", "")),
+            telefono=str(data.get("telefono", "")),
+            estado_civil=str(data.get("estado_civil", "")),
+            profesion_oficio=str(data.get("profesion_oficio", ""))
         )
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "detail": "P1 Guardada"}
+        return {"status": "success"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error P1: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 3: PARTE 2 - ANTECEDENTES (LOS 22 CAMPOS) ---
 @app.post("/declaraciones/p2/")
 async def create_p2(request: Request, db: Session = Depends(get_db)):
     try:
@@ -108,12 +102,11 @@ async def create_p2(request: Request, db: Session = Depends(get_db)):
         )
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "detail": "P2 Guardada"}
+        return {"status": "success"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error P2: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 4: PARTE 3 - HÁBITOS Y RIESGOS ---
 @app.post("/declaraciones/p3/")
 async def create_p3(request: Request, db: Session = Depends(get_db)):
     try:
@@ -130,18 +123,17 @@ async def create_p3(request: Request, db: Session = Depends(get_db)):
             deporte=data.get("deporte"),
             deporte_detalle=data.get("deporte_detalle"),
             grupo_sanguineo=data.get("grupo_sanguineo"),
-            historia_laboral=str(data.get("historia_laboral")),
-            riesgos_expuestos=str(data.get("riesgos_expuestos")),
+            historia_laboral=str(data.get("historia_laboral", "[]")),
+            riesgos_expuestos=str(data.get("riesgos_expuestos", "[]")),
             observaciones=data.get("observaciones")
         )
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "detail": "P3 Guardada"}
+        return {"status": "success"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error P3: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 5: CONSULTA GENERAL ---
 @app.get("/pacientes/")
-def get_all(db: Session = Depends(get_db)):
+def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
