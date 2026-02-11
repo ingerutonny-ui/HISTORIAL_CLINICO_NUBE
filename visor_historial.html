@@ -2,159 +2,79 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>SISTEMA MÉDICO | GENERANDO PDF</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VISOR DE ARCHIVOS | NUBE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #f4f7f6; font-family: 'Times New Roman', serif; }
-        #hoja-pdf { width: 210mm; padding: 15mm; margin: auto; background: white; }
-        .header-table { width: 100%; border-bottom: 2px solid #000; margin-bottom: 10px; }
-        .logo-placeholder { width: 80px; height: 80px; background: #eee; display: flex; align-items: center; justify-content: center; border: 1px dashed #ccc; font-size: 10px; }
-        .titulo-doc { text-align: center; font-weight: bold; font-size: 1.3rem; margin: 15px 0; text-decoration: underline; }
-        .seccion-titulo { background: #f0f0f0; font-weight: bold; padding: 3px 8px; margin-top: 10px; border: 1px solid #000; font-size: 0.9rem; text-transform: uppercase; }
-        .grid-datos { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 5px 0; }
-        .dato-fila { border-bottom: 0.5px solid #eee; padding: 2px 0; font-size: 0.85rem; display: flex; }
-        .label { font-weight: bold; width: 140px; color: #333; }
-        .firma-box { margin-top: 30px; text-align: center; font-size: 0.85rem; }
-        .linea-firma { width: 180px; border-top: 1px solid #000; margin: 50px auto 5px auto; }
-        #loader { text-align: center; margin-top: 50px; font-family: sans-serif; }
+        body { 
+            background-color: #050a18; 
+            font-family: 'Segoe UI', sans-serif; 
+            color: white; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .main-container { text-align: center; width: 100%; max-width: 900px; padding: 20px; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .glass-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border-color: #00d4ff;
+        }
+        .icon-box {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #00d4ff, #0055ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-back { color: #00d4ff; text-decoration: none; font-size: 0.9rem; margin-bottom: 20px; display: inline-block; }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <div class="spinner-border text-primary"></div>
-        <h4 class="mt-3">PROCESANDO 41 CAMPOS MÉDICOS...</h4>
-    </div>
+<div class="main-container">
+    <a href="index.html" class="btn-back"><i class="fas fa-arrow-left"></i> VOLVER AL INICIO</a>
+    <h1 class="fw-bold mb-1">VISOR DE ARCHIVOS</h1>
+    <p class="text-muted mb-5">SELECCIONE EL MÉTODO DE CONSULTA</p>
 
-    <div id="hoja-pdf" style="display: none;">
-        <table class="header-table">
-            <tr>
-                <td style="width: 20%;"><div class="logo-placeholder">TU LOGO AQUÍ</div></td>
-                <td style="text-align: center;">
-                    <h5 class="m-0 fw-bold">PROYECTO EN LA NUBE</h5>
-                    <p class="m-0 small">SISTEMA DE GESTIÓN DE HISTORIAL CLÍNICO</p>
-                </td>
-                <td style="width: 20%; text-align: right; font-size: 0.8rem;">
-                    Fecha: <span id="f-emision"></span><br>
-                    ID: <b id="f-id"></b>
-                </td>
-            </tr>
-        </table>
+    <div class="row g-4">
+        <div class="col-md-6">
+            <a href="buscador_codigo.html" class="glass-card">
+                <div class="icon-box"><i class="fas fa-id-badge"></i></div>
+                <h4>BUSCADOR RÁPIDO</h4>
+                <p class="small text-muted">CONSULTA POR CÓDIGO DE PACIENTE</p>
+            </a>
+        </div>
 
-        <div class="titulo-doc">DECLARACIÓN JURADA DE SALUD Y ANTECEDENTES</div>
-
-        <div class="seccion-titulo">I. DATOS DE FILIACIÓN</div>
-        <div class="grid-datos" id="sec-filiacion"></div>
-
-        <div class="seccion-titulo">II. ANTECEDENTES PATOLÓGICOS Y CLÍNICOS</div>
-        <div class="grid-datos" id="sec-antecedentes"></div>
-
-        <div class="seccion-titulo">III. HÁBITOS Y RIESGOS EXPUUESTOS</div>
-        <div class="grid-datos" id="sec-habitos"></div>
-
-        <div class="row firma-box">
-            <div class="col-6">
-                <div class="linea-firma"></div>
-                <b>FIRMA DEL PACIENTE</b><br><span id="firma-nom"></span><br>
-                C.I.: <span id="firma-ci"></span>
-            </div>
-            <div class="col-6">
-                <div class="linea-firma"></div>
-                <b>MÉDICO EVALUADOR</b><br>Sello y Matrícula
-            </div>
+        <div class="col-md-6">
+            <a href="lista_pacientes.html" class="glass-card">
+                <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
+                <h4>LISTA DE PACIENTES</h4>
+                <p class="small text-muted">VER BASE DE DATOS COMPLETA</p>
+            </a>
         </div>
     </div>
+    
+    <p class="mt-5 text-muted small" style="letter-spacing: 2px;">PROTOCOLO DE SEGURIDAD DE DATOS ACTIVO</p>
+</div>
 
-<script>
-    const API = 'https://historial-clinico-936s.onrender.com';
-    const p_id = localStorage.getItem('p_id');
-
-    async function cargarYGenerar() {
-        try {
-            const res = await fetch(`${API}/pacientes/`);
-            const lista = await res.json();
-            const p = lista.find(item => item.id == p_id);
-
-            if(p) {
-                document.getElementById('f-emision').innerText = new Date().toLocaleDateString();
-                document.getElementById('f-id').innerText = p.codigo_paciente || 'N/A';
-                document.getElementById('firma-nom').innerText = p.nombre;
-                document.getElementById('firma-ci').innerText = p.ci;
-
-                // Llenado de Sección I (14 campos clave)
-                const filiacionHTML = `
-                    <div class="dato-fila"><span class="label">Nombres:</span> ${p.nombre}</div>
-                    <div class="dato-fila"><span class="label">C.I.:</span> ${p.ci}</div>
-                    <div class="dato-fila"><span class="label">Fecha Nac.:</span> ${p.fecha_nacimiento || '---'}</div>
-                    <div class="dato-fila"><span class="label">Edad:</span> ${p.edad || '---'} años</div>
-                    <div class="dato-fila"><span class="label">Género:</span> ${p.genero || '---'}</div>
-                    <div class="dato-fila"><span class="label">Estado Civil:</span> ${p.estado_civil || '---'}</div>
-                    <div class="dato-fila"><span class="label">Ocupación:</span> ${p.ocupacion || '---'}</div>
-                    <div class="dato-fila"><span class="label">Empresa:</span> ${p.empresa || '---'}</div>
-                    <div class="dato-fila"><span class="label">Dirección:</span> ${p.direccion || '---'}</div>
-                    <div class="dato-fila"><span class="label">Teléfono:</span> ${p.telefono || '---'}</div>
-                    <div class="dato-fila"><span class="label">E-mail:</span> ${p.email || '---'}</div>
-                    <div class="dato-fila"><span class="label">Contacto Emerg.:</span> ${p.contacto_emergencia || '---'}</div>
-                    <div class="dato-fila"><span class="label">Relación Cont.:</span> ${p.relacion_contacto || '---'}</div>
-                    <div class="dato-fila"><span class="label">Lugar Nac.:</span> ${p.lugar_nacimiento || '---'}</div>
-                `;
-                document.getElementById('sec-filiacion').innerHTML = filiacionHTML;
-
-                // Llenado de Sección II (22 campos de antecedentes - Resumen)
-                const antecedentesHTML = `
-                    <div class="dato-fila"><span class="label">Alergias:</span> ${p.alergias || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Cirugías:</span> ${p.cirugias || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Diabetes:</span> ${p.diabetes || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Hipertensión:</span> ${p.hipertension || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Asma:</span> ${p.asma || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Traumatismos:</span> ${p.traumatismos || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Medicamentos:</span> ${p.medicamentos || 'NINGUNO'}</div>
-                    <div class="dato-fila"><span class="label">Vacunas:</span> ${p.vacunas || 'COMPLETO'}</div>
-                    <div class="dato-fila"><span class="label">Enf. Infancia:</span> ${p.enf_infancia || '---'}</div>
-                    <div class="dato-fila"><span class="label">Hosp. Previas:</span> ${p.hospitalizaciones || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">TBC:</span> ${p.tbc || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Chagas:</span> ${p.chagas || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Gastritis:</span> ${p.gastritis || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Epilepsia:</span> ${p.epilepsia || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Visión:</span> ${p.vision || 'NORMAL'}</div>
-                    <div class="dato-fila"><span class="label">Audición:</span> ${p.audicion || 'NORMAL'}</div>
-                `;
-                document.getElementById('sec-antecedentes').innerHTML = antecedentesHTML;
-
-                // Llenado de Sección III (5 campos de Hábitos)
-                const habitosHTML = `
-                    <div class="dato-fila"><span class="label">Fuma:</span> ${p.fuma || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Alcohol:</span> ${p.alcohol || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Drogas:</span> ${p.drogas || 'NO'}</div>
-                    <div class="dato-fila"><span class="label">Deportes:</span> ${p.deportes || 'SI'}</div>
-                    <div class="dato-fila"><span class="label">Grupo Sanguíneo:</span> ${p.grupo_sanguineo || 'ORH+'}</div>
-                `;
-                document.getElementById('sec-habitos').innerHTML = habitosHTML;
-
-                lanzarPDF(p.nombre);
-            }
-        } catch(e) { console.error(e); }
-    }
-
-    function lanzarPDF(nombre) {
-        const elemento = document.getElementById('hoja-pdf');
-        elemento.style.display = 'block';
-        document.getElementById('loader').style.display = 'none';
-
-        const opciones = {
-            margin: 5,
-            filename: `DJ_${nombre.replace(/ /g, "_")}.pdf`,
-            html2canvas: { scale: 3 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opciones).from(elemento).save().then(() => {
-            setTimeout(() => { window.location.href = "visor_historial.html"; }, 1500);
-        });
-    }
-
-    window.onload = cargarYGenerar;
-</script>
 </body>
 </html>
