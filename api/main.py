@@ -4,7 +4,12 @@ from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
-models.Base.metadata.create_all(bind=engine)
+# Intentar crear las tablas al iniciar
+try:
+    models.Base.metadata.create_all(bind=engine)
+except Exception:
+    pass
+
 app = FastAPI()
 
 app.add_middleware(
@@ -23,8 +28,8 @@ def get_db():
         db.close()
 
 @app.get("/")
-def health():
-    return {"status": "ok"}
+def root():
+    return {"status": "ok", "storage": "DISK"}
 
 @app.post("/pacientes/")
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
