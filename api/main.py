@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import crud, models, schemas
@@ -23,8 +23,8 @@ def get_db():
         db.close()
 
 @app.get("/")
-def root():
-    return {"status": "ok", "storage": "DISK", "project": "HISTORIAL_CLINICO_NUBE"}
+def health():
+    return {"status": "ok", "project": "HISTORIAL_CLINICO_NUBE"}
 
 @app.post("/pacientes/")
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
