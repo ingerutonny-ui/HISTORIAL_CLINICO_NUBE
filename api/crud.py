@@ -21,8 +21,6 @@ def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
         raw_data = filiacion.model_dump()
         columnas = {c.name for c in models.DeclaracionJurada.__table__.columns}
-        
-        # Mapeo dinámico: solo guarda lo que existe en la tabla y lo convierte a string
         final_data = {}
         for k, v in raw_data.items():
             if k in columnas:
@@ -30,7 +28,6 @@ def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
                     final_data[k] = int(v)
                 else:
                     final_data[k] = str(v) if v is not None else ""
-
         db_filiacion = models.DeclaracionJurada(**final_data)
         db.add(db_filiacion)
         db.commit()
@@ -38,28 +35,44 @@ def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
         return db_filiacion
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error Crítico BD: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error BD P1: {str(e)}")
 
 def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     try:
         raw_data = antecedentes.model_dump()
-        db_ant = models.AntecedentesP2(paciente_id=int(raw_data.get("paciente_id")))
+        columnas = {c.name for c in models.AntecedentesP2.__table__.columns}
+        final_data = {}
+        for k, v in raw_data.items():
+            if k in columnas:
+                if k == "paciente_id":
+                    final_data[k] = int(v)
+                else:
+                    final_data[k] = str(v) if v is not None else "NORMAL"
+        db_ant = models.AntecedentesP2(**final_data)
         db.add(db_ant)
         db.commit()
         db.refresh(db_ant)
         return db_ant
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error BD P2: {str(e)}")
 
 def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
     try:
         raw_data = habitos.model_dump()
-        db_hab = models.HabitosRiesgosP3(paciente_id=int(raw_data.get("paciente_id")))
+        columnas = {c.name for c in models.HabitosRiesgosP3.__table__.columns}
+        final_data = {}
+        for k, v in raw_data.items():
+            if k in columnas:
+                if k == "paciente_id":
+                    final_data[k] = int(v)
+                else:
+                    final_data[k] = str(v) if v is not None else ""
+        db_hab = models.HabitosRiesgosP3(**final_data)
         db.add(db_hab)
         db.commit()
         db.refresh(db_hab)
         return db_hab
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error BD P3: {str(e)}")
