@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>REPORTE MÉDICO COMPLETO - PROYECTO NUBE</title>
+    <title>REPORTE MÉDICO OFICIAL | PROYECTO NUBE</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -13,7 +13,7 @@
             margin: auto; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
         }
         .tabla-oficial { width: 100%; border-collapse: collapse; table-layout: fixed; }
-        .tabla-oficial td { border: 1px solid #000; padding: 3px 5px; font-size: 8pt; vertical-align: top; }
+        .tabla-oficial td { border: 1px solid #000; padding: 2px 5px; font-size: 8pt; vertical-align: top; }
         .bg-titulo { background-color: #d9e1f2 !important; font-weight: bold; text-transform: uppercase; }
         .label-sm { font-size: 7pt; font-weight: bold; display: block; }
         .dato-v { font-size: 9pt; display: block; min-height: 14px; font-weight: bold; text-transform: uppercase; color: #000; }
@@ -24,21 +24,21 @@
 
 <div class="toolbar">
     <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger px-4">SALIR</button>
-    <button onclick="descargarPDF()" class="btn btn-success px-4 fw-bold">DESCARGAR PDF</button>
+    <button onclick="descargarPDF()" class="btn btn-success px-4 fw-bold">DESCARGAR PDF COMPLETO</button>
 </div>
 
 <div id="hoja-pdf">
     <table class="tabla-oficial">
         <tr><td colspan="12" class="bg-titulo">I. AFILIACION DEL TRABAJADOR</td></tr>
         <tr>
-            <td colspan="6"><span class="label-sm">APELLIDOS Y NOMBRES</span><span class="dato-v" id="full_nombre"></span></td>
-            <td colspan="6"><span class="label-sm">EMPRESA</span><span class="dato-v" id="empresa"></span></td>
+            <td colspan="8"><span class="label-sm">APELLIDOS Y NOMBRES</span><span class="dato-v" id="full_nombre"></span></td>
+            <td colspan="4"><span class="label-sm">EMPRESA</span><span class="dato-v" id="empresa"></span></td>
         </tr>
         <tr>
             <td colspan="2"><span class="label-sm">EDAD</span><span class="dato-v" id="edad"></span></td>
             <td colspan="2" class="bg-titulo text-center">SEXO</td>
-            <td colspan="2" class="text-center"><span class="label-sm">M</span><span id="sex-m"></span></td>
-            <td colspan="2" class="text-center"><span class="label-sm">F</span><span id="sex-f"></span></td>
+            <td colspan="2" class="text-center"><span class="label-sm">MASCULINO</span><span id="sex-m"></span></td>
+            <td colspan="2" class="text-center"><span class="label-sm">FEMENINO</span><span id="sex-f"></span></td>
             <td colspan="4"><span class="label-sm">DOCUMENTO DE IDENTIDAD (CI)</span><span class="dato-v" id="ci"></span></td>
         </tr>
         <tr>
@@ -46,13 +46,17 @@
             <td colspan="1" class="text-center"><span class="label-sm">DÍA</span><span id="f-dia"></span></td>
             <td colspan="1" class="text-center"><span class="label-sm">MES</span><span id="f-mes"></span></td>
             <td colspan="1" class="text-center"><span class="label-sm">AÑO</span><span id="f-anio"></span></td>
-            <td colspan="3"><span class="label-sm">LUGAR DE NACIMIENTO</span><span class="dato-v" id="lugar_nacimiento"></span></td>
-            <td colspan="3"><span class="label-sm">ESTADO CIVIL</span><span class="dato-v" id="estado_civil"></span></td>
+            <td colspan="6"><span class="label-sm">LUGAR DE NACIMIENTO</span><span class="dato-v" id="lugar_nacimiento"></span></td>
         </tr>
         <tr>
             <td colspan="6"><span class="label-sm">DOMICILIO (AV./CALLE/NUM)</span><span class="dato-v" id="direccion"></span></td>
-            <td colspan="3"><span class="label-sm">OCUPACIÓN / LABOR</span><span class="dato-v" id="ocupacion"></span></td>
+            <td colspan="3"><span class="label-sm">CIUDAD / BARRIO</span><span class="dato-v" id="barrio"></span></td>
+            <td colspan="3"><span class="label-sm">PAÍS</span><span class="dato-v" id="pais"></span></td>
+        </tr>
+        <tr>
             <td colspan="3"><span class="label-sm">TELÉFONO</span><span class="dato-v" id="telefono"></span></td>
+            <td colspan="3"><span class="label-sm">ESTADO CIVIL</span><span class="dato-v" id="estado_civil"></span></td>
+            <td colspan="6"><span class="label-sm">PROFESIÓN O LABOR</span><span class="dato-v" id="ocupacion"></span></td>
         </tr>
         <tr>
             <td colspan="4"><span class="label-sm">E-MAIL</span><span class="dato-v" id="email"></span></td>
@@ -67,11 +71,11 @@
     </table>
 
     <table class="tabla-oficial" style="margin-top: 10px;">
-        <tr><td colspan="4" class="bg-titulo">III. HÁBITOS Y RIESGOS</td></tr>
+        <tr><td colspan="4" class="bg-titulo">III. HÁBITOS Y RIESGOS EXPUUESTOS</td></tr>
         <tbody id="grid-p3"></tbody>
     </table>
 
-    <div class="row mt-5 text-center">
+    <div class="row mt-5 text-center" style="font-size: 9pt;">
         <div class="col-6"><br>__________________________<br>FIRMA DEL TRABAJADOR<br><b id="nom-firma"></b></div>
         <div class="col-6"><br>__________________________<br>MÉDICO EVALUADOR</div>
     </div>
@@ -81,37 +85,37 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
-    async function cargarData() {
+    async function cargarReporte() {
         try {
             const res = await fetch(`${API}/pacientes/`);
             const lista = await res.json();
             const p = lista.find(i => i.id == p_id || i.codigo_paciente == p_id);
 
             if(p) {
-                // 1. MAPEADO DE AFILIACIÓN (P1)
-                const nombreFull = `${p.apellido || ''} ${p.nombre || ''}`.trim();
-                document.getElementById('full_nombre').innerText = nombreFull;
-                document.getElementById('nom-firma').innerText = nombreFull;
-                
-                document.getElementById('empresa').innerText = p.empresa || '---';
-                document.getElementById('edad').innerText = p.edad ? p.edad + " AÑOS" : '---';
+                // 1. MAPEADO P1 (Basado en consola image_d25698.png)
+                const full = `${p.apellido || ''} ${p.nombre || ''}`.trim();
+                document.getElementById('full_nombre').innerText = full;
+                document.getElementById('nom-firma').innerText = full;
                 document.getElementById('ci').innerText = p.ci || '---';
+                document.getElementById('empresa').innerText = p.empresa || '---';
+                document.getElementById('edad').innerText = p.edad || '---';
                 document.getElementById('fecha_nacimiento').innerText = p.fecha_nacimiento || '---';
                 document.getElementById('lugar_nacimiento').innerText = p.lugar_nacimiento || '---';
-                document.getElementById('estado_civil').innerText = p.estado_civil || '---';
                 document.getElementById('direccion').innerText = p.direccion || '---';
-                document.getElementById('ocupacion').innerText = p.ocupacion || '---';
+                document.getElementById('barrio').innerText = p.barrio || '---';
+                document.getElementById('pais').innerText = p.pais || 'BOLIVIA';
                 document.getElementById('telefono').innerText = p.telefono || '---';
+                document.getElementById('estado_civil').innerText = p.estado_civil || '---';
+                document.getElementById('ocupacion').innerText = p.ocupacion || '---';
                 document.getElementById('email').innerText = p.email || '---';
                 document.getElementById('contacto_emergencia').innerText = p.contacto_emergencia || '---';
                 document.getElementById('relacion_contacto').innerText = p.relacion_contacto || '---';
 
-                // Sexo
+                // Sexo y Fecha
                 const g = (p.genero || '').toUpperCase();
                 document.getElementById('sex-m').innerText = g.includes('M') ? '[ X ]' : '[   ]';
                 document.getElementById('sex-f').innerText = g.includes('F') ? '[ X ]' : '[   ]';
 
-                // Desglose de fecha
                 if(p.fecha_nacimiento && p.fecha_nacimiento.includes('-')) {
                     const f = p.fecha_nacimiento.split('-');
                     document.getElementById('f-anio').innerText = f[0];
@@ -119,44 +123,44 @@
                     document.getElementById('f-dia').innerText = f[2];
                 }
 
-                // 2. MAPEADO DE ANTECEDENTES (P2)
-                const p2 = [
-                    ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias], 
+                // 2. MAPEADO P2 (Basado en schemas.py image_c6fd73.png)
+                const p2Campos = [
+                    ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias],
                     ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
-                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia], 
+                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia],
                     ['GASTRITIS', p.gastritis], ['CORAZON', p.corazon],
-                    ['RIÑONES', p.rinones], ['VARICES', p.varices], 
+                    ['RIÑONES', p.rinones], ['VARICES', p.varices],
                     ['TBC', p.tbc], ['CHAGAS', p.chagas],
-                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIONES', p.hospitalizaciones], 
+                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIONES', p.hospitalizaciones],
                     ['MEDICAMENTOS', p.medicamentos], ['VACUNAS', p.vacunas],
-                    ['ENF. INFANCIA', p.enf_infancia], ['VISION', p.vision], 
+                    ['ENF. INFANCIA', p.enf_infancia], ['VISION', p.vision],
                     ['AUDICION', p.audicion], ['F. RESPIRATORIA', p.f_respiratoria]
                 ];
-                let htmlP2 = "";
-                for(let i=0; i<p2.length; i+=2) {
-                    htmlP2 += `<tr>
-                        <td class="bg-titulo" style="width:20%">${p2[i][0]}</td><td style="width:30%">${p2[i][1] || 'NO'}</td>
-                        <td class="bg-titulo" style="width:20%">${p2[i+1][0]}</td><td style="width:30%">${p2[i+1][1] || 'NO'}</td>
+                let h2 = "";
+                for(let i=0; i<p2Campos.length; i+=2) {
+                    h2 += `<tr>
+                        <td class="bg-titulo" style="width:20%">${p2Campos[i][0]}</td><td style="width:30%">${p2Campos[i][1] || 'NO'}</td>
+                        <td class="bg-titulo" style="width:20%">${p2Campos[i+1][0]}</td><td style="width:30%">${p2Campos[i+1][1] || 'NO'}</td>
                     </tr>`;
                 }
-                document.getElementById('grid-p2').innerHTML = htmlP2;
+                document.getElementById('grid-p2').innerHTML = h2;
 
-                // 3. MAPEADO DE HÁBITOS (P3)
-                const p3 = [
-                    ['FUMA', p.fuma], ['ALCOHOL', p.alcohol], 
-                    ['DROGAS', p.drogas], ['DEPORTES', p.deportes], 
+                // 3. MAPEADO P3
+                const p3Campos = [
+                    ['FUMA', p.fuma], ['ALCOHOL', p.alcohol],
+                    ['DROGAS', p.drogas], ['DEPORTES', p.deportes],
                     ['GRUPO SANGUINEO', p.grupo_sanguineo]
                 ];
-                document.getElementById('grid-p3').innerHTML = p3.map(k => `<tr><td class="bg-titulo" style="width:40%">${k[0]}</td><td style="width:60%">${k[1] || '---'}</td></tr>`).join('');
+                document.getElementById('grid-p3').innerHTML = p3Campos.map(c => `<tr><td class="bg-titulo" style="width:40%">${c[0]}</td><td style="width:60%">${c[1] || '---'}</td></tr>`).join('');
             }
-        } catch(e) { console.error("Error en mapeo:", e); }
+        } catch(e) { console.error("Fallo de mapeo:", e); }
     }
 
     function descargarPDF() {
         const element = document.getElementById('hoja-pdf');
-        html2pdf().set({ margin:0, filename:'Reporte_Final.pdf', html2canvas:{scale:3}, jsPDF:{unit:'mm', format:'a4'} }).from(element).save();
+        html2pdf().set({ margin:0, filename:'Historial_Completo.pdf', html2canvas:{scale:3}, jsPDF:{unit:'mm', format:'a4'} }).from(element).save();
     }
-    window.onload = cargarData;
+    window.onload = cargarReporte;
 </script>
 </body>
 </html>
