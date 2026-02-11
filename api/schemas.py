@@ -73,9 +73,3 @@ class HabitosP3Create(BaseModel):
     riesgos_expuestos: Optional[Any] = "[]"
     observaciones: Optional[Any] = ""
     model_config = ConfigDict(extra='allow')
-
-# Espacio de control para persistencia en DISK /data/historial.db
-# Espacio de control para persistencia en DISK /data/historial.db
-# Espacio de control para persistencia en DISK /data/historial.db
-# Espacio de control para persistencia en DISK /data/historial.db
-# Espacio de control para persistencia en DISK /data/historial.db
