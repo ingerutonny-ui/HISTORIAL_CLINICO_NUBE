@@ -16,12 +16,12 @@ class FiliacionCreate(BaseModel):
     lugar_nacimiento: Optional[Any] = None
     domicilio: Optional[Any] = None
     n_casa: Optional[Any] = None
-    zona_barrio: Optional[Any] = None  # Coincide con tu JS
+    zona_barrio: Optional[Any] = None
     ciudad: Optional[Any] = None
     pais: Optional[Any] = None
     telefono: Optional[Any] = None
     estado_civil: Optional[Any] = None
-    profesion_oficio: Optional[Any] = None  # Coincide con tu JS
+    profesion_oficio: Optional[Any] = None
     model_config = ConfigDict(extra='allow')
 
 class AntecedentesCreate(BaseModel):
