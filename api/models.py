@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from .database import Base
 
 class Paciente(Base):
@@ -30,5 +30,11 @@ class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
-    # Usamos un campo de texto largo para guardar todas las respuestas de la P2
-    datos_antecedentes = Column(String)
+    datos_json = Column(Text)
+
+class HabitosRiesgosP3(Base):
+    __tablename__ = "habitos_p3"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
+    # Almacenamos los 22 campos del JSON de P3 aquí
+    datos_p3 = Column(Text)
