@@ -23,11 +23,3 @@ class FiliacionCreate(BaseModel):
     estado_civil: Optional[Any] = None
     profesion_oficio: Optional[Any] = None
     model_config = ConfigDict(extra='allow')
-
-class AntecedentesCreate(BaseModel):
-    paciente_id: int
-    model_config = ConfigDict(extra='allow')
-
-class HabitosP3Create(BaseModel):
-    paciente_id: int
-    model_config = ConfigDict(extra='allow')
