@@ -25,3 +25,10 @@ class DeclaracionJurada(Base):
     telefono = Column(String)
     estado_civil = Column(String)
     profesion_oficio = Column(String)
+
+class AntecedentesP2(Base):
+    __tablename__ = "antecedentes_p2"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
+    # Usamos un campo de texto largo para guardar todas las respuestas de la P2
+    datos_antecedentes = Column(String)
