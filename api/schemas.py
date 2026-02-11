@@ -17,18 +17,18 @@ class Paciente(PacienteBase):
 
 class FiliacionCreate(BaseModel):
     paciente_id: int
-    edad: Optional[Any] = ""
-    sexo: Optional[str] = ""
-    fecha_nacimiento: Optional[str] = ""
-    lugar_nacimiento: Optional[str] = ""
-    domicilio: Optional[str] = ""
-    n_casa: Optional[str] = ""
-    zona_barrio: Optional[str] = ""
-    ciudad: Optional[str] = ""
-    pais: Optional[str] = ""
-    telefono: Optional[str] = ""
-    estado_civil: Optional[str] = ""
-    profesion_oficio: Optional[str] = ""
+    edad: Optional[Any] = None
+    sexo: Optional[str] = None
+    fecha_nacimiento: Optional[str] = None
+    lugar_nacimiento: Optional[str] = None
+    domicilio: Optional[str] = None
+    n_casa: Optional[str] = None
+    zona_barrio: Optional[str] = None
+    ciudad: Optional[str] = None
+    pais: Optional[str] = None
+    telefono: Optional[str] = None
+    estado_civil: Optional[str] = None
+    profesion_oficio: Optional[str] = None
     model_config = ConfigDict(extra='allow')
 
 class AntecedentesCreate(BaseModel):
@@ -69,7 +69,7 @@ class HabitosP3Create(BaseModel):
     deporte: Optional[str] = "NO"
     deporte_detalle: Optional[str] = ""
     grupo_sanguineo: Optional[str] = ""
-    historia_laboral: Optional[str] = "[]"
-    riesgos_expuestos: Optional[str] = "[]"
+    historia_laboral: Optional[Any] = "[]"
+    riesgos_expuestos: Optional[Any] = "[]"
     observaciones: Optional[str] = ""
     model_config = ConfigDict(extra='allow')
