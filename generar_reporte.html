@@ -2,94 +2,94 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>DECLARACIÓN JURADA DE SALUD</title>
+    <title>DECLARACIÓN JURADA DE SALUD | PROYECTO NUBE</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #323639; padding: 40px; font-family: 'Times New Roman', serif; }
-        .toolbar { width: 190mm; margin: 0 auto 15px auto; display: flex; justify-content: space-between; }
+        body { background-color: #323639; padding: 30px; font-family: 'Arial', sans-serif; }
+        .toolbar { width: 190mm; margin: 0 auto 10px auto; display: flex; justify-content: space-between; }
         #hoja-pdf { 
-            width: 190mm; min-height: 270mm; padding: 15mm; 
-            margin: auto; background: white; color: black;
+            width: 190mm; min-height: 275mm; padding: 15mm; 
+            margin: auto; background: white; color: black; box-shadow: 0 0 15px rgba(0,0,0,0.3);
         }
-        .header-title { text-align: center; font-weight: bold; text-decoration: underline; font-size: 16pt; margin-bottom: 20px; }
-        
-        .tabla-pdf { width: 100%; border: 1.5px solid black; border-collapse: collapse; margin-bottom: 10px; }
-        .tabla-pdf td { border: 1px solid black; padding: 5px 10px; font-size: 10pt; vertical-align: middle; }
-        
-        .bg-gris { background-color: #f2f2f2 !important; font-weight: bold; text-align: center; text-transform: uppercase; }
-        .label-cell { font-weight: bold; width: 25%; text-transform: uppercase; background-color: #ffffff; }
-        .value-cell { width: 25%; font-weight: normal; }
-        .full-row { width: 75%; }
+        .header-pdf { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 20px; border-bottom: 2px solid black; padding-bottom: 10px; }
+        .tabla-pdf { width: 100%; border: 1.5px solid black; border-collapse: collapse; margin-bottom: 8px; }
+        .tabla-pdf td { border: 1px solid black; padding: 4px 8px; font-size: 9pt; vertical-align: middle; }
+        .bg-gris { background-color: #e9ecef !important; font-weight: bold; text-transform: uppercase; font-size: 8.5pt; }
+        .label-cell { font-weight: bold; width: 20%; background-color: #f8f9fa; }
+        .value-cell { width: 30%; font-weight: bold; color: #000; text-transform: uppercase; }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
 
 <div class="toolbar no-print">
-    <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger">SALIR</button>
-    <button onclick="descargarPDF()" class="btn btn-success fw-bold">DESCARGAR PDF</button>
+    <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger btn-sm">VOLVER AL VISOR</button>
+    <button onclick="descargarPDF()" class="btn btn-success btn-sm fw-bold">GENERAR PDF</button>
 </div>
 
 <div id="hoja-pdf">
-    <div class="header-title">DECLARACIÓN JURADA DE SALUD</div>
+    <div class="header-pdf">DECLARACIÓN JURADA DE SALUD - HISTORIAL CLÍNICO</div>
 
     <table class="tabla-pdf">
-        <tr><td colspan="4" class="bg-gris">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
+        <tr><td colspan="4" class="bg-gris text-center">I. ANTECEDENTES PERSONALES (AFILIACIÓN)</td></tr>
         <tr>
-            <td class="label-cell">APELLIDOS Y NOMBRES:</td>
-            <td colspan="3" class="value-cell" id="f_nombre"></td>
-        </tr>
-        <tr>
-            <td class="label-cell">EDAD:</td>
-            <td class="value-cell" id="f_edad"></td>
-            <td class="label-cell">SEXO:</td>
-            <td class="value-cell" id="f_sexo"></td>
-        </tr>
-        <tr>
-            <td class="label-cell">FECHA NACIMIENTO:</td>
-            <td class="value-cell" id="f_fecha_nac"></td>
-            <td class="label-cell">LUGAR:</td>
-            <td class="value-cell" id="f_lugar"></td>
+            <td class="label-cell">NOMBRE COMPLETO:</td>
+            <td colspan="3" class="value-cell" id="d_nombre"></td>
         </tr>
         <tr>
             <td class="label-cell">C.I.:</td>
-            <td class="value-cell" id="f_ci"></td>
+            <td class="value-cell" id="d_ci"></td>
+            <td class="label-cell">EDAD:</td>
+            <td class="value-cell" id="d_edad"></td>
+        </tr>
+        <tr>
+            <td class="label-cell">FECHA NAC.:</td>
+            <td class="value-cell" id="d_fecha_nac"></td>
+            <td class="label-cell">LUGAR NAC.:</td>
+            <td class="value-cell" id="d_lugar"></td>
+        </tr>
+        <tr>
+            <td class="label-cell">GÉNERO:</td>
+            <td class="value-cell" id="d_genero"></td>
             <td class="label-cell">ESTADO CIVIL:</td>
-            <td class="value-cell" id="f_estado"></td>
+            <td class="value-cell" id="d_estado"></td>
         </tr>
         <tr>
             <td class="label-cell">DOMICILIO:</td>
-            <td colspan="3" class="value-cell" id="f_domicilio"></td>
+            <td colspan="3" class="value-cell" id="d_domicilio"></td>
         </tr>
         <tr>
-            <td class="label-cell">CIUDAD / PAÍS:</td>
-            <td class="value-cell" id="f_ciudad_pais"></td>
             <td class="label-cell">TELÉFONO:</td>
-            <td class="value-cell" id="f_telf"></td>
-        </tr>
-        <tr>
-            <td class="label-cell">PROFESIÓN / LABOR:</td>
-            <td colspan="3" class="value-cell" id="f_labor"></td>
-        </tr>
-        <tr>
+            <td class="value-cell" id="d_telefono"></td>
             <td class="label-cell">EMPRESA:</td>
-            <td colspan="3" class="value-cell" id="f_empresa"></td>
+            <td class="value-cell" id="d_empresa"></td>
+        </tr>
+        <tr>
+            <td class="label-cell">OCUPACIÓN:</td>
+            <td colspan="3" class="value-cell" id="d_ocupacion"></td>
+        </tr>
+        <tr>
+            <td class="label-cell">CONTACTO EMERG.:</td>
+            <td class="value-cell" id="d_emergencia"></td>
+            <td class="label-cell">RELACIÓN:</td>
+            <td class="value-cell" id="d_relacion"></td>
         </tr>
     </table>
 
     <table class="tabla-pdf">
-        <tr><td colspan="4" class="bg-gris">II. ANTECEDENTES PATOLÓGICOS Y CLÍNICOS</td></tr>
-        <tbody id="grid-p2"></tbody>
+        <tr><td colspan="4" class="bg-gris text-center">II. ANTECEDENTES PATOLÓGICOS Y CLÍNICOS</td></tr>
+        <tbody id="grid-p2-final"></tbody>
     </table>
 
     <table class="tabla-pdf">
-        <tr><td colspan="4" class="bg-gris">III. HÁBITOS Y RIESGOS EXPUUESTOS</td></tr>
-        <tbody id="grid-p3"></tbody>
+        <tr><td colspan="2" class="bg-gris text-center">III. HÁBITOS Y ESTILO DE VIDA</td></tr>
+        <tbody id="grid-p3-final"></tbody>
     </table>
 
-    <div style="margin-top: 50px; display: flex; justify-content: space-around; text-align: center; font-size: 10pt;">
-        <div>__________________________<br>FIRMA DEL TRABAJADOR<br><b id="firma_nom"></b></div>
-        <div>__________________________<br>MÉDICO EVALUADOR</div>
+    <div style="margin-top: 40px; display: flex; justify-content: space-around; text-align: center;">
+        <div>__________________________<br>FIRMA DEL PACIENTE<br><small id="firma_p"></small></div>
+        <div>__________________________<br>SELLO Y FIRMA MÉDICO</div>
     </div>
 </div>
 
@@ -97,75 +97,73 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
-    async function cargarReporteEstetico() {
+    async function cargarDatosFinales() {
+        if(!p_id) return;
         try {
             const res = await fetch(`${API}/pacientes/`);
             const lista = await res.json();
+            // Búsqueda flexible por ID o Código
             const p = lista.find(i => i.id == p_id || i.codigo_paciente == p_id);
 
             if(p) {
-                // Mapeo según estética de imagen_d3557e.png
-                document.getElementById('f_nombre').innerText = `${p.apellido || ''} ${p.nombre || ''}`.toUpperCase();
-                document.getElementById('firma_nom').innerText = `${p.apellido || ''} ${p.nombre || ''}`.toUpperCase();
-                document.getElementById('f_edad').innerText = p.edad ? p.edad + " AÑOS" : '---';
-                document.getElementById('f_sexo').innerText = (p.genero || '---').toUpperCase();
-                document.getElementById('f_fecha_nac').innerText = p.fecha_nacimiento || '---';
-                document.getElementById('f_lugar').innerText = p.lugar_nacimiento || '---';
-                document.getElementById('f_ci').innerText = p.ci || '---';
-                document.getElementById('f_estado').innerText = (p.estado_civil || '---').toUpperCase();
-                document.getElementById('f_domicilio').innerText = p.direccion || '---';
-                document.getElementById('f_ciudad_pais').innerText = `${p.barrio || '---'} / ${p.pais || 'BOLIVIA'}`;
-                document.getElementById('f_telf').innerText = p.telefono || '---';
-                document.getElementById('f_labor').innerText = (p.ocupacion || '---').toUpperCase();
-                document.getElementById('f_empresa').innerText = (p.empresa || '---').toUpperCase();
+                console.log("Mapeando datos de:", p.nombre);
+                
+                // Llenado P1
+                document.getElementById('d_nombre').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
+                document.getElementById('firma_p').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
+                document.getElementById('d_ci').innerText = p.ci || '---';
+                document.getElementById('d_edad').innerText = (p.edad || '---') + " AÑOS";
+                document.getElementById('d_fecha_nac').innerText = p.fecha_nacimiento || '---';
+                document.getElementById('d_lugar').innerText = p.lugar_nacimiento || '---';
+                document.getElementById('d_genero').innerText = p.genero || '---';
+                document.getElementById('d_estado').innerText = p.estado_civil || '---';
+                document.getElementById('d_domicilio').innerText = (p.direccion || '---') + " (Barrio: " + (p.barrio || 'S/N') + ")";
+                document.getElementById('d_telefono').innerText = p.telefono || '---';
+                document.getElementById('d_empresa').innerText = p.empresa || '---';
+                document.getElementById('d_ocupacion').innerText = p.ocupacion || '---';
+                document.getElementById('d_emergencia').innerText = p.contacto_emergencia || '---';
+                document.getElementById('d_relacion').innerText = p.relacion_contacto || '---';
 
-                // Antecedentes P2 (Mapeo de nombres de schemas.py)
-                const p2 = [
-                    ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias],
-                    ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
-                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia],
-                    ['GASTRITIS', p.gastritis], ['CORAZON', p.corazon],
-                    ['RIÑONES', p.rinones], ['VARICES', p.varices],
-                    ['TBC', p.tbc], ['CHAGAS', p.chagas],
-                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIONES', p.hospitalizaciones],
-                    ['MEDICAMENTOS', p.medicamentos], ['VACUNAS', p.vacunas],
-                    ['ENF. INFANCIA', p.enf_infancia], ['VISION', p.vision],
-                    ['AUDICION', p.audicion], ['F. RESPIRATORIA', p.f_respiratoria]
+                // Llenado P2 (Antecedentes)
+                const camposP2 = [
+                    ['ALERGIAS', p.alergias], ['CIRUGÍAS', p.cirugias], ['DIABETES', p.diabetes], ['HIPERTENSIÓN', p.hipertension],
+                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia], ['GASTRITIS', p.gastritis], ['CORAZÓN', p.corazon],
+                    ['RIÑONES', p.rinones], ['VÁRICES', p.varices], ['TBC', p.tbc], ['CHAGAS', p.chagas],
+                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIONES', p.hospitalizaciones], ['MEDICAMENTOS', p.medicamentos], ['VACUNAS', p.vacunas],
+                    ['ENF. INFANCIA', p.enf_infancia], ['VISIÓN', p.vision], ['AUDICIÓN', p.audicion], ['F. RESPIRATORIA', p.f_respiratoria]
                 ];
+                
                 let h2 = "";
-                for(let i=0; i<p2.length; i+=2) {
+                for(let i=0; i<camposP2.length; i+=2) {
                     h2 += `<tr>
-                        <td class="label-cell">${p2[i][0]}:</td><td class="value-cell">${p2[i][1] || 'NO'}</td>
-                        <td class="label-cell">${p2[i+1][0]}:</td><td class="value-cell">${p2[i+1][1] || 'NO'}</td>
+                        <td class="label-cell">${camposP2[i][0]}:</td><td class="value-cell">${camposP2[i][1] || 'NO'}</td>
+                        <td class="label-cell">${camposP2[i+1][0]}:</td><td class="value-cell">${camposP2[i+1][1] || 'NO'}</td>
                     </tr>`;
                 }
-                document.getElementById('grid-p2').innerHTML = h2;
+                document.getElementById('grid-p2-final').innerHTML = h2;
 
-                // Hábitos P3
-                const p3 = [
-                    ['FUMA', p.fuma], ['ALCOHOL', p.alcohol],
-                    ['DROGAS', p.drogas], ['DEPORTES', p.deportes],
-                    ['GRUPO SANGUINEO', p.grupo_sanguineo]
+                // Llenado P3 (Hábitos)
+                const camposP3 = [
+                    ['¿FUMA?', p.fuma], ['¿CONSUME ALCOHOL?', p.alcohol], ['¿CONSUME DROGAS?', p.drogas], 
+                    ['¿PRACTICA DEPORTES?', p.deportes], ['GRUPO SANGUÍNEO', p.grupo_sanguineo]
                 ];
-                document.getElementById('grid-p3').innerHTML = p3.map(item => `
-                    <tr><td class="label-cell">${item[0]}:</td><td colspan="3" class="value-cell">${item[1] || '---'}</td></tr>
+                document.getElementById('grid-p3-final').innerHTML = camposP3.map(c => `
+                    <tr><td class="label-cell">${c[0]}</td><td class="value-cell">${c[1] || '---'}</td></tr>
                 `).join('');
             }
-        } catch(e) { console.error("Error en reporte:", e); }
+        } catch(e) { console.error("Error llenando reporte:", e); }
     }
 
     function descargarPDF() {
         const element = document.getElementById('hoja-pdf');
-        const opt = {
-            margin: 10,
-            filename: 'Declaracion_Jurada_Salud.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
+        html2pdf().set({ 
+            margin: 10, 
+            filename: 'Reporte_Salud_Nube.pdf', 
+            html2canvas: { scale: 3 }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+        }).from(element).save();
     }
-    window.onload = cargarReporteEstetico;
+    window.onload = cargarDatosFinales;
 </script>
 </body>
 </html>
