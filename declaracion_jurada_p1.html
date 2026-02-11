@@ -53,7 +53,12 @@
         
         <div class="col-md-6">
             <label class="label-custom">Estado Civil</label>
-            <select id="est_civil" class="form-select"><option value="SOLTERO/A">SOLTERO/A</option><option value="CASADO/A">CASADO/A</option><option value="DIVORCIADO/A">DIVORCIADO/A</option><option value="VIUDO/A">VIUDO/A</option></select>
+            <select id="est_civil" class="form-select">
+                <option value="SOLTERO/A">SOLTERO/A</option>
+                <option value="CASADO/A">CASADO/A</option>
+                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
+                <option value="VIUDO/A">VIUDO/A</option>
+            </select>
         </div>
         <div class="col-md-6"><label class="label-custom">Profesión / Oficio</label><input type="text" id="profesion" class="form-control" oninput="this.value=this.value.toUpperCase()"></div>
 
@@ -66,7 +71,11 @@
 
     window.onload = () => {
         const nom = localStorage.getItem('p_nom');
-        if (!nom) { alert("No hay datos de registro."); window.location.href="registro_paciente.html"; return; }
+        if (!nom) { 
+            alert("No hay datos de registro."); 
+            window.location.href="buscador_codigo.html"; 
+            return; 
+        }
         document.getElementById('p_nombre').innerText = nom;
         document.getElementById('p_ci').innerText = localStorage.getItem('p_ci');
         document.getElementById('p_codigo').innerText = localStorage.getItem('p_cod');
@@ -75,7 +84,8 @@
     document.getElementById('formP1').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnNext');
-        btn.innerText = "PROCESANDO..."; btn.disabled = true;
+        btn.innerText = "PROCESANDO..."; 
+        btn.disabled = true;
 
         const data = {
             paciente_id: parseInt(localStorage.getItem('p_id')),
@@ -99,10 +109,19 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            if(r.ok) window.location.href = "declaracion_jurada_p2.html";
-            else alert("Error al guardar filiación.");
-        } catch(e) { alert("Error de conexión."); }
-        finally { btn.disabled = false; btn.innerText = "Guardar y Continuar a Parte 2"; }
+            if(r.ok) {
+                window.location.href = "declaracion_jurada_p2.html";
+            } else {
+                const err = await r.json();
+                console.log(err);
+                alert("Error al guardar filiación.");
+            }
+        } catch(e) { 
+            alert("Error de conexión."); 
+        } finally { 
+            btn.disabled = false; 
+            btn.innerText = "Guardar y Continuar a Parte 2"; 
+        }
     };
 </script>
 </body>
