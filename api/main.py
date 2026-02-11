@@ -4,12 +4,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database
 
-# Inicialización de la Base de Datos en el DISK persistente
+# 1. INICIALIZACIÓN DE BASE DE DATOS EN DISK PERSISTENTE
 database.Base.metadata.create_all(bind=database.engine)
 
-app = FastAPI(title="HISTORIAL_CLINICO_NUBE")
+app = FastAPI(title="HISTORIAL_CLINICO_NUBE", version="1.0.0")
 
-# Configuración de Seguridad CORS para comunicación entre Nubes
+# 2. CONFIGURACIÓN DE SEGURIDAD CORS (CRUCIAL PARA GITHUB PAGES -> RENDER)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Dependencia para la sesión de base de datos
+# 3. DEPENDENCIA PARA LA SESIÓN DE DB
 def get_db():
     db = database.SessionLocal()
     try:
@@ -26,16 +26,17 @@ def get_db():
     finally:
         db.close()
 
+# 4. RUTA DE VERIFICACIÓN (HEALTH CHECK)
 @app.get("/")
 def root():
     return {
         "status": "online",
-        "storage": "DISK",
+        "storage": "DISK_ACTIVE",
         "project": "HISTORIAL_CLINICO_NUBE",
-        "mode": "Modo Aprender Activo"
+        "check": "Full Mapping Active"
     }
 
-# --- RUTA 1: REGISTRO INICIAL DEL PACIENTE ---
+# --- RUTA 1: REGISTRO DE PACIENTES (P0) ---
 @app.post("/pacientes/")
 async def create_paciente(request: Request, db: Session = Depends(get_db)):
     try:
@@ -52,16 +53,16 @@ async def create_paciente(request: Request, db: Session = Depends(get_db)):
         return db_obj
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error en Registro: {str(e)}")
 
-# --- RUTA 2: PARTE 1 - FILIACIÓN (12 CAMPOS) ---
+# --- RUTA 2: PARTE 1 - FILIACIÓN (MAPEO EXPLÍCITO) ---
 @app.post("/filiacion/")
 async def create_filiacion(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
         db_obj = models.DeclaracionJurada(
             paciente_id=data.get("paciente_id"),
-            edad=data.get("edad"),
+            edad=str(data.get("edad")),
             sexo=data.get("sexo"),
             fecha_nacimiento=data.get("fecha_nacimiento"),
             lugar_nacimiento=data.get("lugar_nacimiento"),
@@ -76,12 +77,12 @@ async def create_filiacion(request: Request, db: Session = Depends(get_db)):
         )
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "detail": "P1 Guardada"}
+        return {"status": "success", "message": "P1 Guardada correctamente"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
 
-# --- RUTA 3: PARTE 2 - ANTECEDENTES (LOS 22 CAMPOS) ---
+# --- RUTA 3: PARTE 2 - ANTECEDENTES (22 CAMPOS INDIVIDUALES) ---
 @app.post("/declaraciones/p2/")
 async def create_p2(request: Request, db: Session = Depends(get_db)):
     try:
@@ -113,10 +114,10 @@ async def create_p2(request: Request, db: Session = Depends(get_db)):
         )
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "detail": "P2 Guardada con 22 campos"}
+        return {"status": "success", "message": "P2 Guardada (22 campos)"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error en P2: {str(e)}")
 
 # --- RUTA 4: PARTE 3 - HÁBITOS Y RIESGOS ---
 @app.post("/declaraciones/p3/")
@@ -141,12 +142,12 @@ async def create_p3(request: Request, db: Session = Depends(get_db)):
         )
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "detail": "Registro Final P3 Guardado"}
+        return {"status": "success", "message": "P3 Guardada Final"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
 
-# --- RUTA 5: CONSULTA GENERAL (BASE DE DATOS) ---
+# --- RUTA 5: CONSULTA PARA LISTADO ---
 @app.get("/pacientes/")
-def get_all_pacientes(db: Session = Depends(get_db)):
+def get_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
