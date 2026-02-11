@@ -2,109 +2,98 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>REPORTE MÉDICO OFICIAL | PROYECTO NUBE</title>
+    <title>REPORTE MÉDICO FINAL | PROYECTO NUBE</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #323639; padding: 20px; font-family: 'Arial', sans-serif; }
-        .toolbar { width: 190mm; margin: 0 auto 10px auto; display: flex; justify-content: space-between; }
+        body { background-color: #323639; padding: 30px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .toolbar { width: 210mm; margin: 0 auto 15px auto; display: flex; justify-content: space-between; }
         #hoja-pdf { 
-            width: 190mm; min-height: 275mm; padding: 15mm; 
-            margin: auto; background: white; color: black; box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            width: 210mm; min-height: 297mm; padding: 20mm; 
+            margin: auto; background: white; color: black; box-shadow: 0 0 20px rgba(0,0,0,0.8);
         }
-        .tabla-datos { width: 100%; border: 1px solid black; border-collapse: collapse; margin-bottom: 10px; }
-        .tabla-datos td { border: 1px solid black; padding: 6px; font-size: 9pt; height: 30px; }
-        .bg-titulo { background-color: #d9e2f3 !important; font-weight: bold; text-align: center; text-transform: uppercase; border: 1px solid black !important; }
-        .label { font-weight: bold; font-size: 8pt; text-transform: uppercase; width: 25%; background-color: #f2f2f2; }
-        .valor { font-weight: bold; color: #000; text-transform: uppercase; padding-left: 10px; width: 25%; }
-        @media print { .no-print { display: none; } }
+        .tabla-reporte { width: 100%; border: 1.5px solid #000; border-collapse: collapse; margin-bottom: 15px; }
+        .tabla-reporte td { border: 1px solid #000; padding: 8px; font-size: 9.5pt; vertical-align: middle; }
+        .header-seccion { background-color: #f0f0f0 !important; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 10pt; }
+        .label { font-weight: bold; background-color: #fafafa; width: 20%; font-size: 8.5pt; }
+        .valor { font-weight: 600; text-transform: uppercase; color: #1a1a1a; width: 30%; }
+        .titulo-principal { text-align: center; text-decoration: underline; font-weight: bold; margin-bottom: 20px; }
+        @media print { .no-print { display: none; } #hoja-pdf { box-shadow: none; margin: 0; } }
     </style>
 </head>
 <body>
 
 <div class="toolbar no-print">
-    <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger">VOLVER AL VISOR</button>
-    <button onclick="descargarPDF()" class="btn btn-success fw-bold">DESCARGAR PDF</button>
+    <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger shadow">← VOLVER AL VISOR</button>
+    <button onclick="descargarPDF()" class="btn btn-success fw-bold shadow">DESCARGAR DECLARACIÓN JURADA (PDF)</button>
 </div>
 
 <div id="hoja-pdf">
-    <table style="width: 100%; border: 1px solid black; margin-bottom: 10px; border-collapse: collapse;">
-        <tr>
-            <td style="width: 20%; text-align: center; border: 1px solid black;"><b>LOGO</b></td>
-            <td style="width: 60%; text-align: center; border: 1px solid black;">
-                <h5 style="margin:0;">PROYECTO HISTORIAL CLÍNICO NUBE</h5>
-                <p style="margin:0; font-size: 8pt;">DECLARACIÓN JURADA DE SALUD - REPORTE OFICIAL</p>
-            </td>
-            <td style="width: 20%; font-size: 8pt; padding: 5px; border: 1px solid black;">
-                ID: <b id="reg_codigo"></b><br>
-                FECHA: <span id="reg_fecha"></span>
-            </td>
-        </tr>
-    </table>
+    <h4 class="titulo-principal">DECLARACIÓN JURADA DE SALUD</h4>
 
-    <table class="tabla-datos">
-        <tr><td colspan="4" class="bg-titulo">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
+    <table class="tabla-reporte">
+        <tr><td colspan="4" class="header-seccion">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
         <tr>
-            <td class="label">APELLIDOS Y NOMBRES:</td>
-            <td class="valor" id="p1_nombre" colspan="3"></td>
+            <td class="label">NOMBRES Y APELLIDOS:</td>
+            <td class="valor" id="v_nombre" colspan="3">CARGANDO...</td>
         </tr>
         <tr>
-            <td class="label">C.I.:</td>
-            <td class="valor" id="p1_ci"></td>
             <td class="label">EDAD:</td>
-            <td class="valor" id="p1_edad"></td>
+            <td class="valor" id="v_edad">---</td>
+            <td class="label">C.I.:</td>
+            <td class="valor" id="v_ci">---</td>
         </tr>
         <tr>
             <td class="label">FECHA NACIMIENTO:</td>
-            <td class="valor" id="p1_fecha_nac"></td>
+            <td class="valor" id="v_f_nac">---</td>
             <td class="label">LUGAR NAC.:</td>
-            <td class="valor" id="p1_lugar"></td>
+            <td class="valor" id="v_lugar">---</td>
         </tr>
         <tr>
             <td class="label">GÉNERO:</td>
-            <td class="valor" id="p1_genero"></td>
+            <td class="valor" id="v_genero">---</td>
             <td class="label">ESTADO CIVIL:</td>
-            <td class="valor" id="p1_estado"></td>
+            <td class="valor" id="v_estado">---</td>
         </tr>
         <tr>
             <td class="label">DOMICILIO:</td>
-            <td class="valor" id="p1_direccion"></td>
+            <td class="valor" id="v_dir">---</td>
             <td class="label">BARRIO:</td>
-            <td class="valor" id="p1_barrio"></td>
+            <td class="valor" id="v_barrio">---</td>
         </tr>
         <tr>
             <td class="label">TELÉFONO:</td>
-            <td class="valor" id="p1_telefono"></td>
+            <td class="valor" id="v_telf">---</td>
             <td class="label">EMPRESA:</td>
-            <td class="valor" id="p1_empresa"></td>
+            <td class="valor" id="v_empresa">---</td>
         </tr>
         <tr>
             <td class="label">OCUPACIÓN:</td>
-            <td class="valor" id="p1_ocupacion"></td>
+            <td class="valor" id="v_ocupacion">---</td>
             <td class="label">E-MAIL:</td>
-            <td class="valor" id="p1_email"></td>
+            <td class="valor" id="v_email">---</td>
         </tr>
         <tr>
-            <td class="label">CONTACTO EMERGENCIA:</td>
-            <td class="valor" id="p1_emergencia"></td>
+            <td class="label">CONT. EMERGENCIA:</td>
+            <td class="valor" id="v_emergencia">---</td>
             <td class="label">PARENTESCO:</td>
-            <td class="valor" id="p1_parentesco"></td>
+            <td class="valor" id="v_parentesco">---</td>
         </tr>
     </table>
 
-    <table class="tabla-datos">
-        <tr><td colspan="4" class="bg-titulo">II. ANTECEDENTES PATOLÓGICOS Y CLÍNICOS</td></tr>
-        <tbody id="p2_grid"></tbody>
+    <table class="tabla-reporte">
+        <tr><td colspan="4" class="header-seccion">II. ANTECEDENTES PATOLÓGICOS Y CLÍNICOS</td></tr>
+        <tbody id="grid_p2"></tbody>
     </table>
 
-    <table class="tabla-datos">
-        <tr><td colspan="2" class="bg-titulo">III. HÁBITOS Y RIESGOS EXPUESTOS</td></tr>
-        <tbody id="p3_grid"></tbody>
+    <table class="tabla-reporte">
+        <tr><td colspan="4" class="header-seccion">III. HÁBITOS Y RIESGOS EXPUESTOS</td></tr>
+        <tbody id="grid_p3"></tbody>
     </table>
 
-    <div style="margin-top: 50px; display: flex; justify-content: space-around; text-align: center;">
-        <div>__________________________<br>FIRMA DEL TRABAJADOR<br><b id="firma_p"></b></div>
-        <div>__________________________<br>MÉDICO EVALUADOR</div>
+    <div style="margin-top: 60px; display: flex; justify-content: space-around; text-align: center; font-size: 10pt;">
+        <div>__________________________<br>FIRMA DEL TRABAJADOR<br><b id="v_firma"></b></div>
+        <div>__________________________<br>MÉDICO EVALUADOR<br>SELLO Y FIRMA</div>
     </div>
 </div>
 
@@ -112,78 +101,79 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
-    async function cargarReporte() {
-        document.getElementById('reg_fecha').innerText = new Date().toLocaleDateString();
+    async function ejecutarReporte() {
         try {
-            // INTENTO 1: Buscar en la lista general (MÁS SEGURO según tus capturas)
-            const resLista = await fetch(`${API}/pacientes/`);
-            const lista = await resLista.json();
-            
-            // Buscamos al paciente por ID dentro de la lista que sí carga
-            let p = lista.find(item => item.id == p_id);
+            // FORZAMOS LA BUSQUEDA AL ENDPOINT DE DETALLE (El que tiene los 41 campos)
+            const respuesta = await fetch(`${API}/pacientes/${p_id}`);
+            const p = await respuesta.json();
 
-            // INTENTO 2: Si no está en la lista, probar el individual (por si acaso)
-            if (!p) {
-                const resInd = await fetch(`${API}/pacientes/${p_id}`);
-                p = await resInd.json();
-            }
+            console.log("DATOS FINALES RECUPERADOS:", p);
 
-            console.log("PACIENTE RECUPERADO:", p);
+            if (p && !p.detail) {
+                // Llenado P1
+                document.getElementById('v_nombre').innerText = `${p.nombre || ''} ${p.apellido || ''}`;
+                document.getElementById('v_firma').innerText = `${p.nombre || ''} ${p.apellido || ''}`;
+                document.getElementById('v_ci').innerText = p.ci || '---';
+                document.getElementById('v_edad').innerText = p.edad || '---';
+                document.getElementById('v_f_nac').innerText = p.fecha_nacimiento || '---';
+                document.getElementById('v_lugar').innerText = p.lugar_nacimiento || '---';
+                document.getElementById('v_genero').innerText = p.genero || '---';
+                document.getElementById('v_estado').innerText = p.estado_civil || '---';
+                document.getElementById('v_dir').innerText = p.direccion || '---';
+                document.getElementById('v_barrio').innerText = p.barrio || '---';
+                document.getElementById('v_telf').innerText = p.telefono || '---';
+                document.getElementById('v_empresa').innerText = p.empresa || '---';
+                document.getElementById('v_ocupacion').innerText = p.ocupacion || '---';
+                document.getElementById('v_email').innerText = p.email || '---';
+                document.getElementById('v_emergencia').innerText = p.contacto_emergencia || '---';
+                document.getElementById('v_parentesco').innerText = p.relacion_contacto || '---';
 
-            if(p && !p.detail) {
-                document.getElementById('p1_nombre').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
-                document.getElementById('firma_p').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
-                document.getElementById('reg_codigo').innerText = p.codigo_paciente || 'S/N';
-                document.getElementById('p1_ci').innerText = p.ci || '---';
-                document.getElementById('p1_edad').innerText = p.edad || '---';
-                document.getElementById('p1_fecha_nac').innerText = p.fecha_nacimiento || '---';
-                document.getElementById('p1_lugar').innerText = p.lugar_nacimiento || '---';
-                document.getElementById('p1_genero').innerText = p.genero || '---';
-                document.getElementById('p1_estado').innerText = p.estado_civil || '---';
-                document.getElementById('p1_direccion').innerText = p.direccion || '---';
-                document.getElementById('p1_barrio').innerText = p.barrio || '---';
-                document.getElementById('p1_telefono').innerText = p.telefono || '---';
-                document.getElementById('p1_empresa').innerText = p.empresa || '---';
-                document.getElementById('p1_ocupacion').innerText = p.ocupacion || '---';
-                document.getElementById('p1_email').innerText = p.email || '---';
-                document.getElementById('p1_emergencia').innerText = p.contacto_emergencia || '---';
-                document.getElementById('p1_parentesco').innerText = p.relacion_contacto || '---';
-
-                const p2Keys = [
-                    ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias], ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
-                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia], ['GASTRITIS', p.gastritis], ['CORAZON', p.corazon],
-                    ['RIÑONES', p.rinones], ['VARICES', p.varices], ['TBC', p.tbc], ['CHAGAS', p.chagas],
-                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIONES', p.hospitalizaciones], ['MEDICAMENTOS', p.medicamentos], ['VACUNAS', p.vacunas],
-                    ['ENF. INFANCIA', p.enf_infancia], ['VISION', p.vision], ['AUDICION', p.audicion], ['F. RESPIRATORIA', p.f_respiratoria]
+                // Llenado P2 (Antecedentes)
+                const camposP2 = [
+                    ['ALERGIAS', p.alergias], ['CIRUGÍAS', p.cirugias], ['DIABETES', p.diabetes], ['HIPERTENSIÓN', p.hipertension],
+                    ['ASMA', p.asma], ['EPÍLEPSIA', p.epilepsia], ['GASTRITIS', p.gastritis], ['CORAZÓN', p.corazon],
+                    ['RIÑONES', p.rinones], ['VÁRICES', p.varices], ['TBC', p.tbc], ['CHAGAS', p.chagas],
+                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIÓN', p.hospitalizaciones], ['MEDICAMENTOS', p.medicamentos], ['VACUNAS', p.vacunas]
                 ];
-                let h2 = "";
-                for(let i=0; i<p2Keys.length; i+=2){
-                    h2 += `<tr>
-                        <td class="label">${p2Keys[i][0]}:</td><td class="valor">${p2Keys[i][1] || 'NO'}</td>
-                        <td class="label">${p2Keys[i+1][0]}:</td><td class="valor">${p2Keys[i+1][1] || 'NO'}</td>
+                let htmlP2 = "";
+                for(let i=0; i<camposP2.length; i+=2) {
+                    htmlP2 += `<tr>
+                        <td class="label">${camposP2[i][0]}:</td><td class="valor">${camposP2[i][1] || 'NO'}</td>
+                        <td class="label">${camposP2[i+1][0]}:</td><td class="valor">${camposP2[i+1][1] || 'NO'}</td>
                     </tr>`;
                 }
-                h2 += `<tr><td class="label">PRESIÓN ART.</td><td class="valor">${p.presion_valor || '---'}</td><td class="label">OBSERVACIONES</td><td class="valor">${p.observaciones_p2 || 'NINGUNA'}</td></tr>`;
-                document.getElementById('p2_grid').innerHTML = h2;
+                htmlP2 += `<tr><td class="label">PRESIÓN ART.</td><td class="valor">${p.presion_valor || '---'}</td><td class="label">OBSERVACIONES</td><td class="valor" colspan="2">${p.observaciones_p2 || 'NINGUNA'}</td></tr>`;
+                document.getElementById('grid_p2').innerHTML = htmlP2;
 
-                const p3Keys = [['FUMA', p.fuma], ['ALCOHOL', p.alcohol], ['DROGAS', p.drogas], ['DEPORTES', p.deportes], ['GRUPO SANGUINEO', p.grupo_sanguineo]];
-                document.getElementById('p3_grid').innerHTML = p3Keys.map(k => `<tr><td class="label">${k[0]}:</td><td class="valor" colspan="3">${k[1] || '---'}</td></tr>`).join('');
+                // Llenado P3 (Hábitos)
+                const camposP3 = [
+                    ['¿FUMA?', p.fuma], ['¿ALCOHOL?', p.alcohol], ['¿DROGAS?', p.drogas], ['¿DEPORTES?', p.deportes], ['GRUPO SANGUÍNEO', p.grupo_sanguineo]
+                ];
+                document.getElementById('grid_p3').innerHTML = camposP3.map(c => `
+                    <tr><td class="label">${c[0]}</td><td class="valor" colspan="3">${c[1] || '---'}</td></tr>
+                `).join('');
+
             } else {
-                alert("Error: El servidor no reconoce este ID de paciente. Regresa al visor e intenta de nuevo.");
+                alert("Error: El servidor no envió el detalle completo. Verifica la conexión.");
             }
-        } catch(e) { console.error("Error crítico:", e); }
+        } catch (error) {
+            console.error("Error en la carga:", error);
+        }
     }
 
     function descargarPDF() {
         const element = document.getElementById('hoja-pdf');
-        html2pdf().set({ 
-            margin: 10, 
-            filename: 'Reporte_Final.pdf', 
-            html2canvas: { scale: 3 }, 
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-        }).from(element).save();
+        const opt = {
+            margin: 0,
+            filename: 'Declaracion_Jurada_Salud.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
     }
-    window.onload = cargarReporte;
+
+    window.onload = ejecutarReporte;
 </script>
 </body>
 </html>
