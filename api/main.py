@@ -1,10 +1,9 @@
 from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from . import crud, models, schemas
-from .database import SessionLocal, engine
+from . import models, database
 
-models.Base.metadata.create_all(bind=engine)
+database.Base.metadata.create_all(bind=database.engine)
 app = FastAPI()
 
 app.add_middleware(
@@ -16,20 +15,33 @@ app.add_middleware(
 )
 
 def get_db():
-    db = SessionLocal()
+    db = database.SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
 @app.get("/")
-def health():
-    return {"status": "ok", "project": "HISTORIAL_CLINICO_NUBE"}
+def root():
+    return {"status": "ok", "project": "HISTORIAL_CLINICO_NUBE", "storage": "DISK"}
 
 @app.post("/pacientes/")
-def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
-    return crud.create_paciente(db=db, paciente=paciente)
+async def create_paciente(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    db_paciente = models.Paciente(**data)
+    db.add(db_paciente)
+    db.commit()
+    db.refresh(db_paciente)
+    return db_paciente
 
 @app.post("/filiacion/")
-def create_filiacion(filiacion: schemas.FiliacionCreate, db: Session = Depends(get_db)):
-    return crud.create_filiacion(db=db, filiacion=filiacion)
+async def create_filiacion(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    # Limpiamos el ID si viene como string vacío para evitar error de entero
+    if "paciente_id" in data and not data["paciente_id"]:
+        data.pop("paciente_id")
+    db_filiacion = models.DeclaracionJurada(**data)
+    db.add(db_filiacion)
+    db.commit()
+    db.refresh(db_filiacion)
+    return db_filiacion
