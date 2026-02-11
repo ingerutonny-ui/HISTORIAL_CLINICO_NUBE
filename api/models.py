@@ -13,7 +13,7 @@ class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_p1"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    edad = Column(Integer)
+    edad = Column(String)
     sexo = Column(String)
     fecha_nacimiento = Column(String)
     lugar_nacimiento = Column(String)
