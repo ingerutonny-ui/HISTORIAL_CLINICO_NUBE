@@ -3,11 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database
 
-# Crear tablas e iniciar conexión al DISK
+# Forzar creación de tablas en el DISK
 database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
+# Configuración de CORS total para evitar bloqueos
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,32 +24,41 @@ def get_db():
     finally:
         db.close()
 
-# RUTA PARA EL BOTÓN "CONSULTAR BASE DE DATOS"
-@app.get("/pacientes/")
-def get_all_pacientes(db: Session = Depends(get_db)):
-    try:
-        return db.query(models.Paciente).all()
-    except Exception as e:
-        return {"error": str(e)}
-
 @app.get("/")
 def root():
-    return {"status": "ok", "storage": "DISK", "database": "connected"}
+    return {"status": "ok", "storage": "DISK", "project": "HISTORIAL_CLINICO_NUBE"}
+
+@app.get("/pacientes/")
+def get_pacientes(db: Session = Depends(get_db)):
+    return db.query(models.Paciente).all()
 
 @app.post("/pacientes/")
 async def create_paciente(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    db_paciente = models.Paciente(**data)
-    db.add(db_paciente)
-    db.commit()
-    db.refresh(db_paciente)
-    return db_paciente
+    try:
+        data = await request.json()
+        db_paciente = models.Paciente(**data)
+        db.add(db_paciente)
+        db.commit()
+        db.refresh(db_paciente)
+        return db_paciente
+    except Exception as e:
+        db.rollback()
+        return {"error": str(e)}
 
 @app.post("/filiacion/")
 async def create_filiacion(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    db_filiacion = models.DeclaracionJurada(**data)
-    db.add(db_filiacion)
-    db.commit()
-    db.refresh(db_filiacion)
-    return db_filiacion
+    try:
+        data = await request.json()
+        # Filtramos campos que no pertenezcan al modelo para evitar el Error 500
+        allowed_fields = [c.key for c in models.DeclaracionJurada.__table__.columns]
+        filtered_data = {k: v for k, v in data.items() if k in allowed_fields}
+        
+        db_filiacion = models.DeclaracionJurada(**filtered_data)
+        db.add(db_filiacion)
+        db.commit()
+        db.refresh(db_filiacion)
+        return {"status": "success", "message": "Datos guardados en DISK"}
+    except Exception as e:
+        db.rollback()
+        # Enviamos el error real para capturarlo si falla
+        return {"status": "error", "detail": str(e)}
