@@ -30,11 +30,26 @@ class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
-    datos_json = Column(Text)
-
-class HabitosRiesgosP3(Base):
-    __tablename__ = "habitos_p3"
-    id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
-    # Almacenamos los 22 campos del JSON de P3 aquí
-    datos_p3 = Column(Text)
+    # Los 22 campos de la Parte 2 declarados individualmente
+    vista = Column(String)
+    auditivo = Column(String)
+    respiratorio = Column(String)
+    cardio = Column(String)
+    digestivos = Column(String)
+    sangre = Column(String)
+    genitourinario = Column(String)
+    sistema_nervioso = Column(String)
+    psiquiatricos = Column(String)
+    osteomusculares = Column(String)
+    reumatologicos = Column(String)
+    dermatologicas = Column(String)
+    alergias = Column(String)
+    cirugias = Column(String)
+    infecciones = Column(String)
+    acc_personales = Column(String)
+    acc_trabajo = Column(String)
+    medicamentos = Column(String)
+    endocrino = Column(String)
+    familiares = Column(String)
+    otros_especificos = Column(String)
+    generales = Column(String)
