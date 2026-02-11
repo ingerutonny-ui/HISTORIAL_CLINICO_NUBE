@@ -13,7 +13,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Esto asegura que las tablas existan en /data/historial.db
 models.Base.metadata.create_all(bind=database.engine)
 
 def get_db():
@@ -23,9 +22,12 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+def read_root():
+    return {"status": "API HISTORIAL_CLINICO_NUBE funcionando"}
+
 @app.post("/filiacion/")
 def guardar_filiacion(data: schemas.FiliacionCreate, db: Session = Depends(get_db)):
-    # Esta ruta coincide con declaracion_jurada_p1.html:97 de tu captura
     return crud.create_filiacion(db=db, filiacion=data)
 
 @app.post("/pacientes/")
@@ -35,3 +37,11 @@ def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_d
 @app.get("/pacientes/")
 def listar_pacientes(db: Session = Depends(get_db)):
     return crud.get_pacientes(db)
+
+@app.post("/declaraciones/p2/")
+def guardar_p2(data: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
+    return crud.create_antecedentes(db=db, antecedentes=data)
+
+@app.post("/declaraciones/p3/")
+def guardar_p3(data: schemas.HabitosP3Create, db: Session = Depends(get_db)):
+    return crud.create_habitos(db=db, habitos=data)
