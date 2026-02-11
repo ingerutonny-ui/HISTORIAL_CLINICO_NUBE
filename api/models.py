@@ -30,7 +30,6 @@ class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
-    # Los 22 campos de la Parte 2 declarados individualmente
     vista = Column(String)
     auditivo = Column(String)
     respiratorio = Column(String)
@@ -53,3 +52,21 @@ class AntecedentesP2(Base):
     familiares = Column(String)
     otros_especificos = Column(String)
     generales = Column(String)
+
+class HabitosRiesgosP3(Base):
+    __tablename__ = "habitos_p3"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
+    fuma = Column(String)
+    fuma_cantidad = Column(String)
+    alcohol = Column(String)
+    alcohol_frecuencia = Column(String)
+    drogas = Column(String)
+    drogas_tipo = Column(String)
+    coca = Column(String)
+    deporte = Column(String)
+    deporte_detalle = Column(String)
+    grupo_sanguineo = Column(String)
+    historia_laboral = Column(Text)  # Guarda el JSON de la tabla
+    riesgos_expuestos = Column(Text) # Guarda el JSON de los checks
+    observaciones = Column(String)
