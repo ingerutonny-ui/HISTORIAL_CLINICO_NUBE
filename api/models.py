@@ -25,16 +25,3 @@ class DeclaracionJurada(Base):
     telefono = Column(String)
     estado_civil = Column(String)
     profesion_oficio = Column(String)
-
-class AntecedentesP2(Base):
-    __tablename__ = "declaraciones_p2"
-    id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    # Aquí irán todos los campos de la Parte 2 que envíes luego
-    datos_json = Column(Text, default="{}")
-
-class HabitosRiesgosP3(Base):
-    __tablename__ = "declaraciones_p3"
-    id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    datos_json = Column(Text, default="{}")
