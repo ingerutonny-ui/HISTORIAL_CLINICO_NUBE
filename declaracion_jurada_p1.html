@@ -2,133 +2,108 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HC NUBE | FILIACIÓN (1/3)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --primary: #005a2b; --secondary: #00a651; --bg: #0b0f19; --card: #161b22; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #c9d1d9; }
-        .container { max-width: 1100px; margin: auto; background: var(--card); padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-top: 5px solid var(--secondary); }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #30363d; padding-bottom: 20px; }
-        .header img { height: 50px; }
-        .header h2 { color: #fff; margin: 0; font-style: italic; font-weight: 800; letter-spacing: 1px; }
-
-        .info-paciente { background: #0d1117; padding: 20px; border-radius: 8px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; border: 1px solid #30363d; }
-        .info-paciente div { font-size: 0.8em; color: #8b949e; text-transform: uppercase; }
-        .info-paciente strong { color: #fff; font-weight: bold; display: block; margin-top: 5px; font-size: 1.1em; }
-
-        .grid-form { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .field { display: flex; flex-direction: column; }
-        label { font-size: 0.75em; font-weight: bold; margin-bottom: 8px; color: #8b949e; text-transform: uppercase; }
-        
-        input, select { padding: 12px; border: 1px solid #30363d; border-radius: 6px; font-size: 1em; background: #0d1117; color: #fff; transition: 0.3s; }
-        input:focus { border-color: var(--secondary); outline: none; box-shadow: 0 0 0 3px rgba(0,166,81,0.3); }
-        
-        .full-width { grid-column: span 3; }
-        .btn-submit { margin-top: 30px; width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .btn-submit:hover { background: var(--secondary); }
-        .btn-submit:disabled { background: #21262d; color: #484f58; cursor: not-allowed; }
-
-        @media (max-width: 768px) {
-            .grid-form { grid-template-columns: 1fr; }
-            .full-width { grid-column: span 1; }
-            .info-paciente { grid-template-columns: 1fr; }
-        }
+        body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; }
+        .form-container { max-width: 900px; margin: 30px auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .header-ohs { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #22c55e; padding-bottom: 15px; margin-bottom: 25px; }
+        .title-center { flex: 1; text-align: center; }
+        .title-center h2 { font-size: 1.3rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin: 0; }
+        .data-banner { background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; justify-content: space-around; border: 1px solid #e2e8f0; }
+        .data-item { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .data-val { color: #1e293b; font-weight: 900; }
+        .label-custom { font-size: 11px; font-weight: 800; color: #334155; text-transform: uppercase; margin-bottom: 5px; }
+        .form-control, .form-select { border-radius: 8px; padding: 10px; font-size: 13px; text-transform: uppercase; background: #fdfdfd; }
+        .btn-next { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; font-weight: 800; text-transform: uppercase; margin-top: 20px; transition: 0.3s; }
+        .btn-next:hover { background: #16a34a; transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <img src="logo.png" alt="Logo OHS">
-        <h2>1. DATOS DE FILIACIÓN</h2>
+<div class="form-container">
+    <div class="header-ohs">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50">
+        <div class="title-center"><h2>1. Datos de Filiación</h2></div>
+        <div style="font-size: 11px; font-weight: 800; color: #94a3b8;">PARTE 1 / 3</div>
     </div>
 
-    <div class="info-paciente">
-        <div>PACIENTE: <strong id="disp_nombre">---</strong></div>
-        <div>CI: <strong id="disp_ci">---</strong></div>
-        <div>CÓDIGO: <strong id="disp_codigo">---</strong></div>
+    <div class="data-banner">
+        <div class="data-item">PACIENTE: <span id="p_nombre" class="data-val">---</span></div>
+        <div class="data-item">CI: <span id="p_ci" class="data-val">---</span></div>
+        <div class="data-item">CÓDIGO: <span id="p_codigo" class="data-val">---</span></div>
     </div>
 
-    <form id="form-filiacion" class="grid-form">
-        <div class="field"><label>Edad</label><input type="number" name="edad" required></div>
-        <div class="field"><label>Sexo</label>
-            <select name="sexo" required>
-                <option value="MASCULINO">MASCULINO</option>
-                <option value="FEMENINO">FEMENINO</option>
-            </select>
+    <form id="formP1" class="row g-3">
+        <div class="col-md-3"><label class="label-custom">Edad</label><input type="number" id="edad" class="form-control" required></div>
+        <div class="col-md-3">
+            <label class="label-custom">Sexo</label>
+            <select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select>
         </div>
-        <div class="field"><label>Fecha Nacimiento</label><input type="date" name="fecha_nacimiento" required></div>
-
-        <div class="field full-width"><label>Lugar de Nacimiento</label><input type="text" name="lugar_nacimiento" required></div>
-        <div class="field full-width"><label>Domicilio Actual</label><input type="text" name="domicilio" required></div>
-
-        <div class="field"><label>N° Casa</label><input type="text" name="n_casa"></div>
-        <div class="field"><label>Zona / Barrio</label><input type="text" name="zona_barrio"></div>
-        <div class="field"><label>Ciudad</label><input type="text" name="ciudad" required></div>
-
-        <div class="field"><label>País</label><input type="text" name="pais" value="BOLIVIA"></div>
-        <div class="field"><label>Teléfono/Celular</label><input type="text" name="telefono" required></div>
-        <div class="field"><label>Estado Civil</label>
-            <select name="estado_civil">
-                <option value="SOLTERO/A">SOLTERO/A</option>
-                <option value="CASADO/A">CASADO/A</option>
-                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
-                <option value="VIUDO/A">VIUDO/A</option>
-                <option value="CONVIVIENTE">CONVIVIENTE</option>
-            </select>
+        <div class="col-md-3"><label class="label-custom">Fecha Nacimiento</label><input type="date" id="fecha_nac" class="form-control" required></div>
+        <div class="col-md-3"><label class="label-custom">Lugar Nacimiento</label><input type="text" id="lugar_nac" class="form-control" oninput="this.value=this.value.toUpperCase()"></div>
+        
+        <div class="col-md-6"><label class="label-custom">Domicilio Actual</label><input type="text" id="domicilio" class="form-control" oninput="this.value=this.value.toUpperCase()"></div>
+        <div class="col-md-2"><label class="label-custom">N° Casa</label><input type="text" id="n_casa" class="form-control"></div>
+        <div class="col-md-4"><label class="label-custom">Zona / Barrio</label><input type="text" id="zona" class="form-control" oninput="this.value=this.value.toUpperCase()"></div>
+        
+        <div class="col-md-4"><label class="label-custom">Ciudad</label><input type="text" id="ciudad" class="form-control" oninput="this.value=this.value.toUpperCase()"></div>
+        <div class="col-md-4"><label class="label-custom">País</label><input type="text" id="pais" class="form-control" value="BOLIVIA" oninput="this.value=this.value.toUpperCase()"></div>
+        <div class="col-md-4"><label class="label-custom">Teléfono/Celular</label><input type="text" id="tel" class="form-control"></div>
+        
+        <div class="col-md-6">
+            <label class="label-custom">Estado Civil</label>
+            <select id="est_civil" class="form-select"><option value="SOLTERO/A">SOLTERO/A</option><option value="CASADO/A">CASADO/A</option><option value="DIVORCIADO/A">DIVORCIADO/A</option><option value="VIUDO/A">VIUDO/A</option></select>
         </div>
+        <div class="col-md-6"><label class="label-custom">Profesión / Oficio</label><input type="text" id="profesion" class="form-control" oninput="this.value=this.value.toUpperCase()"></div>
 
-        <div class="field full-width"><label>Profesión / Oficio</label><input type="text" name="profesion_oficio"></div>
-
-        <button type="submit" id="btn-procesar" class="btn-submit">GUARDAR Y CONTINUAR AL PASO 2</button>
+        <button type="submit" id="btnNext" class="btn-next">Guardar y Continuar a Parte 2</button>
     </form>
 </div>
 
 <script>
-    const API_URL = "https://historial-clinico-936s.onrender.com";
-    
-    // Sincronización con la clave exacta usada en el buscador
-    const pacienteData = JSON.parse(localStorage.getItem('paciente_actual'));
+    const API = 'https://historial-clinico-936s.onrender.com';
 
-    if (pacienteData) {
-        document.getElementById('disp_nombre').textContent = (pacienteData.nombre + " " + pacienteData.apellido).toUpperCase();
-        document.getElementById('disp_ci').textContent = pacienteData.ci;
-        document.getElementById('disp_codigo').textContent = pacienteData.codigo_paciente;
-    } else {
-        alert("Error: Sesión no encontrada. Regresando al buscador.");
-        window.location.href = "buscador_codigo.html";
-    }
+    window.onload = () => {
+        const nom = localStorage.getItem('p_nom');
+        if (!nom) { alert("No hay datos de registro."); window.location.href="registro_paciente.html"; return; }
+        document.getElementById('p_nombre').innerText = nom;
+        document.getElementById('p_ci').innerText = localStorage.getItem('p_ci');
+        document.getElementById('p_codigo').innerText = localStorage.getItem('p_cod');
+    };
 
-    document.getElementById('form-filiacion').addEventListener('submit', async (e) => {
+    document.getElementById('formP1').onsubmit = async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btn-procesar');
-        btn.disabled = true;
-        btn.textContent = "PROCESANDO...";
+        const btn = document.getElementById('btnNext');
+        btn.innerText = "PROCESANDO..."; btn.disabled = true;
 
-        const formData = new FormData(e.target);
-        const data = Object.fromEntries(formData.entries());
-        data.paciente_id = parseInt(pacienteData.id);
+        const data = {
+            paciente_id: parseInt(localStorage.getItem('p_id')),
+            edad: parseInt(document.getElementById('edad').value),
+            sexo: document.getElementById('sexo').value,
+            fecha_nacimiento: document.getElementById('fecha_nac').value,
+            lugar_nacimiento: document.getElementById('lugar_nac').value,
+            domicilio: document.getElementById('domicilio').value,
+            n_casa: document.getElementById('n_casa').value,
+            zona_barrio: document.getElementById('zona').value,
+            ciudad: document.getElementById('ciudad').value,
+            pais: document.getElementById('pais').value,
+            telefono: document.getElementById('tel').value,
+            estado_civil: document.getElementById('est_civil').value,
+            profesion_oficio: document.getElementById('profesion').value
+        };
 
         try {
-            const res = await fetch(`${API_URL}/filiacion/`, {
+            const r = await fetch(`${API}/filiacion/`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-
-            if (res.ok) {
-                window.location.href = "declaracion_jurada_p2.html";
-            } else {
-                alert("Error al guardar: Verifique que todos los campos sean correctos.");
-                btn.disabled = false;
-                btn.textContent = "GUARDAR Y CONTINUAR AL PASO 2";
-            }
-        } catch (error) {
-            alert("Error de conexión con Render.");
-            btn.disabled = false;
-        }
-    });
+            if(r.ok) window.location.href = "declaracion_jurada_p2.html";
+            else alert("Error al guardar filiación.");
+        } catch(e) { alert("Error de conexión."); }
+        finally { btn.disabled = false; btn.innerText = "Guardar y Continuar a Parte 2"; }
+    };
 </script>
 </body>
 </html>
