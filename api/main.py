@@ -1,15 +1,12 @@
-import json
-from fastapi import FastAPI, Depends, Request, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from . import models, database
+from . import models, database, crud
 
-# 1. INICIALIZACIÓN DE DB
 database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
-# 2. CORS COMPLETO
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,7 +15,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 3. SESIÓN DE DB
 def get_db():
     db = database.SessionLocal()
     try:
@@ -27,107 +23,42 @@ def get_db():
         db.close()
 
 @app.get("/")
-def check():
-    return {"status": "online", "db": "connected"}
+def health_check():
+    return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
-# --- RUTA 1: PACIENTES ---
 @app.post("/pacientes/")
-async def create_paciente(request: Request, db: Session = Depends(get_db)):
-    try:
-        data = await request.json()
-        ci_val = str(data.get("ci", ""))
-        existente = db.query(models.Paciente).filter(models.Paciente.ci == ci_val).first()
-        if existente:
-            return existente
-        db_obj = models.Paciente(
-            nombre=str(data.get("nombre", "")).upper(),
-            apellido=str(data.get("apellido", "")).upper(),
-            ci=ci_val,
-            codigo_paciente=str(data.get("codigo_paciente", ""))
-        )
-        db.add(db_obj)
-        db.commit()
-        db.refresh(db_obj)
-        return db_obj
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+async def save_paciente(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    ci = str(data.get("ci"))
+    paciente = crud.get_paciente_by_ci(db, ci)
+    if not paciente:
+        paciente = crud.create_paciente(db, data)
+    return paciente
 
-# --- RUTA 2: FILIACIÓN (LÓGICA DE ACTUALIZACIÓN AUTOMÁTICA) ---
 @app.post("/filiacion/")
-async def create_filiacion(request: Request, db: Session = Depends(get_db)):
+async def save_filiacion(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        p_id = data.get("paciente_id")
-        
-        if not p_id:
-            raise ValueError("ID de paciente no encontrado")
-
-        # BUSCAMOS SI YA EXISTE FILIACIÓN PARA ESTE PACIENTE
-        # Esto evita el Error 400 al reintentar con el mismo paciente
-        filiacion_existente = db.query(models.DeclaracionJurada).filter(
-            models.DeclaracionJurada.paciente_id == int(p_id)
-        ).first()
-
-        datos_filiacion = {
-            "paciente_id": int(p_id),
-            "edad": str(data.get("edad", "")),
-            "sexo": str(data.get("sexo", "")),
-            "fecha_nacimiento": str(data.get("fecha_nacimiento", "")),
-            "lugar_nacimiento": str(data.get("lugar_nacimiento", "")),
-            "domicilio": str(data.get("domicilio", "")),
-            "n_casa": str(data.get("n_casa", "")),
-            "zona_barrio": str(data.get("zona_barrio", "")),
-            "ciudad": str(data.get("ciudad", "")),
-            "pais": str(data.get("pais", "")),
-            "telefono": str(data.get("telefono", "")),
-            "estado_civil": str(data.get("estado_civil", "")),
-            "profesion_oficio": str(data.get("profesion_oficio", ""))
-        }
-
-        if filiacion_existente:
-            # ACTUALIZAR EXISTENTE
-            for key, value in datos_filiacion.items():
-                setattr(filiacion_existente, key, value)
-            db.commit()
-            return {"status": "success", "message": "Actualizado"}
-        else:
-            # CREAR NUEVO
-            db_obj = models.DeclaracionJurada(**datos_filiacion)
-            db.add(db_obj)
-            db.commit()
-            return {"status": "success", "message": "Creado"}
-
+        return crud.upsert_filiacion(db, data)
     except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
 
-# --- RUTA 3: P2 ---
 @app.post("/declaraciones/p2/")
-async def create_p2(request: Request, db: Session = Depends(get_db)):
+async def save_p2(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        db_obj = models.AntecedentesP2(**data)
-        db.add(db_obj)
-        db.commit()
-        return {"status": "success"}
+        return crud.create_p2(db, data)
     except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error en P2: {str(e)}")
 
-# --- RUTA 4: P3 ---
 @app.post("/declaraciones/p3/")
-async def create_p3(request: Request, db: Session = Depends(get_db)):
+async def save_p3(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        db_obj = models.HabitosRiesgosP3(**data)
-        db.add(db_obj)
-        db.commit()
-        return {"status": "success"}
+        return crud.create_p3(db, data)
     except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
 
 @app.get("/pacientes/")
-def list_p(db: Session = Depends(get_db)):
+def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
