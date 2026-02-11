@@ -4,18 +4,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database
 
-# 1. INICIALIZACIÓN DE LA BASE DE DATOS
-# Asegura que las tablas en el models.py se creen en Render
+# 1. INICIALIZACIÓN DE DB
 database.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI(
     title="HISTORIAL_CLINICO_NUBE",
-    description="Sistema de Gestión de Historias Clínicas - Modo Aprender Activo",
-    version="1.5.0"
+    description="Sistema Robusto de Historias Clínicas",
+    version="2.0.0"
 )
 
-# 2. CONFIGURACIÓN DE SEGURIDAD CORS
-# Permite que el Frontend en GitHub se comunique con el Backend en Render
+# 2. CORS PARA GITHUB PAGES Y RENDER
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,7 +22,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 3. GESTIÓN DE SESIÓN DE BASE DE DATOS
+# 3. SESIÓN DE BASE DE DATOS
 def get_db():
     db = database.SessionLocal()
     try:
@@ -32,35 +30,26 @@ def get_db():
     finally:
         db.close()
 
-# --- RUTA DE VERIFICACIÓN ---
 @app.get("/")
-def home():
-    return {
-        "status": "online",
-        "database": "connected",
-        "project": "HISTORIAL_CLINICO_NUBE",
-        "mode": "learning_strict"
-    }
+def check_service():
+    return {"status": "online", "mode": "Strict Learning Active"}
 
 # --- RUTA 1: REGISTRO DE PACIENTES (P0) ---
 @app.post("/pacientes/")
 async def create_paciente(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        ci_recibido = str(data.get("ci"))
+        ci_str = str(data.get("ci", ""))
         
-        # SOLUCIÓN AL ERROR 400: Verificar si el CI ya existe antes de intentar guardar
-        # Esto permite que si la P1 falló, el usuario pueda reintentar sin romper el CI Unique
-        paciente_existente = db.query(models.Paciente).filter(models.Paciente.ci == ci_recibido).first()
-        
-        if paciente_existente:
-            print(f"Paciente ya registrado con CI: {ci_recibido}. Retornando registro existente.")
-            return paciente_existente
+        # Evitar el error de CI duplicado (Unique Constraint)
+        existente = db.query(models.Paciente).filter(models.Paciente.ci == ci_str).first()
+        if existente:
+            return existente
             
         db_obj = models.Paciente(
             nombre=data.get("nombre"),
             apellido=data.get("apellido"),
-            ci=ci_recibido,
+            ci=ci_str,
             codigo_paciente=data.get("codigo_paciente")
         )
         db.add(db_obj)
@@ -69,48 +58,43 @@ async def create_paciente(request: Request, db: Session = Depends(get_db)):
         return db_obj
     except Exception as e:
         db.rollback()
-        print(f"Error en Registro Paciente: {str(e)}")
-        raise HTTPException(status_code=400, detail=f"Error en P0: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 2: PARTE 1 - FILIACIÓN (PROCESAMIENTO DETALLADO) ---
+# --- RUTA 2: PARTE 1 - FILIACIÓN (MAPEO TOLERANTE A ERRORES) ---
 @app.post("/filiacion/")
 async def create_filiacion(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
         
-        # Mapeo explícito para asegurar que cada campo del models.py se llene correctamente
-        # Se usa str() para garantizar compatibilidad con los campos String del modelo
+        # Mapeo que busca múltiples nombres posibles para evitar el Error 400
         db_obj = models.DeclaracionJurada(
             paciente_id=data.get("paciente_id"),
             edad=str(data.get("edad", "")),
             sexo=str(data.get("sexo", "")),
             fecha_nacimiento=str(data.get("fecha_nacimiento", "")),
             lugar_nacimiento=str(data.get("lugar_nacimiento", "")),
-            domicilio=str(data.get("domicilio", "")),
-            n_casa=str(data.get("n_casa", "")),
-            zona_barrio=str(data.get("zona_barrio", "")),
+            domicilio=str(data.get("domicilio", data.get("domicilio_actual", ""))),
+            n_casa=str(data.get("n_casa", data.get("n_casa_input", ""))),
+            zona_barrio=str(data.get("zona_barrio", data.get("zona", ""))),
             ciudad=str(data.get("ciudad", "")),
             pais=str(data.get("pais", "")),
-            telefono=str(data.get("telefono", "")),
+            telefono=str(data.get("telefono", data.get("celular", ""))),
             estado_civil=str(data.get("estado_civil", "")),
-            profesion_oficio=str(data.get("profesion_oficio", ""))
+            profesion_oficio=str(data.get("profesion_oficio", data.get("profesion", "")))
         )
         
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "message": "Filiación guardada correctamente", "next_step": "P2"}
+        return {"status": "success", "message": "Filiación guardada"}
     except Exception as e:
         db.rollback()
-        print(f"Error Crítico en Filiación: {str(e)}")
         raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
 
-# --- RUTA 3: PARTE 2 - ANTECEDENTES (LOS 22 CAMPOS MÉDICOS) ---
+# --- RUTA 3: PARTE 2 - ANTECEDENTES (TODOS LOS CAMPOS) ---
 @app.post("/declaraciones/p2/")
 async def create_p2(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        
-        # Mapeo uno a uno de los 22 campos definidos en el models.py
         db_obj = models.AntecedentesP2(
             paciente_id=data.get("paciente_id"),
             vista=str(data.get("vista", "NORMAL")),
@@ -136,47 +120,42 @@ async def create_p2(request: Request, db: Session = Depends(get_db)):
             otros_especificos=str(data.get("otros_especificos", "NORMAL")),
             generales=str(data.get("generales", "NORMAL"))
         )
-        
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "message": "Antecedentes P2 registrados"}
+        return {"status": "success"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P2: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 4: PARTE 3 - HÁBITOS Y RIESGOS (DATOS COMPLEJOS) ---
+# --- RUTA 4: PARTE 3 - HÁBITOS (REFORZADO) ---
 @app.post("/declaraciones/p3/")
 async def create_p3(request: Request, db: Session = Depends(get_db)):
     try:
         data = await request.json()
-        
-        # Los campos historia_laboral y riesgos_expuestos se guardan como texto (JSON)
-        # según la definición de Column(Text) en models.py
         db_obj = models.HabitosRiesgosP3(
             paciente_id=data.get("paciente_id"),
-            fuma=str(data.get("fuma", "NO")),
+            fuma=str(data.get("fuma", "")),
             fuma_cantidad=str(data.get("fuma_cantidad", "")),
-            alcohol=str(data.get("alcohol", "NO")),
+            alcohol=str(data.get("alcohol", "")),
             alcohol_frecuencia=str(data.get("alcohol_frecuencia", "")),
-            drogas=str(data.get("drogas", "NO")),
+            drogas=str(data.get("drogas", "")),
             drogas_tipo=str(data.get("drogas_tipo", "")),
-            coca=str(data.get("coca", "NO")),
-            deporte=str(data.get("deporte", "NO")),
+            coca=str(data.get("coca", "")),
+            deporte=str(data.get("deporte", "")),
             deporte_detalle=str(data.get("deporte_detalle", "")),
             grupo_sanguineo=str(data.get("grupo_sanguineo", "")),
             historia_laboral=str(data.get("historia_laboral", "[]")),
             riesgos_expuestos=str(data.get("riesgos_expuestos", "[]")),
-            observaciones=str(data.get("observaciones", "REGISTRO FINALIZADO"))
+            observaciones=str(data.get("observaciones", ""))
         )
-        
         db.add(db_obj)
         db.commit()
-        return {"status": "success", "message": "Proceso Completo"}
+        return {"status": "success"}
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
-# --- RUTA 5: CONSULTA GENERAL ---
+# --- RUTA 5: CONSULTA ---
 @app.get("/pacientes/")
-def get_pacientes_list(db: Session = Depends(get_db)):
+def list_all(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
