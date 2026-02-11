@@ -1,16 +1,28 @@
 import os
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Usamos la URL de PostgreSQL que Render te proporciona en Variables de Entorno
-# Si no existe, usamos una por defecto para evitar que el sistema falle al arrancar
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:pass@localhost/dbname")
+# 1. Definición de la ruta al DISK persistente de Render
+SQLALCHEMY_DATABASE_URL = "sqlite:////data/historial.db"
 
-# Ajuste para compatibilidad con SQLAlchemy 2.0 y Render
-if SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
-    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
+# Si no estamos en Render, usamos ruta local para pruebas
+if not os.path.exists("/data"):
+    SQLALCHEMY_DATABASE_URL = "sqlite:///./historial.db"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# 2. Motor con manejo de bloqueos para SQLite
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, 
+    connect_args={"check_same_thread": False, "timeout": 30}
+)
+
+# 3. Optimización para evitar que SQLite se bloquee
+@event.listens_for(engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL")
+    cursor.execute("PRAGMA synchronous=NORMAL")
+    cursor.close()
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
