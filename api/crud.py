@@ -19,7 +19,7 @@ def get_pacientes(db: Session):
 def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
         data = filiacion.model_dump()
-        # Mapeo manual estricto para evitar error 400 por campos extraños del HTML
+        # Mapeo manual para asegurar compatibilidad total con el HTML de P1 enviado
         db_filiacion = models.DeclaracionJurada(
             paciente_id=data.get("paciente_id"),
             edad=str(data.get("edad") or ""),
@@ -41,8 +41,7 @@ def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
         return db_filiacion
     except Exception as e:
         db.rollback()
-        # Retorna el error exacto para que el frontend sepa qué columna falló
-        raise HTTPException(status_code=400, detail=f"Error en Base de Datos: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     try:
