@@ -22,6 +22,10 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+def health():
+    return {"status": "ok"}
+
 @app.post("/pacientes/")
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     return crud.create_paciente(db=db, paciente=paciente)
