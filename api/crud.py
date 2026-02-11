@@ -4,7 +4,8 @@ from fastapi import HTTPException
 
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
     try:
-        db_paciente = models.Paciente(**paciente.model_dump(exclude_unset=True))
+        # Convierte lo que sea que llegue en un diccionario y lo guarda
+        db_paciente = models.Paciente(**paciente.model_dump())
         db.add(db_paciente)
         db.commit()
         db.refresh(db_paciente)
@@ -15,7 +16,8 @@ def create_paciente(db: Session, paciente: schemas.PacienteCreate):
 
 def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
-        db_filiacion = models.DeclaracionJurada(**filiacion.model_dump(exclude_unset=True))
+        # Forzamos el guardado de los datos que vienen del formulario
+        db_filiacion = models.DeclaracionJurada(**filiacion.model_dump())
         db.add(db_filiacion)
         db.commit()
         db.refresh(db_filiacion)
