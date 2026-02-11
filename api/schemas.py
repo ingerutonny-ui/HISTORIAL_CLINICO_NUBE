@@ -1,26 +1,18 @@
 from pydantic import BaseModel, ConfigDict
 from typing import Optional, Any
 
-class PacienteBase(BaseModel):
+class PacienteCreate(BaseModel):
     nombre: str
     apellido: str
     ci: str
     codigo_paciente: str
     model_config = ConfigDict(extra='allow')
 
-class PacienteCreate(PacienteBase):
-    pass
-
-class Paciente(PacienteBase):
-    id: int
-    model_config = ConfigDict(from_attributes=True, extra='allow')
-
 class FiliacionCreate(BaseModel):
     paciente_id: int
     edad: Optional[Any] = None
     sexo: Optional[Any] = None
     fecha_nacimiento: Optional[Any] = None
-    fecha_nac: Optional[Any] = None  # Compatible con tu JS
     lugar_nacimiento: Optional[Any] = None
     domicilio: Optional[Any] = None
     n_casa: Optional[Any] = None
@@ -72,5 +64,5 @@ class HabitosP3Create(BaseModel):
     grupo_sanguineo: Optional[Any] = ""
     historia_laboral: Optional[Any] = "[]"
     riesgos_expuestos: Optional[Any] = "[]"
-    observaciones: Optional[Any] = ""
+    observaciones: Optional[Any] = "SIN OBSERVACIONES"
     model_config = ConfigDict(extra='allow')
