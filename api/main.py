@@ -1,11 +1,13 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import crud, models, schemas
 from .database import SessionLocal, engine
 
+# Crea las tablas automáticamente en PostgreSQL
 models.Base.metadata.create_all(bind=engine)
-app = FastAPI()
+
+app = FastAPI(title="HISTORIAL CLINICO NUBE API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,22 +24,14 @@ def get_db():
     finally:
         db.close()
 
-@app.post("/pacientes/", response_model=schemas.PacienteCreate)
+@app.get("/")
+def home():
+    return {"status": "online", "message": "API de Historial Clínico funcionando"}
+
+@app.post("/pacientes/")
 def create_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
     return crud.create_paciente(db=db, paciente=paciente)
-
-@app.get("/pacientes/")
-def read_pacientes(db: Session = Depends(get_db)):
-    return crud.get_pacientes(db)
 
 @app.post("/filiacion/")
 def create_filiacion(filiacion: schemas.FiliacionCreate, db: Session = Depends(get_db)):
     return crud.create_filiacion(db=db, filiacion=filiacion)
-
-@app.post("/antecedentes/")
-def create_antecedentes(antecedentes: schemas.AntecedentesCreate, db: Session = Depends(get_db)):
-    return crud.create_antecedentes(db=db, antecedentes=antecedentes)
-
-@app.post("/habitos/")
-def create_habitos(habitos: schemas.HabitosP3Create, db: Session = Depends(get_db)):
-    return crud.create_habitos(db=db, habitos=habitos)
