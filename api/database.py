@@ -3,17 +3,11 @@ from sqlalchemy import create_engine, event
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Ruta absoluta al DISK de Render
 SQLALCHEMY_DATABASE_URL = "sqlite:////data/historial.db"
-
-# Si la carpeta /data no existe (entorno local), usa una local
 if not os.path.exists("/data"):
     SQLALCHEMY_DATABASE_URL = "sqlite:///./historial.db"
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False, "timeout": 30}
-)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False, "timeout": 30})
 
 @event.listens_for(engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
