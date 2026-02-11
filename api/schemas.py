@@ -20,6 +20,7 @@ class FiliacionCreate(BaseModel):
     edad: Optional[Any] = None
     sexo: Optional[Any] = None
     fecha_nacimiento: Optional[Any] = None
+    fecha_nac: Optional[Any] = None  # Compatible con tu JS
     lugar_nacimiento: Optional[Any] = None
     domicilio: Optional[Any] = None
     n_casa: Optional[Any] = None
