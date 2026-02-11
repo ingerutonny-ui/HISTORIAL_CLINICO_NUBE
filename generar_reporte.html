@@ -2,166 +2,113 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>VISTA PREVIA - DECLARACIÓN JURADA</title>
+    <title>SISTEMA MÉDICO | PREVIEW</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #525659; font-family: Arial, sans-serif; padding: 20px; }
-        .controles { width: 210mm; margin: 0 auto 10px auto; display: flex; justify-content: space-between; }
+        body { background-color: #323639; padding: 30px; font-family: Arial, sans-serif; }
+        .toolbar { width: 210mm; margin: 0 auto 15px auto; display: flex; justify-content: space-between; }
         #hoja-pdf { 
-            width: 210mm; 
-            min-height: 297mm; 
-            padding: 15mm; 
-            margin: auto; 
-            background: white; 
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            width: 210mm; min-height: 297mm; padding: 12mm; 
+            margin: auto; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
         }
-        .tabla-oficial { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
-        .tabla-oficial th, .tabla-oficial td { border: 1.5px solid #000; padding: 3px 6px; font-size: 9pt; vertical-align: top; }
+        .tabla-oficial { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+        .tabla-oficial td { border: 1.5px solid #000; padding: 2px 6px; font-size: 9pt; vertical-align: top; }
         .bg-gris { background-color: #d9e1f2 !important; font-weight: bold; text-transform: uppercase; }
-        .label-sm { font-size: 7pt; font-weight: bold; display: block; color: #333; }
-        .dato-v { font-size: 10pt; font-weight: normal; color: #000; display: block; min-height: 14px; }
-        .titulo-dj { text-align: center; font-weight: bold; text-decoration: underline; margin: 10px 0; }
-        .btn-print { background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .btn-back { background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; text-decoration: none; }
+        .label-sm { font-size: 7.5pt; font-weight: bold; display: block; color: #000; }
+        .dato-v { font-size: 10pt; color: #000; display: block; min-height: 15px; }
+        .header-box { border: 1.5px solid #000; padding: 10px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="controles">
-        <a href="visor_historial.html" class="btn-back">← VOLVER ATRÁS</a>
-        <button onclick="imprimirPDF()" class="btn-print">📥 DESCARGAR / IMPRIMIR PDF</button>
-    </div>
+<div class="toolbar">
+    <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger px-4">SALIR</button>
+    <button onclick="descargarAhora()" class="btn btn-success px-4 fw-bold">DESCARGAR DJ EN PDF</button>
+</div>
 
-    <div id="hoja-pdf">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <div style="border: 1px solid #ccc; padding: 10px; font-size: 8pt;">TU LOGO AQUÍ</div>
-            <div class="text-center">
-                <h5 class="m-0 fw-bold">PROYECTO EN LA NUBE</h5>
-                <p class="m-0 small">HISTORIAL CLÍNICO DIGITAL</p>
-            </div>
-            <div class="text-end small">
-                ID: <b id="pdf-id"></b><br>
-                Fecha: <span id="pdf-fecha"></span>
-            </div>
+<div id="hoja-pdf">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <div style="width: 80px; border: 1px solid #000; height: 60px; text-align:center; font-size:7pt;">LOGO</div>
+        <div class="text-center">
+            <h5 class="fw-bold m-0">PROYECTO EN LA NUBE</h5>
+            <p class="small m-0">HISTORIAL CLÍNICO DIGITAL</p>
         </div>
-
-        <div class="titulo-dj">DECLARACIÓN JURADA DE SALUD (P1-P2-P3)</div>
-
-        <table class="tabla-oficial">
-            <tr><td colspan="10" class="bg-gris">I. AFILIACION DEL TRABAJADOR</td></tr>
-            <tr>
-                <td colspan="5"><span class="label-sm">APELLIDOS Y NOMBRES</span><span class="dato-v" id="v-nombre"></span></td>
-                <td colspan="5"><span class="label-sm">EMPRESA</span><span class="dato-v" id="v-empresa"></span></td>
-            </tr>
-            <tr>
-                <td colspan="2"><span class="label-sm">EDAD</span><span class="dato-v" id="v-edad"></span></td>
-                <td colspan="1" class="bg-gris text-center" style="font-size: 7pt;">SEXO</td>
-                <td colspan="1" class="text-center"><span class="label-sm">M</span><span id="v-sex-m"></span></td>
-                <td colspan="1" class="text-center"><span class="label-sm">F</span><span id="v-sex-f"></span></td>
-                <td colspan="5"><span class="label-sm">DOCUMENTO DE IDENTIDAD</span><span class="dato-v" id="v-ci"></span></td>
-            </tr>
-            <tr>
-                <td colspan="3"><span class="label-sm">FECHA DE NACIMIENTO</span><span class="dato-v" id="v-fnac"></span></td>
-                <td colspan="7"><span class="label-sm">LUGAR DE NACIMIENTO</span><span class="dato-v" id="v-lugar"></span></td>
-            </tr>
-            <tr>
-                <td colspan="5"><span class="label-sm">DOMICILIO (AV./CALLE)</span><span class="dato-v" id="v-dom"></span></td>
-                <td colspan="2"><span class="label-sm">NÚMERO</span><span class="dato-v" id="v-num"></span></td>
-                <td colspan="3"><span class="label-sm">BARRIO</span><span class="dato-v" id="v-barrio"></span></td>
-            </tr>
-            <tr>
-                <td colspan="4"><span class="label-sm">CIUDAD / PAÍS</span><span class="dato-v" id="v-ciudad"></span></td>
-                <td colspan="3"><span class="label-sm">TELÉFONO</span><span class="dato-v" id="v-tel"></span></td>
-                <td colspan="3"><span class="label-sm">ESTADO CIVIL</span><span class="dato-v" id="v-ec"></span></td>
-            </tr>
-        </table>
-
-        <table class="tabla-oficial">
-            <tr><td colspan="4" class="bg-gris">II. ANTECEDENTES PATOLÓGICOS</td></tr>
-            <tbody id="grid-p2"></tbody>
-        </table>
-
-        <table class="tabla-oficial">
-            <tr><td colspan="4" class="bg-gris">III. HÁBITOS Y RIESGOS</td></tr>
-            <tbody id="grid-p3"></tbody>
-        </table>
-
-        <div class="row mt-5 text-center">
-            <div class="col-6">
-                <div style="border-top: 1px solid #000; width: 200px; margin: 50px auto 5px auto;"></div>
-                <span class="label-sm">FIRMA DEL TRABAJADOR</span>
-                <b id="f-nom"></b>
-            </div>
-            <div class="col-6">
-                <div style="border-top: 1px solid #000; width: 200px; margin: 50px auto 5px auto;"></div>
-                <span class="label-sm">MÉDICO EVALUADOR</span>
-            </div>
+        <div class="text-end" style="font-size: 8pt;">
+            FECHA: <span id="pdf-fecha"></span><br>
+            ID: <b id="pdf-id"></b>
         </div>
     </div>
+
+    <table class="tabla-oficial">
+        <tr><td colspan="10" class="bg-gris">AFILIACION DEL TRABAJADOR</td></tr>
+        <tr>
+            <td colspan="3"><span class="label-sm">APELLIDOS Y NOMBRES</span><span class="dato-v" id="nombre"></span></td>
+            <td colspan="7"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">EDAD</span><span class="dato-v" id="edad"></span></td>
+            <td colspan="1" class="bg-gris text-center">SEXO</td>
+            <td colspan="2" class="text-center"><span class="label-sm">MASCULINO</span><span id="sex-m"></span></td>
+            <td colspan="5" class="text-center"><span class="label-sm">FEMENINO</span><span id="sex-f"></span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">FECHA DE NACIMIENTO</span><span class="dato-v" id="fecha_nacimiento"></span></td>
+            <td colspan="1" class="text-center"><span class="label-sm">DÍA</span><span id="f-dia"></span></td>
+            <td colspan="1" class="text-center"><span class="label-sm">MES</span><span id="f-mes"></span></td>
+            <td colspan="1" class="text-center"><span class="label-sm">AÑO</span><span id="f-anio"></span></td>
+            <td colspan="5"><span class="label-sm">LUGAR:</span><span class="dato-v" id="lugar_nacimiento"></span></td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="label-sm">DOCUMENTO DE IDENTIDAD</span><span class="dato-v" id="ci"></span></td>
+            <td colspan="7"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">DOMICILIO:</span></td>
+            <td colspan="3"><span class="label-sm">AV./CALLE</span><span class="dato-v" id="direccion"></span></td>
+            <td colspan="5"><span class="label-sm">NUMERO</span><span class="dato-v">---</span></td>
+        </tr>
+    </table>
+
+    <table class="tabla-oficial">
+        <tr><td colspan="4" class="bg-gris">II. ANTECEDENTES PATOLÓGICOS (P2)</td></tr>
+        <tbody id="grid-p2"></tbody>
+    </table>
+
+    <table class="tabla-oficial">
+        <tr><td colspan="4" class="bg-gris">III. HÁBITOS Y RIESGOS (P3)</td></tr>
+        <tbody id="grid-p3"></tbody>
+    </table>
+</div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
-    async function cargarDatos() {
-        if(!p_id) return;
-        try {
-            const res = await fetch(`${API}/pacientes/`);
-            const lista = await res.json();
-            const p = lista.find(item => item.id == p_id);
-
-            if(p) {
-                // Sincronizar P1 (Asegúrate que los nombres coincidan con tu DB)
-                document.getElementById('pdf-id').innerText = p.codigo_paciente || '---';
-                document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString();
-                document.getElementById('v-nombre').innerText = p.nombre || '---';
-                document.getElementById('v-empresa').innerText = p.empresa || '---';
-                document.getElementById('v-edad').innerText = (p.edad || '---') + " Años";
-                document.getElementById('v-ci').innerText = p.ci || '---';
-                document.getElementById('v-fnac').innerText = p.fecha_nacimiento || '---';
-                document.getElementById('v-dom').innerText = p.direccion || '---';
-                document.getElementById('v-tel').innerText = p.telefono || '---';
-                document.getElementById('v-ec').innerText = p.estado_civil || '---';
-                document.getElementById('v-sex-m').innerText = p.genero === 'MASCULINO' ? ' [ X ] ' : ' [   ] ';
-                document.getElementById('v-sex-f').innerText = p.genero === 'FEMENINO' ? ' [ X ] ' : ' [   ] ';
-                document.getElementById('f-nom').innerText = p.nombre || '';
-
-                // Sincronizar P2 (Antecedentes - 22 campos)
-                const p2Keys = [
-                    ['ALERGIAS', p.alergias], ['DIABETES', p.diabetes], ['ASMA', p.asma], ['HIPERTENSIÓN', p.hipertension],
-                    ['CIRUGÍAS', p.cirugias], ['TRAUMATISMOS', p.traumatismos], ['EPILEPSIA', p.epilepsia], ['GASTRITIS', p.gastritis],
-                    ['CORAZÓN', p.corazon], ['RIÑONES', p.rinones], ['VARICES', p.varices], ['HOSPITALIZACIÓN', p.hospitalizaciones]
-                ];
-                let htmlP2 = "";
-                for(let i=0; i<p2Keys.length; i+=2){
-                    htmlP2 += `<tr>
-                        <td class="bg-gris" style="width:25%">${p2Keys[i][0]}</td><td style="width:25%">${p2Keys[i][1] || 'NO'}</td>
-                        <td class="bg-gris" style="width:25%">${p2Keys[i+1][0]}</td><td style="width:25%">${p2Keys[i+1][1] || 'NO'}</td>
-                    </tr>`;
-                }
-                document.getElementById('grid-p2').innerHTML = htmlP2;
-
-                // Sincronizar P3 (Hábitos)
-                const p3Keys = [['FUMA', p.fuma], ['ALCOHOL', p.alcohol], ['DROGAS', p.drogas], ['DEPORTES', p.deportes], ['GRUPO SANG.', p.grupo_sanguineo]];
-                document.getElementById('grid-p3').innerHTML = p3Keys.map(k => `<tr><td class="bg-gris">${k[0]}</td><td colspan="3">${k[1] || '---'}</td></tr>`).join('');
-            }
-        } catch(e) { console.error("Error cargando:", e); }
+    async function cargarData() {
+        const res = await fetch(`${API}/pacientes/`);
+        const lista = await res.json();
+        const p = lista.find(i => i.id == p_id);
+        if(p) {
+            document.getElementById('pdf-id').innerText = p.id;
+            document.getElementById('pdf-fecha').innerText = new Date().toLocaleDateString();
+            document.getElementById('nombre').innerText = p.nombre || '';
+            document.getElementById('ci').innerText = p.ci || '';
+            document.getElementById('edad').innerText = p.edad || '';
+            document.getElementById('sex-m').innerText = p.genero === 'MASCULINO' ? 'X' : '';
+            document.getElementById('sex-f').innerText = p.genero === 'FEMENINO' ? 'X' : '';
+            
+            // Llenado de P2 y P3 dinámico...
+            const p2Campos = [['ALERGIAS', p.alergias], ['DIABETES', p.diabetes], ['ASMA', p.asma], ['HIPERTENSION', p.hipertension]];
+            document.getElementById('grid-p2').innerHTML = p2Campos.map(c => `<tr><td class="bg-gris" style="width:25%">${c[0]}</td><td style="width:75%">${c[1] || 'NO'}</td></tr>`).join('');
+        }
     }
 
-    function imprimirPDF() {
-        const elemento = document.getElementById('hoja-pdf');
-        const opt = {
-            margin: 0,
-            filename: `DJ_${document.getElementById('v-nombre').innerText}.pdf`,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(elemento).save();
+    function descargarAhora() {
+        const element = document.getElementById('hoja-pdf');
+        html2pdf().set({ margin: 0, filename: 'DJ_Final.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } }).from(element).save();
     }
-
-    window.onload = cargarDatos;
+    window.onload = cargarData;
 </script>
 </body>
 </html>
