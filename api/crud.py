@@ -1,27 +1,41 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
-from fastapi import HTTPException
+from . import models
 
-def create_paciente(db: Session, paciente: schemas.PacienteCreate):
-    try:
-        # Convierte lo que sea que llegue en un diccionario y lo guarda
-        db_paciente = models.Paciente(**paciente.model_dump())
-        db.add(db_paciente)
-        db.commit()
-        db.refresh(db_paciente)
-        return db_paciente
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+def get_paciente_by_ci(db: Session, ci: str):
+    return db.query(models.Paciente).filter(models.Paciente.ci == ci).first()
 
-def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
-    try:
-        # Forzamos el guardado de los datos que vienen del formulario
-        db_filiacion = models.DeclaracionJurada(**filiacion.model_dump())
-        db.add(db_filiacion)
+def create_paciente(db: Session, data: dict):
+    db_obj = models.Paciente(**data)
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+def upsert_filiacion(db: Session, data: dict):
+    p_id = data.get("paciente_id")
+    existente = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == p_id).first()
+    if existente:
+        for key, value in data.items():
+            setattr(existente, key, value)
         db.commit()
-        db.refresh(db_filiacion)
-        return db_filiacion
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
+        db.refresh(existente)
+        return existente
+    db_obj = models.DeclaracionJurada(**data)
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+def create_p2(db: Session, data: dict):
+    db_obj = models.AntecedentesP2(**data)
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+def create_p3(db: Session, data: dict):
+    db_obj = models.HabitosRiesgosP3(**data)
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
