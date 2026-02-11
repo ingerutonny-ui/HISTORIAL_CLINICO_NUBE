@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, ForeignKey
 from .database import Base
 
 class Paciente(Base):
@@ -13,7 +13,7 @@ class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_p1"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id"))
-    edad = Column(String)
+    edad = Column(Integer)
     sexo = Column(String)
     fecha_nacimiento = Column(String)
     lugar_nacimiento = Column(String)
