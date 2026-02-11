@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
-database.Base.metadata.create_all(bind=database.engine)
+# Sincronización estructural: Borra tablas viejas y crea las nuevas con todas las columnas
+models.Base.metadata.drop_all(bind=database.engine)
+models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
