@@ -4,7 +4,8 @@ from fastapi import HTTPException
 
 def create_paciente(db: Session, paciente: schemas.PacienteCreate):
     try:
-        db_paciente = models.Paciente(**paciente.model_dump())
+        data = paciente.model_dump()
+        db_paciente = models.Paciente(**data)
         db.add(db_paciente)
         db.commit()
         db.refresh(db_paciente)
@@ -18,38 +19,31 @@ def get_pacientes(db: Session):
 
 def create_filiacion(db: Session, filiacion: schemas.FiliacionCreate):
     try:
-        data = filiacion.model_dump()
-        # Mapeo manual blindado: convierte cada valor a string para evitar errores 400
-        db_filiacion = models.DeclaracionJurada(
-            paciente_id=int(data.get("paciente_id")),
-            edad=str(data.get("edad") or ""),
-            sexo=str(data.get("sexo") or ""),
-            fecha_nacimiento=str(data.get("fecha_nacimiento") or ""),
-            lugar_nacimiento=str(data.get("lugar_nacimiento") or ""),
-            domicilio=str(data.get("domicilio") or ""),
-            n_casa=str(data.get("n_casa") or ""),
-            zona_barrio=str(data.get("zona_barrio") or ""),
-            ciudad=str(data.get("ciudad") or ""),
-            pais=str(data.get("pais") or ""),
-            telefono=str(data.get("telefono") or ""),
-            estado_civil=str(data.get("estado_civil") or ""),
-            profesion_oficio=str(data.get("profesion_oficio") or "")
-        )
+        raw_data = filiacion.model_dump()
+        columnas = {c.name for c in models.DeclaracionJurada.__table__.columns}
+        
+        # Mapeo dinámico: solo guarda lo que existe en la tabla y lo convierte a string
+        final_data = {}
+        for k, v in raw_data.items():
+            if k in columnas:
+                if k == "paciente_id":
+                    final_data[k] = int(v)
+                else:
+                    final_data[k] = str(v) if v is not None else ""
+
+        db_filiacion = models.DeclaracionJurada(**final_data)
         db.add(db_filiacion)
         db.commit()
         db.refresh(db_filiacion)
         return db_filiacion
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail=f"Error Crítico: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error Crítico BD: {str(e)}")
 
 def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
     try:
-        data = antecedentes.model_dump()
-        columnas = {c.name for c in models.AntecedentesP2.__table__.columns}
-        db_ant = models.AntecedentesP2(**{
-            k: str(v) for k, v in data.items() if k in columnas
-        })
+        raw_data = antecedentes.model_dump()
+        db_ant = models.AntecedentesP2(paciente_id=int(raw_data.get("paciente_id")))
         db.add(db_ant)
         db.commit()
         db.refresh(db_ant)
@@ -60,11 +54,8 @@ def create_antecedentes(db: Session, antecedentes: schemas.AntecedentesCreate):
 
 def create_habitos(db: Session, habitos: schemas.HabitosP3Create):
     try:
-        data = habitos.model_dump()
-        columnas = {c.name for c in models.HabitosRiesgosP3.__table__.columns}
-        db_hab = models.HabitosRiesgosP3(**{
-            k: str(v) for k, v in data.items() if k in columnas
-        })
+        raw_data = habitos.model_dump()
+        db_hab = models.HabitosRiesgosP3(paciente_id=int(raw_data.get("paciente_id")))
         db.add(db_hab)
         db.commit()
         db.refresh(db_hab)
