@@ -38,7 +38,10 @@
         <div class="col-md-3"><label class="label-custom">Edad</label><input type="number" id="edad" class="form-control" required></div>
         <div class="col-md-3">
             <label class="label-custom">Sexo</label>
-            <select id="sexo" class="form-select"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select>
+            <select id="sexo" class="form-select">
+                <option value="MASCULINO">MASCULINO</option>
+                <option value="FEMENINO">FEMENINO</option>
+            </select>
         </div>
         <div class="col-md-3"><label class="label-custom">Fecha Nacimiento</label><input type="date" id="fecha_nac" class="form-control" required></div>
         <div class="col-md-3"><label class="label-custom">Lugar Nacimiento</label><input type="text" id="lugar_nac" class="form-control" oninput="this.value=this.value.toUpperCase()"></div>
@@ -73,7 +76,6 @@
         const nom = localStorage.getItem('p_nom');
         if (!nom) { 
             alert("No hay datos de registro."); 
-            window.location.href="buscador_codigo.html"; 
             return; 
         }
         document.getElementById('p_nombre').innerText = nom;
@@ -84,12 +86,11 @@
     document.getElementById('formP1').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnNext');
-        btn.innerText = "PROCESANDO..."; 
-        btn.disabled = true;
+        btn.innerText = "PROCESANDO..."; btn.disabled = true;
 
         const data = {
             paciente_id: parseInt(localStorage.getItem('p_id')),
-            edad: parseInt(document.getElementById('edad').value),
+            edad: document.getElementById('edad').value,
             sexo: document.getElementById('sexo').value,
             fecha_nacimiento: document.getElementById('fecha_nac').value,
             lugar_nacimiento: document.getElementById('lugar_nac').value,
@@ -112,9 +113,8 @@
             if(r.ok) {
                 window.location.href = "declaracion_jurada_p2.html";
             } else {
-                const err = await r.json();
-                console.log(err);
-                alert("Error al guardar filiación.");
+                const resErr = await r.json();
+                alert("Error: " + (resErr.detail || "Error al guardar"));
             }
         } catch(e) { 
             alert("Error de conexión."); 
