@@ -3,7 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database
 
+# Crear tablas e iniciar conexión al DISK
 database.Base.metadata.create_all(bind=database.engine)
+
 app = FastAPI()
 
 app.add_middleware(
@@ -21,9 +23,17 @@ def get_db():
     finally:
         db.close()
 
+# RUTA PARA EL BOTÓN "CONSULTAR BASE DE DATOS"
+@app.get("/pacientes/")
+def get_all_pacientes(db: Session = Depends(get_db)):
+    try:
+        return db.query(models.Paciente).all()
+    except Exception as e:
+        return {"error": str(e)}
+
 @app.get("/")
 def root():
-    return {"status": "ok", "project": "HISTORIAL_CLINICO_NUBE", "storage": "DISK"}
+    return {"status": "ok", "storage": "DISK", "database": "connected"}
 
 @app.post("/pacientes/")
 async def create_paciente(request: Request, db: Session = Depends(get_db)):
@@ -37,9 +47,6 @@ async def create_paciente(request: Request, db: Session = Depends(get_db)):
 @app.post("/filiacion/")
 async def create_filiacion(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
-    # Limpiamos el ID si viene como string vacío para evitar error de entero
-    if "paciente_id" in data and not data["paciente_id"]:
-        data.pop("paciente_id")
     db_filiacion = models.DeclaracionJurada(**data)
     db.add(db_filiacion)
     db.commit()
