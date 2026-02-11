@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>REPORTE MÉDICO COMPLETO</title>
+    <title>REPORTE MÉDICO COMPLETO - PROYECTO NUBE</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -12,7 +12,7 @@
             width: 210mm; min-height: 297mm; padding: 10mm; 
             margin: auto; background: white; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
         }
-        .tabla-oficial { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 0px; }
+        .tabla-oficial { width: 100%; border-collapse: collapse; table-layout: fixed; }
         .tabla-oficial td { border: 1px solid #000; padding: 3px 5px; font-size: 8pt; vertical-align: top; }
         .bg-titulo { background-color: #d9e1f2 !important; font-weight: bold; text-transform: uppercase; }
         .label-sm { font-size: 7pt; font-weight: bold; display: block; }
@@ -88,14 +88,14 @@
             const p = lista.find(i => i.id == p_id || i.codigo_paciente == p_id);
 
             if(p) {
-                // CORRECCIÓN DE NOMBRES SEGÚN CONSOLA
-                const nombreCompleto = `${p.apellido || ''} ${p.nombre || ''}`.trim();
-                document.getElementById('full_nombre').innerText = nombreCompleto;
-                document.getElementById('nom-firma').innerText = nombreCompleto;
+                // 1. MAPEADO DE AFILIACIÓN (P1)
+                const nombreFull = `${p.apellido || ''} ${p.nombre || ''}`.trim();
+                document.getElementById('full_nombre').innerText = nombreFull;
+                document.getElementById('nom-firma').innerText = nombreFull;
                 
-                document.getElementById('ci').innerText = p.ci || '---';
-                document.getElementById('edad').innerText = p.edad ? p.edad + " AÑOS" : '---';
                 document.getElementById('empresa').innerText = p.empresa || '---';
+                document.getElementById('edad').innerText = p.edad ? p.edad + " AÑOS" : '---';
+                document.getElementById('ci').innerText = p.ci || '---';
                 document.getElementById('fecha_nacimiento').innerText = p.fecha_nacimiento || '---';
                 document.getElementById('lugar_nacimiento').innerText = p.lugar_nacimiento || '---';
                 document.getElementById('estado_civil').innerText = p.estado_civil || '---';
@@ -111,7 +111,7 @@
                 document.getElementById('sex-m').innerText = g.includes('M') ? '[ X ]' : '[   ]';
                 document.getElementById('sex-f').innerText = g.includes('F') ? '[ X ]' : '[   ]';
 
-                // Fecha
+                // Desglose de fecha
                 if(p.fecha_nacimiento && p.fecha_nacimiento.includes('-')) {
                     const f = p.fecha_nacimiento.split('-');
                     document.getElementById('f-anio').innerText = f[0];
@@ -119,32 +119,42 @@
                     document.getElementById('f-dia').innerText = f[2];
                 }
 
-                // P2 y P3 (Campos automáticos)
-                const p2Keys = [
-                    ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias], ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
-                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia], ['GASTRITIS', p.gastritis], ['CORAZON', p.corazon],
-                    ['RIÑONES', p.rinones], ['VARICES', p.varices], ['TBC', p.tbc], ['CHAGAS', p.chagas],
-                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIONES', p.hospitalizaciones], ['MEDICAMENTOS', p.medicamentos], ['VACUNAS', p.vacunas],
-                    ['ENF. INFANCIA', p.enf_infancia], ['VISION', p.vision], ['AUDICION', p.audicion], ['F. RESPIRATORIA', p.f_respiratoria]
+                // 2. MAPEADO DE ANTECEDENTES (P2)
+                const p2 = [
+                    ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias], 
+                    ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
+                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia], 
+                    ['GASTRITIS', p.gastritis], ['CORAZON', p.corazon],
+                    ['RIÑONES', p.rinones], ['VARICES', p.varices], 
+                    ['TBC', p.tbc], ['CHAGAS', p.chagas],
+                    ['TRAUMATISMOS', p.traumatismos], ['HOSPITALIZACIONES', p.hospitalizaciones], 
+                    ['MEDICAMENTOS', p.medicamentos], ['VACUNAS', p.vacunas],
+                    ['ENF. INFANCIA', p.enf_infancia], ['VISION', p.vision], 
+                    ['AUDICION', p.audicion], ['F. RESPIRATORIA', p.f_respiratoria]
                 ];
-                let h2 = "";
-                for(let i=0; i<p2Keys.length; i+=2) {
-                    h2 += `<tr>
-                        <td class="bg-titulo" style="width:20%">${p2Keys[i][0]}</td><td style="width:30%">${p2Keys[i][1] || 'NO'}</td>
-                        <td class="bg-titulo" style="width:20%">${p2Keys[i+1][0]}</td><td style="width:30%">${p2Keys[i+1][1] || 'NO'}</td>
+                let htmlP2 = "";
+                for(let i=0; i<p2.length; i+=2) {
+                    htmlP2 += `<tr>
+                        <td class="bg-titulo" style="width:20%">${p2[i][0]}</td><td style="width:30%">${p2[i][1] || 'NO'}</td>
+                        <td class="bg-titulo" style="width:20%">${p2[i+1][0]}</td><td style="width:30%">${p2[i+1][1] || 'NO'}</td>
                     </tr>`;
                 }
-                document.getElementById('grid-p2').innerHTML = h2;
+                document.getElementById('grid-p2').innerHTML = htmlP2;
 
-                const p3Keys = [['FUMA', p.fuma], ['ALCOHOL', p.alcohol], ['DROGAS', p.drogas], ['DEPORTES', p.deportes], ['GRUPO SANGUINEO', p.grupo_sanguineo]];
-                document.getElementById('grid-p3').innerHTML = p3Keys.map(k => `<tr><td class="bg-titulo" style="width:40%">${k[0]}</td><td style="width:60%">${k[1] || '---'}</td></tr>`).join('');
+                // 3. MAPEADO DE HÁBITOS (P3)
+                const p3 = [
+                    ['FUMA', p.fuma], ['ALCOHOL', p.alcohol], 
+                    ['DROGAS', p.drogas], ['DEPORTES', p.deportes], 
+                    ['GRUPO SANGUINEO', p.grupo_sanguineo]
+                ];
+                document.getElementById('grid-p3').innerHTML = p3.map(k => `<tr><td class="bg-titulo" style="width:40%">${k[0]}</td><td style="width:60%">${k[1] || '---'}</td></tr>`).join('');
             }
-        } catch(e) { console.error(e); }
+        } catch(e) { console.error("Error en mapeo:", e); }
     }
 
     function descargarPDF() {
         const element = document.getElementById('hoja-pdf');
-        html2pdf().set({ margin:0, filename:'Reporte.pdf', html2canvas:{scale:3}, jsPDF:{unit:'mm', format:'a4'} }).from(element).save();
+        html2pdf().set({ margin:0, filename:'Reporte_Final.pdf', html2canvas:{scale:3}, jsPDF:{unit:'mm', format:'a4'} }).from(element).save();
     }
     window.onload = cargarData;
 </script>
