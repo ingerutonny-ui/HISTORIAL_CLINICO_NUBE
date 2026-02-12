@@ -82,9 +82,10 @@
         }
 
         try {
-            // URL LIMPIA: Sin barra final para evitar el 404 en Render
-            const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}`);
-            if (!res.ok) throw new Error("Paciente no encontrado en el servidor");
+            // SOLUCIÓN: Agregamos la barra diagonal final '/' después del ID
+            const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}/`);
+            
+            if (!res.ok) throw new Error("Paciente no encontrado");
 
             const p = await res.json();
             
@@ -106,7 +107,7 @@
             document.getElementById('p_profesion').innerText = p.profesion_oficio || '---';
 
         } catch (e) {
-            console.error(e);
+            console.error("Error cargando reporte:", e);
             document.getElementById('p_full_name').innerText = "ERROR DE CONEXIÓN";
         }
     }
@@ -115,7 +116,7 @@
         const element = document.getElementById('area-reporte');
         html2pdf().set({
             margin: 0,
-            filename: 'Reporte_Oficial_P1.pdf',
+            filename: 'Reporte_Final_P1.pdf',
             html2canvas: { scale: 3 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save();
