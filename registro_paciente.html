@@ -15,16 +15,15 @@
             justify-content: center; 
             min-height: 100vh; 
             margin: 0; 
-            padding: 30px; /* Espacio para que no pegue a los bordes en celular */
+            padding: 15px; 
         }
         
         .nav-top { margin-bottom: 20px; width: 100%; text-align: center; }
         .nav-link-main { text-decoration: none; color: #64748b; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* AJUSTE INGE: Ancho dinámico para Mobile y PC */
         .card-main { 
             width: 100%; 
-            max-width: 550px; /* Un poco más ancho para mejor lectura */
+            max-width: 550px; 
             background: white; 
             padding: 35px 25px; 
             border-radius: 25px; 
@@ -34,24 +33,30 @@
 
         .label-custom { font-size: 12px; font-weight: 800; color: #334155; text-transform: uppercase; margin-bottom: 10px; display: block; text-align: left; padding-left: 5px; }
 
-        /* AJUSTE INGE: Inputs más grandes para dedos en móvil */
         .form-control { 
             border-radius: 15px; 
             padding: 18px; 
             background: #f8fafc; 
             border: 2px solid #e2e8f0; 
-            font-size: 18px; /* Texto más grande */
+            font-size: 18px; 
             text-transform: uppercase; 
             font-weight: 600; 
             margin-bottom: 20px; 
             transition: 0.3s;
         }
+
+        /* AJUSTE INGE: EFECTO FANTASMA (PLACEHOLDER TRANSPARENTE) */
+        .form-control::placeholder {
+            color: rgba(100, 116, 139, 0.35); /* Color gris con 35% de opacidad */
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
         .form-control:focus { border-color: #22c55e; box-shadow: none; background: white; }
 
         .code-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 20px; padding: 25px; margin: 20px 0; }
         .code-val { font-size: 35px; font-weight: 900; color: #1e293b; letter-spacing: 3px; }
 
-        /* AJUSTE INGE: Botón dominante */
         .btn-ohs { 
             background-color: #22c55e; 
             border: none; 
@@ -71,7 +76,6 @@
         
         .list-container { margin-top: 20px; text-align: left; max-height: 250px; overflow-y: auto; display: none; border-radius: 15px; padding: 15px; background: #fff; border: 1px solid #eee; }
 
-        /* Media Query para pantallas pequeñas */
         @media (max-width: 480px) {
             .card-main { padding: 25px 15px; border-radius: 20px; }
             .code-val { font-size: 28px; }
