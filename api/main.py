@@ -3,12 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
-# Solo crea tablas si NO existen.
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
-# Configuración de CORS Totalmente Abierta (Indispensable para GitHub Pages)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,8 +26,7 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
-# --- RUTAS DE PACIENTES (RESTABLECIDAS) ---
-
+# --- RUTAS DE PACIENTES ---
 @app.get("/pacientes/")
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
@@ -50,35 +47,23 @@ async def save_paciente(request: Request, db: Session = Depends(get_db)):
         paciente = crud.create_paciente(db, data)
     return paciente
 
-# --- RUTAS DE SECCIONES (P1, P2, P3) ---
-
+# --- RUTAS DE SECCIONES SEPARADAS ---
 @app.get("/filiacion/{paciente_id}")
-def get_filiacion_by_paciente(paciente_id: int, db: Session = Depends(get_db)):
-    filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
-    if not filiacion:
-        return {}
-    return filiacion
+def get_filiacion(paciente_id: int, db: Session = Depends(get_db)):
+    f = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
+    return f if f else {}
 
 @app.post("/filiacion/")
 async def save_filiacion(request: Request, db: Session = Depends(get_db)):
-    try:
-        data = await request.json()
-        return crud.upsert_filiacion(db, data)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    data = await request.json()
+    return crud.upsert_filiacion(db, data)
 
 @app.post("/declaraciones/p2/")
 async def save_p2(request: Request, db: Session = Depends(get_db)):
-    try:
-        data = await request.json()
-        return crud.create_p2(db, data)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    data = await request.json()
+    return crud.create_p2(db, data)
 
 @app.post("/declaraciones/p3/")
 async def save_p3(request: Request, db: Session = Depends(get_db)):
-    try:
-        data = await request.json()
-        return crud.create_p3(db, data)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    data = await request.json()
+    return crud.create_p3(db, data)
