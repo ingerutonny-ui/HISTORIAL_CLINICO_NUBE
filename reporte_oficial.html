@@ -5,39 +5,40 @@ async function cargarDatos() {
     const API = "https://historial-clinico-936s.onrender.com";
 
     try {
-        const res = await fetch(`${API}/reporte/${id}`);
+        const res = await fetch(`${API}/reporte_completo/${id}`);
         if (!res.ok) throw new Error("Error en servidor");
         
         const data = await res.json();
-        const { p, f1, p2, p3 } = data;
+        const p = data.paciente;
+        const f = data.filiacion;
+        const d2 = data.p2;
+        const d3 = data.p3;
 
-        // 1. Membrete e ID
+        // 1. Membrete
         document.getElementById('p_id_top').innerText = `RA${p.id}`;
         document.getElementById('p_fecha_hoy').innerText = new Date().toLocaleDateString();
 
-        // 2. Mapeo Sección P1 (14 Campos)
+        // 2. Sección P1: Los 14 campos obligatorios
         document.getElementById('p_full_name').innerText = `${p.apellido} ${p.nombre}`;
         document.getElementById('p_ci').innerText = p.ci;
         document.getElementById('p_f_nac').innerText = p.fecha_nacimiento;
-        
-        document.getElementById('p_edad').innerText = f1.edad || '---';
-        document.getElementById('p_sexo').innerText = f1.sexo || '---';
-        document.getElementById('p_est_civil').innerText = f1.estado_civil || '---';
-        document.getElementById('p_lugar_nac').innerText = f1.lugar_nacimiento || '---';
-        document.getElementById('p_telf').innerText = f1.telefono || '---';
-        document.getElementById('p_domicilio').innerText = f1.domicilio || '---';
-        document.getElementById('p_n_casa').innerText = f1.n_casa || '---';
-        document.getElementById('p_zona').innerText = f1.zona_barrio || '---';
-        document.getElementById('p_ciudad').innerText = f1.ciudad || '---';
-        document.getElementById('p_pais').innerText = f1.pais || '---';
-        document.getElementById('p_profesion').innerText = f1.profesion_oficio || '---';
+        document.getElementById('p_edad').innerText = f.edad || '---';
+        document.getElementById('p_sexo').innerText = f.sexo || '---';
+        document.getElementById('p_est_civil').innerText = f.estado_civil || '---';
+        document.getElementById('p_lugar_nac').innerText = f.lugar_nacimiento || '---';
+        document.getElementById('p_telf').innerText = f.telefono || '---';
+        document.getElementById('p_domicilio').innerText = f.domicilio || '---';
+        document.getElementById('p_n_casa').innerText = f.n_casa || '---';
+        document.getElementById('p_zona').innerText = f.zona_barrio || '---';
+        document.getElementById('p_ciudad').innerText = f.ciudad || '---';
+        document.getElementById('p_pais').innerText = f.pais || '---';
+        document.getElementById('p_profesion').innerText = f.profesion_oficio || '---';
 
-        // 3. Aquí mapearías P2 y P3 usando p2.campo y p3.campo...
+        // 3. Sección P2 y P3 (Lógica para llenar tus tablas de preguntas)
+        // Ejemplo: document.getElementById('res_p2_1').innerText = d2.pregunta_1 ? 'SÍ' : 'NO';
 
     } catch (e) {
-        console.error("Error cargando reporte:", e);
-        // Fallback: Si el reporte falla, al menos intentamos mostrar el nombre del paciente
-        document.getElementById('p_full_name').innerText = "ERROR DE CARGA - REINTENTE";
+        console.error("Error crítico:", e);
     }
 }
 window.onload = cargarDatos;
