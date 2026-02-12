@@ -8,12 +8,12 @@ models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
-# Configuración de CORS reforzada para evitar bloqueos
+# Configuración de CORS con máxima apertura para evitar bloqueos en GitHub Pages
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -43,22 +43,29 @@ async def save_paciente(request: Request, db: Session = Depends(get_db)):
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
-# RUTA UNIFICADA: Se corrigió para evitar el Error 500 si no hay Filiacion
+# RUTA DEL REPORTE: Optimizada para evitar el Error 500 y problemas de CORS
 @app.get("/pacientes/{paciente_id}")
-def get_paciente(paciente_id: int, db: Session = Depends(get_db)):
-    # 1. Buscar datos básicos del paciente
+def get_paciente_reporte(paciente_id: int, db: Session = Depends(get_db)):
+    # 1. Buscamos datos básicos (Si esto falla, el ID no existe)
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
-    # 2. Buscar datos de la Sección P1 (Filiación) usando un try/except interno
-    filiacion = None
+    # 2. Buscamos filiación con manejo de error total
+    filiacion_data = {}
     try:
-        filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
+        f = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
+        if f:
+            filiacion_data = {
+                "sexo": f.sexo, "edad": f.edad, "estado_civil": f.estado_civil,
+                "lugar_nacimiento": f.lugar_nacimiento, "domicilio": f.domicilio,
+                "n_casa": f.n_casa, "zona_barrio": f.zona_barrio, "ciudad": f.ciudad,
+                "pais": f.pais, "telefono": f.telefono, "profesion_oficio": f.profesion_oficio
+            }
     except Exception:
-        filiacion = None
+        pass # Si falla la tabla P1, seguimos adelante con datos básicos
 
-    # 3. Construir respuesta unificada segura
+    # 3. Respuesta unificada (Garantiza que el JSON tenga todos los campos que espera el HTML)
     return {
         "id": paciente.id,
         "codigo_paciente": paciente.codigo_paciente or "---",
@@ -66,20 +73,20 @@ def get_paciente(paciente_id: int, db: Session = Depends(get_db)):
         "apellido": paciente.apellido or "",
         "ci": paciente.ci or "---",
         "fecha_nacimiento": paciente.fecha_nacimiento or "---",
-        "sexo": filiacion.sexo if filiacion else "---",
-        "edad": filiacion.edad if filiacion else "---",
-        "estado_civil": filiacion.estado_civil if filiacion else "---",
-        "lugar_nacimiento": filiacion.lugar_nacimiento if filiacion else "---",
-        "domicilio": filiacion.domicilio if filiacion else "---",
-        "n_casa": filiacion.n_casa if filiacion else "---",
-        "zona_barrio": filiacion.zona_barrio if filiacion else "---",
-        "ciudad": filiacion.ciudad if filiacion else "---",
-        "pais": filiacion.pais if filiacion else "---",
-        "telefono": filiacion.telefono if filiacion else "---",
-        "profesion_oficio": filiacion.profesion_oficio if filiacion else "---"
+        "sexo": filiacion_data.get("sexo") or "---",
+        "edad": filiacion_data.get("edad") or "---",
+        "estado_civil": filiacion_data.get("estado_civil") or "---",
+        "lugar_nacimiento": filiacion_data.get("lugar_nacimiento") or "---",
+        "domicilio": filiacion_data.get("domicilio") or "---",
+        "n_casa": filiacion_data.get("n_casa") or "---",
+        "zona_barrio": filiacion_data.get("zona_barrio") or "---",
+        "ciudad": filiacion_data.get("ciudad") or "---",
+        "pais": filiacion_data.get("pais") or "---",
+        "telefono": filiacion_data.get("telefono") or "---",
+        "profesion_oficio": filiacion_data.get("profesion_oficio") or "---"
     }
 
-# --- RUTAS DE SECCIONES (P1, P2, P3) ---
+# --- RUTAS DE SECCIONES ---
 
 @app.post("/filiacion/")
 async def save_filiacion(request: Request, db: Session = Depends(get_db)):
@@ -87,7 +94,7 @@ async def save_filiacion(request: Request, db: Session = Depends(get_db)):
         data = await request.json()
         return crud.upsert_filiacion(db, data)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/declaraciones/p2/")
 async def save_p2(request: Request, db: Session = Depends(get_db)):
@@ -95,7 +102,7 @@ async def save_p2(request: Request, db: Session = Depends(get_db)):
         data = await request.json()
         return crud.create_p2(db, data)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error en P2: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/declaraciones/p3/")
 async def save_p3(request: Request, db: Session = Depends(get_db)):
@@ -103,4 +110,4 @@ async def save_p3(request: Request, db: Session = Depends(get_db)):
         data = await request.json()
         return crud.create_p3(db, data)
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
+        raise HTTPException(status_code=400, detail=str(e))
