@@ -11,7 +11,6 @@
     </style>
 </head>
 <body>
-
 <div class="container">
     <h2 class="text-center mb-4">LISTA DE HISTORIALES CLÍNICOS</h2>
     <div class="table-responsive">
@@ -29,17 +28,14 @@
         </table>
     </div>
 </div>
-
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-
     async function cargarPacientes() {
         try {
             const res = await fetch(`${API}/pacientes/`);
             const pacientes = await res.json();
             const tbody = document.getElementById('tabla_pacientes');
             tbody.innerHTML = '';
-
             pacientes.forEach(p => {
                 tbody.innerHTML += `
                     <tr>
@@ -48,22 +44,16 @@
                         <td>${p.nombre}</td>
                         <td>${p.ci}</td>
                         <td>
-                            <button onclick="prepararReporte(${p.id})" class="btn btn-reporte btn-sm">
-                                GENERAR PDF
-                            </button>
+                            <button onclick="prepararReporte(${p.id})" class="btn btn-reporte btn-sm">GENERAR PDF</button>
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
-        } catch (e) { console.error("Error al cargar:", e); }
+        } catch (e) { console.error("Error:", e); }
     }
-
     function prepararReporte(id) {
-        // Guardamos el ID con una clave clara
         localStorage.setItem('p_id_reporte', id);
         window.location.href = 'reporte_oficial.html';
     }
-
     window.onload = cargarPacientes;
 </script>
 </body>
