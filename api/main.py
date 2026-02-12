@@ -22,24 +22,32 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/pacientes/{paciente_id}")
-def get_paciente_unificado(paciente_id: int, db: Session = Depends(get_db)):
-    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
-    if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    
-    filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
-    # Retornamos todo en un solo objeto para facilitar el mapeo
-    return {
-        "paciente": paciente,
-        "filiacion": filiacion if filiacion else {}
-    }
-
 @app.get("/pacientes/")
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
-# --- RUTAS DE GUARDADO (P1, P2, P3) ---
+# RUTA MAESTRA PARA EL REPORTE (CRUD READ)
+@app.get("/reporte/{paciente_id}")
+def get_full_report(paciente_id: int, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="No existe")
+    
+    # Intentamos obtener datos de todas las secciones, si no hay, devolvemos objeto vacío
+    def get_data(model):
+        try:
+            res = db.query(model).filter(model.paciente_id == paciente_id).first()
+            return res if res else {}
+        except:
+            return {}
+
+    return {
+        "p": paciente,
+        "f1": get_data(models.Filiacion),
+        "p2": get_data(models.DeclaracionP2),
+        "p3": get_data(models.DeclaracionP3)
+    }
+
 @app.post("/pacientes/")
 async def save_paciente(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
