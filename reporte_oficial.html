@@ -19,7 +19,7 @@
         .bg-azul { background-color: #d9e1f2; font-weight: bold; }
         .bg-gris { background-color: #f2f2f2; text-align: center; font-weight: bold; font-size: 8pt; text-decoration: underline; }
         .label { font-weight: bold; width: 25%; background-color: #fafafa; }
-        .valor { font-weight: bold; text-transform: uppercase; color: #000; padding-left: 5px; }
+        .valor { font-weight: bold; text-transform: uppercase; color: #000; padding-left: 5px; min-height: 15px; display: inline-block; }
         @media print { .no-print { display: none; } .hoja-a4 { box-shadow: none; border: none; margin: 0; } }
     </style>
 </head>
@@ -54,10 +54,10 @@
         <tr><td colspan="4" class="bg-azul">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
         <tr>
             <td class="label">APELLIDOS Y NOMBRES:</td>
-            <td colspan="3" class="valor" id="p_full_name"></td>
+            <td colspan="3" class="valor" id="p_full_name">Cargando...</td>
         </tr>
         <tr>
-            <td class="label">EDAD:</td><td class="valor" id="p_edad"></td>
+            <td class="label">EDAD:</td><td class="valor" id="p_edad" style="width: 25%;"></td>
             <td class="label">SEXO:</td><td class="valor" id="p_sexo"></td>
         </tr>
         <tr>
@@ -65,7 +65,7 @@
             <td class="label">LUGAR NACIMIENTO:</td><td class="valor" id="p_lugar_nac"></td>
         </tr>
         <tr>
-            <td class="label">C.I.:</td><td class="valor" id="p_ci"></td>
+            <td class="label">DOCUMENTO (C.I.):</td><td class="valor" id="p_ci"></td>
             <td class="label">ESTADO CIVIL:</td><td class="valor" id="p_estado_civil"></td>
         </tr>
         <tr>
@@ -88,19 +88,24 @@
 </div>
 
 <script>
+    // Fecha automática de hoy
     document.getElementById('p_fecha_emision').innerText = new Date().toLocaleDateString();
 
     async function cargarDatos() {
         const id = localStorage.getItem('p_id');
-        if(!id) return;
+        if(!id) {
+            alert("No se encontró el ID del paciente");
+            return;
+        }
 
         try {
-            const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}`);
+            // Se agregó la barra final / para evitar el error 404 en Render
+            const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}/`);
             const p = await res.json();
             
             if(p && !p.detail) {
-                document.getElementById('p_codigo').innerText = p.codigo_paciente || 'S/N';
-                document.getElementById('p_full_name').innerText = `${p.apellido} ${p.nombre}`;
+                document.getElementById('p_codigo').innerText = p.codigo_paciente || '---';
+                document.getElementById('p_full_name').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
                 document.getElementById('p_edad').innerText = p.edad || '---';
                 document.getElementById('p_sexo').innerText = p.sexo || '---';
                 document.getElementById('p_fecha_nac').innerText = p.fecha_nacimiento || '---';
@@ -115,18 +120,21 @@
                 document.getElementById('p_telf').innerText = p.telefono || '---';
                 document.getElementById('p_profesion').innerText = p.profesion_oficio || '---';
             }
-        } catch (e) { console.error("Error al cargar datos:", e); }
+        } catch (e) { 
+            console.error("Error al conectar con la API:", e);
+        }
     }
 
     function exportarPDF() {
         const element = document.getElementById('area-reporte');
-        html2pdf().set({
+        const opt = {
             margin: 0,
-            filename: 'Reporte_P1.pdf',
+            filename: `Reporte_${document.getElementById('p_codigo').innerText}.pdf`,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3 },
+            html2canvas: { scale: 3, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(element).save();
+        };
+        html2pdf().set(opt).from(element).save();
     }
 
     window.onload = cargarDatos;
