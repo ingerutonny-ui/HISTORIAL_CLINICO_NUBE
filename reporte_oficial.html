@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reporte Oficial - Declaración Jurada</title>
+    <title>Reporte Oficial - P1</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { background-color: #525659; font-family: Arial, sans-serif; padding: 20px; margin: 0; }
@@ -10,131 +10,143 @@
             width: 210mm; min-height: 297mm; padding: 15mm;
             margin: auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
-        table { width: 100%; border-collapse: collapse; border: 1.5px solid black; margin-bottom: 10px; }
-        td { border: 1px solid black; padding: 5px; font-size: 8.5pt; vertical-align: middle; }
+        table { width: 100%; border-collapse: collapse; border: 1.5px solid black; margin-bottom: 10px; table-layout: fixed; }
+        td { border: 1px solid black; padding: 6px; font-size: 8.5pt; overflow: hidden; }
         .bg-azul { background-color: #d9e1f2; font-weight: bold; }
         .bg-gris { background-color: #f2f2f2; text-align: center; font-weight: bold; font-size: 8pt; text-decoration: underline; }
-        .label { font-weight: bold; background-color: #f9f9f9; }
-        .valor { font-weight: bold; text-transform: uppercase; color: #000; padding-left: 5px; }
-        @media print { .no-print { display: none; } .hoja-a4 { box-shadow: none; border: none; } }
+        .label { font-weight: bold; background-color: #f9f9f9; width: 120px; }
+        .valor { font-weight: bold; text-transform: uppercase; color: #000; }
+        @media print { .no-print { display: none; } .hoja-a4 { box-shadow: none; border: none; margin: 0; } }
     </style>
 </head>
 <body>
 
 <div class="no-print" style="text-align: center; margin-bottom: 20px;">
-    <button onclick="window.history.back()" style="padding: 8px 15px; cursor: pointer;">← VOLVER A LA LISTA</button>
-    <button onclick="exportarPDF()" style="padding: 8px 15px; cursor: pointer; background: #198754; color: white; border: none; font-weight: bold; margin-left: 10px;">DESCARGAR PDF</button>
+    <button onclick="window.history.back()" style="padding: 10px 20px; cursor: pointer;">← VOLVER</button>
+    <button onclick="exportarPDF()" style="padding: 10px 20px; cursor: pointer; background: #198754; color: white; border: none; font-weight: bold; margin-left: 10px;">DESCARGAR PDF</button>
 </div>
 
 <div id="area-reporte" class="hoja-a4">
     <table>
         <tr>
-            <td style="width: 20%; text-align: center;">
-                <img src="logo.png" alt="logo" style="max-height: 65px;">
+            <td colspan="2" style="width: 20%; text-align: center;">
+                <img src="logo.png" alt="logo" style="max-height: 60px;">
             </td>
-            <td style="width: 60%; text-align: center;">
+            <td colspan="6" style="width: 60%; text-align: center;">
                 <h3 style="margin: 0; font-size: 13pt;">PROYECTO EN LA NUBE</h3>
                 <p style="margin: 0; font-weight: bold; font-size: 10pt;">DECLARACIÓN JURADA DE SALUD - REPORTE OFICIAL</p>
             </td>
-            <td style="width: 20%; font-size: 8pt;">
+            <td colspan="2" style="width: 20%; font-size: 8pt;">
                 <b>ID:</b> <span id="p_codigo"></span><br>
-                <b>FECHA:</b> <span id="p_fecha_emision"></span>
+                <b>FECHA:</b> <span id="p_fecha_hoy"></span>
             </td>
         </tr>
         <tr>
-            <td colspan="3" class="bg-gris">POR FAVOR LEA CON CUIDADO Y ESCRIBA CON LETRA CLARA</td>
+            <td colspan="10" class="bg-gris">POR FAVOR LEA CON CUIDADO Y ESCRIBA CON LETRA CLARA</td>
         </tr>
     </table>
 
     <table>
-        <tr><td colspan="6" class="bg-azul">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
+        <tr><td colspan="10" class="bg-azul">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
         <tr>
-            <td class="label" style="width: 20%;">APELLIDOS Y NOMBRES:</td>
-            <td colspan="5" class="valor" id="p_full_name">CARGANDO...</td>
+            <td colspan="2" class="label">APELLIDOS Y NOMBRES:</td>
+            <td colspan="8" class="valor" id="p_full_name">CARGANDO...</td>
         </tr>
         <tr>
-            <td class="label">EDAD:</td>
-            <td class="valor" id="p_edad" style="width: 15%;"></td>
-            <td class="label" style="width: 10%;">SEXO:</td>
-            <td class="valor" id="p_sexo" style="width: 20%;"></td>
-            <td class="label" style="width: 15%;">ESTADO CIVIL:</td>
-            <td class="valor" id="p_estado_civil"></td>
+            <td colspan="1" class="label">EDAD:</td>
+            <td colspan="2" class="valor" id="p_edad"></td>
+            <td colspan="1" class="label">SEXO:</td>
+            <td colspan="2" class="valor" id="p_sexo"></td>
+            <td colspan="1" class="label">ESTADO CIVIL:</td>
+            <td colspan="3" class="valor" id="p_estado_civil"></td>
         </tr>
         <tr>
-            <td class="label">FECHA NACIMIENTO:</td>
-            <td class="valor" id="p_fecha_nac"></td>
-            <td class="label">LUGAR NAC.:</td>
+            <td colspan="2" class="label">FECHA NACIMIENTO:</td>
+            <td colspan="3" class="valor" id="p_fecha_nac"></td>
+            <td colspan="2" class="label">LUGAR NAC.:</td>
             <td colspan="3" class="valor" id="p_lugar_nac"></td>
         </tr>
         <tr>
-            <td class="label">DOCUMENTO (C.I.):</td>
-            <td class="valor" id="p_ci"></td>
-            <td class="label">TELÉFONO:</td>
+            <td colspan="2" class="label">DOCUMENTO (C.I.):</td>
+            <td colspan="3" class="valor" id="p_ci"></td>
+            <td colspan="2" class="label">TELÉFONO:</td>
             <td colspan="3" class="valor" id="p_telf"></td>
         </tr>
         <tr>
-            <td class="label">DOMICILIO / CALLE:</td>
-            <td colspan="3" class="valor" id="p_domicilio"></td>
-            <td class="label">NÚMERO:</td>
-            <td class="valor" id="p_n_casa"></td>
+            <td colspan="2" class="label">DOMICILIO / CALLE:</td>
+            <td colspan="5" class="valor" id="p_domicilio"></td>
+            <td colspan="1" class="label">NÚMERO:</td>
+            <td colspan="2" class="valor" id="p_n_casa"></td>
         </tr>
         <tr>
-            <td class="label">BARRIO / ZONA:</td>
-            <td class="valor" id="p_zona_barrio"></td>
-            <td class="label">CIUDAD:</td>
-            <td class="valor" id="p_ciudad"></td>
-            <td class="label">PAÍS:</td>
-            <td class="valor" id="p_pais"></td>
+            <td colspan="1" class="label">BARRIO:</td>
+            <td colspan="3" class="valor" id="p_zona_barrio"></td>
+            <td colspan="1" class="label">CIUDAD:</td>
+            <td colspan="2" class="valor" id="p_ciudad"></td>
+            <td colspan="1" class="label">PAÍS:</td>
+            <td colspan="2" class="valor" id="p_pais"></td>
         </tr>
         <tr>
-            <td class="label">PROFESIÓN O LABOR:</td>
-            <td colspan="5" class="valor" id="p_profesion"></td>
+            <td colspan="2" class="label">PROFESIÓN O LABOR:</td>
+            <td colspan="8" class="valor" id="p_profesion"></td>
         </tr>
     </table>
 </div>
 
 <script>
-    document.getElementById('p_fecha_emision').innerText = new Date().toLocaleDateString();
+    document.getElementById('p_fecha_hoy').innerText = new Date().toLocaleDateString();
 
     async function cargarDatos() {
+        // Obtenemos el ID que guardamos en lista_historial.html
         const id = localStorage.getItem('p_id');
-        if(!id) return;
+        
+        if(!id) {
+            document.getElementById('p_full_name').innerText = "ERROR: ID NO ENCONTRADO";
+            return;
+        }
 
         try {
-            // Se corrigió la URL agregando la barra final para evitar el 404
-            const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}/`);
+            // URL limpia para Render
+            const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}`);
+            
+            if (!res.ok) throw new Error("Paciente no encontrado");
+            
             const p = await res.json();
             
-            if(p && !p.detail) {
-                document.getElementById('p_codigo').innerText = p.codigo_paciente || '---';
-                document.getElementById('p_full_name').innerText = (p.apellido + ' ' + p.nombre);
-                document.getElementById('p_edad').innerText = p.edad || '---';
-                document.getElementById('p_sexo').innerText = p.sexo || '---';
-                document.getElementById('p_fecha_nac').innerText = p.fecha_nacimiento || '---';
-                document.getElementById('p_lugar_nac').innerText = p.lugar_nacimiento || '---';
-                document.getElementById('p_ci').innerText = p.ci || '---';
-                document.getElementById('p_estado_civil').innerText = p.estado_civil || '---';
-                document.getElementById('p_domicilio').innerText = p.domicilio || '---';
-                document.getElementById('p_n_casa').innerText = p.n_casa || '---';
-                document.getElementById('p_zona_barrio').innerText = p.zona_barrio || '---';
-                document.getElementById('p_ciudad').innerText = p.ciudad || '---';
-                document.getElementById('p_pais').innerText = p.pais || '---';
-                document.getElementById('p_telf').innerText = p.telefono || '---';
-                document.getElementById('p_profesion').innerText = p.profesion_oficio || '---';
-            }
-        } catch (e) { console.error("Error cargando datos:", e); }
+            // Llenado de campos con los nombres exactos de tu base de datos
+            document.getElementById('p_codigo').innerText = p.codigo_paciente || '---';
+            document.getElementById('p_full_name').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
+            document.getElementById('p_edad').innerText = p.edad || '---';
+            document.getElementById('p_sexo').innerText = p.sexo || '---';
+            document.getElementById('p_fecha_nac').innerText = p.fecha_nacimiento || '---';
+            document.getElementById('p_lugar_nac').innerText = p.lugar_nacimiento || '---';
+            document.getElementById('p_ci').innerText = p.ci || '---';
+            document.getElementById('p_estado_civil').innerText = p.estado_civil || '---';
+            document.getElementById('p_domicilio').innerText = p.domicilio || '---';
+            document.getElementById('p_n_casa').innerText = p.n_casa || '---';
+            document.getElementById('p_zona_barrio').innerText = p.zona_barrio || '---';
+            document.getElementById('p_ciudad').innerText = p.ciudad || '---';
+            document.getElementById('p_pais').innerText = p.pais || '---';
+            document.getElementById('p_telf').innerText = p.telefono || '---';
+            document.getElementById('p_profesion').innerText = p.profesion_oficio || '---';
+            
+        } catch (e) {
+            console.error("Error:", e);
+            document.getElementById('p_full_name').innerText = "ERROR AL CARGAR DATOS";
+        }
     }
 
     function exportarPDF() {
         const element = document.getElementById('area-reporte');
         html2pdf().set({
             margin: 0,
-            filename: 'Reporte_P1.pdf',
+            filename: 'Reporte_Oficial_P1.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 3 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         }).from(element).save();
     }
+
     window.onload = cargarDatos;
 </script>
 </body>
