@@ -2,58 +2,96 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Historiales | Proyecto Nube</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pacientes - CRUD</title>
     <style>
-        body { background-color: #f4f7f6; padding: 20px; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-reporte { background-color: #007bff; color: white; font-weight: bold; }
+        body { background-color: #0b0e14; color: white; font-family: sans-serif; padding: 20px; }
+        .container { max-width: 800px; margin: auto; background: #161b22; padding: 20px; border-radius: 15px; border: 1px solid #30363d; }
+        h2 { text-align: center; color: #58a6ff; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { background-color: #21262d; color: #8b949e; padding: 12px; text-align: left; font-size: 0.8rem; }
+        td { border-bottom: 1px solid #30363d; padding: 12px; font-size: 0.9rem; }
+        .btn-action { padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.75rem; font-weight: bold; margin-right: 5px; cursor: pointer; border: 1px solid transparent; }
+        .btn-edit { background: #238636; color: white; }
+        .btn-delete { background: #da3633; color: white; }
+        .btn-view { background: #1f6feb; color: white; }
+        .loading { text-align: center; padding: 20px; color: #8b949e; }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <h2 class="text-center mb-4">LISTA DE HISTORIALES CLÍNICOS</h2>
-    <div class="table-responsive">
-        <table class="table table-hover border">
-            <thead class="table-dark">
-                <tr>
-                    <th>CÓDIGO</th>
-                    <th>APELLIDO</th>
-                    <th>NOMBRE</th>
-                    <th>C.I.</th>
-                    <th>ACCIONES</th>
-                </tr>
-            </thead>
-            <tbody id="tabla_pacientes"></tbody>
-        </table>
-    </div>
+    <h2>📋 REGISTROS EN LA NUBE</h2>
+    <div id="status" class="loading">Conectando con el servidor...</div>
+    <table id="tabla-pacientes" style="display: none;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>PACIENTE</th>
+                <th>C.I.</th>
+                <th>ACCIONES</th>
+            </tr>
+        </thead>
+        <tbody id="lista-body"></tbody>
+    </table>
+    <br>
+    <center><a href="menu_visor.html" style="color: #8b949e; text-decoration: none; font-size: 0.8rem;">← VOLVER AL PANEL</a></center>
 </div>
+
 <script>
-    const API = 'https://historial-clinico-936s.onrender.com';
     async function cargarPacientes() {
+        const status = document.getElementById('status');
+        const tabla = document.getElementById('tabla-pacientes');
+        const listaBody = document.getElementById('lista-body');
+
         try {
-            const res = await fetch(`${API}/pacientes/`);
-            const pacientes = await res.json();
-            const tbody = document.getElementById('tabla_pacientes');
-            tbody.innerHTML = '';
+            // Inge: Usamos la ruta de lista que definimos en el main.py
+            const response = await fetch('https://historial-clinico-936s.onrender.com/pacientes/');
+            if (!response.ok) throw new Error("Error en servidor");
+            
+            const pacientes = await response.json();
+            status.style.display = 'none';
+            tabla.style.display = 'table';
+
+            listaBody.innerHTML = '';
             pacientes.forEach(p => {
-                tbody.innerHTML += `
+                listaBody.innerHTML += `
                     <tr>
-                        <td><b>${p.codigo_paciente}</b></td>
-                        <td>${p.apellido}</td>
-                        <td>${p.nombre}</td>
+                        <td>${p.id}</td>
+                        <td>${p.apellido} ${p.nombre}</td>
                         <td>${p.ci}</td>
                         <td>
-                            <button onclick="prepararReporte(${p.id})" class="btn btn-reporte btn-sm">GENERAR PDF</button>
+                            <button class="btn-action btn-view" onclick="verReporte(${p.id})">📄</button>
+                            <button class="btn-action btn-edit" onclick="editarPaciente(${p.id})">✏️</button>
+                            <button class="btn-action btn-delete" onclick="eliminarPaciente(${p.id})">🗑️</button>
                         </td>
-                    </tr>`;
+                    </tr>
+                `;
             });
-        } catch (e) { console.error("Error:", e); }
+        } catch (error) {
+            status.innerText = "❌ ERROR DE CONEXIÓN";
+            console.error(error);
+        }
     }
-    function prepararReporte(id) {
+
+    function verReporte(id) {
         localStorage.setItem('p_id_reporte', id);
         window.location.href = 'reporte_oficial.html';
     }
+
+    function editarPaciente(id) {
+        // Inge: Guardamos el ID para que los formularios P1, P2 y P3 sepan qué editar
+        localStorage.setItem('p_id_edicion', id);
+        window.location.href = 'registro_paciente.html';
+    }
+
+    async function eliminarPaciente(id) {
+        if (confirm(`⚠️ ¿Inge, está seguro de eliminar permanentemente el registro ID: ${id}?`)) {
+            // Próximo paso: Crearemos el endpoint DELETE en el main.py
+            alert("Función de borrado en desarrollo para el siguiente paso del manual.");
+        }
+    }
+
     window.onload = cargarPacientes;
 </script>
 </body>
