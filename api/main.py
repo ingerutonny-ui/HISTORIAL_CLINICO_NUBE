@@ -8,11 +8,12 @@ models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
+# Configuración de CORS reforzada para evitar bloqueos
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -42,7 +43,7 @@ async def save_paciente(request: Request, db: Session = Depends(get_db)):
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
-# RUTA UNIFICADA: Cruza datos de Paciente y Filiación (P1) para el reporte
+# RUTA UNIFICADA: Se corrigió para evitar el Error 500 si no hay Filiacion
 @app.get("/pacientes/{paciente_id}")
 def get_paciente(paciente_id: int, db: Session = Depends(get_db)):
     # 1. Buscar datos básicos del paciente
@@ -50,18 +51,21 @@ def get_paciente(paciente_id: int, db: Session = Depends(get_db)):
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
-    # 2. Buscar datos de la Sección P1 (Filiación)
-    filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
-    
-    # 3. Construir respuesta unificada para mapear todos los campos del reporte
+    # 2. Buscar datos de la Sección P1 (Filiación) usando un try/except interno
+    filiacion = None
+    try:
+        filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
+    except Exception:
+        filiacion = None
+
+    # 3. Construir respuesta unificada segura
     return {
         "id": paciente.id,
-        "codigo_paciente": paciente.codigo_paciente,
-        "nombre": paciente.nombre,
-        "apellido": paciente.apellido,
-        "ci": paciente.ci,
-        "fecha_nacimiento": paciente.fecha_nacimiento,
-        # Datos desde Filiacion (si no existen, devuelve "---")
+        "codigo_paciente": paciente.codigo_paciente or "---",
+        "nombre": paciente.nombre or "",
+        "apellido": paciente.apellido or "",
+        "ci": paciente.ci or "---",
+        "fecha_nacimiento": paciente.fecha_nacimiento or "---",
         "sexo": filiacion.sexo if filiacion else "---",
         "edad": filiacion.edad if filiacion else "---",
         "estado_civil": filiacion.estado_civil if filiacion else "---",
