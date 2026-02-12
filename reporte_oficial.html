@@ -2,40 +2,42 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Reporte Oficial Completo</title>
+    <title>Reporte Oficial - Proyecto en la Nube</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        body { background-color: #525659; font-family: Arial, sans-serif; padding: 20px; }
-        .hoja-a4 { width: 210mm; min-height: 297mm; padding: 15mm; margin: auto; background: white; }
+        body { background-color: #525659; font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .hoja-a4 { width: 210mm; padding: 15mm; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         table { width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px; }
         td { border: 1px solid black; padding: 5px; font-size: 9pt; }
-        .bg-azul { background-color: #d9e1f2; font-weight: bold; }
+        .bg-azul { background-color: #d9e1f2; font-weight: bold; text-align: center; }
         .valor { font-weight: bold; text-transform: uppercase; }
-        @media print { .no-print { display: none; } }
+        .no-print { margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
-<div class="no-print" style="text-align: center; margin-bottom: 20px;">
-    <button onclick="window.history.back()">VOLVER</button>
-    <button onclick="exportarPDF()">DESCARGAR PDF</button>
+<div class="no-print">
+    <button onclick="window.history.back()">VOLVER A LA LISTA</button>
+    <button onclick="exportarPDF()" style="background-color: #28a745; color: white;">DESCARGAR PDF</button>
 </div>
 
 <div id="area-reporte" class="hoja-a4">
     <table>
-        <tr><td colspan="4" class="bg-azul">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
+        <tr><td colspan="4" class="bg-azul">I. AFILIACIÓN DEL TRABAJADOR (P1)</td></tr>
         <tr>
-            <td>NOMBRE:</td><td colspan="3" class="valor" id="p_full_name">...</td>
+            <td>NOMBRE:</td><td colspan="3" class="valor" id="p_full_name">---</td>
         </tr>
         <tr>
-            <td>CI:</td><td class="valor" id="p_ci">...</td>
-            <td>EDAD:</td><td class="valor" id="p_edad">...</td>
+            <td>CI:</td><td class="valor" id="p_ci">---</td>
+            <td>EDAD:</td><td class="valor" id="p_edad">---</td>
         </tr>
         <tr>
-            <td>DOMICILIO:</td><td colspan="3" class="valor" id="p_domicilio">...</td>
+            <td>DOMICILIO:</td><td colspan="3" class="valor" id="p_domicilio">---</td>
+        </tr>
+        <tr>
+            <td>PROFESIÓN:</td><td colspan="3" class="valor" id="p_profesion">---</td>
         </tr>
     </table>
-
     </div>
 
 <script>
@@ -46,20 +48,22 @@
         const API = "https://historial-clinico-936s.onrender.com";
 
         try {
-            const res = await fetch(`${API}/pacientes/${id}`);
-            const data = await res.json();
-            
-            const p = data.paciente;
-            const f = data.filiacion;
+            // Petición 1: Datos básicos del paciente
+            const resP = await fetch(`${API}/pacientes/${id}`);
+            if (resP.ok) {
+                const p = await resP.json();
+                document.getElementById('p_full_name').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
+                document.getElementById('p_ci').innerText = p.ci || '---';
+            }
 
-            // MAPEO COMPLETO P1
-            document.getElementById('p_full_name').innerText = `${p.apellido} ${p.nombre}`;
-            document.getElementById('p_ci').innerText = p.ci;
-            document.getElementById('p_edad').innerText = f.edad || '---';
-            document.getElementById('p_domicilio').innerText = f.domicilio || '---';
-            
-            // Aquí puedes continuar mapeando P2 y P3 usando data.p2 y data.p3
-
+            // Petición 2: Datos de Filiación (P1)
+            const resF = await fetch(`${API}/filiacion/${id}`);
+            if (resF.ok) {
+                const f = await resF.json();
+                document.getElementById('p_edad').innerText = f.edad || '---';
+                document.getElementById('p_domicilio').innerText = f.domicilio || '---';
+                document.getElementById('p_profesion').innerText = f.profesion_oficio || '---';
+            }
         } catch (e) {
             console.error("Error cargando reporte:", e);
         }
@@ -67,7 +71,7 @@
 
     function exportarPDF() {
         const element = document.getElementById('area-reporte');
-        html2pdf().from(element).save('Reporte_Clinico.pdf');
+        html2pdf().from(element).save('reporte_oficial.pdf');
     }
 
     window.onload = cargarDatos;
