@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Opciones de Visor | HISTORIAL_CLINICO_NUBE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #020617; } /* Fondo oscuro como tu captura */
+    </style>
+</head>
+<body class="flex items-center justify-center min-height-screen h-screen">
+
+    <div class="bg-slate-900/50 border border-slate-800 p-8 rounded-3xl shadow-2xl text-center w-80">
+        <h2 class="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em] mb-8">Seleccione una Opción</h2>
+        
+        <div class="flex flex-col gap-4">
+            <button onclick="location.href='crud_pacientes.html'" 
+                class="group flex items-center justify-center gap-2 px-6 py-3 bg-blue-900/20 border border-blue-800 rounded-full hover:bg-blue-800 transition-all duration-300">
+                <span class="text-[11px] font-bold text-blue-400 uppercase tracking-widest">⚙️ CRUD</span>
+            </button>
+
+            <button onclick="location.href='visor_historial.html'" 
+                class="group flex items-center justify-center gap-2 px-6 py-3 bg-emerald-900/20 border border-emerald-800 rounded-full hover:bg-emerald-800 transition-all duration-300">
+                <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-widest">📋 Lista Pacientes</span>
+            </button>
+
+            <div class="mt-4">
+                <button onclick="window.history.back()" class="text-slate-500 text-[9px] uppercase tracking-tighter hover:text-slate-300">
+                    ← Volver al inicio
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
