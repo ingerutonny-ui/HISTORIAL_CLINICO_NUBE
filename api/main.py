@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
-# Solo crea tablas si NO existen. Ya no borra nada.
+# Solo crea tablas si NO existen.
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
@@ -27,6 +27,29 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
+# --- LECTURA PARA CRUD Y REPORTES ---
+@app.get("/api/paciente-completo/{paciente_id}")
+def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    
+    filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
+    p2 = db.query(models.DeclaracionP2).filter(models.DeclaracionP2.paciente_id == paciente_id).first()
+    p3 = db.query(models.DeclaracionP3).filter(models.DeclaracionP3.paciente_id == paciente_id).first()
+
+    return {
+        "paciente": paciente,
+        "filiacion": filiacion if filiacion else {},
+        "p2": p2 if p2 else {},
+        "p3": p3 if p3 else {}
+    }
+
+@app.get("/pacientes/")
+def list_pacientes(db: Session = Depends(get_db)):
+    return db.query(models.Paciente).all()
+
+# --- ESCRITURA (GUARDADO) ---
 @app.post("/pacientes/")
 async def save_paciente(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -59,7 +82,3 @@ async def save_p3(request: Request, db: Session = Depends(get_db)):
         return crud.create_p3(db, data)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
-
-@app.get("/pacientes/")
-def list_pacientes(db: Session = Depends(get_db)):
-    return db.query(models.Paciente).all()
