@@ -10,12 +10,12 @@
             width: 210mm; min-height: 297mm; padding: 15mm;
             margin: auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
-        table { width: 100%; border-collapse: collapse; border: 1.5px solid black; margin-bottom: 10px; table-layout: fixed; }
-        td { border: 1px solid black; padding: 6px; font-size: 8.5pt; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; border: 1.2px solid black; margin-bottom: 10px; table-layout: fixed; }
+        td { border: 1px solid black; padding: 6px; font-size: 8.5pt; overflow: hidden; height: 20px; vertical-align: middle; }
         .bg-azul { background-color: #d9e1f2; font-weight: bold; }
         .bg-gris { background-color: #f2f2f2; text-align: center; font-weight: bold; font-size: 8pt; text-decoration: underline; }
-        .label { font-weight: bold; background-color: #f9f9f9; width: 120px; }
-        .valor { font-weight: bold; text-transform: uppercase; color: #000; }
+        .label { font-weight: bold; background-color: #f9f9f9; width: 130px; }
+        .valor { font-weight: bold; text-transform: uppercase; color: #000; padding-left: 5px; }
         @media print { .no-print { display: none; } .hoja-a4 { box-shadow: none; border: none; margin: 0; } }
     </style>
 </head>
@@ -29,15 +29,15 @@
 <div id="area-reporte" class="hoja-a4">
     <table>
         <tr>
-            <td colspan="2" style="width: 20%; text-align: center;">
+            <td colspan="2" style="text-align: center; width: 20%;">
                 <img src="logo.png" alt="logo" style="max-height: 60px;">
             </td>
-            <td colspan="6" style="width: 60%; text-align: center;">
+            <td colspan="6" style="text-align: center; width: 60%;">
                 <h3 style="margin: 0; font-size: 13pt;">PROYECTO EN LA NUBE</h3>
                 <p style="margin: 0; font-weight: bold; font-size: 10pt;">DECLARACIÓN JURADA DE SALUD - REPORTE OFICIAL</p>
             </td>
             <td colspan="2" style="width: 20%; font-size: 8pt;">
-                <b>ID:</b> <span id="p_codigo"></span><br>
+                <b>ID:</b> <span id="p_codigo">---</span><br>
                 <b>FECHA:</b> <span id="p_fecha_hoy"></span>
             </td>
         </tr>
@@ -50,7 +50,7 @@
         <tr><td colspan="10" class="bg-azul">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
         <tr>
             <td colspan="2" class="label">APELLIDOS Y NOMBRES:</td>
-            <td colspan="8" class="valor" id="p_full_name">CARGANDO...</td>
+            <td colspan="8" class="valor" id="p_full_name">Cargando...</td>
         </tr>
         <tr>
             <td colspan="1" class="label">EDAD:</td>
@@ -97,42 +97,40 @@
     document.getElementById('p_fecha_hoy').innerText = new Date().toLocaleDateString();
 
     async function cargarDatos() {
-        // Obtenemos el ID que guardamos en lista_historial.html
-        const id = localStorage.getItem('p_id');
+        const id = localStorage.getItem('p_id_reporte');
         
         if(!id) {
-            document.getElementById('p_full_name').innerText = "ERROR: ID NO ENCONTRADO";
+            document.getElementById('p_full_name').innerText = "ERROR: ID NO RECIBIDO";
             return;
         }
 
         try {
-            // URL limpia para Render
-            const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}`);
-            
-            if (!res.ok) throw new Error("Paciente no encontrado");
-            
+            // URL con barra final para asegurar compatibilidad con Render
+            const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}/`);
             const p = await res.json();
             
-            // Llenado de campos con los nombres exactos de tu base de datos
-            document.getElementById('p_codigo').innerText = p.codigo_paciente || '---';
-            document.getElementById('p_full_name').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
-            document.getElementById('p_edad').innerText = p.edad || '---';
-            document.getElementById('p_sexo').innerText = p.sexo || '---';
-            document.getElementById('p_fecha_nac').innerText = p.fecha_nacimiento || '---';
-            document.getElementById('p_lugar_nac').innerText = p.lugar_nacimiento || '---';
-            document.getElementById('p_ci').innerText = p.ci || '---';
-            document.getElementById('p_estado_civil').innerText = p.estado_civil || '---';
-            document.getElementById('p_domicilio').innerText = p.domicilio || '---';
-            document.getElementById('p_n_casa').innerText = p.n_casa || '---';
-            document.getElementById('p_zona_barrio').innerText = p.zona_barrio || '---';
-            document.getElementById('p_ciudad').innerText = p.ciudad || '---';
-            document.getElementById('p_pais').innerText = p.pais || '---';
-            document.getElementById('p_telf').innerText = p.telefono || '---';
-            document.getElementById('p_profesion').innerText = p.profesion_oficio || '---';
-            
+            if(p && !p.detail) {
+                document.getElementById('p_codigo').innerText = p.codigo_paciente || '---';
+                document.getElementById('p_full_name').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
+                document.getElementById('p_edad').innerText = p.edad || '---';
+                document.getElementById('p_sexo').innerText = p.sexo || '---';
+                document.getElementById('p_fecha_nac').innerText = p.fecha_nacimiento || '---';
+                document.getElementById('p_lugar_nac').innerText = p.lugar_nacimiento || '---';
+                document.getElementById('p_ci').innerText = p.ci || '---';
+                document.getElementById('p_estado_civil').innerText = p.estado_civil || '---';
+                document.getElementById('p_domicilio').innerText = p.domicilio || '---';
+                document.getElementById('p_n_casa').innerText = p.n_casa || '---';
+                document.getElementById('p_zona_barrio').innerText = p.zona_barrio || '---';
+                document.getElementById('p_ciudad').innerText = p.ciudad || '---';
+                document.getElementById('p_pais').innerText = p.pais || '---';
+                document.getElementById('p_telf').innerText = p.telefono || '---';
+                document.getElementById('p_profesion').innerText = p.profesion_oficio || '---';
+            } else {
+                document.getElementById('p_full_name').innerText = "PACIENTE NO ENCONTRADO";
+            }
         } catch (e) {
-            console.error("Error:", e);
-            document.getElementById('p_full_name').innerText = "ERROR AL CARGAR DATOS";
+            console.error("Error cargando reporte:", e);
+            document.getElementById('p_full_name').innerText = "ERROR DE CONEXIÓN CON API";
         }
     }
 
@@ -140,7 +138,7 @@
         const element = document.getElementById('area-reporte');
         html2pdf().set({
             margin: 0,
-            filename: 'Reporte_Oficial_P1.pdf',
+            filename: 'Reporte_Declaracion_Jurada.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 3 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
