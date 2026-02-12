@@ -2,22 +2,81 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>HC NUBE | REGISTRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC NUBE | REGISTRO EXPERTO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .nav-top { margin-bottom: 15px; }
-        .nav-link-main { text-decoration: none; color: #64748b; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
-        .nav-link-main:hover { color: #1e293b; }
-        .card-main { width: 100%; max-width: 450px; background: white; padding: 40px; border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); text-align: center; }
-        .label-custom { font-size: 11px; font-weight: 800; color: #334155; text-transform: uppercase; margin-bottom: 8px; display: block; text-align: left; }
-        .form-control { border-radius: 12px; padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; font-size: 15px; text-transform: uppercase; font-weight: 600; margin-bottom: 15px; }
-        .code-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 15px; padding: 20px; margin: 25px 0; }
-        .code-val { font-size: 28px; font-weight: 900; color: #1e293b; }
-        .btn-ohs { background-color: #22c55e; border: none; border-radius: 15px; padding: 18px; font-weight: 800; color: white; width: 100%; cursor: pointer; transition: 0.3s; }
-        .btn-ohs:hover { background-color: #16a34a; transform: translateY(-2px); }
-        .btn-db { background: none; border: 1px solid #cbd5e1; color: #64748b; font-size: 11px; font-weight: 700; padding: 10px; border-radius: 12px; margin-top: 20px; width: 100%; cursor: pointer; }
-        .list-container { margin-top: 15px; text-align: left; max-height: 200px; overflow-y: auto; display: none; border: 1px solid #eee; border-radius: 10px; padding: 10px; background: #fff; }
+        body { 
+            background-color: #f0f4f8; 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 15px; /* Espacio para que no pegue a los bordes en celular */
+        }
+        
+        .nav-top { margin-bottom: 20px; width: 100%; text-align: center; }
+        .nav-link-main { text-decoration: none; color: #64748b; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* AJUSTE INGE: Ancho dinámico para Mobile y PC */
+        .card-main { 
+            width: 100%; 
+            max-width: 550px; /* Un poco más ancho para mejor lectura */
+            background: white; 
+            padding: 35px 25px; 
+            border-radius: 25px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08); 
+            text-align: center; 
+        }
+
+        .label-custom { font-size: 12px; font-weight: 800; color: #334155; text-transform: uppercase; margin-bottom: 10px; display: block; text-align: left; padding-left: 5px; }
+
+        /* AJUSTE INGE: Inputs más grandes para dedos en móvil */
+        .form-control { 
+            border-radius: 15px; 
+            padding: 18px; 
+            background: #f8fafc; 
+            border: 2px solid #e2e8f0; 
+            font-size: 18px; /* Texto más grande */
+            text-transform: uppercase; 
+            font-weight: 600; 
+            margin-bottom: 20px; 
+            transition: 0.3s;
+        }
+        .form-control:focus { border-color: #22c55e; box-shadow: none; background: white; }
+
+        .code-box { background: #f1f5f9; border: 2px dashed #cbd5e1; border-radius: 20px; padding: 25px; margin: 20px 0; }
+        .code-val { font-size: 35px; font-weight: 900; color: #1e293b; letter-spacing: 3px; }
+
+        /* AJUSTE INGE: Botón dominante */
+        .btn-ohs { 
+            background-color: #22c55e; 
+            border: none; 
+            border-radius: 18px; 
+            padding: 22px; 
+            font-size: 16px;
+            font-weight: 800; 
+            color: white; 
+            width: 100%; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
+        }
+        .btn-ohs:hover { background-color: #16a34a; transform: translateY(-3px); }
+
+        .btn-db { background: none; border: 1px solid #cbd5e1; color: #64748b; font-size: 12px; font-weight: 700; padding: 12px; border-radius: 15px; margin-top: 25px; width: 100%; }
+        
+        .list-container { margin-top: 20px; text-align: left; max-height: 250px; overflow-y: auto; display: none; border-radius: 15px; padding: 15px; background: #fff; border: 1px solid #eee; }
+
+        /* Media Query para pantallas pequeñas */
+        @media (max-width: 480px) {
+            .card-main { padding: 25px 15px; border-radius: 20px; }
+            .code-val { font-size: 28px; }
+            h4 { font-size: 1.2rem; }
+        }
     </style>
 </head>
 <body>
@@ -26,51 +85,54 @@
     <a href="index.html" class="nav-link-main">⬅ VOLVER AL MENÚ PRINCIPAL</a>
 </div>
 
-<div class="card-main">
-    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="60">
-    <h4 class="mt-4" style="font-weight: 900; color: #1e293b;">REGISTRO DE PACIENTE</h4>
+<div class="card-main shadow-lg">
+    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" style="height: 70px; width: auto;">
+    <h4 class="mt-4" style="font-weight: 900; color: #1e293b; letter-spacing: -0.5px;">REGISTRO DE PACIENTE</h4>
     
     <div class="mt-4">
-        <label class="label-custom">Nombres</label>
-        <input type="text" id="nom" class="form-control" oninput="this.value=this.value.toUpperCase(); gen()">
+        <label class="label-custom">Nombres Completos</label>
+        <input type="text" id="nom" class="form-control" placeholder="EJ. JUAN" oninput="this.value=this.value.toUpperCase(); gen()">
         
-        <label class="label-custom">Apellidos</label>
-        <input type="text" id="ape" class="form-control" oninput="this.value=this.value.toUpperCase(); gen()">
+        <label class="label-custom">Apellidos Paterno/Materno</label>
+        <input type="text" id="ape" class="form-control" placeholder="EJ. PEREZ" oninput="this.value=this.value.toUpperCase(); gen()">
         
-        <label class="label-custom">CI</label>
-        <input type="number" id="ci" class="form-control" oninput="gen()">
+        <label class="label-custom">Cédula de Identidad (CI)</label>
+        <input type="number" id="ci" class="form-control" placeholder="0000000" oninput="gen()">
     </div>
 
     <div class="code-box">
+        <small style="color: #64748b; font-weight: 700; font-size: 10px; text-transform: uppercase;">Código Generado</small>
         <div id="v_cod" class="code-val">----</div>
     </div>
 
-    <button class="btn-ohs" onclick="save()">GUARDAR REGISTRO FINAL</button>
+    <button class="btn-ohs" onclick="save()">💾 GUARDAR REGISTRO FINAL</button>
     
     <div id="lista" class="list-container"></div>
     
-    <button class="btn-db" onclick="listar()">CONSULTAR BASE DE DATOS</button>
+    <button class="btn-db" onclick="listar()">🔍 CONSULTAR REGISTROS NUBE</button>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
 
     function gen() {
-        const n = document.getElementById('nom').value;
-        const a = document.getElementById('ape').value;
-        const c = document.getElementById('ci').value;
+        const n = document.getElementById('nom').value.trim();
+        const a = document.getElementById('ape').value.trim();
+        const c = document.getElementById('ci').value.trim();
         if(n && a && c) {
             document.getElementById('v_cod').innerText = n[0] + a[0] + c.slice(-4);
+        } else {
+            document.getElementById('v_cod').innerText = "----";
         }
     }
 
     async function save() {
-        const nom = document.getElementById('nom').value;
-        const ape = document.getElementById('ape').value;
-        const ci = document.getElementById('ci').value;
+        const nom = document.getElementById('nom').value.trim();
+        const ape = document.getElementById('ape').value.trim();
+        const ci = document.getElementById('ci').value.trim();
         
         if(!nom || !ape || !ci) {
-            alert("POR FAVOR COMPLETE TODOS LOS CAMPOS");
+            alert("⚠️ INGE: DEBE COMPLETAR TODOS LOS DATOS");
             return;
         }
 
@@ -96,34 +158,39 @@
                 localStorage.setItem('p_cod', payload.codigo_paciente);
                 window.location.href = "declaracion_jurada_p1.html";
             } else {
-                alert("Error: El CI ya podría estar registrado.");
+                alert("❌ ERROR: El paciente ya se encuentra en la base de datos.");
             }
         } catch (e) {
-            alert("Error al guardar: " + e.message);
+            alert("❌ FALLO DE CONEXIÓN: " + e.message);
         }
     }
 
     async function listar() {
         const div = document.getElementById('lista');
         div.style.display = 'block'; 
-        div.innerHTML = "<div style='font-size:11px;'>Cargando registros...</div>";
+        div.innerHTML = "<div style='font-size:12px; text-align:center;'>⏳ Sincronizando registros...</div>";
         try {
             const r = await fetch(`${API}/pacientes/`);
-            if(!r.ok) throw new Error("Error de conexión con el servidor");
+            if(!r.ok) throw new Error("Servidor no responde");
             const d = await r.json();
             div.innerHTML = ""; 
             if(d.length === 0) {
-                div.innerHTML = "<div style='font-size:11px; padding:5px;'>No hay registros en la base de datos.</div>";
+                div.innerHTML = "<div style='font-size:12px; padding:10px; text-align:center;'>Base de datos vacía.</div>";
             } else {
                 div.innerHTML = d.map(p => `
-                    <div style="font-size:11px; padding:8px; border-bottom:1px solid #f0f0f0;">
-                        <span style="color:#64748b;">[${p.id}]</span> <b>${p.nombre} ${p.apellido}</b><br>
-                        <small style="color:#22c55e;">CÓDIGO: ${p.codigo_paciente}</small>
+                    <div style="font-size:12px; padding:12px; border-bottom:1px solid #f0f0f0; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <span style="color:#64748b; font-weight:bold;">ID: ${p.id}</span><br>
+                            <b>${p.nombre} ${p.apellido}</b>
+                        </div>
+                        <div style="text-align:right;">
+                            <small style="color:#22c55e; font-weight:800;">${p.codigo_paciente}</small>
+                        </div>
                     </div>
                 `).join('');
             }
         } catch(e) { 
-            div.innerHTML = "<div style='color:red; font-size:11px;'>Error: " + e.message + "</div>"; 
+            div.innerHTML = "<div style='color:red; font-size:12px; text-align:center;'>Error: " + e.message + "</div>"; 
         }
     }
 </script>
