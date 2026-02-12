@@ -1,65 +1,45 @@
-from fastapi import FastAPI, Depends, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from . import models, database, crud
+from fastapi.middleware.cors import CORSMiddleware
+import models, schemas
+from database import SessionLocal, engine
 
-# Solo crea tablas si NO existen. Ya no borra nada.
-models.Base.metadata.create_all(bind=database.engine)
+models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(title="PROYECTO HISTORIAL CLINICO NUBE")
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 def get_db():
-    db = database.SessionLocal()
+    db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
 
-@app.get("/")
-def health_check():
-    return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
+# RUTA PARA GUARDAR PACIENTE (P1, P2, P3)
+@app.post("/pacientes/", response_model=schemas.Paciente)
+def crear_paciente(paciente: schemas.PacienteCreate, db: Session = Depends(get_db)):
+    db_paciente = models.Paciente(**paciente.dict())
+    db.add(db_paciente)
+    db.commit()
+    db.refresh(db_paciente)
+    return db_paciente
 
-@app.post("/pacientes/")
-async def save_paciente(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    ci = str(data.get("ci"))
-    paciente = crud.get_paciente_by_ci(db, ci)
-    if not paciente:
-        paciente = crud.create_paciente(db, data)
-    return paciente
-
-@app.post("/filiacion/")
-async def save_filiacion(request: Request, db: Session = Depends(get_db)):
-    try:
-        data = await request.json()
-        return crud.upsert_filiacion(db, data)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error en P1: {str(e)}")
-
-@app.post("/declaraciones/p2/")
-async def save_p2(request: Request, db: Session = Depends(get_db)):
-    try:
-        data = await request.json()
-        return crud.create_p2(db, data)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error en P2: {str(e)}")
-
-@app.post("/declaraciones/p3/")
-async def save_p3(request: Request, db: Session = Depends(get_db)):
-    try:
-        data = await request.json()
-        return crud.create_p3(db, data)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
-
-@app.get("/pacientes/")
-def list_pacientes(db: Session = Depends(get_db)):
+# RUTA PARA LISTAR (LO QUE USA EL VISOR)
+@app.get("/pacientes/", response_model=list[schemas.Paciente])
+def listar_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
+
+# RUTA PARA EL DETALLE (LO QUE USA EL REPORTE) - ¡ESTA ES LA CLAVE!
+@app.get("/pacientes/{paciente_id}", response_model=schemas.Paciente)
+def obtener_paciente(paciente_id: int, db: Session = Depends(get_db)):
+    db_paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    if db_paciente is None:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return db_paciente
