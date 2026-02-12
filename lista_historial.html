@@ -3,44 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Pacientes - CRUD</title>
+    <title>Lista CRUD - Mobile Ready</title>
     <style>
-        body { background-color: #0b0e14; color: white; font-family: sans-serif; padding: 20px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 900px; background: #161b22; padding: 30px; border-radius: 15px; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { text-align: center; color: #58a6ff; letter-spacing: 1px; margin-bottom: 30px; }
+        :root {
+            --bg-dark: #0b0e14;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --blue-accent: #1f6feb;
+            --green-accent: #238636;
+            --red-accent: #da3633;
+        }
+
+        body { 
+            background-color: var(--bg-dark); 
+            color: white; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container { 
+            width: 100%; 
+            max-width: 900px; 
+            background: var(--card-bg); 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        h2 { text-align: center; color: #58a6ff; font-size: 1.2rem; margin-bottom: 20px; }
+
         table { width: 100%; border-collapse: collapse; }
-        th { background-color: #21262d; color: #8b949e; padding: 15px; text-align: left; font-size: 0.8rem; text-transform: uppercase; }
-        td { border-bottom: 1px solid #30363d; padding: 15px; font-size: 1rem; color: #c9d1d9; }
         
-        /* AJUSTE TÉCNICO DE ICONOS AGRANDADOS */
+        th { 
+            background-color: #21262d; 
+            color: #8b949e; 
+            padding: 12px; 
+            text-align: left; 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+        }
+
+        td { border-bottom: 1px solid var(--border-color); padding: 12px; font-size: 0.9rem; }
+
+        /* CONTENEDOR DE ACCIONES */
+        .actions-cell { display: flex; gap: 8px; flex-wrap: wrap; }
+
         .btn-action { 
             display: inline-flex; 
             align-items: center; 
             justify-content: center; 
-            width: 45px; 
-            height: 45px; 
+            width: 42px; 
+            height: 42px; 
             border-radius: 8px; 
-            margin-right: 8px; 
             border: none; 
             cursor: pointer; 
-            transition: 0.2s; 
-            font-size: 1.4rem; /* TAMAÑO DE ICONO SOLICITADO */
+            font-size: 1.3rem; 
+            transition: transform 0.1s;
         }
-        
-        .btn-view { background: #1f6feb; color: white; }
-        .btn-edit { background: #238636; color: white; }
-        .btn-delete { background: #da3633; color: white; }
-        .btn-action:hover { opacity: 0.8; transform: scale(1.05); }
 
-        .btn-volver { display: block; text-align: center; margin-top: 30px; color: #8b949e; text-decoration: none; font-size: 0.85rem; }
-        .loading { text-align: center; padding: 40px; color: #8b949e; font-style: italic; }
+        .btn-view { background: var(--blue-accent); color: white; }
+        .btn-edit { background: var(--green-accent); color: white; }
+        .btn-delete { background: var(--red-accent); color: white; }
+        .btn-action:active { transform: scale(0.95); }
+
+        /* --- MODO RESPONSIVO PARA CELULARES --- */
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr { display: block; }
+            
+            thead tr { position: absolute; top: -9999px; left: -9999px; }
+            
+            tr { border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 15px; padding: 10px; background: #1c2128; }
+            
+            td { border: none; position: relative; padding-left: 40%; text-align: right; font-size: 0.85rem; }
+            
+            td:before { 
+                position: absolute; left: 10px; width: 35%; text-align: left;
+                font-weight: bold; color: #8b949e; content: attr(data-label);
+            }
+
+            .actions-cell { justify-content: flex-end; margin-top: 10px; }
+            .btn-action { width: 50px; height: 50px; font-size: 1.5rem; } /* Más grande para dedos */
+        }
+
+        .btn-volver { display: block; text-align: center; margin-top: 25px; color: #8b949e; text-decoration: none; font-size: 0.8rem; }
+        .loading { text-align: center; padding: 30px; color: #8b949e; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>📋 REGISTROS EN LA NUBE</h2>
-    <div id="status" class="loading">Sincronizando con la base de datos de Inge...</div>
+    <div id="status" class="loading">Sincronizando con Inge...</div>
     
     <table id="tabla-pacientes" style="display: none;">
         <thead>
@@ -54,7 +111,7 @@
         <tbody id="lista-body"></tbody>
     </table>
     
-    <a href="menu_visor.html" class="btn-volver">← VOLVER AL PANEL DE GESTIÓN</a>
+    <a href="menu_visor.html" class="btn-volver">← VOLVER AL PANEL</a>
 </div>
 
 <script>
@@ -75,19 +132,19 @@
             pacientes.forEach(p => {
                 listaBody.innerHTML += `
                     <tr>
-                        <td><strong>${p.id}</strong></td>
-                        <td>${p.apellido} ${p.nombre}</td>
-                        <td>${p.ci}</td>
-                        <td style="display: flex;">
-                            <button class="btn-action btn-view" title="Ver Reporte" onclick="verReporte(${p.id})">📄</button>
-                            <button class="btn-action btn-edit" title="Editar" onclick="editarPaciente(${p.id})">✏️</button>
-                            <button class="btn-action btn-delete" title="Eliminar" onclick="eliminarPaciente(${p.id})">🗑️</button>
+                        <td data-label="ID">#${p.id}</td>
+                        <td data-label="PACIENTE"><strong>${p.apellido} ${p.nombre}</strong></td>
+                        <td data-label="C.I.">${p.ci}</td>
+                        <td class="actions-cell">
+                            <button class="btn-action btn-view" onclick="verReporte(${p.id})">📄</button>
+                            <button class="btn-action btn-edit" onclick="editarPaciente(${p.id})">✏️</button>
+                            <button class="btn-action btn-delete" onclick="eliminarPaciente(${p.id})">🗑️</button>
                         </td>
                     </tr>
                 `;
             });
         } catch (error) {
-            status.innerHTML = "❌ ERROR: No se pudo conectar con el Backend en Render.";
+            status.innerHTML = "❌ ERROR: No se detecta conexión con el Inge-Backend.";
             console.error(error);
         }
     }
@@ -103,8 +160,9 @@
     }
 
     async function eliminarPaciente(id) {
-        if (confirm(`⚠️ Inge, ¿Confirma la ELIMINACIÓN PERMANENTE del ID ${id}?`)) {
-            alert("Endpoint de borrado pendiente en main.py para el siguiente paso.");
+        if (confirm(`⚠️ Inge, ¿Confirma ELIMINAR al paciente con ID ${id}?`)) {
+            // Próximo paso: Programar el DELETE en main.py
+            alert("Acción de borrado se habilitará tras actualizar el main.py.");
         }
     }
 
