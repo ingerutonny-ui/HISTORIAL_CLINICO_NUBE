@@ -59,8 +59,8 @@
     }
 
     function prepararReporte(id) {
-        // Solo guardamos el ID. El reporte se encargará de pedir todo lo demás.
-        localStorage.setItem('p_id', id);
+        // Guardamos el ID con una clave clara
+        localStorage.setItem('p_id_reporte', id);
         window.location.href = 'reporte_oficial.html';
     }
 
