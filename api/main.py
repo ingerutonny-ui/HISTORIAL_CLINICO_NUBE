@@ -42,13 +42,38 @@ async def save_paciente(request: Request, db: Session = Depends(get_db)):
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
-# NUEVA RUTA: Para que el reporte cargue los datos de un paciente específico
+# RUTA UNIFICADA: Cruza datos de Paciente y Filiación (P1) para el reporte
 @app.get("/pacientes/{paciente_id}")
 def get_paciente(paciente_id: int, db: Session = Depends(get_db)):
+    # 1. Buscar datos básicos del paciente
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    return paciente
+    
+    # 2. Buscar datos de la Sección P1 (Filiación)
+    filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
+    
+    # 3. Construir respuesta unificada para mapear todos los campos del reporte
+    return {
+        "id": paciente.id,
+        "codigo_paciente": paciente.codigo_paciente,
+        "nombre": paciente.nombre,
+        "apellido": paciente.apellido,
+        "ci": paciente.ci,
+        "fecha_nacimiento": paciente.fecha_nacimiento,
+        # Datos desde Filiacion (si no existen, devuelve "---")
+        "sexo": filiacion.sexo if filiacion else "---",
+        "edad": filiacion.edad if filiacion else "---",
+        "estado_civil": filiacion.estado_civil if filiacion else "---",
+        "lugar_nacimiento": filiacion.lugar_nacimiento if filiacion else "---",
+        "domicilio": filiacion.domicilio if filiacion else "---",
+        "n_casa": filiacion.n_casa if filiacion else "---",
+        "zona_barrio": filiacion.zona_barrio if filiacion else "---",
+        "ciudad": filiacion.ciudad if filiacion else "---",
+        "pais": filiacion.pais if filiacion else "---",
+        "telefono": filiacion.telefono if filiacion else "---",
+        "profesion_oficio": filiacion.profesion_oficio if filiacion else "---"
+    }
 
 # --- RUTAS DE SECCIONES (P1, P2, P3) ---
 
