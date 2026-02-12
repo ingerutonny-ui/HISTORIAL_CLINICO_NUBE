@@ -1,43 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte Oficial Completo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { background-color: #525659; font-family: Arial, sans-serif; padding: 20px; }
+        .hoja-a4 { width: 210mm; min-height: 297mm; padding: 15mm; margin: auto; background: white; }
+        table { width: 100%; border-collapse: collapse; border: 1px solid black; margin-bottom: 10px; }
+        td { border: 1px solid black; padding: 5px; font-size: 9pt; }
+        .bg-azul { background-color: #d9e1f2; font-weight: bold; }
+        .valor { font-weight: bold; text-transform: uppercase; }
+        @media print { .no-print { display: none; } }
+    </style>
+</head>
+<body>
+
+<div class="no-print" style="text-align: center; margin-bottom: 20px;">
+    <button onclick="window.history.back()">VOLVER</button>
+    <button onclick="exportarPDF()">DESCARGAR PDF</button>
+</div>
+
+<div id="area-reporte" class="hoja-a4">
+    <table>
+        <tr><td colspan="4" class="bg-azul">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
+        <tr>
+            <td>NOMBRE:</td><td colspan="3" class="valor" id="p_full_name">...</td>
+        </tr>
+        <tr>
+            <td>CI:</td><td class="valor" id="p_ci">...</td>
+            <td>EDAD:</td><td class="valor" id="p_edad">...</td>
+        </tr>
+        <tr>
+            <td>DOMICILIO:</td><td colspan="3" class="valor" id="p_domicilio">...</td>
+        </tr>
+    </table>
+
+    </div>
+
 <script>
     async function cargarDatos() {
-        const fechaElem = document.getElementById('p_fecha_hoy');
-        if(fechaElem) fechaElem.innerText = new Date().toLocaleDateString();
-
         const id = localStorage.getItem('p_id_reporte');
         if(!id) return;
 
-        const API_BASE = "https://historial-clinico-936s.onrender.com";
+        const API = "https://historial-clinico-936s.onrender.com";
 
         try {
-            // PETICIÓN 1: DATOS BÁSICOS
-            const resP = await fetch(`${API_BASE}/pacientes/${id}`);
-            if (resP.ok) {
-                const p = await resP.json();
-                document.getElementById('p_codigo').innerText = p.codigo_paciente || '---';
-                document.getElementById('p_full_name').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
-                document.getElementById('p_ci').innerText = p.ci || '---';
-                document.getElementById('p_fecha_nac').innerText = p.fecha_nacimiento || '---';
-            }
+            const res = await fetch(`${API}/pacientes/${id}`);
+            const data = await res.json();
+            
+            const p = data.paciente;
+            const f = data.filiacion;
 
-            // PETICIÓN 2: FILIACIÓN (P1)
-            const resF = await fetch(`${API_BASE}/filiacion/${id}`);
-            if (resF.ok) {
-                const f = await resF.json();
-                const mapping = {
-                    'p_edad': f.edad, 'p_sexo': f.sexo, 'p_estado_civil': f.estado_civil,
-                    'p_lugar_nac': f.lugar_nacimiento, 'p_domicilio': f.domicilio,
-                    'p_n_casa': f.n_casa, 'p_zona_barrio': f.zona_barrio,
-                    'p_ciudad': f.ciudad, 'p_pais': f.pais, 'p_telf': f.telefono,
-                    'p_profesion': f.profesion_oficio
-                };
-                for (const [idField, valor] of Object.entries(mapping)) {
-                    const el = document.getElementById(idField);
-                    if (el) el.innerText = valor || '---';
-                }
-            }
+            // MAPEO COMPLETO P1
+            document.getElementById('p_full_name').innerText = `${p.apellido} ${p.nombre}`;
+            document.getElementById('p_ci').innerText = p.ci;
+            document.getElementById('p_edad').innerText = f.edad || '---';
+            document.getElementById('p_domicilio').innerText = f.domicilio || '---';
+            
+            // Aquí puedes continuar mapeando P2 y P3 usando data.p2 y data.p3
+
         } catch (e) {
-            console.error("Error:", e);
+            console.error("Error cargando reporte:", e);
         }
     }
+
+    function exportarPDF() {
+        const element = document.getElementById('area-reporte');
+        html2pdf().from(element).save('Reporte_Clinico.pdf');
+    }
+
     window.onload = cargarDatos;
 </script>
+</body>
+</html>
