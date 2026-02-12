@@ -25,24 +25,22 @@
                     <th>ACCIONES</th>
                 </tr>
             </thead>
-            <tbody id="tabla_pacientes">
-                </tbody>
+            <tbody id="tabla_pacientes"></tbody>
         </table>
     </div>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    let listaGlobal = [];
 
     async function cargarPacientes() {
         try {
             const res = await fetch(`${API}/pacientes/`);
-            listaGlobal = await res.json();
+            const pacientes = await res.json();
             const tbody = document.getElementById('tabla_pacientes');
             tbody.innerHTML = '';
 
-            listaGlobal.forEach(p => {
+            pacientes.forEach(p => {
                 tbody.innerHTML += `
                     <tr>
                         <td><b>${p.codigo_paciente}</b></td>
@@ -61,16 +59,9 @@
     }
 
     function prepararReporte(id) {
-        // Buscamos el objeto completo en nuestra lista local
-        const paciente = listaGlobal.find(item => item.id === id);
-        
-        if (paciente) {
-            // "LA MALETA": Guardamos el objeto completo para que el reporte no tenga que preguntar al servidor
-            localStorage.setItem('paciente_activo', JSON.stringify(paciente));
-            window.location.href = 'generar_reporte.html';
-        } else {
-            alert("Error: No se pudieron recuperar los datos del paciente.");
-        }
+        // Solo guardamos el ID. El reporte se encargará de pedir todo lo demás.
+        localStorage.setItem('p_id', id);
+        window.location.href = 'reporte_oficial.html';
     }
 
     window.onload = cargarPacientes;
