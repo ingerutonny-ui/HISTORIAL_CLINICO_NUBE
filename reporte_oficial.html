@@ -6,112 +6,55 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { background-color: #525659; font-family: Arial, sans-serif; padding: 20px; margin: 0; }
-        .hoja-a4 {
-            width: 210mm; min-height: 297mm; padding: 15mm;
-            margin: auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
+        .hoja-a4 { width: 210mm; min-height: 297mm; padding: 15mm; margin: auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
         table { width: 100%; border-collapse: collapse; border: 1.2px solid black; margin-bottom: 10px; table-layout: fixed; }
-        td { border: 1px solid black; padding: 6px; font-size: 8.5pt; overflow: hidden; height: 20px; vertical-align: middle; }
+        td { border: 1px solid black; padding: 6px; font-size: 8.5pt; height: 20px; vertical-align: middle; }
         .bg-azul { background-color: #d9e1f2; font-weight: bold; }
         .bg-gris { background-color: #f2f2f2; text-align: center; font-weight: bold; font-size: 8pt; text-decoration: underline; }
         .label { font-weight: bold; background-color: #f9f9f9; width: 130px; }
         .valor { font-weight: bold; text-transform: uppercase; color: #000; padding-left: 5px; }
-        @media print { .no-print { display: none; } .hoja-a4 { box-shadow: none; border: none; margin: 0; } }
+        @media print { .no-print { display: none; } .hoja-a4 { box-shadow: none; border: none; } }
     </style>
 </head>
 <body>
-
 <div class="no-print" style="text-align: center; margin-bottom: 20px;">
-    <button onclick="window.history.back()" style="padding: 10px 20px; cursor: pointer;">← VOLVER</button>
-    <button onclick="exportarPDF()" style="padding: 10px 20px; cursor: pointer; background: #198754; color: white; border: none; font-weight: bold; margin-left: 10px;">DESCARGAR PDF</button>
+    <button onclick="window.history.back()">← VOLVER</button>
+    <button onclick="exportarPDF()" style="background: #198754; color: white; font-weight: bold; margin-left: 10px;">DESCARGAR PDF</button>
 </div>
-
 <div id="area-reporte" class="hoja-a4">
     <table>
         <tr>
-            <td colspan="2" style="text-align: center; width: 20%;">
-                <img src="logo.png" alt="logo" style="max-height: 60px;">
+            <td colspan="2" style="text-align: center;"><img src="logo.png" style="max-height: 60px;"></td>
+            <td colspan="6" style="text-align: center;">
+                <h3 style="margin: 0;">PROYECTO EN LA NUBE</h3>
+                <p style="margin: 0; font-weight: bold;">DECLARACIÓN JURADA DE SALUD - REPORTE OFICIAL</p>
             </td>
-            <td colspan="6" style="text-align: center; width: 60%;">
-                <h3 style="margin: 0; font-size: 13pt;">PROYECTO EN LA NUBE</h3>
-                <p style="margin: 0; font-weight: bold; font-size: 10pt;">DECLARACIÓN JURADA DE SALUD - REPORTE OFICIAL</p>
-            </td>
-            <td colspan="2" style="width: 20%; font-size: 8pt;">
-                <b>ID:</b> <span id="p_codigo">---</span><br>
-                <b>FECHA:</b> <span id="p_fecha_hoy"></span>
-            </td>
+            <td colspan="2" style="font-size: 8pt;"><b>ID:</b> <span id="p_codigo">---</span><br><b>FECHA:</b> <span id="p_fecha_hoy"></span></td>
         </tr>
-        <tr>
-            <td colspan="10" class="bg-gris">POR FAVOR LEA CON CUIDADO Y ESCRIBA CON LETRA CLARA</td>
-        </tr>
+        <tr><td colspan="10" class="bg-gris">POR FAVOR LEA CON CUIDADO Y ESCRIBA CON LETRA CLARA</td></tr>
     </table>
-
     <table>
         <tr><td colspan="10" class="bg-azul">I. AFILIACIÓN DEL TRABAJADOR</td></tr>
-        <tr>
-            <td colspan="2" class="label">APELLIDOS Y NOMBRES:</td>
-            <td colspan="8" class="valor" id="p_full_name">Cargando...</td>
-        </tr>
-        <tr>
-            <td colspan="1" class="label">EDAD:</td>
-            <td colspan="2" class="valor" id="p_edad"></td>
-            <td colspan="1" class="label">SEXO:</td>
-            <td colspan="2" class="valor" id="p_sexo"></td>
-            <td colspan="1" class="label">ESTADO CIVIL:</td>
-            <td colspan="3" class="valor" id="p_estado_civil"></td>
-        </tr>
-        <tr>
-            <td colspan="2" class="label">FECHA NACIMIENTO:</td>
-            <td colspan="3" class="valor" id="p_fecha_nac"></td>
-            <td colspan="2" class="label">LUGAR NAC.:</td>
-            <td colspan="3" class="valor" id="p_lugar_nac"></td>
-        </tr>
-        <tr>
-            <td colspan="2" class="label">DOCUMENTO (C.I.):</td>
-            <td colspan="3" class="valor" id="p_ci"></td>
-            <td colspan="2" class="label">TELÉFONO:</td>
-            <td colspan="3" class="valor" id="p_telf"></td>
-        </tr>
-        <tr>
-            <td colspan="2" class="label">DOMICILIO / CALLE:</td>
-            <td colspan="5" class="valor" id="p_domicilio"></td>
-            <td colspan="1" class="label">NÚMERO:</td>
-            <td colspan="2" class="valor" id="p_n_casa"></td>
-        </tr>
-        <tr>
-            <td colspan="1" class="label">BARRIO:</td>
-            <td colspan="3" class="valor" id="p_zona_barrio"></td>
-            <td colspan="1" class="label">CIUDAD:</td>
-            <td colspan="2" class="valor" id="p_ciudad"></td>
-            <td colspan="1" class="label">PAÍS:</td>
-            <td colspan="2" class="valor" id="p_pais"></td>
-        </tr>
-        <tr>
-            <td colspan="2" class="label">PROFESIÓN O LABOR:</td>
-            <td colspan="8" class="valor" id="p_profesion"></td>
-        </tr>
+        <tr><td colspan="2" class="label">APELLIDOS Y NOMBRES:</td><td colspan="8" class="valor" id="p_full_name">Cargando...</td></tr>
+        <tr><td colspan="1" class="label">EDAD:</td><td colspan="2" class="valor" id="p_edad"></td><td colspan="1" class="label">SEXO:</td><td colspan="2" class="valor" id="p_sexo"></td><td colspan="1" class="label">ESTADO CIVIL:</td><td colspan="3" class="valor" id="p_estado_civil"></td></tr>
+        <tr><td colspan="2" class="label">FECHA NACIMIENTO:</td><td colspan="3" class="valor" id="p_fecha_nac"></td><td colspan="2" class="label">LUGAR NAC.:</td><td colspan="3" class="valor" id="p_lugar_nac"></td></tr>
+        <tr><td colspan="2" class="label">DOCUMENTO (C.I.):</td><td colspan="3" class="valor" id="p_ci"></td><td colspan="2" class="label">TELÉFONO:</td><td colspan="3" class="valor" id="p_telf"></td></tr>
+        <tr><td colspan="2" class="label">DOMICILIO / CALLE:</td><td colspan="5" class="valor" id="p_domicilio"></td><td colspan="1" class="label">NÚMERO:</td><td colspan="2" class="valor" id="p_n_casa"></td></tr>
+        <tr><td colspan="1" class="label">BARRIO:</td><td colspan="3" class="valor" id="p_zona_barrio"></td><td colspan="1" class="label">CIUDAD:</td><td colspan="2" class="valor" id="p_ciudad"></td><td colspan="1" class="label">PAÍS:</td><td colspan="2" class="valor" id="p_pais"></td></tr>
+        <tr><td colspan="2" class="label">PROFESIÓN O LABOR:</td><td colspan="8" class="valor" id="p_profesion"></td></tr>
     </table>
 </div>
-
 <script>
     document.getElementById('p_fecha_hoy').innerText = new Date().toLocaleDateString();
-
     async function cargarDatos() {
         const id = localStorage.getItem('p_id_reporte');
-        
-        if(!id) {
-            document.getElementById('p_full_name').innerText = "ERROR: ID NO RECIBIDO";
-            return;
-        }
-
+        if(!id) return;
         try {
-            // URL con barra final para asegurar compatibilidad con Render
             const res = await fetch(`https://historial-clinico-936s.onrender.com/pacientes/${id}/`);
             const p = await res.json();
-            
             if(p && !p.detail) {
                 document.getElementById('p_codigo').innerText = p.codigo_paciente || '---';
-                document.getElementById('p_full_name').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
+                document.getElementById('p_full_name').innerText = `${p.apellido} ${p.nombre}`;
                 document.getElementById('p_edad').innerText = p.edad || '---';
                 document.getElementById('p_sexo').innerText = p.sexo || '---';
                 document.getElementById('p_fecha_nac').innerText = p.fecha_nacimiento || '---';
@@ -125,26 +68,13 @@
                 document.getElementById('p_pais').innerText = p.pais || '---';
                 document.getElementById('p_telf').innerText = p.telefono || '---';
                 document.getElementById('p_profesion').innerText = p.profesion_oficio || '---';
-            } else {
-                document.getElementById('p_full_name').innerText = "PACIENTE NO ENCONTRADO";
             }
-        } catch (e) {
-            console.error("Error cargando reporte:", e);
-            document.getElementById('p_full_name').innerText = "ERROR DE CONEXIÓN CON API";
-        }
+        } catch (e) { console.error("Error:", e); }
     }
-
     function exportarPDF() {
         const element = document.getElementById('area-reporte');
-        html2pdf().set({
-            margin: 0,
-            filename: 'Reporte_Declaracion_Jurada.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(element).save();
+        html2pdf().set({ margin: 0, filename: 'Reporte_P1.pdf', html2canvas: { scale: 3 }, jsPDF: { format: 'a4' } }).from(element).save();
     }
-
     window.onload = cargarDatos;
 </script>
 </body>
