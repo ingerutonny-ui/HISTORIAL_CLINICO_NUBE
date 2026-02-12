@@ -2,128 +2,100 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>REPORTE MÉDICO COMPLETO</title>
+    <title>REPORTE MÉDICO OFICIAL</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f0f2f5; padding: 20px; font-family: 'Segoe UI', Tahoma, sans-serif; }
-        #hoja-pdf { width: 190mm; min-height: 275mm; padding: 15mm; margin: auto; background: white; border: 1px solid #333; }
-        .tabla-reporte { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        .tabla-reporte td { border: 1px solid black; padding: 6px; font-size: 8.5pt; }
-        .encabezado { background-color: #e9ecef !important; font-weight: bold; text-align: center; text-transform: uppercase; }
-        .bold-label { font-weight: bold; background-color: #f8f9fa; width: 25%; }
-        .dato-valor { font-weight: 600; text-transform: uppercase; }
-        @media print { .no-print { display: none; } #hoja-pdf { border: none; } }
+        body { background-color: #525659; padding: 30px; }
+        #hoja { width: 190mm; min-height: 275mm; padding: 15mm; margin: auto; background: white; }
+        .tabla { width: 100%; border: 1px solid black; border-collapse: collapse; margin-bottom: 15px; }
+        .tabla td { border: 1px solid black; padding: 6px; font-size: 9pt; }
+        .titulo { background: #e9ecef; font-weight: bold; text-align: center; text-transform: uppercase; }
+        .label { font-weight: bold; background: #f8f9fa; width: 25%; }
+        .valor { font-weight: bold; text-transform: uppercase; padding-left: 10px; }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
 
 <div class="text-center no-print mb-4">
-    <button onclick="window.location.href='visor_historial.html'" class="btn btn-danger">VOLVER AL VISOR</button>
-    <button onclick="descargarPDF()" class="btn btn-success fw-bold">DESCARGAR REPORTE (PDF)</button>
+    <button onclick="window.history.back()" class="btn btn-danger">VOLVER</button>
+    <button onclick="descargarPDF()" class="btn btn-success fw-bold">DESCARGAR REPORTE PDF</button>
 </div>
 
-<div id="hoja-pdf">
+<div id="hoja">
     <h4 class="text-center fw-bold text-decoration-underline mb-4">DECLARACIÓN JURADA DE SALUD</h4>
 
-    <table class="tabla-reporte">
-        <tr><td colspan="4" class="encabezado">I. DATOS DE IDENTIFICACIÓN (P1)</td></tr>
+    <table class="tabla">
+        <tr><td colspan="4" class="titulo">I. AFILIACIÓN (P1)</td></tr>
+        <tr><td class="label">PACIENTE:</td><td class="valor" id="p1_nombre" colspan="3"></td></tr>
         <tr>
-            <td class="bold-label">NOMBRES Y APELLIDOS:</td>
-            <td colspan="3" class="dato-valor" id="r_nombre">CARGANDO...</td>
+            <td class="label">C.I.:</td><td class="valor" id="p1_ci"></td>
+            <td class="label">EDAD:</td><td class="valor" id="p1_edad"></td>
         </tr>
         <tr>
-            <td class="bold-label">C.I.:</td><td class="dato-valor" id="r_ci">---</td>
-            <td class="bold-label">EDAD:</td><td class="dato-valor" id="r_edad">---</td>
-        </tr>
-        <tr>
-            <td class="bold-label">EMPRESA:</td><td class="dato-valor" id="r_empresa">---</td>
-            <td class="bold-label">OCUPACIÓN:</td><td class="dato-valor" id="r_ocupacion">---</td>
-        </tr>
-        <tr>
-            <td class="bold-label">TELÉFONO:</td><td class="dato-valor" id="r_telf">---</td>
-            <td class="bold-label">E-MAIL:</td><td class="dato-valor" id="r_email">---</td>
+            <td class="label">EMPRESA:</td><td class="valor" id="p1_empresa"></td>
+            <td class="label">OCUPACIÓN:</td><td class="valor" id="p1_ocupacion"></td>
         </tr>
     </table>
 
-    <table class="tabla-reporte">
-        <tr><td colspan="4" class="encabezado">II. ANTECEDENTES PATOLÓGICOS Y CLÍNICOS (P2)</td></tr>
-        <tbody id="grid_p2"></tbody>
+    <table class="tabla">
+        <tr><td colspan="4" class="titulo">II. ANTECEDENTES (P2)</td></tr>
+        <tbody id="p2_body"></tbody>
     </table>
 
-    <table class="tabla-reporte">
-        <tr><td colspan="4" class="encabezado">III. HÁBITOS Y ESTILO DE VIDA (P3)</td></tr>
-        <tbody id="grid_p3"></tbody>
+    <table class="tabla">
+        <tr><td colspan="2" class="titulo">III. HÁBITOS (P3)</td></tr>
+        <tbody id="p3_body"></tbody>
     </table>
 
-    <div style="margin-top: 60px; display: flex; justify-content: space-around; text-align: center; font-size: 10pt;">
-        <div>__________________________<br>FIRMA DEL TRABAJADOR<br><b id="f_paciente"></b></div>
+    <div style="margin-top: 60px; display: flex; justify-content: space-around; text-align: center;">
+        <div>__________________________<br>FIRMA DEL TRABAJADOR<br><b id="f_nombre"></b></div>
         <div>__________________________<br>MÉDICO EVALUADOR</div>
     </div>
 </div>
 
 <script>
-    const API_URL = 'https://historial-clinico-936s.onrender.com';
-    const pacienteID = localStorage.getItem('p_id');
+    const API = 'https://historial-clinico-936s.onrender.com';
+    const p_id = localStorage.getItem('p_id');
 
-    async function initReporte() {
+    async function cargar() {
         try {
-            const response = await fetch(`${API_URL}/pacientes/${pacienteID}`);
-            const data = await response.json();
+            const res = await fetch(`${API}/pacientes/${p_id}`);
+            const p = await res.json();
 
-            if (data && !data.detail) {
-                // Llenar P1
-                document.getElementById('r_nombre').innerText = `${data.apellido} ${data.nombre}`;
-                document.getElementById('f_paciente').innerText = `${data.apellido} ${data.nombre}`;
-                document.getElementById('r_ci').innerText = data.ci || '---';
-                document.getElementById('r_edad').innerText = data.edad || '---';
-                document.getElementById('r_empresa').innerText = data.empresa || '---';
-                document.getElementById('r_ocupacion').innerText = data.ocupacion || '---';
-                document.getElementById('r_telf').innerText = data.telefono || '---';
-                document.getElementById('r_email').innerText = data.email || '---';
+            if (p && !p.detail) {
+                // P1
+                document.getElementById('p1_nombre').innerText = `${p.apellido} ${p.nombre}`;
+                document.getElementById('f_nombre').innerText = `${p.apellido} ${p.nombre}`;
+                document.getElementById('p1_ci').innerText = p.ci || '---';
+                document.getElementById('p1_edad').innerText = p.edad || '---';
+                document.getElementById('p1_empresa').innerText = p.empresa || '---';
+                document.getElementById('p1_ocupacion').innerText = p.ocupacion || '---';
 
-                // Mapear P2
-                const p2Fields = [
-                    ['ALERGIAS', data.alergias], ['CIRUGÍAS', data.cirugias], 
-                    ['DIABETES', data.diabetes], ['HIPERTENSIÓN', data.hipertension],
-                    ['ASMA', data.asma], ['EPILÉPSIA', data.epilepsia], 
-                    ['RIÑONES', data.rinones], ['CORAZÓN', data.corazon]
+                // P2 - Mapeo completo
+                const camposP2 = [
+                    ['ALERGIAS', p.alergias], ['CIRUGIAS', p.cirugias], ['DIABETES', p.diabetes], ['HIPERTENSION', p.hipertension],
+                    ['ASMA', p.asma], ['EPILEPSIA', p.epilepsia], ['GASTRITIS', p.gastritis], ['CORAZON', p.corazon]
                 ];
-                let p2Html = "";
-                for(let i=0; i<p2Fields.length; i+=2) {
-                    p2Html += `<tr>
-                        <td class="bold-label">${p2Fields[i][0]}:</td><td class="dato-valor">${p2Fields[i][1] || 'NO'}</td>
-                        <td class="bold-label">${p2Fields[i+1][0]}:</td><td class="dato-valor">${p2Fields[i+1][1] || 'NO'}</td>
-                    </tr>`;
+                let h2 = "";
+                for(let i=0; i<camposP2.length; i+=2){
+                    h2 += `<tr><td class="label">${camposP2[i][0]}:</td><td class="valor">${camposP2[i][1] || 'NO'}</td><td class="label">${camposP2[i+1][0]}:</td><td class="valor">${camposP2[i+1][1] || 'NO'}</td></tr>`;
                 }
-                document.getElementById('grid_p2').innerHTML = p2Html;
+                document.getElementById('p2_body').innerHTML = h2;
 
-                // Mapear P3
-                const p3Fields = [['FUMA', data.fuma], ['ALCOHOL', data.alcohol], ['DEPORTES', data.deportes]];
-                document.getElementById('grid_p3').innerHTML = p3Fields.map(f => `
-                    <tr><td class="bold-label">${f[0]}</td><td colspan="3" class="dato-valor">${f[1] || '---'}</td></tr>
-                `).join('');
-
-            } else {
-                alert("No se pudieron cargar los datos del paciente.");
+                // P3
+                const camposP3 = [['FUMA', p.fuma], ['ALCOHOL', p.alcohol], ['DROGAS', p.drogas], ['DEPORTES', p.deportes]];
+                document.getElementById('p3_body').innerHTML = camposP3.map(c => `<tr><td class="label">${c[0]}:</td><td class="valor">${c[1] || '---'}</td></tr>`).join('');
             }
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        } catch (e) { console.error(e); }
     }
 
     function descargarPDF() {
-        const element = document.getElementById('hoja-pdf');
-        html2pdf().set({
-            margin: 10,
-            filename: 'Declaracion_Salud.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        }).from(element).save();
+        const element = document.getElementById('hoja');
+        html2pdf().from(element).save('Declaracion_Jurada.pdf');
     }
-
-    window.onload = initReporte;
+    window.onload = cargar;
 </script>
 </body>
 </html>
