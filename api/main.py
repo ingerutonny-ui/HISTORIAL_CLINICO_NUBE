@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
-# Solo crea tablas si NO existen. Ya no borra nada.
+# Solo crea tablas si NO existen.
 models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
@@ -27,6 +27,8 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
+# --- RUTAS DE PACIENTES ---
+
 @app.post("/pacientes/")
 async def save_paciente(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -35,6 +37,20 @@ async def save_paciente(request: Request, db: Session = Depends(get_db)):
     if not paciente:
         paciente = crud.create_paciente(db, data)
     return paciente
+
+@app.get("/pacientes/")
+def list_pacientes(db: Session = Depends(get_db)):
+    return db.query(models.Paciente).all()
+
+# NUEVA RUTA: Para que el reporte cargue los datos de un paciente específico
+@app.get("/pacientes/{paciente_id}")
+def get_paciente(paciente_id: int, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return paciente
+
+# --- RUTAS DE SECCIONES (P1, P2, P3) ---
 
 @app.post("/filiacion/")
 async def save_filiacion(request: Request, db: Session = Depends(get_db)):
@@ -59,7 +75,3 @@ async def save_p3(request: Request, db: Session = Depends(get_db)):
         return crud.create_p3(db, data)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
-
-@app.get("/pacientes/")
-def list_pacientes(db: Session = Depends(get_db)):
-    return db.query(models.Paciente).all()
