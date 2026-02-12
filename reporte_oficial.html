@@ -23,7 +23,7 @@
 
 <div class="no-print" style="text-align: center; margin-bottom: 20px;">
     <button onclick="window.history.back()">← VOLVER</button>
-    <button onclick="exportarPDF()" style="background: #198754; color: white; font-weight: bold; margin-left: 10px; padding: 5px 15px; cursor: pointer;">DESCARGAR PDF</button>
+    <button onclick="exportarPDF()" style="background: #198754; color: white; font-weight: bold; margin-left: 10px; padding: 5px 15px; cursor: pointer; border: none;">DESCARGAR PDF</button>
 </div>
 
 <div id="area-reporte" class="hoja-a4">
@@ -83,26 +83,24 @@
     document.getElementById('p_fecha_hoy').innerText = new Date().toLocaleDateString();
 
     async function cargarDatos() {
-        // Pequeña espera para asegurar que el localStorage esté disponible
-        await new Promise(resolve => setTimeout(resolve, 300));
-        
         const id = localStorage.getItem('p_id_reporte');
-        console.log("Intentando cargar ID:", id);
+        console.log("ID recuperado:", id);
 
-        if(!id || id === "undefined") {
-            document.getElementById('p_full_name').innerText = "ERROR: ID NO ENCONTRADO";
+        if(!id) {
+            document.getElementById('p_full_name').innerText = "ERROR: SIN ID";
             return;
         }
 
         try {
-            const url = `https://historial-clinico-936s.onrender.com/pacientes/${id}/`;
+            // URL sin la barra diagonal al final para evitar el 404 de Render
+            const url = `https://historial-clinico-936s.onrender.com/pacientes/${id}`;
             const res = await fetch(url);
             
-            if (!res.ok) throw new Error("No se encontró el paciente en el servidor");
+            if (!res.ok) throw new Error("Error en respuesta de red");
 
             const p = await res.json();
             
-            // Mapeo manual y seguro de los 14 campos
+            // Llenado de campos P1
             document.getElementById('p_codigo').innerText = p.codigo_paciente || '---';
             document.getElementById('p_full_name').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
             document.getElementById('p_edad').innerText = p.edad || '---';
@@ -120,21 +118,20 @@
             document.getElementById('p_profesion').innerText = p.profesion_oficio || '---';
 
         } catch (e) {
-            console.error("Error en el reporte:", e);
-            document.getElementById('p_full_name').innerText = "ERROR AL CONECTAR CON LA NUBE";
+            console.error("Error cargando datos:", e);
+            document.getElementById('p_full_name').innerText = "ERROR AL CARGAR DATOS DE PACIENTE";
         }
     }
 
     function exportarPDF() {
         const element = document.getElementById('area-reporte');
-        const opt = {
+        html2pdf().set({
             margin: 0,
             filename: 'Reporte_P1.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 3, useCORS: true },
+            html2canvas: { scale: 3 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
+        }).from(element).save();
     }
 
     window.onload = cargarDatos;
