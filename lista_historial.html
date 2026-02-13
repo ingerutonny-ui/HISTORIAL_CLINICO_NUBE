@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista CRUD - Mobile Ready</title>
+    <title>HC NUBE | GESTIÓN DE HISTORIALES</title>
     <style>
         :root {
             --bg-dark: #0b0e14;
@@ -12,92 +12,91 @@
             --blue-accent: #1f6feb;
             --green-accent: #238636;
             --red-accent: #da3633;
+            --text-gray: #8b949e;
         }
 
         body { 
             background-color: var(--bg-dark); 
             color: white; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
             margin: 0; 
-            padding: 10px;
+            padding: 15px;
             display: flex;
             justify-content: center;
         }
 
         .container { 
             width: 100%; 
-            max-width: 900px; 
+            max-width: 1000px; 
             background: var(--card-bg); 
-            padding: 20px; 
-            border-radius: 12px; 
+            padding: 25px; 
+            border-radius: 15px; 
             border: 1px solid var(--border-color);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        h2 { text-align: center; color: #58a6ff; font-size: 1.2rem; margin-bottom: 20px; }
+        h2 { text-align: center; color: #58a6ff; font-size: 1.4rem; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
 
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         
         th { 
             background-color: #21262d; 
-            color: #8b949e; 
-            padding: 12px; 
+            color: var(--text-gray); 
+            padding: 15px; 
             text-align: left; 
             font-size: 0.75rem; 
-            text-transform: uppercase; 
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--border-color);
         }
 
-        td { border-bottom: 1px solid var(--border-color); padding: 12px; font-size: 0.9rem; }
+        td { border-bottom: 1px solid var(--border-color); padding: 15px; font-size: 0.9rem; color: #e6edf3; }
 
-        /* CONTENEDOR DE ACCIONES */
-        .actions-cell { display: flex; gap: 8px; flex-wrap: wrap; }
+        .actions-cell { display: flex; gap: 10px; }
 
         .btn-action { 
             display: inline-flex; 
             align-items: center; 
             justify-content: center; 
-            width: 42px; 
-            height: 42px; 
-            border-radius: 8px; 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 10px; 
             border: none; 
             cursor: pointer; 
-            font-size: 1.3rem; 
-            transition: transform 0.1s;
+            font-size: 1.2rem; 
+            transition: 0.2s;
         }
 
         .btn-view { background: var(--blue-accent); color: white; }
         .btn-edit { background: var(--green-accent); color: white; }
         .btn-delete { background: var(--red-accent); color: white; }
-        .btn-action:active { transform: scale(0.95); }
+        
+        .btn-action:hover { opacity: 0.8; transform: translateY(-2px); }
+        .btn-action:active { transform: scale(0.9); }
 
-        /* --- MODO RESPONSIVO PARA CELULARES --- */
-        @media screen and (max-width: 600px) {
+        /* --- RESPONSIVE DESIGN (MOBILE) --- */
+        @media screen and (max-width: 768px) {
             table, thead, tbody, th, td, tr { display: block; }
-            
             thead tr { position: absolute; top: -9999px; left: -9999px; }
-            
-            tr { border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 15px; padding: 10px; background: #1c2128; }
-            
-            td { border: none; position: relative; padding-left: 40%; text-align: right; font-size: 0.85rem; }
-            
+            tr { border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 20px; padding: 15px; background: #1c2128; }
+            td { border: none; position: relative; padding-left: 45%; text-align: right; min-height: 30px; }
             td:before { 
-                position: absolute; left: 10px; width: 35%; text-align: left;
-                font-weight: bold; color: #8b949e; content: attr(data-label);
+                position: absolute; left: 15px; width: 40%; text-align: left;
+                font-weight: 800; color: var(--text-gray); content: attr(data-label); font-size: 0.7rem;
             }
-
-            .actions-cell { justify-content: flex-end; margin-top: 10px; }
-            .btn-action { width: 50px; height: 50px; font-size: 1.5rem; } /* Más grande para dedos */
+            .actions-cell { justify-content: flex-end; margin-top: 15px; border-top: 1px solid #30363d; padding-top: 15px; }
+            .btn-action { width: 50px; height: 50px; font-size: 1.4rem; }
         }
 
-        .btn-volver { display: block; text-align: center; margin-top: 25px; color: #8b949e; text-decoration: none; font-size: 0.8rem; }
-        .loading { text-align: center; padding: 30px; color: #8b949e; }
+        .btn-volver { display: block; text-align: center; margin-top: 30px; color: var(--text-gray); text-decoration: none; font-size: 0.85rem; font-weight: 600; }
+        .btn-volver:hover { color: white; }
+        .loading { text-align: center; padding: 40px; color: #58a6ff; font-weight: 700; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2>📋 REGISTROS EN LA NUBE</h2>
-    <div id="status" class="loading">Sincronizando con Inge...</div>
+    <div id="status" class="loading">⚙️ CONECTANDO CON EL SERVIDOR...</div>
     
     <table id="tabla-pacientes" style="display: none;">
         <thead>
@@ -111,17 +110,19 @@
         <tbody id="lista-body"></tbody>
     </table>
     
-    <a href="menu_visor.html" class="btn-volver">← VOLVER AL PANEL</a>
+    <a href="menu_visor.html" class="btn-volver">← VOLVER AL PANEL DE GESTIÓN</a>
 </div>
 
 <script>
+    const API_URL = 'https://historial-clinico-936s.onrender.com';
+
     async function cargarPacientes() {
         const status = document.getElementById('status');
         const tabla = document.getElementById('tabla-pacientes');
         const listaBody = document.getElementById('lista-body');
 
         try {
-            const response = await fetch('https://historial-clinico-936s.onrender.com/pacientes/');
+            const response = await fetch(`${API_URL}/pacientes/`);
             if (!response.ok) throw new Error("Error en servidor");
             
             const pacientes = await response.json();
@@ -129,6 +130,11 @@
             tabla.style.display = 'table';
 
             listaBody.innerHTML = '';
+            if (pacientes.length === 0) {
+                listaBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay pacientes registrados.</td></tr>';
+                return;
+            }
+
             pacientes.forEach(p => {
                 listaBody.innerHTML += `
                     <tr>
@@ -136,16 +142,16 @@
                         <td data-label="PACIENTE"><strong>${p.apellido} ${p.nombre}</strong></td>
                         <td data-label="C.I.">${p.ci}</td>
                         <td class="actions-cell">
-                            <button class="btn-action btn-view" onclick="verReporte(${p.id})">📄</button>
-                            <button class="btn-action btn-edit" onclick="editarPaciente(${p.id})">✏️</button>
-                            <button class="btn-action btn-delete" onclick="eliminarPaciente(${p.id})">🗑️</button>
+                            <button class="btn-action btn-view" onclick="verReporte(${p.id})" title="Ver Reporte">📄</button>
+                            <button class="btn-action btn-edit" onclick="editarPaciente(${p.id})" title="Editar">✏️</button>
+                            <button class="btn-action btn-delete" onclick="eliminarPaciente(${p.id})" title="Eliminar">🗑️</button>
                         </td>
                     </tr>
                 `;
             });
         } catch (error) {
-            status.innerHTML = "❌ ERROR: No se detecta conexión con el Inge-Backend.";
-            console.error(error);
+            status.innerHTML = "❌ ERROR: No se puede conectar con el Backend.";
+            console.error("Error Inge:", error);
         }
     }
 
@@ -156,13 +162,27 @@
 
     function editarPaciente(id) {
         localStorage.setItem('p_id_edicion', id);
+        // Ajustamos la navegación para editar el flujo desde el inicio
         window.location.href = 'registro_paciente.html';
     }
 
     async function eliminarPaciente(id) {
-        if (confirm(`⚠️ Inge, ¿Confirma ELIMINAR al paciente con ID ${id}?`)) {
-            // Próximo paso: Programar el DELETE en main.py
-            alert("Acción de borrado se habilitará tras actualizar el main.py.");
+        if (confirm(`⚠️ ATENCIÓN: ¿Confirma eliminar al paciente ID #${id} permanentemente?`)) {
+            try {
+                const response = await fetch(`${API_URL}/pacientes/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert("✅ Registro eliminado exitosamente.");
+                    cargarPacientes(); // Recarga la lista automáticamente
+                } else {
+                    const err = await response.json();
+                    alert("❌ ERROR: " + (err.detail || "No se pudo eliminar el registro."));
+                }
+            } catch (error) {
+                alert("❌ ERROR DE RED: Servidor inaccesible.");
+            }
         }
     }
 
