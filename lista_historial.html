@@ -3,150 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | GESTIÓN</title>
+    <title>HISTORIAL CLÍNICO NUBE | LISTADO</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --bg-dark: #0b0e14;
-            --card-bg: #161b22;
-            --border-color: #30363d;
-            --blue-accent: #58a6ff;
-            --red-accent: #da3633;
-            --green-accent: #238636;
-        }
-
-        body { 
-            background-color: var(--bg-dark); 
-            color: white; 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; padding: 15px;
-            display: flex; justify-content: center;
-        }
-
-        .container { 
-            width: 100%; max-width: 1000px; 
-            background: var(--card-bg); 
-            padding: 25px; border-radius: 15px; 
-            border: 1px solid var(--border-color);
-        }
-
-        .header-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--blue-accent);
-            padding-bottom: 15px;
-        }
-
-        h2 { margin: 0; color: var(--blue-accent); font-size: 1.2rem; text-transform: uppercase; }
-
-        /* INGE: Estilo para el Total de Registros */
-        .badge-total {
-            background: #21262d;
-            color: #58a6ff;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            border: 1px solid var(--blue-accent);
-        }
-
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #21262d; color: #8b949e; padding: 15px; text-align: left; font-size: 0.7rem; text-transform: uppercase; }
-        td { border-bottom: 1px solid var(--border-color); padding: 15px; font-size: 0.9rem; }
-
-        .actions-cell { display: flex; gap: 8px; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+        .container { max-width: 1100px; margin-top: 30px; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 4px 20px rgba(0,0,0,0.08); overflow: hidden; }
+        .card-header { background: #1e293b; color: white; padding: 20px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .table thead { background-color: #f8fafc; }
+        .table th { font-size: 0.75rem; font-weight: 800; color: #475569; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
+        .table td { vertical-align: middle; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; color: #1e293b; }
+        
+        /* BOTONES CON ESTILO */
         .btn-action { 
-            width: 38px; height: 38px; border-radius: 8px; border: none; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+            padding: 6px 10px; border-radius: 8px; border: none; font-size: 1.1rem; 
+            transition: 0.3s; margin: 0 2px; cursor: pointer;
         }
-        .btn-view { background: #1f6feb; color: white; }
-        .btn-edit { background: var(--green-accent); color: white; }
-        .btn-delete { background: var(--red-accent); color: white; }
-        .btn-action:hover { transform: scale(1.1); filter: brightness(1.2); }
+        .btn-reporte { background-color: #22c55e; color: white; }
+        .btn-reporte:hover { background-color: #16a34a; transform: scale(1.1); }
+        
+        .btn-editar { background-color: #f59e0b; color: white; }
+        .btn-editar:hover { background-color: #d97706; transform: scale(1.1); }
+        
+        .btn-borrar { background-color: #ef4444; color: white; }
+        .btn-borrar:hover { background-color: #dc2626; transform: scale(1.1); }
 
-        @media (max-width: 600px) {
-            table, thead, tbody, th, td, tr { display: block; }
-            thead tr { position: absolute; top: -9999px; }
-            tr { border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 15px; padding: 10px; background: #1c2128; }
-            td { border: none; position: relative; padding-left: 40%; text-align: right; }
-            td:before { position: absolute; left: 10px; font-weight: bold; color: #8b949e; content: attr(data-label); }
-            .actions-cell { justify-content: flex-end; margin-top: 10px; }
-            .btn-action { width: 45px; height: 45px; }
-        }
+        .top-bar { width: 100%; background: #343a40; padding: 10px 20px; color: white; margin-bottom: 20px; }
+        .top-bar a { color: white; text-decoration: none; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
+<div class="top-bar">
+    <a href="registro_paciente.html">← VOLVER AL REGISTRO</a>
+</div>
+
 <div class="container">
-    <div class="header-flex">
-        <h2>📋 REGISTROS EN LA NUBE</h2>
-        <div id="contador" class="badge-total">TOTAL: 0</div>
+    <div class="card">
+        <div class="card-header text-center">BASE DE DATOS DE PACIENTES - OHS</div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">PACIENTE</th>
+                            <th>CI</th>
+                            <th>CÓDIGO</th>
+                            <th class="text-center">ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaPacientes">
+                        </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-    
-    <div id="status" style="text-align:center; padding:20px; color:#58a6ff;">Sincronizando...</div>
-    
-    <table id="tabla-pacientes" style="display: none;">
-        <thead>
-            <tr>
-                <th>PACIENTE</th>
-                <th>C.I.</th>
-                <th style="text-align: right;">ACCIONES</th>
-            </tr>
-        </thead>
-        <tbody id="lista-body"></tbody>
-    </table>
-    
-    <a href="menu_visor.html" style="display:block; text-align:center; margin-top:25px; color:#8b949e; text-decoration:none; font-size:0.8rem;">← VOLVER AL PANEL</a>
 </div>
 
 <script>
-    const API_URL = 'https://historial-clinico-936s.onrender.com';
+    const API = 'https://historial-clinico-936s.onrender.com';
 
     async function cargarPacientes() {
         try {
-            const response = await fetch(`${API_URL}/pacientes/`);
-            const pacientes = await response.json();
-            
-            document.getElementById('status').style.display = 'none';
-            document.getElementById('tabla-pacientes').style.display = 'table';
-            
-            // INGE: Actualizamos el contador total
-            document.getElementById('contador').innerText = `TOTAL: ${pacientes.length}`;
-
-            const listaBody = document.getElementById('lista-body');
-            listaBody.innerHTML = '';
+            const resp = await fetch(`${API}/pacientes/`);
+            const pacientes = await resp.json();
+            const tabla = document.getElementById('listaPacientes');
+            tabla.innerHTML = "";
 
             pacientes.forEach(p => {
-                listaBody.innerHTML += `
+                tabla.innerHTML += `
                     <tr>
-                        <td data-label="PACIENTE"><strong>${p.apellido} ${p.nombre}</strong></td>
-                        <td data-label="C.I.">${p.ci}</td>
-                        <td class="actions-cell" style="justify-content: flex-end;">
-                            <button class="btn-action btn-view" onclick="verReporte(${p.id})">📄</button>
-                            <button class="btn-action btn-edit" onclick="editarPaciente(${p.id})">✏️</button>
-                            <button class="btn-action btn-delete" onclick="eliminarPaciente(${p.id})">🗑️</button>
+                        <td class="ps-4">${p.apellido} ${p.nombre}</td>
+                        <td>${p.ci}</td>
+                        <td><span class="badge bg-light text-dark border">${p.codigo_paciente}</span></td>
+                        <td class="text-center">
+                            <button class="btn-action btn-reporte" title="REPORTE" onclick="verReporte(${p.id})">📄</button>
+                            <button class="btn-action btn-editar" title="EDITAR" onclick="editarPaciente(${p.id})">✏️</button>
+                            <button class="btn-action btn-borrar" title="BORRAR" onclick="eliminarPaciente(${p.id})">🗑️</button>
                         </td>
                     </tr>
                 `;
             });
-        } catch (error) {
-            document.getElementById('status').innerHTML = "❌ Error de conexión.";
-        }
+        } catch (e) { console.error("Error al cargar lista"); }
+    }
+
+    function verReporte(id) {
+        localStorage.setItem('p_id_reporte', id);
+        window.location.href = "generar_reporte.html";
+    }
+
+    function editarPaciente(id) {
+        localStorage.setItem('p_id_edicion', id); // Activamos modo edición
+        window.location.href = "declaracion_jurada_p1.html";
     }
 
     async function eliminarPaciente(id) {
-        if (confirm(`⚠️ Inge, ¿Confirma ELIMINAR al paciente permanentemente?`)) {
-            const r = await fetch(`${API_URL}/pacientes/${id}`, { method: 'DELETE' });
-            if (r.ok) {
-                alert("Eliminado con éxito.");
-                cargarPacientes();
-            }
+        if (confirm("⚠️ ¿ESTÁ SEGURO DE ELIMINAR ESTE REGISTRO?")) {
+            try {
+                const r = await fetch(`${API}/pacientes/${id}`, { method: 'DELETE' });
+                if (r.ok) cargarPacientes();
+            } catch (e) { alert("ERROR AL ELIMINAR"); }
         }
     }
-
-    function verReporte(id) { localStorage.setItem('p_id_reporte', id); window.location.href = 'reporte_oficial.html'; }
-    function editarPaciente(id) { localStorage.setItem('p_id_edicion', id); window.location.href = 'registro_paciente.html'; }
 
     window.onload = cargarPacientes;
 </script>
