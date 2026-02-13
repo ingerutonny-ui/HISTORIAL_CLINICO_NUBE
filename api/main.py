@@ -30,13 +30,15 @@ def health_check():
 # --- LECTURA PARA CRUD Y REPORTES ---
 @app.get("/api/paciente-completo/{paciente_id}")
 def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
+    # Buscamos el paciente base
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
-    filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
-    p2 = db.query(models.DeclaracionP2).filter(models.DeclaracionP2.paciente_id == paciente_id).first()
-    p3 = db.query(models.DeclaracionP3).filter(models.DeclaracionP3.paciente_id == paciente_id).first()
+    # Sincronización de modelos según tu crud.py
+    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
+    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
+    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
 
     return {
         "paciente": paciente,
@@ -82,3 +84,11 @@ async def save_p3(request: Request, db: Session = Depends(get_db)):
         return crud.create_p3(db, data)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error en P3: {str(e)}")
+
+# --- ACCIÓN DE ELIMINACIÓN (CRUD) ---
+@app.delete("/pacientes/{paciente_id}")
+def delete_paciente_route(paciente_id: int, db: Session = Depends(get_db)):
+    success = crud.delete_paciente(db, paciente_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Inge, el paciente no existe o ya fue eliminado.")
+    return {"status": "success", "message": f"Paciente {paciente_id} eliminado de la nube."}
