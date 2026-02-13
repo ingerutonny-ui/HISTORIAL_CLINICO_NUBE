@@ -39,3 +39,12 @@ def create_p3(db: Session, data: dict):
     db.commit()
     db.refresh(db_obj)
     return db_obj
+
+# --- NUEVA FUNCIÓN DE ELIMINACIÓN ---
+def delete_paciente(db: Session, paciente_id: int):
+    db_obj = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    if db_obj:
+        db.delete(db_obj)
+        db.commit()
+        return True
+    return False
