@@ -8,26 +8,20 @@
     <style>
         body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .form-container { max-width: 950px; margin: 20px auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        
-        /* Ajuste de Títulos */
         .header-title { font-weight: 900; color: #1e293b; font-size: 1.3rem; text-transform: uppercase; }
         .section-header { border-left: 4px solid #22c55e; padding-left: 12px; margin-bottom: 20px; margin-top: 25px; }
         .section-header h3 { color: #1e293b; font-weight: 800; font-size: 1rem; text-transform: uppercase; margin: 0; }
-        
-        /* Ajuste de Letra Mediana */
         .label-custom { font-size: 0.75rem; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 4px; display: block; }
-        .form-control, .form-select { border-radius: 6px; font-size: 0.8rem; text-transform: uppercase; border: 1px solid #e2e8f0; padding: 8px; }
-        
-        /* Botones y Tablas */
-        .btn-add { background-color: #64748b; color: white; border: none; padding: 4px 12px; border-radius: 5px; font-size: 0.7rem; font-weight: 700; margin-bottom: 12px; }
+        .form-control, .form-select { border-radius: 6px; font-size: 0.8rem; text-transform: uppercase; border: 1px solid #e2e8f0; padding: 8px; font-weight: 600; }
+        .btn-add { background-color: #64748b; color: white; border: none; padding: 6px 15px; border-radius: 5px; font-size: 0.7rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; }
         .table-custom { font-size: 0.75rem; }
-        .table-custom th { background-color: #f8fafc; color: #1e293b; font-weight: 700; text-align: center; padding: 10px; }
-        
-        .btn-save { background-color: #22c55e; color: white; border: none; padding: 12px; border-radius: 50px; width: 100%; font-weight: 800; font-size: 0.9rem; margin-top: 30px; transition: 0.3s; }
+        .table-custom th { background-color: #f8fafc; color: #1e293b; font-weight: 700; text-align: center; padding: 10px; text-transform: uppercase; }
+        .btn-save { background-color: #22c55e; color: white; border: none; padding: 15px; border-radius: 50px; width: 100%; font-weight: 800; font-size: 0.9rem; margin-top: 30px; transition: 0.3s; text-transform: uppercase; }
         .btn-save:hover { background-color: #16a34a; transform: translateY(-2px); }
-        
         .check-group { background: #f8fafc; padding: 15px; border-radius: 10px; }
-        .form-check-label { font-size: 0.75rem; font-weight: 600; color: #334155; }
+        .form-check-label { font-size: 0.75rem; font-weight: 800; color: #334155; text-transform: uppercase; }
+        /* Banner de Identidad */
+        .data-banner { background: #f1f5f9; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; color: #1e293b; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -35,47 +29,48 @@
 <div class="form-container">
     <div class="text-center mb-4">
         <h2 class="header-title">3. HÁBITOS Y RIESGOS LABORALES</h2>
-        <p class="text-muted" style="font-size: 0.8rem;">Complete la información final del historial médico legal</p>
+        <div id="modo-txt" style="font-size: 0.7rem; font-weight: 800; color: #94a3b8;">PARTE FINAL 3 / 3</div>
+    </div>
+
+    <div class="data-banner">
+        <div>PACIENTE: <span id="b_paciente">---</span></div>
+        <div>CÓDIGO: <span id="b_codigo">---</span></div>
     </div>
 
     <form id="formP3">
-        <div class="section-header">
-            <h3>I. HÁBITOS</h3>
-        </div>
+        <div class="section-header"><h3>I. HÁBITOS</h3></div>
         <div class="row g-3">
             <div class="col-md-4">
                 <label class="label-custom">FUMA</label>
-                <select id="fuma" class="form-select"><option>NO</option><option>SI</option></select>
-                <input type="text" id="fuma_cant" class="form-control mt-2" placeholder="CANTIDAD">
+                <select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="fuma_cant" class="form-control mt-2" placeholder="CANTIDAD" oninput="this.value=this.value.toUpperCase()">
             </div>
             <div class="col-md-4">
                 <label class="label-custom">ALCOHOL</label>
-                <select id="alcohol" class="form-select"><option>NO</option><option>SI</option></select>
-                <input type="text" id="alc_frec" class="form-control mt-2" placeholder="FRECUENCIA">
+                <select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="alc_frec" class="form-control mt-2" placeholder="FRECUENCIA" oninput="this.value=this.value.toUpperCase()">
             </div>
             <div class="col-md-4">
                 <label class="label-custom">DROGAS</label>
-                <select id="drogas" class="form-select"><option>NO</option><option>SI</option></select>
-                <input type="text" id="dro_tipo" class="form-control mt-2" placeholder="TIPO">
+                <select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="dro_tipo" class="form-control mt-2" placeholder="TIPO" oninput="this.value=this.value.toUpperCase()">
             </div>
             <div class="col-md-4">
                 <label class="label-custom">PIJCHAR (COCA)</label>
-                <select id="coca" class="form-select"><option>NO</option><option>SI</option></select>
+                <select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
             </div>
             <div class="col-md-4">
                 <label class="label-custom">DEPORTES</label>
-                <select id="dep" class="form-select"><option>NO</option><option>SI</option></select>
-                <input type="text" id="dep_det" class="form-control mt-2" placeholder="CUAL/FRECUENCIA">
+                <select id="dep" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+                <input type="text" id="dep_det" class="form-control mt-2" placeholder="CUAL/FRECUENCIA" oninput="this.value=this.value.toUpperCase()">
             </div>
             <div class="col-md-4">
                 <label class="label-custom">GRUPO SANGUÍNEO</label>
-                <input type="text" id="gs" class="form-control" placeholder="EJ. ORH+">
+                <input type="text" id="gs" class="form-control" placeholder="EJ. ORH+" oninput="this.value=this.value.toUpperCase()">
             </div>
         </div>
 
-        <div class="section-header">
-            <h3>II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</h3>
-        </div>
+        <div class="section-header"><h3>II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</h3></div>
         <button type="button" class="btn-add" onclick="agregarFila()">+ AGREGAR FILA</button>
         <div class="table-responsive">
             <table class="table table-bordered table-custom align-middle">
@@ -89,22 +84,11 @@
                         <th style="width: 10%;">EPP</th>
                     </tr>
                 </thead>
-                <tbody id="tablaLaboral">
-                    <tr>
-                        <td><input type="number" class="form-control e-ini"></td>
-                        <td><input type="text" class="form-control emp"></td>
-                        <td><input type="text" class="form-control ocu"></td>
-                        <td><input type="text" class="form-control tie"></td>
-                        <td><input type="text" class="form-control rie"></td>
-                        <td><select class="form-select epp"><option>NO</option><option>SI</option></select></td>
-                    </tr>
-                </tbody>
+                <tbody id="tablaLaboral"></tbody>
             </table>
         </div>
 
-        <div class="section-header">
-            <h3>III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</h3>
-        </div>
+        <div class="section-header"><h3>III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</h3></div>
         <div class="check-group">
             <div class="row g-3">
                 <div class="col-md-3 form-check"><input type="checkbox" class="form-check-input r-check" value="RUIDO"> <label class="form-check-label">RUIDO</label></div>
@@ -118,23 +102,74 @@
             </div>
         </div>
 
-        <button type="submit" id="btnF" class="btn-save">TERMINAR Y GUARDAR REGISTRO 💾</button>
+        <button type="submit" id="btnF" class="btn-save">TERMINAR Y GUARDAR REGISTRO FINAL 💾</button>
     </form>
 </div>
 
 <script>
-    function agregarFila() {
+    const API = 'https://historial-clinico-936s.onrender.com';
+
+    function agregarFila(datos = {}) {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="number" class="form-control e-ini"></td><td><input type="text" class="form-control emp"></td><td><input type="text" class="form-control ocu"></td><td><input type="text" class="form-control tie"></td><td><input type="text" class="form-control rie"></td><td><select class="form-select epp"><option>NO</option><option>SI</option></select></td>`;
+        tr.innerHTML = `
+            <td><input type="number" class="form-control e-ini" value="${datos.edad || ''}"></td>
+            <td><input type="text" class="form-control emp" value="${datos.empresa || ''}" oninput="this.value=this.value.toUpperCase()"></td>
+            <td><input type="text" class="form-control ocu" value="${datos.cargo || ''}" oninput="this.value=this.value.toUpperCase()"></td>
+            <td><input type="text" class="form-control tie" value="${datos.tiempo || ''}" oninput="this.value=this.value.toUpperCase()"></td>
+            <td><input type="text" class="form-control rie" value="${datos.riesgos || ''}" oninput="this.value=this.value.toUpperCase()"></td>
+            <td><select class="form-select epp"><option ${datos.epp === 'NO' ? 'selected' : ''}>NO</option><option ${datos.epp === 'SI' ? 'selected' : ''}>SI</option></select></td>`;
         document.getElementById('tablaLaboral').appendChild(tr);
     }
 
-    const API = 'https://historial-clinico-936s.onrender.com';
-    
+    window.onload = async () => {
+        const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+        if (!id_trabajo) return;
+
+        try {
+            const resp = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
+            const data = await resp.json();
+            
+            document.getElementById('b_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
+            document.getElementById('b_codigo').innerText = data.paciente.codigo_paciente;
+
+            if (data.p3 && data.p3.paciente_id) {
+                document.getElementById('modo-txt').innerText = "MODO EDICIÓN (P3)";
+                document.getElementById('modo-txt').style.color = "#f59e0b";
+                
+                // Cargar Hábitos
+                document.getElementById('fuma').value = data.p3.fuma;
+                document.getElementById('fuma_cant').value = data.p3.fuma_cantidad;
+                document.getElementById('alcohol').value = data.p3.alcohol;
+                document.getElementById('alc_frec').value = data.p3.alcohol_frecuencia;
+                document.getElementById('drogas').value = data.p3.drogas;
+                document.getElementById('dro_tipo').value = data.p3.drogas_tipo;
+                document.getElementById('coca').value = data.p3.coca;
+                document.getElementById('dep').value = data.p3.deporte;
+                document.getElementById('dep_det').value = data.p3.deporte_detalle;
+                document.getElementById('gs').value = data.p3.grupo_sanguineo;
+
+                // Cargar Historia Laboral (JSON)
+                const historia = JSON.parse(data.p3.historia_laboral || '[]');
+                if (historia.length > 0) {
+                    historia.forEach(h => agregarFila(h));
+                } else { agregarFila(); }
+
+                // Cargar Riesgos (JSON)
+                const riesgos = JSON.parse(data.p3.riesgos_expuestos || '[]');
+                document.querySelectorAll('.r-check').forEach(chk => {
+                    if (riesgos.includes(chk.value)) chk.checked = true;
+                });
+            } else {
+                agregarFila(); // Una fila vacía si es nuevo
+            }
+        } catch (err) { console.error("Error cargando P3:", err); agregarFila(); }
+    };
+
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
+        const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
         const b = document.getElementById('btnF');
-        b.innerText = "PROCESANDO...";
+        b.innerText = "⏳ GUARDANDO REGISTRO FINAL...";
         b.disabled = true;
 
         const historia = [];
@@ -143,10 +178,10 @@
             if(e_ini) {
                 historia.push({
                     edad: e_ini,
-                    empresa: tr.querySelector('.emp').value,
-                    cargo: tr.querySelector('.ocu').value,
-                    tiempo: tr.querySelector('.tie').value,
-                    riesgos: tr.querySelector('.rie').value,
+                    empresa: tr.querySelector('.emp').value.toUpperCase(),
+                    cargo: tr.querySelector('.ocu').value.toUpperCase(),
+                    tiempo: tr.querySelector('.tie').value.toUpperCase(),
+                    riesgos: tr.querySelector('.rie').value.toUpperCase(),
                     epp: tr.querySelector('.epp').value
                 });
             }
@@ -155,17 +190,17 @@
         const riesgos = Array.from(document.querySelectorAll('.r-check:checked')).map(c => c.value);
 
         const data = {
-            paciente_id: parseInt(localStorage.getItem('p_id')),
+            paciente_id: parseInt(id_trabajo),
             fuma: document.getElementById('fuma').value,
-            fuma_cantidad: document.getElementById('fuma_cant').value,
+            fuma_cantidad: document.getElementById('fuma_cant').value.toUpperCase(),
             alcohol: document.getElementById('alcohol').value,
-            alcohol_frecuencia: document.getElementById('alc_frec').value,
+            alcohol_frecuencia: document.getElementById('alc_frec').value.toUpperCase(),
             drogas: document.getElementById('drogas').value,
-            drogas_tipo: document.getElementById('dro_tipo').value,
+            drogas_tipo: document.getElementById('dro_tipo').value.toUpperCase(),
             coca: document.getElementById('coca').value,
             deporte: document.getElementById('dep').value,
-            deporte_detalle: document.getElementById('dep_det').value,
-            grupo_sanguineo: document.getElementById('gs').value,
+            deporte_detalle: document.getElementById('dep_det').value.toUpperCase(),
+            grupo_sanguineo: document.getElementById('gs').value.toUpperCase(),
             historia_laboral: JSON.stringify(historia),
             riesgos_expuestos: JSON.stringify(riesgos),
             observaciones: "REGISTRO COMPLETADO"
@@ -178,17 +213,12 @@
                 body: JSON.stringify(data)
             });
             if(r.ok) { 
-                alert("REGISTRO GUARDADO CON ÉXITO EN LA NUBE"); 
+                alert("✅ PROCESO FINALIZADO: HISTORIAL GUARDADO COMPLETO"); 
+                localStorage.removeItem('p_id_edicion'); // Limpiamos modo edición
                 window.location.href="registro_paciente.html"; 
-            } else { 
-                alert("ERROR AL GUARDAR P3."); 
-            }
-        } catch(e) { 
-            alert("ERROR DE CONEXIÓN."); 
-        } finally { 
-            b.innerText = "TERMINAR Y GUARDAR REGISTRO 💾"; 
-            b.disabled = false; 
-        }
+            } else { alert("❌ ERROR AL GUARDAR FINAL."); }
+        } catch(e) { alert("❌ ERROR DE RED."); }
+        finally { b.innerText = "TERMINAR Y GUARDAR REGISTRO FINAL 💾"; b.disabled = false; }
     };
 </script>
 </body>
