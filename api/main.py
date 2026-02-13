@@ -81,6 +81,24 @@ async def save_p2(request: Request, db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error en Parte 2: {str(e)}")
 
+# --- NUEVA RUTA PARA ACTUALIZAR P2 (EVITA ERROR 404) ---
+@app.put("/declaraciones/p2/{paciente_id}")
+async def update_p2(paciente_id: int, request: Request, db: Session = Depends(get_db)):
+    try:
+        data = await request.json()
+        registro = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
+        if not registro:
+            raise HTTPException(status_code=404, detail="Inge, el registro P2 no existe")
+        
+        for key, value in data.items():
+            setattr(registro, key, value)
+        
+        db.commit()
+        db.refresh(registro)
+        return {"status": "success", "message": "Parte 2 actualizada"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error al actualizar Parte 2: {str(e)}")
+
 @app.post("/declaraciones/p3/")
 async def save_p3(request: Request, db: Session = Depends(get_db)):
     try:
