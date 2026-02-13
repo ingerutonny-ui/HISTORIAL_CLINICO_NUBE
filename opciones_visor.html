@@ -38,11 +38,16 @@
             text-decoration: none;
             transition: all 0.3s ease;
             cursor: pointer;
+            box-sizing: border-box; /* Asegura que el padding no desborde */
         }
-        .btn-crud { border-color: #1f6feb; color: #58a6ff; }
-        .btn-crud:hover { background: #1f6feb; color: white; }
+        /* Color verde para la lista (ahora arriba) */
         .btn-lista { border-color: #238636; color: #3fb950; }
         .btn-lista:hover { background: #238636; color: white; }
+
+        /* Color azul para la administración (ahora abajo) */
+        .btn-crud { border-color: #1f6feb; color: #58a6ff; }
+        .btn-crud:hover { background: #1f6feb; color: white; }
+        
         .back-link { color: #8b949e; text-decoration: none; font-size: 0.8rem; margin-top: 20px; display: block; }
     </style>
 </head>
@@ -50,9 +55,9 @@
     <div class="container">
         <h2>SELECCIONE UNA OPCIÓN</h2>
         
-        <a href="menu_visor.html" class="btn btn-crud">⚙️ CRUD</a>
+        <a href="lista_historial.html" class="btn btn-lista">📋 LISTA DE PACIENTES</a>
         
-        <a href="lista_historial.html" class="btn btn-lista">📋 LISTA PACIENTES</a>
+        <a href="menu_visor.html" class="btn btn-crud">⚙️ ADMINISTRAR REGISTROS</a>
         
         <a href="index.html" class="back-link">← VOLVER AL INICIO</a>
     </div>
