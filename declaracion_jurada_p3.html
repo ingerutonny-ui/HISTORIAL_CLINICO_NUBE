@@ -160,15 +160,14 @@
             } else {
                 agregarFila();
             }
-        } catch (err) { console.error("Error cargando P3:", err); agregarFila(); }
+        } catch (err) { console.error("Error:", err); agregarFila(); }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
         const b = document.getElementById('btnF');
-        b.innerText = "⏳ GUARDANDO REGISTRO FINAL...";
-        b.disabled = true;
+        b.innerText = "⏳ GUARDANDO..."; b.disabled = true;
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
@@ -214,7 +213,7 @@
                 body: JSON.stringify(data)
             });
             if(r.ok) { 
-                alert("✅ PROCESO FINALIZADO: HISTORIAL GUARDADO COMPLETO"); 
+                alert("✅ PROCESO FINALIZADO"); 
                 localStorage.removeItem('p_id_edicion');
                 window.location.href="registro_paciente.html"; 
             } else { alert("❌ ERROR AL GUARDAR FINAL."); }
