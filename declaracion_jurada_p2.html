@@ -130,6 +130,7 @@
         });
 
         try {
+            // CORRECCIÓN DE RUTA PARA EVITAR EL ERROR 404
             const url = existeP2 ? `${API}/declaraciones/p2/${id_trabajo}` : `${API}/declaraciones/p2/`;
             const metodo = existeP2 ? 'PUT' : 'POST';
 
