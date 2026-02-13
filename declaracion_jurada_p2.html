@@ -18,6 +18,7 @@
         .data-banner { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; color: #1e293b; text-transform: uppercase; }
         .btn-next { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: 800; text-transform: uppercase; margin-top: 20px; font-size: 13px; transition: 0.3s; }
         .btn-next:hover { background: #16a34a; transform: translateY(-2px); }
+
         @media (max-width: 992px) { .grid-layout { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 600px) { .grid-layout { grid-template-columns: 1fr; } }
     </style>
@@ -44,7 +45,7 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    let existeP2 = false; // Flag para saber si editar o crear
+    let existeP2 = false;
     const fields = [
         {id:"vista", n:"1. VISTA"}, {id:"auditivo", n:"2. AUDITIVO"}, {id:"respiratorio", n:"3. RESPIRATORIO"},
         {id:"cardio", n:"4. CARDIOVASCULARES"}, {id:"digestivos", n:"5. DIGESTIVOS"}, {id:"sangre", n:"6. SANGRE"},
@@ -129,7 +130,6 @@
         });
 
         try {
-            // Si existeP2 es true, usamos PUT, de lo contrario POST
             const url = existeP2 ? `${API}/declaraciones/p2/${id_trabajo}` : `${API}/declaraciones/p2/`;
             const metodo = existeP2 ? 'PUT' : 'POST';
 
