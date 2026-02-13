@@ -30,6 +30,9 @@
 
         .top-bar { width: 100%; background: #343a40; padding: 10px 20px; color: white; margin-bottom: 20px; }
         .top-bar a { color: white; text-decoration: none; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
+
+        /* ESTILO PARA EL CONTADOR */
+        .contador-badge { background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; margin-left: 10px; vertical-align: middle; }
     </style>
 </head>
 <body>
@@ -40,7 +43,10 @@
 
 <div class="container">
     <div class="card">
-        <div class="card-header text-center">BASE DE DATOS DE PACIENTES - OHS</div>
+        <div class="card-header text-center">
+            BASE DE DATOS DE PACIENTES - OHS
+            <span id="totalPacientes" class="contador-badge">Cargando...</span>
+        </div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
@@ -68,7 +74,10 @@
             const resp = await fetch(`${API}/pacientes/`);
             const pacientes = await resp.json();
             const tabla = document.getElementById('listaPacientes');
+            const contador = document.getElementById('totalPacientes');
+            
             tabla.innerHTML = "";
+            contador.innerText = `TOTAL: ${pacientes.length}`; // Actualiza el total de registros
 
             pacientes.forEach(p => {
                 tabla.innerHTML += `
@@ -84,7 +93,10 @@
                     </tr>
                 `;
             });
-        } catch (e) { console.error("Error al cargar lista"); }
+        } catch (e) { 
+            console.error("Error al cargar lista"); 
+            document.getElementById('totalPacientes').innerText = "ERROR";
+        }
     }
 
     function verReporte(id) {
