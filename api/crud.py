@@ -1,11 +1,10 @@
 from sqlalchemy.orm import Session
 from . import models
 
-# INGE: Ahora buscamos por el código único generado (Nombre+Apellido+CI)
+# INGE: Función vital para que el CRUD encuentre al paciente por tu código (EJ: EH2345)
 def get_paciente_by_codigo(db: Session, codigo: str):
     return db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
 
-# Mantenemos CI por si necesitamos validación doble
 def get_paciente_by_ci(db: Session, ci: str):
     return db.query(models.Paciente).filter(models.Paciente.ci == ci).first()
 
@@ -45,7 +44,7 @@ def create_p3(db: Session, data: dict):
     db.refresh(db_obj)
     return db_obj
 
-# INGE: Borrado seguro usando el ID técnico interno para no fallar
+# INGE: Borrado físico del registro por su ID técnico
 def delete_paciente(db: Session, paciente_id: int):
     db_obj = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if db_obj:
