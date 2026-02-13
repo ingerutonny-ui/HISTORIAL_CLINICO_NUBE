@@ -7,93 +7,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; padding: 10px; }
-        
-        .form-container { 
-            max-width: 1200px; 
-            margin: 10px auto; 
-            background: white; 
-            padding: 20px; 
-            border-radius: 15px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-        }
-
-        .header-ohs { 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            border-bottom: 2px solid #22c55e; 
-            padding-bottom: 10px; 
-            margin-bottom: 15px; 
-        }
-        
-        /* FUENTE REDUCIDA PARA PC */
+        .form-container { max-width: 1200px; margin: 10px auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .header-ohs { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px; }
         .title-center h2 { font-size: 1rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin: 0; }
-
-        .grid-layout { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); /* 3 columnas en PC para aprovechar ancho */
-            gap: 10px; 
-        }
-
-        .field-card { 
-            display: flex; 
-            align-items: center; 
-            background: #f8fafc; 
-            padding: 8px 12px; 
-            border-radius: 10px; 
-            border: 1px solid #e2e8f0; 
-        }
-
-        /* TEXTO MÁS PEQUEÑO Y PROFESIONAL */
+        .grid-layout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .field-card { display: flex; align-items: center; background: #f8fafc; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
         .label-text { font-size: 9px; font-weight: 800; color: #475569; flex: 1.2; text-transform: uppercase; }
+        .select-yn { width: 55px; font-size: 11px; border: 1px solid #22c55e; border-radius: 6px; padding: 4px; font-weight: 700; }
+        .input-det { flex: 2; font-size: 11px; border: 1px solid #cbd5e1; border-radius: 6px; margin-left: 8px; text-transform: uppercase; padding: 5px; font-weight: 600; }
+        .data-banner { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; color: #1e293b; text-transform: uppercase; }
+        .btn-next { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: 800; text-transform: uppercase; margin-top: 20px; font-size: 13px; transition: 0.3s; }
+        .btn-next:hover { background: #16a34a; transform: translateY(-2px); }
 
-        .select-yn { 
-            width: 55px; 
-            font-size: 11px; 
-            border: 1px solid #22c55e; 
-            border-radius: 6px; 
-            padding: 4px; 
-            font-weight: 700;
-        }
-
-        .input-det { 
-            flex: 2; 
-            font-size: 11px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 6px; 
-            margin-left: 8px; 
-            text-transform: uppercase; 
-            padding: 5px; 
-        }
-
-        /* EFECTO FANTASMA */
-        .input-det::placeholder { color: rgba(100, 116, 139, 0.35); font-weight: 400; }
-
-        .btn-next { 
-            background: #22c55e; 
-            color: white; 
-            border: none; 
-            padding: 15px; 
-            border-radius: 10px; 
-            width: 100%; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            margin-top: 20px; 
-            font-size: 13px;
-        }
-
-        /* --- AJUSTES DINÁMICOS PARA MÓVIL --- */
-        @media (max-width: 992px) {
-            .grid-layout { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 600px) {
-            .grid-layout { grid-template-columns: 1fr; }
-            .field-card { padding: 15px; }
-            .label-text { font-size: 11px; }
-            .input-det, .select-yn { font-size: 14px; padding: 10px; }
-            .btn-next { padding: 20px; font-size: 15px; }
-        }
+        @media (max-width: 992px) { .grid-layout { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .grid-layout { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -101,13 +28,18 @@
 <div class="form-container">
     <div class="header-ohs">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="35">
-        <div class="title-center"><h2>2. Antecedentes Patológicos</h2></div>
-        <div style="font-size: 9px; font-weight: 800; color: #94a3b8;">P. 2 / 3</div>
+        <div class="title-center"><h2>2. ANTECEDENTES PATOLÓGICOS</h2></div>
+        <div id="modo-indicador" style="font-size: 9px; font-weight: 800; color: #94a3b8;">PARTE 2 / 3</div>
+    </div>
+
+    <div class="data-banner">
+        <div>PACIENTE: <span id="b_paciente">---</span></div>
+        <div>CÓDIGO: <span id="b_codigo">---</span></div>
     </div>
 
     <form id="formP2">
         <div id="gridWrapper" class="grid-layout"></div>
-        <button type="submit" id="btnS" class="btn-next">💾 Guardar y Continuar a Parte 3</button>
+        <button type="submit" id="btnS" class="btn-next">💾 GUARDAR Y CONTINUAR A PARTE 3</button>
     </form>
 </div>
 
@@ -143,21 +75,56 @@
             inp.value = 'NORMAL';
             inp.style.color = "#94a3b8";
         } else {
-            inp.value = '';
+            if(inp.value === 'NORMAL') inp.value = '';
             inp.style.color = "#1e293b";
             inp.focus();
         }
     }
 
+    window.onload = async () => {
+        const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+        if (!id_trabajo) return;
+
+        try {
+            const resp = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
+            const data = await resp.json();
+            
+            document.getElementById('b_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
+            document.getElementById('b_codigo').innerText = data.paciente.codigo_paciente;
+
+            if (data.p2 && data.p2.paciente_id) {
+                document.getElementById('modo-indicador').innerText = "MODO EDICIÓN (P2)";
+                document.getElementById('modo-indicador').style.color = "#f59e0b";
+                
+                fields.forEach(f => {
+                    const valor = data.p2[f.id];
+                    const sel = document.getElementById(`s_${f.id}`);
+                    const inp = document.getElementById(`d_${f.id}`);
+                    
+                    if (valor && valor !== "NORMAL") {
+                        sel.value = "SI";
+                        inp.value = valor;
+                        inp.style.color = "#1e293b";
+                    } else {
+                        sel.value = "NO";
+                        inp.value = "NORMAL";
+                        inp.style.color = "#94a3b8";
+                    }
+                });
+            }
+        } catch (err) { console.error("Error:", err); }
+    };
+
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
+        const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
         const btn = document.getElementById('btnS');
         btn.innerText = "⏳ GUARDANDO..."; btn.disabled = true;
 
-        const data = { paciente_id: parseInt(localStorage.getItem('p_id')) };
+        const data = { paciente_id: parseInt(id_trabajo) };
         fields.forEach(f => {
             const isSi = document.getElementById(`s_${f.id}`).value === "SI";
-            data[f.id] = isSi ? document.getElementById(`d_${f.id}`).value : "NORMAL";
+            data[f.id] = isSi ? document.getElementById(`d_${f.id}`).value.toUpperCase() : "NORMAL";
         });
 
         try {
@@ -167,9 +134,9 @@
                 body: JSON.stringify(data)
             });
             if(r.ok) window.location.href = "declaracion_jurada_p3.html";
-            else alert("❌ Error al guardar.");
-        } catch(e) { alert("❌ Error de red."); }
-        finally { btn.disabled = false; btn.innerText = "💾 Guardar y Continuar a Parte 3"; }
+            else alert("❌ ERROR AL GUARDAR P2.");
+        } catch(e) { alert("❌ ERROR DE RED."); }
+        finally { btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3"; }
     };
 </script>
 </body>
