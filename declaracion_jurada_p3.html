@@ -150,6 +150,7 @@
 
                 const historia = JSON.parse(data.p3.historia_laboral || '[]');
                 if (historia.length > 0) {
+                    document.getElementById('tablaLaboral').innerHTML = ""; // Limpiar para recargar
                     historia.forEach(h => agregarFila(h));
                 } else { agregarFila(); }
 
@@ -204,6 +205,7 @@
         };
 
         try {
+            // Lógica exacta de ruta según existeP3
             const url = existeP3 ? `${API}/declaraciones/p3/${id_trabajo}` : `${API}/declaraciones/p3/`;
             const metodo = existeP3 ? 'PUT' : 'POST';
 
