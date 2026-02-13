@@ -30,14 +30,32 @@ def upsert_filiacion(db: Session, data: dict):
     db.refresh(db_obj)
     return db_obj
 
-def create_p2(db: Session, data: dict):
+# INGE: Modificado para soportar actualización (P2)
+def upsert_p2(db: Session, data: dict):
+    p_id = data.get("paciente_id")
+    existente = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
+    if existente:
+        for key, value in data.items():
+            setattr(existente, key, value)
+        db.commit()
+        db.refresh(existente)
+        return existente
     db_obj = models.AntecedentesP2(**data)
     db.add(db_obj)
     db.commit()
     db.refresh(db_obj)
     return db_obj
 
-def create_p3(db: Session, data: dict):
+# INGE: Modificado para soportar actualización (P3)
+def upsert_p3(db: Session, data: dict):
+    p_id = data.get("paciente_id")
+    existente = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
+    if existente:
+        for key, value in data.items():
+            setattr(existente, key, value)
+        db.commit()
+        db.refresh(existente)
+        return existente
     db_obj = models.HabitosRiesgosP3(**data)
     db.add(db_obj)
     db.commit()
