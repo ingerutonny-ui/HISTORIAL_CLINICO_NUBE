@@ -3,42 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REPORTE MÉDICO INTEGRAL | OHS</title>
+    <title>REPORTE OHS | AFILIACIÓN</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #525659; display: flex; justify-content: center; padding: 20px; margin: 0; }
-        .sheet { width: 210mm; min-height: 297mm; background: white; padding: 15mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 20px; position: relative; }
+        body { font-family: 'Segoe UI', sans-serif; background: #525659; display: flex; justify-content: center; padding: 10px; margin: 0; }
+        .sheet { 
+            width: 210mm; min-height: 297mm; background: white; padding: 15mm; 
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 20px; box-sizing: border-box;
+        }
         
+        /* AJUSTE PARA CELULAR: No se corta, se adapta */
+        @media (max-width: 210mm) {
+            body { background: white; padding: 0; }
+            .sheet { width: 100%; box-shadow: none; padding: 10px; }
+        }
+
         .header { display: flex; align-items: center; border-bottom: 3px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px; }
-        .logo { height: 55px; }
+        .logo { height: 50px; }
         .header-title { flex: 1; text-align: center; }
-        .header-title h1 { margin: 0; font-size: 17px; color: #1e293b; text-transform: uppercase; font-weight: 900; }
+        .header-title h1 { margin: 0; font-size: 16px; color: #1e293b; text-transform: uppercase; font-weight: 900; }
         
-        .section-title { background: #f1f5f9; padding: 5px 10px; font-size: 11px; font-weight: 800; border-left: 5px solid #22c55e; margin: 15px 0 8px 0; text-transform: uppercase; }
+        .section-title { background: #e2e8f0; padding: 5px; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; margin-top: 15px; text-transform: uppercase; }
         
-        /* GRID DE 14 CAMPOS PARA P1 */
-        .data-grid-p1 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 10.5px; }
-        /* GRID DE 22 CAMPOS PARA P2 */
-        .data-grid-p2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; font-size: 9.5px; }
-        
-        .data-item { border-bottom: 1px solid #e2e8f0; padding: 3px 0; display: flex; }
-        .label { font-weight: 800; color: #475569; width: 160px; text-transform: uppercase; font-size: 9px; }
-        .val { color: #1e293b; font-weight: 700; text-transform: uppercase; flex: 1; }
+        /* TABLA DE AFILIACIÓN IGUAL A TU CAPTURA */
+        .afiliacion-table { width: 100%; border-collapse: collapse; margin-top: 0; font-size: 10px; }
+        .afiliacion-table td { border: 1px solid #000; padding: 4px; vertical-align: top; text-transform: uppercase; }
+        .label-sm { font-size: 8px; font-weight: 800; display: block; margin-bottom: 2px; }
+        .val-sm { font-weight: 700; color: #1e293b; }
 
-        .table-report { width: 100%; border-collapse: collapse; font-size: 9.5px; margin-top: 10px; }
-        .table-report th { background: #f8fafc; border: 1px solid #cbd5e1; padding: 5px; text-align: left; text-transform: uppercase; }
-        .table-report td { border: 1px solid #cbd5e1; padding: 5px; text-transform: uppercase; }
+        .table-report { width: 100%; border-collapse: collapse; font-size: 9px; margin-top: 10px; }
+        .table-report th, .table-report td { border: 1px solid #cbd5e1; padding: 4px; text-transform: uppercase; }
 
-        .riesgos-box { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
-        .riesgo-tag { border: 1.5px solid #22c55e; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: 800; background: #f0fdf4; color: #16a34a; text-transform: uppercase; }
+        .riesgos-box { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+        .riesgo-tag { border: 1px solid #22c55e; padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 800; background: #f0fdf4; }
 
-        .footer-sign { margin-top: 40px; display: flex; justify-content: space-around; text-align: center; font-size: 10px; }
-        .sign-line { border-top: 1.5px solid #1e293b; width: 220px; margin-top: 35px; padding-top: 5px; font-weight: 800; text-transform: uppercase; }
+        .footer-sign { margin-top: 30px; display: flex; justify-content: space-around; text-align: center; font-size: 10px; }
+        .sign-line { border-top: 1px solid #000; width: 200px; margin-top: 30px; padding-top: 5px; font-weight: 800; }
 
         @media print {
             body { background: white; padding: 0; }
-            .sheet { box-shadow: none; width: 100%; margin: 0; padding: 10mm; }
+            .sheet { width: 100%; box-shadow: none; margin: 0; }
             .no-print { display: none; }
-            .page-break { page-break-before: always; }
         }
     </style>
 </head>
@@ -49,148 +53,117 @@
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
         <div class="header-title">
             <h1>Historial Clínico Ocupacional</h1>
-            <div style="font-size: 9px; font-weight: 700;">ESTADO PLURINACIONAL DE BOLIVIA</div>
+            <div style="font-size: 9px;">ESTADO PLURINACIONAL DE BOLIVIA</div>
         </div>
-        <button class="no-print" onclick="window.print()" style="cursor:pointer; background:#22c55e; color:white; border:none; padding:8px 15px; border-radius:5px; font-weight:800; text-transform:uppercase; font-size:10px;">IMPRIMIR PDF 📄</button>
+        <button class="no-print" onclick="window.print()" style="cursor:pointer; background:#22c55e; color:white; border:none; padding:8px; border-radius:5px; font-weight:800;">PDF 📄</button>
     </div>
 
-    <div class="section-title">I. Identificación del Paciente (P1)</div>
-    <div class="data-grid-p1">
-        <div class="data-item"><span class="label">Paciente:</span> <span class="val" id="r_paciente">---</span></div>
-        <div class="data-item"><span class="label">Cédula Identidad:</span> <span class="val" id="r_ci">---</span></div>
-        <div class="data-item"><span class="label">Código Interno:</span> <span class="val" id="r_cod">---</span></div>
-        <div class="data-item"><span class="label">Edad:</span> <span class="val" id="r_edad">---</span></div>
-        <div class="data-item"><span class="label">Sexo:</span> <span class="val" id="r_sexo">---</span></div>
-        <div class="data-item"><span class="label">Fecha Nacimiento:</span> <span class="val" id="r_f_nac">---</span></div>
-        <div class="data-item"><span class="label">Lugar Nacimiento:</span> <span class="val" id="r_l_nac">---</span></div>
-        <div class="data-item"><span class="label">Estado Civil:</span> <span class="val" id="r_e_civil">---</span></div>
-        <div class="data-item"><span class="label">Grado Instrucción:</span> <span class="val" id="r_instruc">---</span></div>
-        <div class="data-item"><span class="label">Hijos (N°):</span> <span class="val" id="r_hijos">---</span></div>
-        <div class="data-item"><span class="label">Ocupación Actual:</span> <span class="val" id="r_ocup">---</span></div>
-        <div class="data-item"><span class="label">Dirección:</span> <span class="val" id="r_dir">---</span></div>
-        <div class="data-item"><span class="label">Teléfono/Celular:</span> <span class="val" id="r_tel">---</span></div>
-        <div class="data-item"><span class="label">Grupo Sanguíneo:</span> <span class="val" id="r_gs">---</span></div>
-    </div>
+    <div class="section-title">AFILIACIÓN DEL TRABAJADOR</div>
+    <table class="afiliacion-table">
+        <tr>
+            <td colspan="4"><span class="label-sm">APELLIDOS Y NOMBRES</span> <span class="val-sm" id="r_paciente">---</span></td>
+        </tr>
+        <tr>
+            <td style="width:15%"><span class="label-sm">EDAD</span> <span class="val-sm" id="r_edad">---</span></td>
+            <td style="width:15%"><span class="label-sm">SEXO</span> <span class="val-sm" id="r_sexo">---</span></td>
+            <td style="width:35%"><span class="label-sm">FECHA DE NACIMIENTO (D/M/A)</span> <span class="val-sm" id="r_f_nac">---</span></td>
+            <td style="width:35%"><span class="label-sm">LUGAR DE NACIMIENTO</span> <span class="val-sm" id="r_l_nac">---</span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">DOCUMENTO DE IDENTIDAD</span> <span class="val-sm" id="r_ci">---</span></td>
+            <td colspan="2"><span class="label-sm">CÓDIGO INTERNO</span> <span class="val-sm" id="r_cod">---</span></td>
+        </tr>
+        <tr>
+            <td colspan="3"><span class="label-sm">DOMICILIO: AV./CALLE</span> <span class="val-sm" id="r_dir">---</span></td>
+            <td><span class="label-sm">NUMERO</span> <span class="val-sm" id="r_num">---</span></td>
+        </tr>
+        <tr>
+            <td><span class="label-sm">BARRIO</span> <span class="val-sm" id="r_barrio">---</span></td>
+            <td colspan="2"><span class="label-sm">CIUDAD</span> <span class="val-sm" id="r_ciudad">---</span></td>
+            <td><span class="label-sm">PAÍS</span> <span class="val-sm" id="r_pais">---</span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">TELÉFONO</span> <span class="val-sm" id="r_tel">---</span></td>
+            <td><span class="label-sm">ESTADO CIVIL</span> <span class="val-sm" id="r_e_civil">---</span></td>
+            <td><span class="label-sm">PROFESION O LABOR</span> <span class="val-sm" id="r_profesion">---</span></td>
+        </tr>
+        <tr>
+            <td colspan="2"><span class="label-sm">GRUPO SANGUÍNEO</span> <span class="val-sm" id="r_gs">---</span></td>
+            <td colspan="2"><span class="label-sm">GRADO DE INSTRUCCIÓN</span> <span class="val-sm" id="r_instruc">---</span></td>
+        </tr>
+    </table>
 
-    <div class="section-title">II. Antecedentes Patológicos y Revisión de Sistemas (P2)</div>
-    <div class="data-grid-p2" id="grid_p2">
-        </div>
+    <div class="section-title">ANTECEDENTES PATOLÓGICOS (P2)</div>
+    <div id="grid_p2" style="display:grid; grid-template-columns: 1fr 1fr; gap:2px; font-size:9px;"></div>
 
-    <div class="section-title">III. Hábitos y Estilos de Vida (P3)</div>
-    <div class="data-grid-p1">
-        <div class="data-item"><span class="label">Fuma:</span> <span class="val" id="r_fuma">---</span></div>
-        <div class="data-item"><span class="label">Alcohol:</span> <span class="val" id="r_alcohol">---</span></div>
-        <div class="data-item"><span class="label">Drogas:</span> <span class="val" id="r_drogas">---</span></div>
-        <div class="data-item"><span class="label">Pijchar (Coca):</span> <span class="val" id="r_coca">---</span></div>
-        <div class="data-item"><span class="label">Deportes:</span> <span class="val" id="r_deporte">---</span></div>
-        <div class="data-item"><span class="label">Obs. Finales:</span> <span class="val" id="r_obs">---</span></div>
-    </div>
-
-    <div class="section-title">IV. Antecedentes Laborales Recientes</div>
+    <div class="section-title">HISTORIA LABORAL Y RIESGOS (P3)</div>
     <table class="table-report">
         <thead>
-            <tr>
-                <th style="width: 8%;">EDAD</th>
-                <th style="width: 25%;">EMPRESA</th>
-                <th style="width: 22%;">CARGO/OCUPACIÓN</th>
-                <th style="width: 15%;">TIEMPO (AÑOS)</th>
-                <th style="width: 22%;">RIESGOS</th>
-                <th style="width: 8%;">EPP</th>
-            </tr>
+            <tr><th>Edad</th><th>Empresa</th><th>Cargo</th><th>Tiempo</th><th>Riesgos</th><th>EPP</th></tr>
         </thead>
         <tbody id="r_tabla_laboral"></tbody>
     </table>
-
-    <div class="section-title">V. Riesgos Expuestos Durante su Vida Laboral</div>
+    
     <div class="riesgos-box" id="r_riesgos_box"></div>
 
     <div class="footer-sign">
-        <div class="sign-line">Firma del Paciente</div>
-        <div class="sign-line">Firma Médico Evaluador</div>
+        <div class="sign-line">FIRMA DEL PACIENTE</div>
+        <div class="sign-line">FIRMA MÉDICO EVALUADOR</div>
     </div>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    const fields_p2 = [
-        "vista", "auditivo", "respiratorio", "cardio", "digestivos", "sangre",
-        "genitourinario", "sistema_nervioso", "psiquiatricos", "osteomusculares",
-        "reumatologicos", "dermatologicas", "alergias", "cirugias", "infecciones",
-        "acc_personales", "acc_trabajo", "medicamentos", "endocrino", "familiares",
-        "otros_especificos", "generales"
-    ];
+    const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
 
     window.onload = async () => {
         const p_id = localStorage.getItem('p_id_reporte');
-        if (!p_id) return alert("NO SE ENCONTRÓ ID DE PACIENTE");
-
+        if (!p_id) return;
         try {
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
 
-            // 1. LLENAR DATOS PERSONALES (14 CAMPOS)
+            // P1 MAPEO EXACTO CAPTURA
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('r_ci').innerText = data.paciente.ci;
             document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
             
             if (data.p1) {
-                document.getElementById('r_edad').innerText = data.p1.edad;
-                document.getElementById('r_sexo').innerText = data.p1.sexo;
-                document.getElementById('r_f_nac').innerText = data.p1.fecha_nacimiento;
-                document.getElementById('r_l_nac').innerText = data.p1.lugar_nacimiento;
-                document.getElementById('r_e_civil').innerText = data.p1.estado_civil;
-                document.getElementById('r_instruc').innerText = data.p1.grado_instruccion;
-                document.getElementById('r_hijos').innerText = data.p1.hijos;
-                document.getElementById('r_ocup').innerText = data.p1.ocupacion;
-                document.getElementById('r_dir').innerText = data.p1.direccion;
-                document.getElementById('r_tel').innerText = data.p1.telefono;
+                document.getElementById('r_edad').innerText = data.p1.edad || '---';
+                document.getElementById('r_sexo').innerText = data.p1.sexo || '---';
+                document.getElementById('r_f_nac').innerText = data.p1.fecha_nacimiento || '---';
+                document.getElementById('r_l_nac').innerText = data.p1.lugar_nacimiento || '---';
+                document.getElementById('r_dir').innerText = data.p1.direccion || '---';
+                document.getElementById('r_e_civil').innerText = data.p1.estado_civil || '---';
+                document.getElementById('r_tel').innerText = data.p1.telefono || '---';
+                document.getElementById('r_instruc').innerText = data.p1.grado_instruccion || '---';
+                // Campos que agregaste en el formulario anterior
+                document.getElementById('r_barrio').innerText = data.p1.barrio || '---';
+                document.getElementById('r_ciudad').innerText = data.p1.ciudad || '---';
+                document.getElementById('r_pais').innerText = data.p1.pais || '---';
+                document.getElementById('r_profesion').innerText = data.p1.ocupacion || '---';
             }
 
-            // 2. LLENAR ANTECEDENTES (22 CAMPOS)
+            // P2
             const gridP2 = document.getElementById('grid_p2');
             if (data.p2) {
                 gridP2.innerHTML = fields_p2.map(f => `
-                    <div class="data-item">
-                        <span class="label">${f.replace(/_/g,' ').toUpperCase()}:</span> 
-                        <span class="val">${data.p2[f] || 'NORMAL'}</span>
-                    </div>
-                `).join('');
+                    <div style="border-bottom:0.5px solid #eee; padding:2px;">
+                        <b style="font-size:8px;">${f.toUpperCase()}:</b> ${data.p2[f]}
+                    </div>`).join('');
             }
 
-            // 3. LLENAR HÁBITOS Y EXTRAS
+            // P3
             if (data.p3) {
-                document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo;
-                document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad || '0'})`;
-                document.getElementById('r_alcohol').innerText = `${data.p3.alcohol} (${data.p3.alcohol_frecuencia || 'N/A'})`;
-                document.getElementById('r_drogas').innerText = `${data.p3.drogas} (${data.p3.drogas_tipo || 'N/A'})`;
-                document.getElementById('r_coca').innerText = data.p3.coca;
-                document.getElementById('r_deporte').innerText = `${data.p3.deporte} (${data.p3.deporte_detalle || 'N/A'})`;
-                document.getElementById('r_obs').innerText = data.p3.observaciones || 'SIN OBSERVACIONES';
-
-                // Tabla Laboral Dinámica
+                document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
                 const historia = JSON.parse(data.p3.historia_laboral || '[]');
-                document.getElementById('r_tabla_laboral').innerHTML = historia.length > 0 ? historia.map(h => `
-                    <tr>
-                        <td>${h.edad}</td>
-                        <td>${h.empresa}</td>
-                        <td>${h.cargo}</td>
-                        <td>${h.tiempo}</td>
-                        <td>${h.riesgos}</td>
-                        <td>${h.epp}</td>
-                    </tr>
-                `).join('') : '<tr><td colspan="6" style="text-align:center;">SIN ANTECEDENTES REGISTRADOS</td></tr>';
-
-                // Etiquetas de Riesgos
+                document.getElementById('r_tabla_laboral').innerHTML = historia.map(h => `
+                    <tr><td>${h.edad}</td><td>${h.empresa}</td><td>${h.cargo}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>
+                `).join('');
                 const riesgos = JSON.parse(data.p3.riesgos_expuestos || '[]');
-                document.getElementById('r_riesgos_box').innerHTML = riesgos.length > 0 ? riesgos.map(r => `
-                    <span class="riesgo-tag">${r}</span>
-                `).join('') : '<span style="font-size:9px; color:#94a3b8;">NINGUNO SELECCIONADO</span>';
+                document.getElementById('r_riesgos_box').innerHTML = riesgos.map(r => `<span class="riesgo-tag">${r}</span>`).join('');
             }
-
-        } catch (err) {
-            console.error(err);
-            alert("ERROR CRÍTICO AL RECUPERAR DATOS DEL SERVIDOR RENDER.");
-        }
+        } catch (e) { console.error(e); }
     }
 </script>
 </body>
