@@ -8,97 +8,91 @@
     <style>
         body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; padding: 10px; }
         
-        /* AJUSTE INGE: Contenedor Adaptable */
         .form-container { 
-            max-width: 1100px; 
-            margin: 15px auto; 
+            max-width: 1200px; 
+            margin: 10px auto; 
             background: white; 
-            padding: 25px; 
-            border-radius: 25px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.06); 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
         }
 
         .header-ohs { 
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            border-bottom: 3px solid #22c55e; 
-            padding-bottom: 15px; 
-            margin-bottom: 20px; 
+            border-bottom: 2px solid #22c55e; 
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
         }
         
-        .title-center h2 { font-size: 1.1rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin: 0; }
+        /* FUENTE REDUCIDA PARA PC */
+        .title-center h2 { font-size: 1rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin: 0; }
 
-        /* AJUSTE INGE: Grid Inteligente (2 col en PC, 1 col en Móvil) */
         .grid-layout { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-            gap: 15px; 
+            grid-template-columns: repeat(3, 1fr); /* 3 columnas en PC para aprovechar ancho */
+            gap: 10px; 
         }
 
-        /* AJUSTE INGE: Tarjetas de campo más grandes para tacto */
         .field-card { 
             display: flex; 
             align-items: center; 
             background: #f8fafc; 
-            padding: 15px; 
-            border-radius: 15px; 
-            border: 1px solid #e2e8f0; 
-            transition: 0.3s;
-        }
-        .field-card:focus-within { border-color: #22c55e; background: #fff; }
-
-        .label-text { font-size: 11px; font-weight: 800; color: #475569; flex: 1; text-transform: uppercase; padding-right: 5px; }
-
-        /* AJUSTE INGE: Selects y Inputs escalados */
-        .select-yn { 
-            width: 70px; 
-            font-size: 14px; 
-            border: 2px solid #22c55e; 
+            padding: 8px 12px; 
             border-radius: 10px; 
-            padding: 8px; 
+            border: 1px solid #e2e8f0; 
+        }
+
+        /* TEXTO MÁS PEQUEÑO Y PROFESIONAL */
+        .label-text { font-size: 9px; font-weight: 800; color: #475569; flex: 1.2; text-transform: uppercase; }
+
+        .select-yn { 
+            width: 55px; 
+            font-size: 11px; 
+            border: 1px solid #22c55e; 
+            border-radius: 6px; 
+            padding: 4px; 
             font-weight: 700;
-            background: white;
         }
 
         .input-det { 
-            flex: 1.8; 
-            font-size: 14px; 
-            border: 2px solid #cbd5e1; 
-            border-radius: 10px; 
-            margin-left: 10px; 
+            flex: 2; 
+            font-size: 11px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px; 
+            margin-left: 8px; 
             text-transform: uppercase; 
-            padding: 10px; 
-            font-weight: 600;
+            padding: 5px; 
         }
 
-        /* AJUSTE INGE: Efecto Fantasma */
-        .input-det::placeholder { color: rgba(100, 116, 139, 0.4); font-weight: 400; }
+        /* EFECTO FANTASMA */
+        .input-det::placeholder { color: rgba(100, 116, 139, 0.35); font-weight: 400; }
 
         .btn-next { 
             background: #22c55e; 
             color: white; 
             border: none; 
-            padding: 22px; 
-            border-radius: 18px; 
+            padding: 15px; 
+            border-radius: 10px; 
             width: 100%; 
             font-weight: 800; 
             text-transform: uppercase; 
-            margin-top: 30px; 
-            font-size: 16px;
-            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
-            transition: 0.3s;
+            margin-top: 20px; 
+            font-size: 13px;
         }
-        .btn-next:hover { background: #16a34a; transform: translateY(-2px); }
 
-        /* --- AJUSTES ESPECÍFICOS MÓVIL --- */
+        /* --- AJUSTES DINÁMICOS PARA MÓVIL --- */
+        @media (max-width: 992px) {
+            .grid-layout { grid-template-columns: repeat(2, 1fr); }
+        }
+
         @media (max-width: 600px) {
-            .header-ohs img { height: 35px; }
-            .title-center h2 { font-size: 0.9rem; }
-            .field-card { flex-wrap: wrap; gap: 10px; }
-            .label-text { min-width: 100%; margin-bottom: 5px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-            .select-yn { width: 30%; }
-            .input-det { flex: 1; margin-left: 5px; }
+            .grid-layout { grid-template-columns: 1fr; }
+            .field-card { padding: 15px; }
+            .label-text { font-size: 11px; }
+            .input-det, .select-yn { font-size: 14px; padding: 10px; }
+            .btn-next { padding: 20px; font-size: 15px; }
         }
     </style>
 </head>
@@ -106,9 +100,9 @@
 
 <div class="form-container">
     <div class="header-ohs">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="45">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="35">
         <div class="title-center"><h2>2. Antecedentes Patológicos</h2></div>
-        <div style="font-size: 10px; font-weight: 800; color: #94a3b8; text-align: right;">P. 2 / 3</div>
+        <div style="font-size: 9px; font-weight: 800; color: #94a3b8;">P. 2 / 3</div>
     </div>
 
     <form id="formP2">
@@ -132,7 +126,6 @@
         {id:"generales", n:"22. GENERALES"}
     ];
 
-    // INGE: Generación de cards con escalado de tamaño y placeholder fantasma
     document.getElementById('gridWrapper').innerHTML = fields.map(f => `
         <div class="field-card shadow-sm">
             <span class="label-text">${f.n}</span>
@@ -140,7 +133,7 @@
                 <option value="NO">NO</option>
                 <option value="SI">SI</option>
             </select>
-            <input type="text" class="input-det" id="d_${f.id}" value="NORMAL" placeholder="DESCRIPCIÓN..." oninput="this.value=this.value.toUpperCase()">
+            <input type="text" class="input-det" id="d_${f.id}" value="NORMAL" placeholder="DESCRIBA..." oninput="this.value=this.value.toUpperCase()">
         </div>`).join('');
 
     function cambioInput(id) {
@@ -148,10 +141,10 @@
         const inp = document.getElementById(`d_${id}`);
         if(sel.value === 'NO') {
             inp.value = 'NORMAL';
-            inp.style.opacity = "0.6";
+            inp.style.color = "#94a3b8";
         } else {
             inp.value = '';
-            inp.style.opacity = "1";
+            inp.style.color = "#1e293b";
             inp.focus();
         }
     }
@@ -159,7 +152,7 @@
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO EN LA NUBE..."; btn.disabled = true;
+        btn.innerText = "⏳ GUARDANDO..."; btn.disabled = true;
 
         const data = { paciente_id: parseInt(localStorage.getItem('p_id')) };
         fields.forEach(f => {
@@ -173,17 +166,10 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            if(r.ok) {
-                window.location.href = "declaracion_jurada_p3.html";
-            } else {
-                alert("❌ ERROR: No se pudieron guardar los antecedentes.");
-            }
-        } catch(e) { 
-            alert("❌ FALLO DE RED: Verifique su conexión."); 
-        } finally { 
-            btn.disabled = false; 
-            btn.innerText = "💾 Guardar y Continuar a Parte 3"; 
-        }
+            if(r.ok) window.location.href = "declaracion_jurada_p3.html";
+            else alert("❌ Error al guardar.");
+        } catch(e) { alert("❌ Error de red."); }
+        finally { btn.disabled = false; btn.innerText = "💾 Guardar y Continuar a Parte 3"; }
     };
 </script>
 </body>
