@@ -20,7 +20,6 @@
         .btn-save:hover { background-color: #16a34a; transform: translateY(-2px); }
         .check-group { background: #f8fafc; padding: 15px; border-radius: 10px; }
         .form-check-label { font-size: 0.75rem; font-weight: 800; color: #334155; text-transform: uppercase; }
-        /* Banner de Identidad */
         .data-banner { background: #f1f5f9; padding: 12px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; color: #1e293b; text-transform: uppercase; }
     </style>
 </head>
@@ -108,6 +107,7 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
+    let existeP3 = false;
 
     function agregarFila(datos = {}) {
         const tr = document.createElement('tr');
@@ -133,10 +133,10 @@
             document.getElementById('b_codigo').innerText = data.paciente.codigo_paciente;
 
             if (data.p3 && data.p3.paciente_id) {
+                existeP3 = true;
                 document.getElementById('modo-txt').innerText = "MODO EDICIÓN (P3)";
                 document.getElementById('modo-txt').style.color = "#f59e0b";
                 
-                // Cargar Hábitos
                 document.getElementById('fuma').value = data.p3.fuma;
                 document.getElementById('fuma_cant').value = data.p3.fuma_cantidad;
                 document.getElementById('alcohol').value = data.p3.alcohol;
@@ -148,19 +148,17 @@
                 document.getElementById('dep_det').value = data.p3.deporte_detalle;
                 document.getElementById('gs').value = data.p3.grupo_sanguineo;
 
-                // Cargar Historia Laboral (JSON)
                 const historia = JSON.parse(data.p3.historia_laboral || '[]');
                 if (historia.length > 0) {
                     historia.forEach(h => agregarFila(h));
                 } else { agregarFila(); }
 
-                // Cargar Riesgos (JSON)
                 const riesgos = JSON.parse(data.p3.riesgos_expuestos || '[]');
                 document.querySelectorAll('.r-check').forEach(chk => {
                     if (riesgos.includes(chk.value)) chk.checked = true;
                 });
             } else {
-                agregarFila(); // Una fila vacía si es nuevo
+                agregarFila();
             }
         } catch (err) { console.error("Error cargando P3:", err); agregarFila(); }
     };
@@ -207,14 +205,17 @@
         };
 
         try {
-            const r = await fetch(`${API}/declaraciones/p3/`, {
-                method: 'POST',
+            const url = existeP3 ? `${API}/declaraciones/p3/${id_trabajo}` : `${API}/declaraciones/p3/`;
+            const metodo = existeP3 ? 'PUT' : 'POST';
+
+            const r = await fetch(url, {
+                method: metodo,
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
             if(r.ok) { 
                 alert("✅ PROCESO FINALIZADO: HISTORIAL GUARDADO COMPLETO"); 
-                localStorage.removeItem('p_id_edicion'); // Limpiamos modo edición
+                localStorage.removeItem('p_id_edicion');
                 window.location.href="registro_paciente.html"; 
             } else { alert("❌ ERROR AL GUARDAR FINAL."); }
         } catch(e) { alert("❌ ERROR DE RED."); }
