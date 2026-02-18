@@ -3,16 +3,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# Ruta absoluta al DISK persistente
-SQLALCHEMY_DATABASE_URL = "sqlite:////data/historial.db"
+# BLINDAJE: El sistema buscará la URL de PostgreSQL configurada en Render
+# Si no la encuentra, fallará, protegiendo la integridad de la conexión
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not os.path.exists("/data"):
-    SQLALCHEMY_DATABASE_URL = "sqlite:///./historial.db"
+# Corrección necesaria para que SQLAlchemy reconozca 'postgres://' como 'postgresql://'
+if SQLALCHEMY_DATABASE_URL and SQLALCHEMY_DATABASE_URL.startswith("postgres://"):
+    SQLALCHEMY_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, 
-    connect_args={"check_same_thread": False}
-)
+# Configuramos el motor para PostgreSQL
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
