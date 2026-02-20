@@ -3,12 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
-# Intento de sincronización forzada al arrancar
-try:
-    models.Base.metadata.create_all(bind=database.engine)
-    print("Base de datos sincronizada exitosamente")
-except Exception as e:
-    print(f"Error de sincronización: {e}")
+# Sincronización al importar
+models.Base.metadata.create_all(bind=database.engine)
 
 app = FastAPI()
 
@@ -36,6 +32,7 @@ def list_pacientes(db: Session = Depends(get_db)):
     try:
         return db.query(models.Paciente).all()
     except Exception as e:
+        print(f"DATABASE ERROR: {e}")
         raise HTTPException(status_code=500, detail="Error en consulta de pacientes")
 
 @app.post("/pacientes/")
