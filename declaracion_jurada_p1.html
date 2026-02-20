@@ -75,27 +75,27 @@
     const API = 'https://historial-clinico-936s.onrender.com';
 
     window.onload = async () => {
-        // INGE: Detectamos si es edición o registro nuevo
         const p_id_edicion = localStorage.getItem('p_id_edicion');
-        const p_id_register = localStorage.getItem('p_id');
-        const id_trabajo = p_id_edicion || p_id_register;
+        const p_id_nuevo = localStorage.getItem('p_id');
+        const id_trabajo = p_id_edicion || p_id_nuevo;
 
         if (!id_trabajo) { 
-            alert("⚠️ Inge, no hay un paciente seleccionado."); 
+            alert("No hay paciente seleccionado"); 
             window.location.href = "lista_historial.html";
             return; 
         }
 
-        // Cargamos datos del banner (Paciente/CI/Código)
         try {
             const resp = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
+            if (!resp.ok) throw new Error("Error en servidor");
             const data = await resp.json();
             
+            // Llenar Banner
             document.getElementById('p_nombre').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('p_ci').innerText = data.paciente.ci;
             document.getElementById('p_codigo').innerText = data.paciente.codigo_paciente;
 
-            // INGE: Si hay datos en 'filiacion', los rellenamos (MODO EDICIÓN)
+            // Llenar Formulario si existe filiación
             if (data.filiacion && data.filiacion.paciente_id) {
                 document.getElementById('modo-indicador').innerText = "MODO EDICIÓN";
                 document.getElementById('modo-indicador').style.color = "#f59e0b";
@@ -113,7 +113,7 @@
                 document.getElementById('profesion').value = data.filiacion.profesion_oficio || '';
             }
         } catch (err) {
-            console.error("Error al cargar datos:", err);
+            console.error("Error al cargar:", err);
         }
     };
 
@@ -148,15 +148,16 @@
             if(r.ok) {
                 window.location.href = "declaracion_jurada_p2.html";
             } else {
-                alert("❌ Fallo al guardar.");
+                alert("Error al guardar");
             }
         } catch(e) { 
-            alert("❌ Sin conexión."); 
+            alert("Sin conexión"); 
         } finally { 
             btn.disabled = false; 
             btn.innerText = "💾 Guardar y Continuar a Parte 2"; 
         }
     };
 </script>
+
 </body>
 </html>
