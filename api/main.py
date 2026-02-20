@@ -28,7 +28,8 @@ def health_check():
 def list_pacientes(db: Session = Depends(get_db)):
     try:
         return db.query(models.Paciente).all()
-    except Exception:
+    except Exception as e:
+        print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="Error de base de datos")
 
 @app.post("/pacientes/")
@@ -66,11 +67,16 @@ def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    
+    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
+    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
+    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
+
     return {
         "paciente": paciente,
-        "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first() or {},
-        "p2": db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first() or {},
-        "p3": db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first() or {}
+        "filiacion": filiacion if filiacion else {},
+        "p2": p2 if p2 else {},
+        "p3": p3 if p3 else {}
     }
 
 @app.delete("/pacientes/{paciente_id}")
