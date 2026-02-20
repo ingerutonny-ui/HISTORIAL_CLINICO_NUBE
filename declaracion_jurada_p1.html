@@ -77,8 +77,8 @@
     window.onload = async () => {
         // INGE: Detectamos si es edición o registro nuevo
         const p_id_edicion = localStorage.getItem('p_id_edicion');
-        const p_id_registro = localStorage.getItem('p_id');
-        const id_trabajo = p_id_edicion || p_id_registro;
+        const p_id_register = localStorage.getItem('p_id');
+        const id_trabajo = p_id_edicion || p_id_register;
 
         if (!id_trabajo) { 
             alert("⚠️ Inge, no hay un paciente seleccionado."); 
