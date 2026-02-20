@@ -13,12 +13,23 @@
         h2 { color: #1e293b; font-size: 1.5rem; margin-bottom: 30px; text-transform: uppercase; font-weight: 900; letter-spacing: -0.5px; }
         .input-group { text-align: left; margin-bottom: 18px; }
         label { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-left: 2px; }
+        
         input, select { 
             width: 100%; padding: 14px; margin-top: 6px; border: 2px solid #e2e8f0; 
             border-radius: 12px; box-sizing: border-box; font-size: 16px; 
             font-weight: 700; text-transform: uppercase; transition: 0.3s; color: #1e293b;
         }
+
+        /* ESTILO FANTASMA PARA LOS EJEMPLOS */
+        input::placeholder { 
+            color: #cbd5e1; 
+            font-weight: 400; 
+            text-transform: none; 
+            opacity: 0.7;
+        }
+
         input:focus, select:focus { border-color: #3b82f6; outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        
         .btn-guardar { 
             width: 100%; background: #3b82f6; color: white; border: none; 
             padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px; 
