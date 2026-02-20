@@ -3,9 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
-# Sincronización automática de tablas al iniciar
-models.Base.metadata.create_all(bind=database.engine)
-
 app = FastAPI()
 
 app.add_middleware(
@@ -31,7 +28,7 @@ def health_check():
 def list_pacientes(db: Session = Depends(get_db)):
     try:
         return db.query(models.Paciente).all()
-    except Exception as e:
+    except Exception:
         raise HTTPException(status_code=500, detail="Error de base de datos")
 
 @app.post("/pacientes/")
@@ -54,7 +51,6 @@ async def save_p3(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.upsert_p3(db, data)
 
-# RUTAS CORREGIDAS A SINGULAR
 @app.post("/enfermera/")
 async def save_enfermera(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
