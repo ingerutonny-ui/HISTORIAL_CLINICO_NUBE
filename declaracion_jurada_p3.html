@@ -5,29 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P3 - HÁBITOS Y RIESGOS | OHS</title>
     <style>
-        /* Estilos integrados para evitar que se vea mal si falla el CSS externo */
         body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
         .container { max-width: 900px; background: white; margin: auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-top: 8px solid #28a745; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
         .logo { width: 120px; height: auto; }
-        .paciente-banner { background: #e9f7ef; padding: 10px 20px; border-radius: 5px; color: #155724; font-weight: bold; }
-        h3 { color: #1e4d2b; border-left: 4px solid #28a745; padding-left: 10px; margin-top: 25px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
-        label { display: block; font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th { background: #f8f9fa; color: #333; padding: 10px; border: 1px solid #ddd; }
+        .paciente-banner { background: #e9f7ef; padding: 10px 20px; border-radius: 5px; color: #155724; font-weight: bold; font-size: 14px; }
+        h3 { color: #1e4d2b; border-left: 4px solid #28a745; padding-left: 10px; margin-top: 25px; font-size: 18px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        label { display: block; font-size: 12px; font-weight: bold; color: #555; margin-bottom: 5px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
+        th { background: #f8f9fa; color: #333; padding: 10px; border: 1px solid #ddd; text-align: center; }
         td { border: 1px solid #ddd; padding: 5px; }
-        .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #f9f9f9; padding: 15px; border-radius: 8px; }
-        #btn-guardar { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 30px; }
-        #btn-guardar:disabled { background: #ccc; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: #f9f9f9; padding: 15px; border-radius: 8px; margin-top: 10px; }
+        .checkbox-item { display: flex; align-items: center; font-size: 13px; color: #333; }
+        .checkbox-item input { width: auto; margin-right: 8px; }
+        #btn-guardar { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 30px; transition: 0.3s; }
+        #btn-guardar:hover { background: #218838; }
+        #btn-guardar:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-add { background: #6c757d; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; margin-bottom: 10px; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo OHS" class="logo">
-            <div id="paciente-info" class="paciente-banner">Cargando datos del paciente...</div>
+            <div id="paciente-info" class="paciente-banner">IDENTIFICANDO PACIENTE...</div>
         </div>
 
         <form id="form-p3">
@@ -42,38 +45,41 @@
             </div>
 
             <h3>II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</h3>
-            <button type="button" onclick="agregarFila()" style="margin-bottom:10px;">+ AGREGAR FILA</button>
+            <button type="button" class="btn-add" onclick="agregarFila()">+ AGREGAR FILA</button>
             <table id="tabla-laboral">
                 <thead>
                     <tr>
-                        <th>EDAD INICIO</th>
+                        <th style="width: 80px;">EDAD INICIO</th>
                         <th>EMPRESA</th>
                         <th>OCUPACIÓN</th>
-                        <th>TIEMPO (AÑOS)</th>
+                        <th style="width: 80px;">AÑOS</th>
                         <th>RIESGOS</th>
-                        <th>EPP</th>
+                        <th style="width: 70px;">EPP</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" class="edad_inicio"></td>
-                        <td><input type="text" class="empresa"></td>
-                        <td><input type="text" class="ocupacion"></td>
-                        <td><input type="number" class="tiempo"></td>
-                        <td><input type="text" class="riesgos"></td>
+                        <td><input type="number" class="edad_inicio" placeholder="Ej: 20"></td>
+                        <td><input type="text" class="empresa" placeholder="Nombre empresa"></td>
+                        <td><input type="text" class="ocupacion" placeholder="Cargo"></td>
+                        <td><input type="number" class="tiempo" placeholder="Cant."></td>
+                        <td><input type="text" class="riesgos_job" placeholder="Ej: Polvo, Ruido"></td>
                         <td><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>III. RIESGOS EXPUESTOS</h3>
+            <h3>III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</h3>
             <div class="checkbox-grid">
-                <label><input type="checkbox" name="riesgo" value="RUIDO"> RUIDO</label>
-                <label><input type="checkbox" name="riesgo" value="VIBRACIÓN"> VIBRACIÓN</label>
-                <label><input type="checkbox" name="riesgo" value="RADIACIÓN"> RADIACIÓN</label>
-                <label><input type="checkbox" name="riesgo" value="POLVOS"> POLVOS</label>
-                <label><input type="checkbox" name="riesgo" value="GASES"> GASES/VAPORES</label>
-                <label><input type="checkbox" name="riesgo" value="ERGONÓMICOS"> ERGONÓMICOS</label>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="RUIDO"> RUIDO</div>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="VIBRACIÓN"> VIBRACIÓN</div>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="RADIACIÓN"> RADIACIÓN</div>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="POLVOS"> POLVOS</div>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="GASES"> GASES/VAPORES</div>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="ERGONÓMICOS"> ERGONÓMICOS</div>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="BIOLÓGICOS"> BIOLÓGICOS</div>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="QUÍMICOS"> QUÍMICOS</div>
+                <div class="checkbox-item"><input type="checkbox" name="riesgo" value="PSICOSOCIAL"> PSICOSOCIAL</div>
             </div>
 
             <button type="submit" id="btn-guardar">GUARDAR EN LA NUBE</button>
@@ -81,12 +87,13 @@
     </div>
 
     <script>
-        // Recuperar datos del paciente de P1/P2
-        const pId = localStorage.getItem('paciente_id');
-        const pNombre = localStorage.getItem('paciente_nombre') || "Paciente";
-        const pCi = localStorage.getItem('paciente_ci') || "0000";
+        // Carga de datos desde memoria local (P1 y P2 deben haber guardado estos datos)
+        const storageId = localStorage.getItem('paciente_id');
+        const storageNombre = localStorage.getItem('paciente_nombre') || "PACIENTE NUEVO";
+        const storageCi = localStorage.getItem('paciente_ci') || "S/CI";
 
-        document.getElementById('paciente-info').innerText = `PACIENTE: ${pNombre} | CI: ${pCi}`;
+        // Mostrar encabezado
+        document.getElementById('paciente-info').innerText = `PACIENTE: ${storageNombre} | CI: ${storageCi}`;
 
         function agregarFila() {
             const tbody = document.querySelector('#tabla-laboral tbody');
@@ -95,7 +102,7 @@
                 <td><input type="text" class="empresa"></td>
                 <td><input type="text" class="ocupacion"></td>
                 <td><input type="number" class="tiempo"></td>
-                <td><input type="text" class="riesgos"></td>
+                <td><input type="text" class="riesgos_job"></td>
                 <td><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
             </tr>`;
             tbody.insertAdjacentHTML('beforeend', row);
@@ -104,50 +111,58 @@
         document.getElementById('form-p3').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('btn-guardar');
-            btn.innerText = "⌛ GUARDANDO...";
+            btn.innerText = "⌛ GUARDANDO EN RENDER...";
             btn.disabled = true;
 
-            const historia = [];
+            // Recopilar tabla laboral
+            const historiaLaboral = [];
             document.querySelectorAll('#tabla-laboral tbody tr').forEach(tr => {
-                historia.push({
-                    edad_inicio: tr.querySelector('.edad_inicio').value,
-                    empresa: tr.querySelector('.empresa').value,
-                    ocupacion: tr.querySelector('.ocupacion').value,
-                    tiempo: tr.querySelector('.tiempo').value,
-                    riesgos: tr.querySelector('.riesgos').value,
-                    epp: tr.querySelector('.epp').value
-                });
+                const empresa = tr.querySelector('.empresa').value;
+                if (empresa) {
+                    historiaLaboral.push({
+                        edad_inicio: tr.querySelector('.edad_inicio').value,
+                        empresa: empresa,
+                        ocupacion: tr.querySelector('.ocupacion').value,
+                        tiempo: tr.querySelector('.tiempo').value,
+                        riesgos: tr.querySelector('.riesgos_job').value,
+                        epp: tr.querySelector('.epp').value
+                    });
+                }
             });
 
-            const riesgos = Array.from(document.querySelectorAll('input[name="riesgo"]:checked')).map(cb => cb.value);
+            // Recopilar riesgos marcados
+            const riesgosSeleccionados = Array.from(document.querySelectorAll('input[name="riesgo"]:checked')).map(cb => cb.value);
 
-            const payload = {
-                paciente_id: pId,
+            const datosParaEnviar = {
+                paciente_id: storageId || 1,
                 fuma: document.getElementById('fuma').value,
                 bebe: document.getElementById('bebe').value,
                 drogas: document.getElementById('drogas').value,
                 p_coca: document.getElementById('p_coca').value,
                 ejercicio: document.getElementById('ejercicio').value,
                 grupo_sangre: document.getElementById('grupo_sangre').value,
-                historia_laboral: historia,
-                riesgos_detallados: riesgos
+                historia_laboral: historiaLaboral,
+                riesgos_detallados: riesgosSeleccionados
             };
 
             try {
-                const res = await fetch('https://historial-clinico-936s.onrender.com/p3/', {
+                const respuesta = await fetch('https://historial-clinico-936s.onrender.com/p3/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(datosParaEnviar)
                 });
-                const data = await res.json();
-                if (data.status === 'success') {
-                    alert("✅ DATOS GUARDADOS CORRECTAMENTE");
+
+                const resultado = await respuesta.json();
+
+                if (resultado.status === 'success') {
+                    alert("✅ ÉXITO: REGISTRO P3 COMPLETADO.");
                     window.location.href = "generar_reporte.html";
                 } else {
-                    alert("❌ ERROR: " + data.message);
+                    alert("❌ ERROR DEL SERVIDOR: " + (resultado.message || "Fallo interno"));
                 }
-            } catch (err) {
-                alert("❌ ERROR DE CONEXIÓN CON EL SERVIDOR");
+            } catch (error) {
+                console.error("Error:", error);
+                alert("❌ ERROR DE CONEXIÓN: Verifica que el Backend esté online.");
             } finally {
                 btn.innerText = "GUARDAR EN LA NUBE";
                 btn.disabled = false;
