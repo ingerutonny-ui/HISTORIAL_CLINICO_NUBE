@@ -1,27 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P3 - HÁBITOS Y RIESGOS | OHS NUBE</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 950px; background: white; margin: auto; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border-top: 10px solid #28a745; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 25px; }
+        .logo { height: 60px; }
+        .paciente-banner { background: #e8f5e9; border: 1px solid #c8e6c9; padding: 12px; border-radius: 8px; color: #2e7d32; font-weight: bold; font-size: 14px; }
+        h3 { color: #1b5e20; border-left: 5px solid #28a745; padding-left: 15px; font-size: 1.1rem; margin-top: 30px; text-transform: uppercase; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 10px; }
+        label { display: block; font-size: 11px; font-weight: bold; color: #555; margin-bottom: 5px; text-transform: uppercase; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; }
+        th { background: #f1f3f5; color: #333; padding: 12px; border: 1px solid #dee2e6; font-size: 12px; }
+        td { border: 1px solid #dee2e6; padding: 8px; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: #fafafa; padding: 20px; border-radius: 10px; border: 1px solid #eee; }
+        .check-item { display: flex; align-items: center; font-size: 13px; color: #333; }
+        .check-item input { width: auto; margin-right: 10px; }
+        .btn-add { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; margin-bottom: 10px; transition: 0.3s; }
+        .btn-add:hover { background: #0056b3; }
+        .btn-save { width: 100%; background: #28a745; color: white; padding: 18px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 40px; transition: 0.3s; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); }
+        .btn-save:hover { background: #218838; transform: translateY(-2px); }
+        .btn-save:disabled { background: #6c757d; cursor: not-allowed; transform: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo OHS" class="logo">
+        <div id="banner-paciente" class="paciente-banner">IDENTIFICANDO PACIENTE...</div>
+    </div>
+
+    <form id="formP3">
+        <h3>I. Hábitos Personales</h3>
+        <div class="grid">
+            <div><label>¿Fuma?</label><select id="fuma"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div><label>¿Bebe Alcohol?</label><select id="bebe"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div><label>¿Consume Drogas?</label><select id="drogas"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div><label>Pijchar (Coca)</label><select id="p_coca"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div><label>¿Hace Deporte?</label><select id="ejercicio"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div><label>Grupo Sanguíneo</label><input type="text" id="grupo_sangre" placeholder="Ej: ORH+"></div>
+        </div>
+
+        <h3>II. Historia Laboral (Antecedentes Ocupacionales)</h3>
+        <button type="button" class="btn-add" onclick="agregarFila()">+ AGREGAR OTRO EMPLEO</button>
+        <table id="tabla-laboral">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">EDAD INICIO</th>
+                    <th>EMPRESA / LUGAR</th>
+                    <th>CARGO / OCUPACIÓN</th>
+                    <th style="width: 80px;">TIEMPO</th>
+                    <th>RIESGOS EXPUESTOS</th>
+                    <th style="width: 80px;">USO EPP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="number" class="edad_inicio" placeholder="20"></td>
+                    <td><input type="text" class="empresa" placeholder="Empresa S.A."></td>
+                    <td><input type="text" class="ocupacion" placeholder="Operario"></td>
+                    <td><input type="number" class="tiempo" placeholder="Años"></td>
+                    <td><input type="text" class="riesgos_job" placeholder="Ruido, Polvo"></td>
+                    <td><select class="epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>III. Factores de Riesgo en su Vida Laboral</h3>
+        <div class="checkbox-grid">
+            <div class="check-item"><input type="checkbox" name="riesgo" value="RUIDO"> RUIDO</div>
+            <div class="check-item"><input type="checkbox" name="riesgo" value="VIBRACIÓN"> VIBRACIÓN</div>
+            <div class="check-item"><input type="checkbox" name="riesgo" value="RADIACIÓN"> RADIACIÓN</div>
+            <div class="check-item"><input type="checkbox" name="riesgo" value="POLVOS"> POLVOS</div>
+            <div class="check-item"><input type="checkbox" name="riesgo" value="GASES"> GASES / VAPORES</div>
+            <div class="check-item"><input type="checkbox" name="riesgo" value="ILUMINACIÓN"> ILUMINACIÓN</div>
+            <div class="check-item"><input type="checkbox" name="riesgo" value="ERGONÓMICO"> ERGONÓMICO</div>
+            <div class="check-item"><input type="checkbox" name="riesgo" value="BIOLÓGICO"> BIOLÓGICO</div>
+            <div class="check-item"><input type="checkbox" name="riesgo" value="PSICOSOCIAL"> PSICOSOCIAL</div>
+        </div>
+
+        <button type="submit" id="btn-finalizar" class="btn-save">💾 GUARDAR Y GENERAR REPORTE FINAL</button>
+    </form>
+</div>
+
 <script>
-    // Sincronizado con el p_id que usa tu P2
+    const API_URL = 'https://historial-clinico-936s.onrender.com';
+    // Sincronización con el p_id real de tu flujo P1 -> P2
     const p_id = localStorage.getItem('p_id');
-    
+
+    // Cargar datos del paciente al iniciar
     window.onload = async () => {
-        if (!p_id) { alert("No hay paciente seleccionado"); return; }
+        if (!p_id) {
+            alert("⚠️ No se detectó un paciente activo. Volviendo al registro.");
+            window.location.href = "registro_paciente.html";
+            return;
+        }
+
         try {
-            const res = await fetch(`https://historial-clinico-936s.onrender.com/api/paciente-completo/${p_id}`);
+            const res = await fetch(`${API_URL}/api/paciente-completo/${p_id}`);
             const data = await res.json();
-            document.getElementById('paciente-info').innerText = `PACIENTE: ${data.paciente.apellido} ${data.paciente.nombre} | CI: ${data.paciente.ci}`;
-        } catch (e) { console.error("Error al identificar paciente"); }
+            if(data.paciente) {
+                document.getElementById('banner-paciente').innerHTML = `
+                    PACIENTE: ${data.paciente.apellido} ${data.paciente.nombre} | 
+                    CI: ${data.paciente.ci} | 
+                    CÓDIGO: ${data.paciente.codigo_paciente}
+                `;
+            }
+        } catch (e) {
+            console.error("Error cargando banner");
+            document.getElementById('banner-paciente').innerText = "ERROR AL CARGAR DATOS DEL PACIENTE";
+        }
     };
 
-    document.getElementById('form-p3').onsubmit = async (e) => {
+    function agregarFila() {
+        const tbody = document.querySelector('#tabla-laboral tbody');
+        const row = `<tr>
+            <td><input type="number" class="edad_inicio"></td>
+            <td><input type="text" class="empresa"></td>
+            <td><input type="text" class="ocupacion"></td>
+            <td><input type="number" class="tiempo"></td>
+            <td><input type="text" class="riesgos_job"></td>
+            <td><select class="epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+        </tr>`;
+        tbody.insertAdjacentHTML('beforeend', row);
+    }
+
+    document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btn-guardar');
-        btn.innerText = "⌛ GUARDANDO...";
-        
+        const btn = document.getElementById('btn-finalizar');
+        btn.innerText = "⌛ ENVIANDO DATOS A RENDER...";
+        btn.disabled = true;
+
+        // Recopilar Tabla Laboral
         const historia = [];
         document.querySelectorAll('#tabla-laboral tbody tr').forEach(tr => {
-            if(tr.querySelector('.empresa').value) {
+            const empresa = tr.querySelector('.empresa').value;
+            if(empresa) {
                 historia.push({
                     edad_inicio: tr.querySelector('.edad_inicio').value,
-                    empresa: tr.querySelector('.empresa').value,
+                    empresa: empresa,
                     ocupacion: tr.querySelector('.ocupacion').value,
                     tiempo: tr.querySelector('.tiempo').value,
                     riesgos: tr.querySelector('.riesgos_job').value,
@@ -30,8 +152,11 @@
             }
         });
 
-        const payload = {
-            paciente_id: p_id,
+        // Recopilar Riesgos (Checkboxes)
+        const riesgos = Array.from(document.querySelectorAll('input[name="riesgo"]:checked')).map(cb => cb.value);
+
+        const dataFinal = {
+            paciente_id: parseInt(p_id),
             fuma: document.getElementById('fuma').value,
             bebe: document.getElementById('bebe').value,
             drogas: document.getElementById('drogas').value,
@@ -39,19 +164,30 @@
             ejercicio: document.getElementById('ejercicio').value,
             grupo_sangre: document.getElementById('grupo_sangre').value,
             historia_laboral: historia,
-            riesgos_detallados: Array.from(document.querySelectorAll('input[name="riesgo"]:checked')).map(cb => cb.value)
+            riesgos_detallados: riesgos
         };
 
         try {
-            const res = await fetch('https://historial-clinico-936s.onrender.com/p3/', {
+            const response = await fetch(`${API_URL}/p3/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(dataFinal)
             });
-            if (res.ok) {
-                alert("✅ P3 GUARDADO EXITOSAMENTE");
+
+            if (response.ok) {
+                alert("✅ HISTORIAL CLÍNICO COMPLETADO CON ÉXITO");
                 window.location.href = "generar_reporte.html";
+            } else {
+                alert("❌ ERROR: El servidor rechazó los datos.");
             }
-        } catch (err) { alert("❌ ERROR DE CONEXIÓN"); }
+        } catch (error) {
+            alert("❌ ERROR DE CONEXIÓN: Revisa que el servidor en Render esté encendido.");
+        } finally {
+            btn.innerText = "💾 GUARDAR Y GENERAR REPORTE FINAL";
+            btn.disabled = false;
+        }
     };
 </script>
+
+</body>
+</html>
