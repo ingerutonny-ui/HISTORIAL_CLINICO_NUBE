@@ -67,28 +67,26 @@ class HabitosRiesgosP3(Base):
     deporte = Column(String)
     deporte_detalle = Column(String)
     grupo_sanguineo = Column(String)
-    historia_laboral = Column(Text)  # Guarda el JSON de la tabla
-    riesgos_expuestos = Column(Text) # Guarda el JSON de los checks
+    historia_laboral = Column(Text)
+    riesgos_expuestos = Column(Text)
     observaciones = Column(String)
 
-# --- TABLA 5: ENFERMERA ---
 class Enfermera(Base):
     __tablename__ = "enfermeras"
     id_enfe = Column(Integer, primary_key=True, index=True)
-    ci_enfe = Column(String(10), unique=True) # Max 10 dígitos
-    appaterno_enfe = Column(String(15))      # Solo texto < 15
-    apmaterno_enfe = Column(String(15))      # Solo texto < 15
-    nombre_enfe = Column(String(15))         # Solo texto < 15
-    turno_enfe = Column(String)              # mañana, tarde, noche
-    edu_enfe = Column(String)                # tec.med - tec.sup - lic.
+    ci_enfe = Column(String(20), unique=True)
+    appaterno_enfe = Column(String(50))
+    apmaterno_enfe = Column(String(50))
+    nombre_enfe = Column(String(50))
+    turno_enfe = Column(String(20))
+    edu_enfe = Column(String(50))
 
-# --- TABLA 6: DOCTOR ---
 class Doctor(Base):
     __tablename__ = "doctores"
     id_doc = Column(Integer, primary_key=True, index=True)
-    ci_doc = Column(String(10), unique=True)  # Max 10 dígitos
-    appaterno_doc = Column(String(15))        # Solo texto < 15
-    apmaterno_doc = Column(String(15))        # Solo texto < 15
-    nombre_doc = Column(String(15))           # Solo texto < 15
-    turno_doc = Column(String)                # mañana, tarde, noche
-    especialidad = Column(String)             # Lista larga según captura
+    ci_doc = Column(String(20), unique=True)
+    appaterno_doc = Column(String(50))
+    apmaterno_doc = Column(String(50))
+    nombre_doc = Column(String(50))
+    turno_doc = Column(String(20))
+    especialidad = Column(String(100))
