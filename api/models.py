@@ -12,7 +12,7 @@ class Paciente(Base):
 class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_p1"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     edad = Column(String)
     sexo = Column(String)
     fecha_nacimiento = Column(String)
@@ -29,7 +29,7 @@ class DeclaracionJurada(Base):
 class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     vista = Column(String)
     auditivo = Column(String)
     respiratorio = Column(String)
@@ -56,7 +56,7 @@ class AntecedentesP2(Base):
 class HabitosRiesgosP3(Base):
     __tablename__ = "habitos_p3"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"), nullable=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
     fuma = Column(String)
     fuma_cantidad = Column(String)
     alcohol = Column(String)
@@ -74,19 +74,19 @@ class HabitosRiesgosP3(Base):
 class Enfermera(Base):
     __tablename__ = "enfermeras"
     id_enfe = Column(Integer, primary_key=True, index=True)
-    ci_enfe = Column(String(20), unique=True)
-    appaterno_enfe = Column(String(50))
-    apmaterno_enfe = Column(String(50))
-    nombre_enfe = Column(String(50))
-    turno_enfe = Column(String(20))
-    edu_enfe = Column(String(50))
+    ci_enfe = Column(String, unique=True)
+    appaterno_enfe = Column(String)
+    apmaterno_enfe = Column(String)
+    nombre_enfe = Column(String)
+    turno_enfe = Column(String)
+    edu_enfe = Column(String)
 
 class Doctor(Base):
     __tablename__ = "doctores"
     id_doc = Column(Integer, primary_key=True, index=True)
-    ci_doc = Column(String(20), unique=True)
-    appaterno_doc = Column(String(50))
-    apmaterno_doc = Column(String(50))
-    nombre_doc = Column(String(50))
-    turno_doc = Column(String(20))
-    especialidad = Column(String(100))
+    ci_doc = Column(String, unique=True)
+    appaterno_doc = Column(String)
+    apmaterno_doc = Column(String)
+    nombre_doc = Column(String)
+    turno_doc = Column(String)
+    especialidad = Column(String)
