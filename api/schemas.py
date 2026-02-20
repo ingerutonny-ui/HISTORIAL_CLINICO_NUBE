@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 
 class PacienteBase(BaseModel):
@@ -31,3 +31,23 @@ class AntecedentesP2Base(BaseModel):
 class HabitosRiesgosP3Base(BaseModel):
     paciente_id: int
     model_config = ConfigDict(from_attributes=True, extra='allow')
+
+# --- ESQUEMAS PARA TABLA 5: ENFERMERA ---
+class EnfermeraBase(BaseModel):
+    ci_enfe: str = Field(..., max_length=10)
+    appaterno_enfe: str = Field(..., max_length=15)
+    apmaterno_enfe: str = Field(..., max_length=15)
+    nombre_enfe: str = Field(..., max_length=15)
+    turno_enfe: str  # mañana, tarde, noche
+    edu_enfe: str    # tec.med, tec.sup, lic.
+    model_config = ConfigDict(from_attributes=True)
+
+# --- ESQUEMAS PARA TABLA 6: DOCTOR ---
+class DoctorBase(BaseModel):
+    ci_doc: str = Field(..., max_length=10)
+    appaterno_doc: str = Field(..., max_length=15)
+    apmaterno_doc: str = Field(..., max_length=15)
+    nombre_doc: str = Field(..., max_length=15)
+    turno_doc: str   # mañana, tarde, noche
+    especialidad: str # Lista de especialidades
+    model_config = ConfigDict(from_attributes=True)
