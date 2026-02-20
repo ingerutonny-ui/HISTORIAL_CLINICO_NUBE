@@ -3,12 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
-# Inicialización estricta de la base de datos
-models.Base.metadata.create_all(bind=database.engine)
+# Intento de sincronización forzada al arrancar
+try:
+    models.Base.metadata.create_all(bind=database.engine)
+    print("Base de datos sincronizada exitosamente")
+except Exception as e:
+    print(f"Error de sincronización: {e}")
 
 app = FastAPI()
 
-# Configuración de CORS para HISTORIAL_CLINICO_NUBE
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,20 +31,18 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
-# --- RUTAS DE PACIENTES ---
 @app.get("/pacientes/")
 def list_pacientes(db: Session = Depends(get_db)):
     try:
         return db.query(models.Paciente).all()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail="Error en consulta de pacientes")
 
 @app.post("/pacientes/")
 async def save_paciente(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_paciente(db, data)
 
-# --- RUTAS DE FORMULARIOS P1, P2, P3 ---
 @app.post("/filiacion/")
 async def save_filiacion(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -57,7 +58,6 @@ async def save_p3(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.upsert_p3(db, data)
 
-# --- RUTAS DE ENFERMERA Y DOCTOR ---
 @app.post("/enfermeras/")
 async def save_enfermera(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -68,13 +68,11 @@ async def save_doctor(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_doctor(db, data)
 
-# --- CONSULTA INTEGRAL Y ELIMINACIÓN ---
 @app.get("/api/paciente-completo/{paciente_id}")
 def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    
     return {
         "paciente": paciente,
         "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first() or {},
@@ -86,4 +84,4 @@ def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
 def delete_paciente_route(paciente_id: int, db: Session = Depends(get_db)):
     if crud.delete_paciente(db, paciente_id):
         return {"status": "success"}
-    raise HTTPException(status_code=404, detail="Error al eliminar registro")
+    raise HTTPException(status_code=404, detail="No se pudo eliminar")
