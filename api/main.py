@@ -3,9 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
+# Inicialización estricta de la base de datos
+models.Base.metadata.create_all(bind=database.engine)
+
 app = FastAPI()
 
-# CORS configurado para tu proyecto en GitHub Pages
+# Configuración de CORS para HISTORIAL_CLINICO_NUBE
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,7 +31,10 @@ def health_check():
 # --- RUTAS DE PACIENTES ---
 @app.get("/pacientes/")
 def list_pacientes(db: Session = Depends(get_db)):
-    return db.query(models.Paciente).all()
+    try:
+        return db.query(models.Paciente).all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/pacientes/")
 async def save_paciente(request: Request, db: Session = Depends(get_db)):
@@ -62,7 +68,7 @@ async def save_doctor(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_doctor(db, data)
 
-# --- CONSULTA COMPLETA ---
+# --- CONSULTA INTEGRAL Y ELIMINACIÓN ---
 @app.get("/api/paciente-completo/{paciente_id}")
 def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
@@ -80,4 +86,4 @@ def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
 def delete_paciente_route(paciente_id: int, db: Session = Depends(get_db)):
     if crud.delete_paciente(db, paciente_id):
         return {"status": "success"}
-    raise HTTPException(status_code=404, detail="Error al eliminar")
+    raise HTTPException(status_code=404, detail="Error al eliminar registro")
