@@ -3,15 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database, crud
 
-# Intentar crear tablas al iniciar
-try:
-    models.Base.metadata.create_all(bind=database.engine)
-except Exception as e:
-    print(f"Error creando tablas: {e}")
-
 app = FastAPI()
 
-# Configuración de CORS corregida para evitar el error de la captura
+# CORS configurado para tu proyecto en GitHub Pages
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -31,22 +25,33 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
+# --- RUTAS DE PACIENTES ---
 @app.get("/pacientes/")
 def list_pacientes(db: Session = Depends(get_db)):
-    try:
-        return db.query(models.Paciente).all()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return db.query(models.Paciente).all()
 
 @app.post("/pacientes/")
 async def save_paciente(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
-    ci = str(data.get("ci"))
-    paciente = crud.get_paciente_by_ci(db, ci)
-    if not paciente:
-        paciente = crud.create_paciente(db, data)
-    return paciente
+    return crud.create_paciente(db, data)
 
+# --- RUTAS DE FORMULARIOS P1, P2, P3 ---
+@app.post("/filiacion/")
+async def save_filiacion(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    return crud.upsert_filiacion(db, data)
+
+@app.post("/p2/")
+async def save_p2(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    return crud.upsert_p2(db, data)
+
+@app.post("/p3/")
+async def save_p3(request: Request, db: Session = Depends(get_db)):
+    data = await request.json()
+    return crud.upsert_p3(db, data)
+
+# --- RUTAS DE ENFERMERA Y DOCTOR ---
 @app.post("/enfermeras/")
 async def save_enfermera(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -57,27 +62,22 @@ async def save_doctor(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_doctor(db, data)
 
-# --- RUTAS DE EDICIÓN Y CONSULTA ---
+# --- CONSULTA COMPLETA ---
 @app.get("/api/paciente-completo/{paciente_id}")
 def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
-    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
-    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
-    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
-
     return {
         "paciente": paciente,
-        "filiacion": filiacion if filiacion else {},
-        "p2": p2 if p2 else {},
-        "p3": p3 if p3 else {}
+        "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first() or {},
+        "p2": db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first() or {},
+        "p3": db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first() or {}
     }
 
 @app.delete("/pacientes/{paciente_id}")
 def delete_paciente_route(paciente_id: int, db: Session = Depends(get_db)):
-    success = crud.delete_paciente(db, paciente_id)
-    if not success:
-        raise HTTPException(status_code=404, detail="Registro no existe.")
-    return {"status": "success"}
+    if crud.delete_paciente(db, paciente_id):
+        return {"status": "success"}
+    raise HTTPException(status_code=404, detail="Error al eliminar")
