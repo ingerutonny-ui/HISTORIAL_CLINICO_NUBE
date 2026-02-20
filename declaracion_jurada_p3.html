@@ -1,113 +1,57 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>P3 - HÁBITOS Y RIESGOS | OHS</title>
-    <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; padding: 20px; }
-        .container { max-width: 900px; background: white; margin: auto; padding: 30px; border-radius: 12px; border-top: 8px solid #28a745; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .header { display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .paciente-info { font-weight: bold; color: #28a745; }
-        h3 { color: #1e4d2b; border-left: 4px solid #28a745; padding-left: 10px; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 13px; }
-        th { background: #f8f9fa; }
-        input, select { width: 100%; padding: 8px; box-sizing: border-box; }
-        .btn-save { width: 100%; background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" width="100">
-            <div class="paciente-info" id="banner">CARGANDO PACIENTE...</div>
-        </div>
+<script>
+    // Sincronizado con el p_id que usa tu P2
+    const p_id = localStorage.getItem('p_id');
+    
+    window.onload = async () => {
+        if (!p_id) { alert("No hay paciente seleccionado"); return; }
+        try {
+            const res = await fetch(`https://historial-clinico-936s.onrender.com/api/paciente-completo/${p_id}`);
+            const data = await res.json();
+            document.getElementById('paciente-info').innerText = `PACIENTE: ${data.paciente.apellido} ${data.paciente.nombre} | CI: ${data.paciente.ci}`;
+        } catch (e) { console.error("Error al identificar paciente"); }
+    };
 
-        <form id="form-p3">
-            <h3>I. HÁBITOS</h3>
-            <div class="grid">
-                <div><label>FUMA</label><select id="fuma"><option>NO</option><option>SI</option></select></div>
-                <div><label>ALCOHOL</label><select id="bebe"><option>NO</option><option>SI</option></select></div>
-                <div><label>DROGAS</label><select id="drogas"><option>NO</option><option>SI</option></select></div>
-                <div><label>PIJCHAR (COCA)</label><select id="p_coca"><option>NO</option><option>SI</option></select></div>
-                <div><label>DEPORTES</label><select id="ejercicio"><option>NO</option><option>SI</option></select></div>
-                <div><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sangre" value="ORH+"></div>
-            </div>
-
-            <h3>II. HISTORIA LABORAL</h3>
-            <table id="tabla-laboral">
-                <thead>
-                    <tr><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="number" class="edad"></td>
-                        <td><input type="text" class="emp"></td>
-                        <td><input type="text" class="ocu"></td>
-                        <td><input type="number" class="tie"></td>
-                        <td><input type="text" class="rie"></td>
-                        <td><select class="epp"><option>NO</option><option>SI</option></select></td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <button type="submit" class="btn-save" id="btn">GUARDAR Y FINALIZAR</button>
-        </form>
-    </div>
-
-    <script>
-        const pid = localStorage.getItem('paciente_id') || "1";
-        const pnom = localStorage.getItem('paciente_nombre') || "ALMENDRAS ROSA";
-        const pci = localStorage.getItem('paciente_ci') || "1234";
-
-        document.getElementById('banner').innerText = `PACIENTE: ${pnom} | CI: ${pci}`;
-
-        document.getElementById('form-p3').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btn');
-            btn.innerText = "⌛ ENVIANDO...";
-            
-            const historia = [];
-            document.querySelectorAll('#tabla-laboral tbody tr').forEach(tr => {
+    document.getElementById('form-p3').onsubmit = async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-guardar');
+        btn.innerText = "⌛ GUARDANDO...";
+        
+        const historia = [];
+        document.querySelectorAll('#tabla-laboral tbody tr').forEach(tr => {
+            if(tr.querySelector('.empresa').value) {
                 historia.push({
-                    edad_inicio: tr.querySelector('.edad').value,
-                    empresa: tr.querySelector('.emp').value,
-                    ocupacion: tr.querySelector('.ocu').value,
-                    tiempo: tr.querySelector('.tie').value,
-                    riesgos: tr.querySelector('.rie').value,
+                    edad_inicio: tr.querySelector('.edad_inicio').value,
+                    empresa: tr.querySelector('.empresa').value,
+                    ocupacion: tr.querySelector('.ocupacion').value,
+                    tiempo: tr.querySelector('.tiempo').value,
+                    riesgos: tr.querySelector('.riesgos_job').value,
                     epp: tr.querySelector('.epp').value
                 });
-            });
-
-            const payload = {
-                paciente_id: pid,
-                fuma: document.getElementById('fuma').value,
-                bebe: document.getElementById('bebe').value,
-                drogas: document.getElementById('drogas').value,
-                p_coca: document.getElementById('p_coca').value,
-                ejercicio: document.getElementById('ejercicio').value,
-                grupo_sangre: document.getElementById('grupo_sangre').value,
-                historia_laboral: historia,
-                riesgos_detallados: []
-            };
-
-            try {
-                const res = await fetch('https://historial-clinico-936s.onrender.com/p3/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if(res.ok) {
-                    alert("✅ GUARDADO EXITOSO");
-                    window.location.href = "generar_reporte.html";
-                }
-            } catch (err) {
-                alert("❌ ERROR DE CONEXIÓN");
-            } finally {
-                btn.innerText = "GUARDAR Y FINALIZAR";
             }
+        });
+
+        const payload = {
+            paciente_id: p_id,
+            fuma: document.getElementById('fuma').value,
+            bebe: document.getElementById('bebe').value,
+            drogas: document.getElementById('drogas').value,
+            p_coca: document.getElementById('p_coca').value,
+            ejercicio: document.getElementById('ejercicio').value,
+            grupo_sangre: document.getElementById('grupo_sangre').value,
+            historia_laboral: historia,
+            riesgos_detallados: Array.from(document.querySelectorAll('input[name="riesgo"]:checked')).map(cb => cb.value)
         };
-    </script>
-</body>
-</html>
+
+        try {
+            const res = await fetch('https://historial-clinico-936s.onrender.com/p3/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+                alert("✅ P3 GUARDADO EXITOSAMENTE");
+                window.location.href = "generar_reporte.html";
+            }
+        } catch (err) { alert("❌ ERROR DE CONEXIÓN"); }
+    };
+</script>
