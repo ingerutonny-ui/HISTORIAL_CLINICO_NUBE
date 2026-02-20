@@ -12,7 +12,7 @@ class Paciente(Base):
 class DeclaracionJurada(Base):
     __tablename__ = "declaraciones_p1"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
     edad = Column(String)
     sexo = Column(String)
     fecha_nacimiento = Column(String)
@@ -29,7 +29,7 @@ class DeclaracionJurada(Base):
 class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
     vista = Column(String)
     auditivo = Column(String)
     respiratorio = Column(String)
@@ -56,7 +56,7 @@ class AntecedentesP2(Base):
 class HabitosRiesgosP3(Base):
     __tablename__ = "habitos_p3"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id"))
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
     fuma = Column(String)
     fuma_cantidad = Column(String)
     alcohol = Column(String)
