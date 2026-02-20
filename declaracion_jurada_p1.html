@@ -80,22 +80,22 @@
         const id_trabajo = p_id_edicion || p_id_nuevo;
 
         if (!id_trabajo) { 
-            alert("No hay paciente seleccionado"); 
             window.location.href = "lista_historial.html";
             return; 
         }
 
         try {
-            const resp = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
-            if (!resp.ok) throw new Error("Error en servidor");
+            const resp = await fetch(`${API}/api/paciente-completo/${id_trabajo}`, {
+                method: 'GET',
+                headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
+            });
+            if (!resp.ok) return;
             const data = await resp.json();
             
-            // Llenar Banner
             document.getElementById('p_nombre').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('p_ci').innerText = data.paciente.ci;
             document.getElementById('p_codigo').innerText = data.paciente.codigo_paciente;
 
-            // Llenar Formulario si existe filiación
             if (data.filiacion && data.filiacion.paciente_id) {
                 document.getElementById('modo-indicador').innerText = "MODO EDICIÓN";
                 document.getElementById('modo-indicador').style.color = "#f59e0b";
@@ -112,9 +112,7 @@
                 document.getElementById('est_civil').value = data.filiacion.estado_civil || 'SOLTERO/A';
                 document.getElementById('profesion').value = data.filiacion.profesion_oficio || '';
             }
-        } catch (err) {
-            console.error("Error al cargar:", err);
-        }
+        } catch (err) { console.error(err); }
     };
 
     document.getElementById('formP1').onsubmit = async (e) => {
@@ -145,19 +143,10 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            if(r.ok) {
-                window.location.href = "declaracion_jurada_p2.html";
-            } else {
-                alert("Error al guardar");
-            }
-        } catch(e) { 
-            alert("Sin conexión"); 
-        } finally { 
-            btn.disabled = false; 
-            btn.innerText = "💾 Guardar y Continuar a Parte 2"; 
-        }
+            if(r.ok) window.location.href = "declaracion_jurada_p2.html";
+        } catch(e) { alert("Error de conexión"); }
+        finally { btn.disabled = false; btn.innerText = "💾 Guardar y Continuar a Parte 2"; }
     };
 </script>
-
 </body>
 </html>
