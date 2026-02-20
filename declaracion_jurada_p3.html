@@ -2,120 +2,140 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HC NUBE | HÁBITOS P3</title>
+    <title>HC NUBE | P3 FINAL COMPLETO</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #e9ecef; font-family: sans-serif; }
-        .container { max-width: 1000px; margin-top: 20px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .header-section { border-bottom: 2px solid #28a745; margin-bottom: 20px; padding-bottom: 10px; }
-        .banner-paciente { background: #f8f9fa; padding: 10px; border-radius: 10px; border: 1px solid #dee2e6; margin-bottom: 20px; font-weight: bold; font-size: 0.9rem; }
-        .section-title { background: #f1f3f5; padding: 8px; font-weight: bold; border-left: 5px solid #28a745; margin-top: 20px; text-transform: uppercase; font-size: 0.85rem; }
-        label { font-weight: bold; font-size: 0.75rem; color: #495057; text-transform: uppercase; margin-top: 10px; display: block; }
-        .form-control { text-transform: uppercase; font-size: 0.9rem; border-radius: 5px; }
-        .btn-normal { font-size: 0.7rem; padding: 2px 8px; margin-bottom: 5px; }
-        .btn-save { background: #28a745; color: white; font-weight: bold; width: 100%; padding: 15px; margin-top: 30px; border: none; border-radius: 10px; }
+        body { background-color: #f4f7f6; font-size: 12px; }
+        .container { max-width: 1000px; background: white; margin: 20px auto; padding: 25px; border-radius: 15px; border-top: 5px solid #198754; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .section-title { color: #145a32; font-weight: bold; border-bottom: 2px solid #d4efdf; margin: 15px 0; padding-bottom: 5px; text-transform: uppercase; }
+        .label-custom { font-weight: bold; color: #444; margin-bottom: 2px; display: block; }
+        .form-control, .form-select { font-size: 12px; text-transform: uppercase; }
+        .btn-add { background: #6c757d; color: white; font-size: 10px; font-weight: bold; margin-bottom: 10px; border-radius: 5px; }
+        .btn-save { background: #198754; color: white; width: 100%; padding: 15px; font-weight: bold; border-radius: 50px; margin-top: 20px; font-size: 14px; }
+        .table thead { background: #f8f9fa; font-size: 11px; text-align: center; }
     </style>
 </head>
 <body>
-
 <div class="container">
-    <div class="header-section d-flex justify-content-between align-items-center">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50">
-        <h4 class="m-0">3. HÁBITOS Y RIESGOS (P3)</h4>
-        <button class="btn btn-outline-secondary btn-sm" onclick="marcarTodoNormal()">✅ TODO NORMAL</button>
-    </div>
-
-    <div class="banner-paciente row">
-        <div class="col-md-4">PACIENTE: <span id="p_nombre" class="text-primary">---</span></div>
-        <div class="col-md-4">CI: <span id="p_ci" class="text-primary">---</span></div>
-        <div class="col-md-4">CÓDIGO: <span id="p_codigo" class="text-primary">---</span></div>
+    <div class="text-center mb-4"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50"></div>
+    
+    <div id="banner" class="alert alert-light border text-center fw-bold">
+        PACIENTE: <span id="p_nombre" class="text-success">---</span> | CI: <span id="p_ci" class="text-success">---</span>
     </div>
 
     <form id="formP3">
-        <div class="section-title">Hábitos Personales</div>
-        <div class="row">
-            <div class="col-md-4">
-                <label>Fuma (Tabaco)</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setVal('fuma','NO')">NO</button>
-                <input type="text" id="fuma" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label>Bebe (Alcohol)</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setVal('bebe','OCASIONAL')">OCASIONAL</button>
-                <input type="text" id="bebe" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label>Actividad Física</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setVal('ejercicio','REGULAR')">REGULAR</button>
-                <input type="text" id="ejercicio" class="form-control">
-            </div>
+        <div class="section-title">I. HÁBITOS</div>
+        <div class="row g-2">
+            <div class="col-md-4"><label class="label-custom">FUMA</label><select id="fuma" class="form-select"><option>NO</option><option>SI</option></select></div>
+            <div class="col-md-4"><label class="label-custom">ALCOHOL</label><select id="bebe" class="form-select"><option>NO</option><option>SI</option></select></div>
+            <div class="col-md-4"><label class="label-custom">DROGAS</label><select id="drogas" class="form-select"><option>NO</option><option>SI</option></select></div>
+            <div class="col-md-4"><label class="label-custom">PIJCHAR (COCA)</label><select id="p_coca" class="form-select"><option>NO</option><option>SI</option></select></div>
+            <div class="col-md-4"><label class="label-custom">DEPORTES</label><select id="ejercicio" class="form-select"><option>NO</option><option>SI</option></select></div>
+            <div class="col-md-4"><label class="label-custom">GRUPO SANGUÍNEO</label><input type="text" id="grupo_sangre" class="form-control" placeholder="ORH+"></div>
         </div>
 
-        <div class="section-title">Riesgos Laborales Anteriores</div>
-        <div class="row">
-            <div class="col-md-4">
-                <label>Riesgo Físico</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setVal('r_fisico','NINGUNO')">NINGUNO</button>
-                <input type="text" id="r_fisico" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label>Riesgo Químico</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setVal('r_quimico','NINGUNO')">NINGUNO</button>
-                <input type="text" id="r_quimico" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label>Riesgo Biológico</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setVal('r_biologico','NINGUNO')">NINGUNO</button>
-                <input type="text" id="r_biologico" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label>Riesgo Ergonómico</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setVal('r_ergonomico','NINGUNO')">NINGUNO</button>
-                <input type="text" id="r_ergonomico" class="form-control">
-            </div>
-            <div class="col-md-4">
-                <label>Riesgo Psicosocial</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setVal('r_psicosocial','NINGUNO')">NINGUNO</button>
-                <input type="text" id="r_psicosocial" class="form-control">
-            </div>
+        <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
+        <button type="button" class="btn btn-add" onclick="agregarFila()">+ AGREGAR FILA</button>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">EDAD INICIO</th>
+                        <th style="width: 25%;">EMPRESA</th>
+                        <th style="width: 20%;">OCUPACIÓN</th>
+                        <th style="width: 15%;">TIEMPO (AÑOS)</th>
+                        <th style="width: 20%;">RIESGOS</th>
+                        <th style="width: 10%;">EPP (SI/NO)</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaLaboral">
+                    <tr>
+                        <td><input type="number" class="form-control ed" placeholder="Ej: 23"></td>
+                        <td><input type="text" class="form-control em"></td>
+                        <td><input type="text" class="form-control oc"></td>
+                        <td><input type="text" class="form-control ti"></td>
+                        <td><input type="text" class="form-control ri"></td>
+                        <td><select class="form-select ep"><option>NO</option><option>SI</option></select></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="section-title">Equipo de Protección (EPP)</div>
-        <div class="col-12">
-            <label>EPP Utilizado Anteriormente</label>
-            <input type="text" id="epp" class="form-control" placeholder="EJ: CASCO, BOTAS, LENTES">
+        <div class="section-title">III. RIESGOS EXPUESTOS DURANTE SU VIDA LABORAL</div>
+        <div class="row g-3 px-2">
+            <div class="col-6 col-md-3"><input type="checkbox" class="rx" value="RUIDO"> RUIDO</div>
+            <div class="col-6 col-md-3"><input type="checkbox" class="rx" value="VIBRACIÓN"> VIBRACIÓN</div>
+            <div class="col-6 col-md-3"><input type="checkbox" class="rx" value="RADIACIÓN"> RADIACIÓN</div>
+            <div class="col-6 col-md-3"><input type="checkbox" class="rx" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</div>
+            <div class="col-6 col-md-3"><input type="checkbox" class="rx" value="POLVOS"> POLVOS</div>
+            <div class="col-6 col-md-3"><input type="checkbox" class="rx" value="GASES/VAPORES"> GASES/VAPORES</div>
+            <div class="col-6 col-md-3"><input type="checkbox" class="rx" value="ERGONÓMICOS"> ERGONÓMICOS</div>
+            <div class="col-6 col-md-3"><input type="checkbox" class="rx" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" class="btn-save">💾 FINALIZAR Y GUARDAR DECLARACIÓN</button>
+        <button type="submit" id="btnFinal" class="btn-save">⌛ GUARDAR REGISTRO FINAL</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    const campos = ['fuma','bebe','ejercicio','r_fisico','r_quimico','r_biologico','r_ergonomico','r_psicosocial','epp'];
 
-    function setVal(id, val) { document.getElementById(id).value = val; }
-    function marcarTodoNormal() { 
-        setVal('fuma','NO'); setVal('bebe','OCASIONAL'); setVal('ejercicio','REGULAR');
-        ['r_fisico','r_quimico','r_biologico','r_ergonomico','r_psicosocial'].forEach(c => setVal(c,'NINGUNO'));
+    function agregarFila() {
+        const tbody = document.getElementById('tablaLaboral');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><input type="number" class="form-control ed"></td>
+            <td><input type="text" class="form-control em"></td>
+            <td><input type="text" class="form-control oc"></td>
+            <td><input type="text" class="form-control ti"></td>
+            <td><input type="text" class="form-control ri"></td>
+            <td><select class="form-select ep"><option>NO</option><option>SI</option></select></td>
+        `;
+        tbody.appendChild(tr);
     }
 
     window.onload = async () => {
-        const p_id = localStorage.getItem('p_id');
-        try {
-            const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
-            const data = await res.json();
-            document.getElementById('p_nombre').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
-            document.getElementById('p_ci').innerText = data.paciente.ci;
-            document.getElementById('p_codigo').innerText = data.paciente.codigo_paciente;
-        } catch (e) { console.error("Error al cargar"); }
+        const id = localStorage.getItem('p_id');
+        if (!id) return window.location.href="index.html";
+        const res = await fetch(`${API}/api/paciente-completo/${id}`);
+        const d = await res.json();
+        document.getElementById('p_nombre').innerText = `${d.paciente.apellido} ${d.paciente.nombre}`;
+        document.getElementById('p_ci').innerText = d.paciente.ci;
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const payload = { paciente_id: parseInt(localStorage.getItem('p_id')) };
-        campos.forEach(c => { payload[c] = document.getElementById(c).value.toUpperCase(); });
+        const btn = document.getElementById('btnFinal');
+        btn.disabled = true; btn.innerText = "⏳ GUARDANDO EN LA NUBE...";
+
+        const laboral = [];
+        document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
+            laboral.push({
+                edad: tr.querySelector('.ed').value,
+                empresa: tr.querySelector('.em').value.toUpperCase(),
+                ocupacion: tr.querySelector('.oc').value.toUpperCase(),
+                tiempo: tr.querySelector('.ti').value.toUpperCase(),
+                riesgos: tr.querySelector('.ri').value.toUpperCase(),
+                epp: tr.querySelector('.ep').value
+            });
+        });
+
+        const riesgos = [];
+        document.querySelectorAll('.rx:checked').forEach(i => riesgos.push(i.value));
+
+        const payload = {
+            paciente_id: parseInt(localStorage.getItem('p_id')),
+            fuma: document.getElementById('fuma').value,
+            bebe: document.getElementById('bebe').value,
+            ejercicio: document.getElementById('ejercicio').value,
+            drogas: document.getElementById('drogas').value,
+            p_coca: document.getElementById('p_coca').value,
+            grupo_sangre: document.getElementById('grupo_sangre').value.toUpperCase(),
+            historia_laboral: laboral,
+            riesgos_detallados: riesgos,
+            r_fisico: "DETALLE EN TABLA", r_quimico: "DETALLE EN TABLA", r_biologico: "DETALLE EN TABLA", 
+            r_ergonomico: "DETALLE EN TABLA", r_psicosocial: "DETALLE EN TABLA", epp: "DETALLE EN TABLA"
+        };
 
         try {
             const r = await fetch(`${API}/p3/`, {
@@ -123,11 +143,17 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
-            if (r.ok) {
-                alert("¡HISTORIAL COMPLETADO EXITOSAMENTE!");
-                window.location.href = "lista_historial.html";
+            if(r.ok) { 
+                alert("¡HISTORIAL CLINICO GUARDADO COMPLETAMENTE!");
+                window.location.href = "lista_historial.html"; 
+            } else {
+                alert("ERROR EN EL SERVIDOR AL GUARDAR");
             }
-        } catch (err) { alert("Error de red"); }
+        } catch(err) {
+            alert("ERROR DE CONEXIÓN CON RENDER");
+        } finally {
+            btn.disabled = false; btn.innerText = "REINTENTAR GUARDAR";
+        }
     };
 </script>
 </body>
