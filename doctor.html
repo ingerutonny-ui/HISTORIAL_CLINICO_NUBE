@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC NUBE | REGISTRO DOCTOR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #2c3e50; --secondary: #3498db; --success: #27ae60; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        .nav-header { width: 100%; background: var(--primary); padding: 10px 20px; color: white; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        .back-link { color: white; text-decoration: none; font-weight: bold; font-size: 0.9em; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; margin: 40px 20px; text-align: center; }
+        .logo { width: 80px; margin-bottom: 10px; }
+        h2 { color: var(--primary); margin-bottom: 25px; text-transform: uppercase; font-size: 1.5em; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 0.85em; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1em; text-transform: uppercase; }
+        .btn-submit { width: 100%; padding: 15px; background: #4a90e2; color: white; border: none; border-radius: 8px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .btn-submit:hover { background: #357abd; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+
+    <div class="nav-header">
+        <a href="index.html" class="back-link">← VOLVER AL MENÚ PRINCIPAL</a>
+        <div style="font-size: 0.8em;">PROYECTO: HISTORIAL_CLINICO_NUBE</div>
+    </div>
+
+    <div class="container">
+        <img src="logo.png" alt="OHS" class="logo">
+        <h2>Registro de Doctor</h2>
+
+        <div class="form-group">
+            <label>CÉDULA DE IDENTIDAD (CI)</label>
+            <input type="text" id="ci_doc" placeholder="MÁXIMO 10 DÍGITOS" maxlength="10">
+        </div>
+
+        <div class="form-group">
+            <label>APELLIDO PATERNO</label>
+            <input type="text" id="appaterno_doc" placeholder="MÁX. 15 LETRAS" maxlength="15">
+        </div>
+
+        <div class="form-group">
+            <label>APELLIDO MATERNO</label>
+            <input type="text" id="apmaterno_doc" placeholder="MÁX. 15 LETRAS" maxlength="15">
+        </div>
+
+        <div class="form-group">
+            <label>NOMBRES</label>
+            <input type="text" id="nombre_doc" placeholder="MÁX. 15 LETRAS" maxlength="15">
+        </div>
+
+        <div class="form-group">
+            <label>TURNO</label>
+            <select id="turno_doc">
+                <option value="MAÑANA">MAÑANA</option>
+                <option value="TARDE">TARDE</option>
+                <option value="NOCHE">NOCHE</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>ESPECIALIDAD</label>
+            <select id="especialidad">
+                <option value="MEDICINA GENERAL">MEDICINA GENERAL</option>
+                <option value="CARDIOLOGÍA">CARDIOLOGÍA</option>
+                <option value="TRAUMATOLOGÍA">TRAUMATOLOGÍA</option>
+                <option value="GINECOLOGÍA">GINECOLOGÍA</option>
+                <option value="PEDIATRÍA">PEDIATRÍA</option>
+                <option value="ODONTOLOGÍA">ODONTOLOGÍA</option>
+                <option value="OTRO">OTRO</option>
+            </select>
+        </div>
+
+        <button class="btn-submit" onclick="registrarDoctor()">REGISTRAR DOCTOR</button>
+    </div>
+
+    <script>
+        const API_URL = "https://historial-clinico-936s.onrender.com";
+
+        async function registrarDoctor() {
+            const data = {
+                ci_doc: document.getElementById('ci_doc').value,
+                appaterno_doc: document.getElementById('appaterno_doc').value,
+                apmaterno_doc: document.getElementById('apmaterno_doc').value,
+                nombre_doc: document.getElementById('nombre_doc').value,
+                turno_doc: document.getElementById('turno_doc').value,
+                especialidad: document.getElementById('especialidad').value
+            };
+
+            if(!data.ci_doc || !data.nombre_doc) {
+                alert("❌ CI y Nombres son obligatorios");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/doctores/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert("✅ DOCTOR REGISTRADO EXITOSAMENTE");
+                    window.location.href = "index.html";
+                } else {
+                    alert("❌ ERROR AL REGISTRAR: " + response.statusText);
+                }
+            } catch (error) {
+                alert("❌ ERROR DE CONEXIÓN CON RENDER.");
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
