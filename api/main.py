@@ -5,6 +5,7 @@ from . import models, database, crud
 
 app = FastAPI()
 
+# Configuración CORS robusta
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,11 +27,7 @@ def health_check():
 
 @app.get("/pacientes/")
 def list_pacientes(db: Session = Depends(get_db)):
-    try:
-        return db.query(models.Paciente).all()
-    except Exception as e:
-        print(f"Error: {e}")
-        raise HTTPException(status_code=500, detail="Error de base de datos")
+    return db.query(models.Paciente).all()
 
 @app.post("/pacientes/")
 async def save_paciente(request: Request, db: Session = Depends(get_db)):
@@ -42,41 +39,18 @@ async def save_filiacion(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.upsert_filiacion(db, data)
 
-@app.post("/p2/")
-async def save_p2(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    return crud.upsert_p2(db, data)
-
-@app.post("/p3/")
-async def save_p3(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    return crud.upsert_p3(db, data)
-
-@app.post("/enfermera/")
-async def save_enfermera(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    return crud.create_enfermera(db, data)
-
-@app.post("/doctor/")
-async def save_doctor(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    return crud.create_doctor(db, data)
-
 @app.get("/api/paciente-completo/{paciente_id}")
 def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+        raise HTTPException(status_code=404, detail="No encontrado")
     
+    # Buscamos en declaraciones_p1 (según tu models.py)
     filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
-    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
-    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
-
+    
     return {
         "paciente": paciente,
-        "filiacion": filiacion if filiacion else {},
-        "p2": p2 if p2 else {},
-        "p3": p3 if p3 else {}
+        "filiacion": filiacion if filiacion else {}
     }
 
 @app.delete("/pacientes/{paciente_id}")
