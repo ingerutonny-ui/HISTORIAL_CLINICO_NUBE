@@ -70,3 +70,25 @@ class HabitosRiesgosP3(Base):
     historia_laboral = Column(Text)  # Guarda el JSON de la tabla
     riesgos_expuestos = Column(Text) # Guarda el JSON de los checks
     observaciones = Column(String)
+
+# --- TABLA 5: ENFERMERA ---
+class Enfermera(Base):
+    __tablename__ = "enfermeras"
+    id_enfe = Column(Integer, primary_key=True, index=True)
+    ci_enfe = Column(String(10), unique=True) # Max 10 dígitos
+    appaterno_enfe = Column(String(15))      # Solo texto < 15
+    apmaterno_enfe = Column(String(15))      # Solo texto < 15
+    nombre_enfe = Column(String(15))         # Solo texto < 15
+    turno_enfe = Column(String)              # mañana, tarde, noche
+    edu_enfe = Column(String)                # tec.med - tec.sup - lic.
+
+# --- TABLA 6: DOCTOR ---
+class Doctor(Base):
+    __tablename__ = "doctores"
+    id_doc = Column(Integer, primary_key=True, index=True)
+    ci_doc = Column(String(10), unique=True)  # Max 10 dígitos
+    appaterno_doc = Column(String(15))        # Solo texto < 15
+    apmaterno_doc = Column(String(15))        # Solo texto < 15
+    nombre_doc = Column(String(15))           # Solo texto < 15
+    turno_doc = Column(String)                # mañana, tarde, noche
+    especialidad = Column(String)             # Lista larga según captura
