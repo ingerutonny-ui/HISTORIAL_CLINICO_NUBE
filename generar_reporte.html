@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>REPORTE MÉDICO OHS</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #525659; display: flex; justify-content: center; padding: 20px; }
-        .sheet { width: 210mm; min-height: 297mm; background: white; padding: 15mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #525659; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .sheet { width: 210mm; min-height: 297mm; background: white; padding: 15mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); box-sizing: border-box; display: flex; flex-direction: column; }
         
         .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; }
         .logo { height: 60px; }
@@ -19,17 +19,21 @@
             padding: 5px 10px; 
             font-size: 11px; 
             font-weight: bold; 
-            margin: 15px 0 5px 0; 
+            margin: 12px 0 5px 0; 
             text-transform: uppercase;
             color: #1a3a3a;
         }
 
-        table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
-        th, td { border: 1px solid #dee2e6; padding: 6px 10px; text-align: left; font-size: 10px; }
-        th { background: #ffffff; color: #495057; width: 25%; font-weight: bold; text-transform: uppercase; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 5px; table-layout: fixed; }
+        th, td { border: 1px solid #dee2e6; padding: 5px 8px; text-align: left; font-size: 9.5px; word-wrap: break-word; }
+        th { background: #ffffff; color: #495057; width: 20%; font-weight: bold; text-transform: uppercase; }
         td { color: #000; font-weight: 600; text-transform: uppercase; }
 
         .tag { border: 1.5px solid #2ecc71; color: #27ae60; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; margin-right: 4px; display: inline-block; text-transform: uppercase; }
+
+        /* SECCIÓN DE FIRMAS */
+        .signature-container { margin-top: auto; display: flex; justify-content: space-around; padding-top: 50px; padding-bottom: 20px; }
+        .sig-box { width: 40%; text-align: center; border-top: 1px solid #000; padding-top: 5px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
 
         @media print {
             .no-print { display: none; }
@@ -54,24 +58,33 @@
             <tr><th>APELLIDOS Y NOMBRES:</th><td id="r_nombre" colspan="3">---</td></tr>
             <tr><th>CÉDULA IDENTIDAD:</th><td id="r_ci">---</td><th>SEXO:</th><td id="r_sexo">---</td></tr>
             <tr><th>EDAD:</th><td id="r_edad">---</td><th>FECHA NACIMIENTO:</th><td id="r_fnac">---</td></tr>
-            <tr><th>PROFESIÓN / OFICIO:</th><td id="r_prof">---</td><th>GRUPO SANGUÍNEO:</th><td id="r_gs">---</td></tr>
+            <tr><th>PROFESIÓN / OFICIO:</th><td id="r_prof">---</td><th>CÓDIGO INTERNO:</th><td id="r_cod">---</td></tr>
         </table>
 
         <div class="section-title">II. ANTECEDENTES PATOLÓGICOS (P2)</div>
         <table id="tabla_p2"></table>
 
-        <div class="section-title">III. HÁBITOS Y GRUPO SANGUÍNEO (P3)</div>
+        <div class="section-title">III. HÁBITOS Y ESTILOS DE VIDA (P3)</div>
         <table>
-            <tr><th>FUMA:</th><td id="r_fuma">---</td><th>ALCOHOL:</th><td id="r_alcohol">---</td></tr>
-            <tr><th>PIJCHAR (COCA):</th><td id="r_coca" colspan="3">---</td></tr>
+            <tr><th>FUMA:</th><td id="r_fuma">---</td><th>CANTIDAD:</th><td id="r_fuma_cant">---</td></tr>
+            <tr><th>ALCOHOL:</th><td id="r_alcohol">---</td><th>FRECUENCIA:</th><td id="r_alc_freq">---</td></tr>
+            <tr><th>DROGAS:</th><td id="r_drogas">---</td><th>TIPO:</th><td id="r_drogas_tipo">---</td></tr>
+            <tr><th>PIJCHAR (COCA):</th><td id="r_coca">---</td><th>GRUPO SANGUÍNEO:</th><td id="r_gs">---</td></tr>
+            <tr><th>DEPORTES:</th><td id="r_deporte">---</td><th>CUAL/FRECUENCIA:</th><td id="r_dep_freq">---</td></tr>
+            <tr><th>OBSERVACIONES:</th><td id="r_obs_p3" colspan="3">---</td></tr>
         </table>
 
         <div class="section-title">IV. HISTORIA LABORAL (P3)</div>
         <table style="text-align:center;">
-            <thead><tr style="background:#f8f9fa;"><th>Edad Inicio</th><th>Empresa</th><th>Ocupación</th><th>Tiempo</th><th>Riesgos</th><th>EPP</th></tr></thead>
+            <thead><tr style="background:#f8f9fa;"><th style="width:10%;">EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th style="width:10%;">TIEMPO</th><th>RIESGOS</th><th style="width:10%;">EPP</th></tr></thead>
             <tbody id="r_historia"></tbody>
         </table>
         <div id="r_tags" style="margin-top:8px;"></div>
+
+        <div class="signature-container">
+            <div class="sig-box">FIRMA DEL TRABAJADOR</div>
+            <div class="sig-box">FIRMA Y SELLO MÉDICO</div>
+        </div>
     </div>
 
     <script>
@@ -99,18 +112,18 @@
                 const response = await fetch(`${API}/api/paciente-completo/${p_id}`);
                 const d = await response.json();
 
-                // P1 - SIN Código Interno como en image_5cf45e
+                // P1
                 document.getElementById('r_nombre').innerText = `${d.paciente.apellido} ${d.paciente.nombre}`;
                 document.getElementById('r_ci').innerText = d.paciente.ci;
+                document.getElementById('r_cod').innerText = d.paciente.codigo || 'S/C';
                 if(d.filiacion) {
                     document.getElementById('r_edad').innerText = d.filiacion.edad;
                     document.getElementById('r_sexo').innerText = d.filiacion.sexo;
                     document.getElementById('r_fnac').innerText = d.filiacion.fecha_nacimiento;
                     document.getElementById('r_prof').innerText = d.filiacion.profesion_oficio;
                 }
-                document.getElementById('r_gs').innerText = (d.p3 && d.p3.grupo_sanguineo) ? d.p3.grupo_sanguineo : '---';
 
-                // P2 - Listado exacto
+                // P2
                 const t2 = document.getElementById('tabla_p2');
                 estructura_p2.forEach(p => {
                     const v1 = (d.p2 && d.p2[p[0]]) ? d.p2[p[0]] : "SIN PARTICULAR";
@@ -118,11 +131,19 @@
                     t2.innerHTML += `<tr><th>${p[1]}</th><td>${v1}</td><th>${p[3]}</th><td>${v2}</td></tr>`;
                 });
 
-                // P3 - Solo Fuma, Alcohol y Pijchar según image_5d001d
+                // P3
                 if(d.p3) {
                     document.getElementById('r_fuma').innerText = d.p3.fuma || 'NO';
+                    document.getElementById('r_fuma_cant').innerText = d.p3.fuma_cantidad || 'N/A';
                     document.getElementById('r_alcohol').innerText = d.p3.alcohol || 'NO';
+                    document.getElementById('r_alc_freq').innerText = d.p3.alcohol_frecuencia || 'N/A';
+                    document.getElementById('r_drogas').innerText = d.p3.drogas || 'NO';
+                    document.getElementById('r_drogas_tipo').innerText = d.p3.drogas_tipo || 'N/A';
                     document.getElementById('r_coca').innerText = d.p3.coca || 'NO';
+                    document.getElementById('r_gs').innerText = d.p3.grupo_sanguineo || '---';
+                    document.getElementById('r_deporte').innerText = d.p3.deporte || 'NO';
+                    document.getElementById('r_dep_freq').innerText = d.p3.deporte_frecuencia || 'N/A';
+                    document.getElementById('r_obs_p3').innerText = d.p3.observaciones || 'REGISTRO COMPLETADO';
 
                     const h = JSON.parse(d.p3.historia_laboral || '[]');
                     document.getElementById('r_historia').innerHTML = h.map(i => 
