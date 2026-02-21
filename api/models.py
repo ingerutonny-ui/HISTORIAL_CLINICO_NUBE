@@ -1,92 +1,73 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Text
-from .database import Base
+from fastapi import FastAPI, Depends, Request
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from . import models, database
 
-class Paciente(Base):
-    __tablename__ = "pacientes"
-    id = Column(Integer, primary_key=True, index=True)
-    nombre = Column(String)
-    apellido = Column(String)
-    ci = Column(String, unique=True)
-    codigo_paciente = Column(String)
+app = FastAPI()
 
-class DeclaracionJurada(Base):
-    __tablename__ = "declaraciones_p1"
-    id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
-    edad = Column(String)
-    sexo = Column(String)
-    fecha_nacimiento = Column(String)
-    lugar_nacimiento = Column(String)
-    domicilio = Column(String)
-    n_casa = Column(String)
-    zona_barrio = Column(String)
-    ciudad = Column(String)
-    pais = Column(String)
-    telefono = Column(String)
-    estado_civil = Column(String)
-    profesion_oficio = Column(String)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-class AntecedentesP2(Base):
-    __tablename__ = "antecedentes_p2"
-    id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
-    vista = Column(String)
-    auditivo = Column(String)
-    respiratorio = Column(String)
-    cardio = Column(String)
-    digestivos = Column(String)
-    sangre = Column(String)
-    genitourinario = Column(String)
-    sistema_nervioso = Column(String)
-    psiquiatricos = Column(String)
-    osteomusculares = Column(String)
-    reumatologicos = Column(String)
-    dermatologicas = Column(String)
-    alergias = Column(String)
-    cirugias = Column(String)
-    infecciones = Column(String)
-    acc_personales = Column(String)
-    acc_trabajo = Column(String)
-    medicamentos = Column(String)
-    endocrino = Column(String)
-    familiares = Column(String)
-    otros_especificos = Column(String)
-    generales = Column(String)
+def get_db():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-class HabitosRiesgosP3(Base):
-    __tablename__ = "habitos_p3"
-    id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
-    fuma = Column(String)
-    fuma_cantidad = Column(String)
-    alcohol = Column(String)
-    alcohol_frecuencia = Column(String)
-    drogas = Column(String)
-    drogas_tipo = Column(String)
-    coca = Column(String)
-    deporte = Column(String)
-    deporte_detalle = Column(String)
-    grupo_sanguineo = Column(String)
-    historia_laboral = Column(Text)
-    riesgos_expuestos = Column(Text)
-    observaciones = Column(String)
+@app.get("/api/paciente-completo/{id}")
+def get_paciente(id: int, db: Session = Depends(get_db)):
+    p = db.query(models.Paciente).filter(models.Paciente.id == id).first()
+    if not p: return {"error": "No existe"}
+    
+    # Buscamos en las otras tablas para el reporte
+    p1 = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == id).first()
+    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == id).first()
+    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == id).first()
+    
+    return {
+        "paciente": {"nombre": p.nombre, "apellido": p.apellido, "ci": p.ci, "codigo": p.codigo_paciente},
+        "p1": {k: v for k, v in p1.__dict__.items() if not k.startswith('_')} if p1 else {},
+        "p2": {k: v for k, v in p2.__dict__.items() if not k.startswith('_')} if p2 else {},
+        "p3": {k: v for k, v in p3.__dict__.items() if not k.startswith('_')} if p3 else {}
+    }
 
-class Enfermera(Base):
-    __tablename__ = "enfermeras"
-    id_enfe = Column(Integer, primary_key=True, index=True)
-    ci_enfe = Column(String, unique=True)
-    appaterno_enfe = Column(String)
-    apmaterno_enfe = Column(String)
-    nombre_enfe = Column(String)
-    turno_enfe = Column(String)
-    edu_enfe = Column(String)
+@app.post("/p2/")
+async def guardar_p2(r: Request, db: Session = Depends(get_db)):
+    data = await r.json()
+    p_id = int(data.get("paciente_id"))
+    # Buscamos si ya existe el registro en AntecedentesP2
+    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
+    if not p2:
+        p2 = models.AntecedentesP2(paciente_id=p_id)
+        db.add(p2)
+    
+    # Mapeo dinámico solo para la tabla AntecedentesP2
+    for k, v in data.items():
+        if hasattr(p2, k) and k != "paciente_id":
+            setattr(p2, k, str(v).upper())
+    
+    db.commit()
+    return {"status": "ok"}
 
-class Doctor(Base):
-    __tablename__ = "doctores"
-    id_doc = Column(Integer, primary_key=True, index=True)
-    ci_doc = Column(String, unique=True)
-    appaterno_doc = Column(String)
-    apmaterno_doc = Column(String)
-    nombre_doc = Column(String)
-    turno_doc = Column(String)
-    especialidad = Column(String)
+@app.post("/p3/")
+async def guardar_p3(r: Request, db: Session = Depends(get_db)):
+    data = await r.json()
+    p_id = int(data.get("paciente_id"))
+    # Buscamos si ya existe en HabitosRiesgosP3
+    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
+    if not p3:
+        p3 = models.HabitosRiesgosP3(paciente_id=p_id)
+        db.add(p3)
+    
+    for k, v in data.items():
+        if hasattr(p3, k) and k != "paciente_id":
+            setattr(p3, k, str(v).upper())
+            
+    db.commit()
+    return {"status": "ok"}
