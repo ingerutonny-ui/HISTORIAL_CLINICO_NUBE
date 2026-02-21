@@ -1,15 +1,18 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from . import schemas, crud, models
-from .database import SessionLocal, engine
+# Importaciones relativas para la estructura de carpeta /api/
+try:
+    from . import models, schemas, crud
+    from .database import SessionLocal, engine
+except ImportError:
+    import models, schemas, crud
+    from database import SessionLocal, engine
 
-# Sincronización automática de tablas
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración CORS Total
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,7 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Inyección de DB
 def get_db():
     db = SessionLocal()
     try:
@@ -25,18 +27,16 @@ def get_db():
     finally:
         db.close()
 
-# RUTA EXACTA: Esta es la que falla con 404. Ahora es absoluta.
+# RUTA UNIFICADA PARA EVITAR EL 404
 @app.post("/api/guardar-p3")
+@app.post("/guardar-p3")
 async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # Usamos tu lógica de ayer en crud.py
         resultado = crud.upsert_p3(db, data.dict())
-        return {"status": "success", "message": "P3 Guardado", "id": resultado.id}
+        return {"status": "success", "id": resultado.id}
     except Exception as e:
-        print(f"Error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# RUTA PARA LA BARRA SUPERIOR
 @app.get("/api/paciente-completo/{p_id}")
 async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == p_id).first()
