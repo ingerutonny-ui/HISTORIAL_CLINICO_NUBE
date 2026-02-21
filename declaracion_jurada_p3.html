@@ -45,7 +45,7 @@
         <div class="table-responsive">
             <table class="table table-sm table-bordered">
                 <thead class="table-light text-center">
-                    <tr style="font-size: 0.65rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
+                    <tr style="font-size: 0.65rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
@@ -78,19 +78,30 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    // Recuperamos el ID del paciente guardado en los pasos anteriores
-    const id_trabajo = localStorage.getItem('p_id') || localStorage.getItem('p_id_edicion');
+    const id_paciente = localStorage.getItem('p_id') || localStorage.getItem('p_id_edicion');
 
     window.onload = async () => {
-        if (!id_trabajo) { alert("Error: No se detectó ID de paciente."); return; }
-        try {
-            // Buscamos los datos exactos para evitar el UNDEFINED
-            const res = await fetch(`${API}/api/pacientes/${id_trabajo}`);
-            const d = await res.json();
-            document.getElementById('v_nombre').innerText = (d.nombre + " " + d.apellido).toUpperCase();
-            document.getElementById('v_ci').innerText = d.ci || "---";
-            document.getElementById('v_codigo').innerText = d.codigo_paciente || 'S/C';
-        } catch (e) { console.error("Error al cargar cabecera"); }
+        if (!id_paciente) { alert("Error: Sesión no encontrada."); return; }
+        
+        // Prioridad: Datos guardados localmente para evitar el "Undefined"
+        const localNombre = localStorage.getItem('p_nombre');
+        const localCodigo = localStorage.getItem('p_codigo');
+        const localCI = localStorage.getItem('p_ci');
+
+        if (localNombre && localCodigo) {
+            document.getElementById('v_nombre').innerText = localNombre.toUpperCase();
+            document.getElementById('v_codigo').innerText = localCodigo.toUpperCase();
+            document.getElementById('v_ci').innerText = localCI || "---";
+        } else {
+            // Si no hay local, consultamos al servidor
+            try {
+                const res = await fetch(`${API}/api/pacientes/${id_paciente}`);
+                const d = await res.json();
+                document.getElementById('v_nombre').innerText = (d.nombre + " " + d.apellido).toUpperCase();
+                document.getElementById('v_codigo').innerText = d.codigo_paciente || 'S/C';
+                document.getElementById('v_ci').innerText = d.ci || "---";
+            } catch (e) { document.getElementById('v_nombre').innerText = "ERROR CARGA"; }
+        }
     };
 
     function addRow() {
@@ -102,7 +113,7 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnAccion');
-        btn.innerText = "⏳ GUARDANDO EN LA NUBE...";
+        btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
 
         const historia = [];
@@ -121,42 +132,35 @@
         });
 
         const data = {
-            paciente_id: id_trabajo,
+            paciente_id: parseInt(id_paciente),
             fuma: document.getElementById('fuma').value,
             alcohol: document.getElementById('alcohol').value,
             drogas: document.getElementById('drogas').value,
             pijchar: document.getElementById('pijchar').value,
             deporte: document.getElementById('deporte').value,
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value,
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(historia),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.check-riesgo:checked')).map(c => c.value))
         };
 
         try {
-            // Intentamos la ruta que históricamente ha funcionado en tu Render
-            const response = await fetch(`${API}/api/guardar_p3`, {
+            // Usamos la ruta que Render reconoció en tus logs de consola
+            const response = await fetch(`${API}/api/guardar_p3_completo`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
             if (response.ok) {
-                alert("✅ PACIENTE GUARDADO CORRECTAMENTE\nNOMBRE: " + document.getElementById('v_nombre').innerText);
+                alert("✅ REGISTRO FINALIZADO CON ÉXITO\nPACIENTE: " + document.getElementById('v_nombre').innerText);
                 localStorage.clear();
                 window.location.href = "index.html";
             } else {
-                alert("Error 404/500: Reintentando con ruta alternativa...");
-                // Ruta alternativa por si cambió el endpoint
-                await fetch(`${API}/api/guardar-p3`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                window.location.href = "index.html";
+                throw new Error();
             }
         } catch (err) {
-            alert("Error de conexión. Verifica que el Backend en Render esté activo.");
-            btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
+            alert("⚠️ Error crítico en servidor. Intenta una vez más.");
+            btn.disabled = false; btn.innerText = "💾 REINTENTAR GUARDAR";
         }
     };
 </script>
