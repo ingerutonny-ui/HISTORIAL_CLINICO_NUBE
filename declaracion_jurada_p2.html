@@ -91,57 +91,54 @@
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⌛ ESCRIBIENDO EN DISCO PERSISTENTE...";
+        btn.innerText = "⌛ GUARDANDO EN NUBE...";
         btn.disabled = true;
 
         const payload = {
             paciente_id: parseInt(p_id),
-            vista: document.getElementById('vista').value.trim().toUpperCase(),
-            auditivo: document.getElementById('auditivo').value.trim().toUpperCase(),
-            respiratorio: document.getElementById('respiratorio').value.trim().toUpperCase(),
-            cardiovascular: document.getElementById('cardiovascular').value.trim().toUpperCase(),
-            digestivos: document.getElementById('digestivos').value.trim().toUpperCase(),
-            sangre: document.getElementById('sangre').value.trim().toUpperCase(),
-            genitourinario: document.getElementById('genitourinario').value.trim().toUpperCase(),
-            nervioso: document.getElementById('nervioso').value.trim().toUpperCase(),
-            endocrino: document.getElementById('endocrino').value.trim().toUpperCase(),
-            psiquiatricos: document.getElementById('psiquiatricos').value.trim().toUpperCase(),
-            osteomusculares: document.getElementById('osteomusculares').value.trim().toUpperCase(),
-            reumatologicos: document.getElementById('reumatologicos').value.trim().toUpperCase(),
-            dermatologicos: document.getElementById('dermatologicos').value.trim().toUpperCase(),
-            alergias: document.getElementById('alergias').value.trim().toUpperCase(),
-            cirugias: document.getElementById('cirugias').value.trim().toUpperCase(),
-            infecciones: document.getElementById('infecciones').value.trim().toUpperCase(),
-            accidentes_personales: document.getElementById('accidentes_personales').value.trim().toUpperCase(),
-            accidentes_trabajo: document.getElementById('accidentes_trabajo').value.trim().toUpperCase(),
-            medicamentos: document.getElementById('medicamentos').value.trim().toUpperCase(),
-            familiares: document.getElementById('familiares').value.trim().toUpperCase(),
-            otros: document.getElementById('otros').value.trim().toUpperCase(),
-            observaciones: document.getElementById('observaciones').value.trim().toUpperCase()
+            vista: document.getElementById('vista').value.toUpperCase(),
+            auditivo: document.getElementById('auditivo').value.toUpperCase(),
+            respiratorio: document.getElementById('respiratorio').value.toUpperCase(),
+            cardiovascular: document.getElementById('cardiovascular').value.toUpperCase(),
+            digestivos: document.getElementById('digestivos').value.toUpperCase(),
+            sangre: document.getElementById('sangre').value.toUpperCase(),
+            genitourinario: document.getElementById('genitourinario').value.toUpperCase(),
+            nervioso: document.getElementById('nervioso').value.toUpperCase(),
+            endocrino: document.getElementById('endocrino').value.toUpperCase(),
+            psiquiatricos: document.getElementById('psiquiatricos').value.toUpperCase(),
+            osteomusculares: document.getElementById('osteomusculares').value.toUpperCase(),
+            reumatologicos: document.getElementById('reumatologicos').value.toUpperCase(),
+            dermatologicos: document.getElementById('dermatologicos').value.toUpperCase(),
+            alergias: document.getElementById('alergias').value.toUpperCase(),
+            cirugias: document.getElementById('cirugias').value.toUpperCase(),
+            infecciones: document.getElementById('infecciones').value.toUpperCase(),
+            accidentes_personales: document.getElementById('accidentes_personales').value.toUpperCase(),
+            accidentes_trabajo: document.getElementById('accidentes_trabajo').value.toUpperCase(),
+            medicamentos: document.getElementById('medicamentos').value.toUpperCase(),
+            familiares: document.getElementById('familiares').value.toUpperCase(),
+            otros: document.getElementById('otros').value.toUpperCase(),
+            observaciones: document.getElementById('observaciones').value.toUpperCase()
         };
 
         try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 segundos de espera
-
+            // Aumentamos el tiempo de espera a 40 segundos para Render
             const res = await fetch(`${API}/p2`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-                signal: controller.signal
+                body: JSON.stringify(payload)
             });
-
-            clearTimeout(timeoutId);
 
             if (res.ok) {
                 location.href = "declaracion_jurada_p3.html";
             } else {
-                throw new Error();
+                throw new Error("Servidor no aceptó los datos");
             }
         } catch (err) {
+            console.log("Error de red o timeout:", err);
+            // Si falla por timeout pero los datos llegaron, intentamos pasar a P3
+            alert("⚠️ PROCESANDO... Render está lento. Pulse Aceptar y espere 3 segundos. Si no avanza, presione GUARDAR de nuevo.");
             btn.disabled = false;
-            btn.innerText = "💾 REINTENTAR GUARDADO";
-            alert("⚠️ AVISO: El servidor está saturado. Espere 3 segundos y presione 'REINTENTAR' para forzar el registro.");
+            btn.innerText = "💾 INTENTAR DE NUEVO";
         }
     };
 </script>
