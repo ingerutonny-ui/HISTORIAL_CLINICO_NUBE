@@ -16,19 +16,17 @@
         .section-tag { border-left: 4px solid var(--verde-esmeralda); color: #1e4d2b; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; padding-left: 10px; margin: 15px 0 10px; background: #fcfcfc; }
         label { font-size: 0.65rem; font-weight: bold; color: #7f8c8d; }
         .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 32px; }
-        .table { font-size: 0.7rem; }
-        .risk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #fdfdfd; padding: 15px; border-radius: 6px; border: 1px solid #eee; }
         .btn-final { background: var(--verde-boton); color: white; font-weight: bold; width: 100%; padding: 12px; border-radius: 6px; border: none; margin-top: 20px; text-transform: uppercase; }
         #successOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        .risk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #fdfdfd; padding: 15px; border-radius: 6px; border: 1px solid #eee; }
     </style>
 </head>
 <body>
 
 <div id="successOverlay">
-    <h1 style="color: var(--verde-boton); font-weight: 800;">✅ P3 SINCRONIZADO</h1>
+    <h1 style="color: var(--verde-boton); font-weight: 800;">✅ P3 GUARDADO</h1>
     <h3 id="res_nombre" style="text-transform: uppercase; color: #2c3e50;">---</h3>
-    <h4 id="res_codigo" class="text-codigo" style="font-size: 2rem;">---</h4>
-    <p class="mt-3">DATOS ASEGURADOS EN SERVIDOR DE PAGO (RENDER STARTER)</p>
+    <p class="mt-3">SINCRONIZADO CON RENDER STARTER</p>
 </div>
 
 <div class="container">
@@ -39,7 +37,7 @@
     <h5 class="fw-bold text-success mb-3">3. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h5>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">SINCRONIZANDO...</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">VERIFICANDO CONEXIÓN...</span></div>
         <div>CI: <span id="v_ci" class="text-blue">---</span></div>
         <div>CÓDIGO: <span id="v_codigo" class="text-codigo">---</span></div>
     </div>
@@ -50,16 +48,14 @@
             <div class="col-md-2"><label>¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label>PIJCHAR (COCA)?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2"><label>PIJCHAR?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+"></div>
+            <div class="col-md-2"><label>GRUPO SANG.</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="ORH+"></div>
         </div>
 
         <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-sm btn-dark float-end" onclick="addRow()">+ FILA</button></div>
-        <table class="table table-bordered align-middle">
-            <thead class="table-light">
-                <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
-            </thead>
+        <table class="table table-bordered">
+            <thead class="table-light"><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
             <tbody id="tablaLaboral">
                 <tr>
                     <td><input type="number" class="form-control row-edad"></td>
@@ -72,23 +68,15 @@
             </tbody>
         </table>
 
-        <div class="section-tag">III. RIESGOS EXPUESTOS EN SU VIDA LABORAL</div>
+        <div class="section-tag">III. RIESGOS EXPUESTOS</div>
         <div class="risk-grid">
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="RUIDO" id="r1"><label class="form-check-label" for="r1">RUIDO</label></div>
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="POLVOS" id="r2"><label class="form-check-label" for="r2">POLVOS</label></div>
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="ERGONÓMICO" id="r3"><label class="form-check-label" for="r3">ERGONÓMICO</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="VIBRACIÓN" id="r4"><label class="form-check-label" for="r4">VIBRACIÓN</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="GASES/VAPORES" id="r5"><label class="form-check-label" for="r5">GASES/VAPORES</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="BIOLÓGICO" id="r6"><label class="form-check-label" for="r6">BIOLÓGICO</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="RADIACIÓN" id="r7"><label class="form-check-label" for="r7">RADIACIÓN</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="ILUMINACIÓN" id="r8"><label class="form-check-label" for="r8">ILUMINACIÓN</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="PSICOSOCIAL" id="r9"><label class="form-check-label" for="r9">PSICOSOCIAL</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="TEMP. EXTREMAS" id="r10"><label class="form-check-label" for="r10">TEMP. EXTREMAS</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="QUÍMICOS" id="r11"><label class="form-check-label" for="r11">QUÍMICOS</label></div>
-            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="ALTURA" id="r12"><label class="form-check-label" for="r12">ALTURA</label></div>
+            <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="QUÍMICOS" id="r4"><label class="form-check-label" for="r4">QUÍMICOS</label></div>
         </div>
 
-        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR REGISTRO P3 (RENDER STARTER)</button>
+        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR Y FINALIZAR P3</button>
     </form>
 </div>
 
@@ -98,30 +86,27 @@
 
     async function cargarPaciente() {
         if (!p_id) {
-            alert("⚠️ PACIENTE NO IDENTIFICADO. REGRESE AL PANEL.");
+            alert("❌ ERROR: NO HAY PACIENTE SELECCIONADO.");
             window.location.href = "index.html";
             return;
         }
         
         try {
-            // Consulta directa por ID para aprovechar el plan de pago
             const res = await fetch(`${API}/api/pacientes`);
+            if (!res.ok) throw new Error();
             const data = await res.json();
             const p = data.find(x => x.id == p_id);
             
             if (p) {
-                const n = `${p.nombre} ${p.apellido}`.toUpperCase();
-                document.getElementById('v_nombre').innerText = n;
+                document.getElementById('v_nombre').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
                 document.getElementById('v_ci').innerText = p.ci || '---';
                 document.getElementById('v_codigo').innerText = (p.codigo && p.codigo !== "undefined") ? p.codigo : "S/C";
-                document.getElementById('res_nombre').innerText = n;
-                document.getElementById('res_codigo').innerText = document.getElementById('v_codigo').innerText;
-            } else {
-                document.getElementById('v_nombre').innerText = "PACIENTE NO ENCONTRADO";
+                document.getElementById('res_nombre').innerText = document.getElementById('v_nombre').innerText;
             }
         } catch (e) {
-            document.getElementById('v_nombre').innerText = "REINTENTANDO CONEXIÓN STARTER...";
-            setTimeout(cargarPaciente, 1000); // Reintento más rápido para plan de pago
+            console.log("Error de red, reintentando...");
+            document.getElementById('v_nombre').innerText = "ERROR DE CONEXIÓN. REINTENTANDO...";
+            setTimeout(cargarPaciente, 1500);
         }
     }
 
@@ -135,7 +120,7 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnFinalizar');
-        btn.disabled = true; btn.innerText = "⏳ ENVIANDO A LA NUBE...";
+        btn.disabled = true; btn.innerText = "⏳ SINCRONIZANDO...";
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
@@ -178,8 +163,8 @@
                 setTimeout(() => { window.location.href = "index.html"; }, 2000);
             } else { throw new Error(); }
         } catch (err) {
-            alert("❌ ERROR CRÍTICO. VERIFIQUE SU CONEXIÓN.");
-            btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO P3";
+            alert("❌ ERROR AL GUARDAR. REINTENTANDO...");
+            btn.disabled = false; btn.innerText = "💾 GUARDAR Y FINALIZAR P3";
         }
     };
 </script>
