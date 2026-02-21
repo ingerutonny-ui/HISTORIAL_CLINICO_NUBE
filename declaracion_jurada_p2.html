@@ -91,7 +91,7 @@
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⏳ SINCRONIZANDO CON LA NUBE...";
+        btn.innerText = "⏳ GUARDADO RÁPIDO...";
         btn.disabled = true;
 
         const payload = {
@@ -128,15 +128,16 @@
             });
 
             if (res.ok) {
-                location.href = "declaracion_jurada_p3.html";
+                // Pequeña pausa visual para asegurar que el usuario vea el éxito
+                setTimeout(() => { location.href = "declaracion_jurada_p3.html"; }, 800);
             } else {
-                throw new Error("Respuesta de servidor no exitosa");
+                throw new Error("Error en respuesta");
             }
         } catch (err) {
-            console.error("Error de envío:", err);
-            alert("⚠️ EL SERVIDOR ESTÁ LENTO. Pulse Aceptar y espere un momento antes de reintentar.");
+            console.error("Error:", err);
             btn.disabled = false;
             btn.innerText = "💾 REINTENTAR GUARDADO";
+            alert("CONEXIÓN INTERRUMPIDA. Verifique su internet y pulse Guardar de nuevo.");
         }
     };
 </script>
