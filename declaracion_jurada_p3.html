@@ -63,7 +63,7 @@
             <div class="col-md-2"><label>¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label>PIJCHAR?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2"><label>PIJCHAR (COCA)?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+"></div>
         </div>
@@ -132,18 +132,17 @@
         try {
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
-            
-            // CORRECCIÓN: Acceso directo a d.paciente
             const p = d.paciente;
             const nombreCompleto = `${p.nombre} ${p.apellido}`.toUpperCase();
-            
+            const cod = p.codigo || "S/C";
+
             document.getElementById('v_nombre').innerText = nombreCompleto;
             document.getElementById('v_ci').innerText = p.ci;
-            document.getElementById('v_codigo').innerText = p.codigo; // Mapeo de código
+            document.getElementById('v_codigo').innerText = cod;
             
             document.getElementById('res_nombre').innerText = nombreCompleto;
-            document.getElementById('res_codigo').innerText = p.codigo;
-        } catch (e) { console.error("Error al cargar datos del paciente"); }
+            document.getElementById('res_codigo').innerText = cod;
+        } catch (e) { console.error("Error al cargar"); }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
@@ -184,7 +183,8 @@
         };
 
         try {
-            const res = await fetch(`${API}/api/p3`, {
+            // CORRECCIÓN CLAVE: Agregada "/" final para evitar redirección 308 y error CORS
+            const res = await fetch(`${API}/api/p3/`, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
