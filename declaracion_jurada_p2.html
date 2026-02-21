@@ -43,8 +43,8 @@
             </div>
             <div class="col-md-4">
                 <label>Oído / Audición</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setNormal('auditivo')">NORMAL</button>
-                <input type="text" id="auditivo" class="form-control">
+                <button type="button" class="btn btn-light btn-normal border" onclick="setNormal('oido')">NORMAL</button>
+                <input type="text" id="oido" class="form-control">
             </div>
             <div class="col-md-4">
                 <label>Respiratorio</label>
@@ -53,8 +53,8 @@
             </div>
             <div class="col-md-4">
                 <label>Cardiovascular</label>
-                <button type="button" class="btn btn-light btn-normal border" onclick="setNormal('cardio')">NORMAL</button>
-                <input type="text" id="cardio" class="form-control">
+                <button type="button" class="btn btn-light btn-normal border" onclick="setNormal('cardiovascular')">NORMAL</button>
+                <input type="text" id="cardiovascular" class="form-control">
             </div>
             <div class="col-md-4">
                 <label>Digestivos</label>
@@ -104,13 +104,13 @@
             <div class="col-12"><label>Observaciones Generales</label><textarea id="generales" class="form-control"></textarea></div>
         </div>
 
-        <button type="submit" class="btn-save">💾 GUARDAR Y CONTINUAR A PARTE 3</button>
+        <button type="submit" class="btn-save" id="btnGuardar">💾 GUARDAR Y CONTINUAR A PARTE 3</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    const campos = ['vista','auditivo','respiratorio','cardio','digestivos','sangre','genitourinario','sistema_nervioso','psiquiatricos','osteomusculares','reumatologicos','dermatologicas','alergias','cirugias','infecciones','acc_personales','acc_trabajo','medicamentos','endocrino','familiares','otros_especificos','generales'];
+    const campos = ['vista','oido','respiratorio','cardiovascular','digestivos','sangre','genitourinario','sistema_nervioso','psiquiatricos','osteomusculares','reumatologicos','dermatologicas','alergias','cirugias','infecciones','acc_personales','acc_trabajo','medicamentos','endocrino','familiares','otros_especificos','generales'];
 
     function setNormal(id) { document.getElementById(id).value = "SIN PARTICULAR"; }
     function marcarTodoNormal() { campos.forEach(c => { if(document.getElementById(c)) document.getElementById(c).value = "SIN PARTICULAR"; }); }
@@ -125,17 +125,20 @@
             document.getElementById('p_nombre').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('p_ci').innerText = data.paciente.ci;
             document.getElementById('p_codigo').innerText = data.paciente.codigo_paciente;
-
-            if (data.p2) {
-                campos.forEach(c => { if(data.p2[c]) document.getElementById(c).value = data.p2[c]; });
-            }
         } catch (e) { console.error("Error al cargar datos"); }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
+        const btn = document.getElementById('btnGuardar');
+        btn.innerText = "⌛ GUARDANDO...";
+        btn.disabled = true;
+
         const payload = { paciente_id: parseInt(localStorage.getItem('p_id')) };
-        campos.forEach(c => { payload[c] = document.getElementById(c).value.toUpperCase(); });
+        campos.forEach(c => { 
+            const el = document.getElementById(c);
+            payload[c] = el ? el.value.toUpperCase() : ""; 
+        });
 
         try {
             const r = await fetch(`${API}/p2/`, {
@@ -143,8 +146,17 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
-            if (r.ok) window.location.href = "declaracion_jurada_p3.html";
-        } catch (err) { alert("Error de red"); }
+            if (r.ok) {
+                window.location.href = "declaracion_jurada_p3.html";
+            } else {
+                alert("ERROR EN EL SERVIDOR");
+            }
+        } catch (err) { 
+            alert("ERROR DE CONEXIÓN"); 
+        } finally {
+            btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3";
+            btn.disabled = false;
+        }
     };
 </script>
 </body>
