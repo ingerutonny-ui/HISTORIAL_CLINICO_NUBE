@@ -13,15 +13,11 @@
         .header-logo { height: 70px; display: block; margin: 0 auto 10px; }
         .header-title { color: var(--ohs-dark); font-weight: 700; text-align: center; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
         .barra-paciente { background: #f1f9f7; padding: 20px; border-radius: 10px; border-left: 8px solid var(--ohs); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
-        .section-tag { background: #f8f9fa; padding: 12px; font-weight: 700; border-bottom: 3px solid var(--ohs); margin: 25px 0 15px 0; color: var(--dark); text-transform: uppercase; display: flex; align-items: center; }
+        .section-tag { background: #f8f9fa; padding: 12px; font-weight: 700; border-bottom: 3px solid var(--ohs); margin: 25px 0 15px 0; color: var(--dark); text-transform: uppercase; }
         .form-label { font-weight: 600; color: #636e72; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 6px; text-transform: uppercase; font-size: 0.85rem; border: 1px solid #dcdde1; padding: 8px; }
-        .form-control:focus { border-color: var(--ohs); box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.15); }
-        .table { font-size: 0.8rem; }
-        .table thead { background: var(--dark); color: white; }
-        .btn-add { background: var(--dark); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.8rem; transition: 0.3s; margin-top: 10px; }
-        .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 18px; border: none; border-radius: 10px; margin-top: 40px; text-transform: uppercase; font-size: 1rem; box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3); cursor: pointer; }
-        .btn-save:hover { background: var(--ohs-dark); transform: translateY(-2px); }
+        .btn-add { background: var(--dark); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.8rem; margin-top: 10px; cursor: pointer; }
+        .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 18px; border: none; border-radius: 10px; margin-top: 40px; text-transform: uppercase; font-size: 1rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -34,7 +30,6 @@
         <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 800;">CARGANDO...</span></div>
         <div>CI: <span id="v_ci" style="font-weight: 700;">---</span></div>
         <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">---</span></div>
-        <div class="badge bg-dark" id="v_id">ID: --</div>
     </div>
 
     <form id="formP3">
@@ -58,14 +53,9 @@
         <div class="section-tag">2. HISTORIA LABORAL (EMPRESAS ANTERIORES)</div>
         <div class="table-responsive">
             <table class="table table-bordered align-middle">
-                <thead>
+                <thead class="table-light">
                     <tr class="text-center">
-                        <th style="width: 80px;">EDAD</th>
-                        <th>EMPRESA</th>
-                        <th>CARGO / ACTIVIDAD</th>
-                        <th style="width: 100px;">TIEMPO</th>
-                        <th>RIESGOS EXPUESTOS</th>
-                        <th style="width: 100px;">¿EPP?</th>
+                        <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
                     </tr>
                 </thead>
                 <tbody id="tBody">
@@ -80,74 +70,47 @@
                 </tbody>
             </table>
         </div>
-        <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR OTRA EXPERIENCIA</button>
+        <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR EXPERIENCIA</button>
 
-        <div class="section-tag">3. RIESGOS EXPUESTOS EN PUESTO ACTUAL</div>
+        <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="row g-3 p-2">
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="RUIDO"> RUIDO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="POLVOS"> POLVOS</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="VIBRACION"> VIBRACIÓN</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> ALTURA</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICO"> QUÍMICO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="ERGONOMICO"> ERGONÓMICO</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="BIOLOGICO"> BIOLÓGICO</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="VIBRACION"> VIBRACIÓN</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="ALTURA"> ALTURA</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="QUIMICO"> QUÍMICO</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL</button>
+        <button type="submit" class="btn-save">💾 GUARDAR DECLARACIÓN P3</button>
     </form>
 </div>
 
 <script>
-    const API_BASE = "https://historial-clinico-936s.onrender.com/api";
-
     function addFila() {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><input type="text" class="form-control r-ed"></td>
-            <td><input type="text" class="form-control r-em"></td>
-            <td><input type="text" class="form-control r-ca"></td>
-            <td><input type="text" class="form-control r-ti"></td>
-            <td><input type="text" class="form-control r-ri"></td>
-            <td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
+        tr.innerHTML = `<td><input type="text" class="form-control r-ed"></td><td><input type="text" class="form-control r-em"></td><td><input type="text" class="form-control r-ca"></td><td><input type="text" class="form-control r-ti"></td><td><input type="text" class="form-control r-ri"></td><td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
         document.getElementById('tBody').appendChild(tr);
     }
 
-    window.onload = async () => {
-        // Recuperación Forzada: Si no hay en una clave, busca en la otra
-        const id = localStorage.getItem('p_id') || localStorage.getItem('id');
-        const nom = localStorage.getItem('p_nombre') || localStorage.getItem('nombre') || "NOMBRE NO ENCONTRADO";
-        const ape = localStorage.getItem('p_apellido') || localStorage.getItem('apellido') || "";
-        const ci = localStorage.getItem('p_ci') || localStorage.getItem('ci') || "---";
-        const cod = localStorage.getItem('p_codigo') || localStorage.getItem('codigo_paciente') || "---";
+    window.onload = () => {
+        // Recuperamos los datos de la "mochila"
+        const nom = localStorage.getItem('p_nombre') || "NOMBRE NO ENCONTRADO";
+        const ape = localStorage.getItem('p_apellido') || "";
+        const ci = localStorage.getItem('p_ci') || "---";
+        const cod = localStorage.getItem('p_codigo') || "---";
 
-        document.getElementById('v_nom').innerText = `${nom} ${ape}`.toUpperCase();
+        document.getElementById('v_nom').innerText = (nom + " " + ape).toUpperCase();
         document.getElementById('v_ci').innerText = ci;
         document.getElementById('v_cod').innerText = cod;
-        document.getElementById('v_id').innerText = `ID: ${id || '--'}`;
-
-        // Intento de rescate desde el servidor si el nombre falló
-        if (id && nom === "NOMBRE NO ENCONTRADO") {
-            try {
-                const res = await fetch(`${API_BASE}/get-paciente/${id}`);
-                if (res.ok) {
-                    const p = await res.json();
-                    document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
-                    document.getElementById('v_ci').innerText = p.ci;
-                    document.getElementById('v_cod').innerText = p.codigo_paciente;
-                }
-            } catch (e) { console.error("Error de rescate de datos"); }
-        }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const pid = localStorage.getItem('p_id') || localStorage.getItem('id');
-        if(!pid) return alert("ERROR: Sin ID de paciente. No se puede guardar.");
-
-        const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO EN LA NUBE...";
-        btn.disabled = true;
+        const pid = localStorage.getItem('p_id');
+        if(!pid) return alert("Error: No hay ID");
 
         const payload = {
             paciente_id: parseInt(pid),
@@ -170,27 +133,17 @@
                 ep: tr.querySelector('.r-ep').value
             }))),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "MAPEADO_COMPLETO_P3"
+            observaciones: "REGISTRO_P3_FINAL"
         };
 
         try {
-            const res = await fetch(`${API_BASE}/save-p3`, {
+            const res = await fetch("https://historial-clinico-936s.onrender.com/api/save-p3", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) {
-                alert("✅ P3 GUARDADO CORRECTAMENTE EN RENDER/POSTGRES");
-                window.location.href = "index.html";
-            } else {
-                alert("❌ ERROR AL GUARDAR");
-                btn.disabled = false;
-                btn.innerText = "💾 GUARDAR DECLARACIÓN P3";
-            }
-        } catch (error) {
-            alert("❌ FALLO DE CONEXIÓN CON EL BACKEND");
-            btn.disabled = false;
-        }
+            if (res.ok) { alert("P3 GUARDADO"); window.location.href = "index.html"; }
+        } catch (err) { alert("Error de conexión"); }
     };
 </script>
 </body>
