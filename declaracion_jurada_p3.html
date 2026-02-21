@@ -139,8 +139,8 @@
         };
 
         try {
-            // RUTA EXACTA DEL BACKEND: guardar_p3_completo
-            const response = await fetch(`${API}/api/guardar_p3_completo`, {
+            // CORRECCIÓN FINAL DE RUTA SEGÚN TUS LOGS: /api/guardar-p3
+            const response = await fetch(`${API}/api/guardar-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
@@ -151,8 +151,20 @@
                 localStorage.clear();
                 window.location.href = "index.html";
             } else {
-                alert("Error: Ruta no encontrada en el servidor.");
-                btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
+                // Si falla, intentamos la ruta con guion bajo como último recurso
+                const res2 = await fetch(`${API}/api/guardar_p3`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if(res2.ok) {
+                    alert("PACIENTE NUEVO: " + nF + "\nCÓDIGO: " + cF);
+                    localStorage.clear();
+                    window.location.href = "index.html";
+                } else {
+                    alert("Error: El servidor no reconoce ninguna ruta de guardado (404).");
+                    btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
+                }
             }
         } catch (err) {
             alert("Error de conexión.");
