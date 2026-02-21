@@ -32,6 +32,7 @@ def persistir_p2(data, p_id):
                 setattr(obj, k, str(v).upper())
         db.commit()
     except Exception as e:
+        print(f"Error DB: {e}")
         db.rollback()
     finally:
         db.close()
@@ -44,20 +45,13 @@ def health():
 def get_p(id: int, db: Session = Depends(get_db)):
     p = db.query(models.Paciente).filter(models.Paciente.id == id).first()
     if not p: return {"error": "404"}
-    
-    filiacion = db.query(models.FiliacionP1).filter(models.FiliacionP1.paciente_id == id).first()
-    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == id).first()
-    p3 = db.query(models.HabitosP3).filter(models.HabitosP3.paciente_id == id).first()
-
-    def to_dict(obj):
-        if not obj: return None
-        return {k: v for k, v in obj.__dict__.items() if not k.startswith('_')}
-
     return {
-        "paciente": {"nombre": p.nombre, "apellido": p.apellido, "ci": p.ci, "codigo": getattr(p, 'codigo_paciente', 'S/C')},
-        "filiacion": to_dict(filiacion),
-        "p2": to_dict(p2),
-        "p3": to_dict(p3)
+        "paciente": {
+            "nombre": p.nombre, 
+            "apellido": p.apellido, 
+            "ci": p.ci, 
+            "codigo": getattr(p, 'codigo_paciente', 'SIN CÓDIGO')
+        }
     }
 
 @app.post("/p2")
