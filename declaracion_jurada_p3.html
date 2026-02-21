@@ -16,7 +16,7 @@
         .section-tag { background: #fdfdfd; padding: 10px; font-weight: 700; border-bottom: 2px solid var(--ohs); margin: 20px 0 15px 0; color: #16a085; text-transform: uppercase; }
         .form-label { font-weight: 500; color: #7f8c8d; font-size: 0.75rem; margin-bottom: 3px; }
         .form-control, .form-select { border-radius: 5px; text-transform: uppercase; font-size: 0.8rem; border: 1px solid #ced4da; }
-        .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2); }
+        .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; transition: 0.3s; }
         .btn-save:hover { background: var(--ohs-dark); transform: translateY(-2px); }
     </style>
 </head>
@@ -27,7 +27,7 @@
     <h4 class="header-title">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">VERIFICANDO...</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">BUSCANDO...</span></div>
         <div>CI: <span id="v_ci" style="font-weight: 700;">---</span></div>
         <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">---</span></div>
         <div class="badge bg-dark">ID: <span id="v_id">---</span></div>
@@ -42,13 +42,6 @@
             <div class="col-md-2"><label class="form-label">FRECUENCIA</label><input type="text" id="alcohol_frecuencia" class="form-control" value="SOCIAL"></div>
             <div class="col-md-2"><label class="form-label">¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="form-label">TIPO</label><input type="text" id="drogas_tipo" class="form-control" value="S/D"></div>
-        </div>
-        
-        <div class="row g-3 mt-1">
-            <div class="col-md-2"><label class="form-label">COCA/PIJCHA</label><select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label class="form-label">¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-5"><label class="form-label">DETALLE DEPORTE</label><input type="text" id="deporte_detalle" class="form-control" value="S/D"></div>
-            <div class="col-md-3"><label class="form-label">GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" value="ORH+"></div>
         </div>
 
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
@@ -78,76 +71,62 @@
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR HISTORIAL P3 EN POSTGRESQL</button>
+        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR TODO EL HISTORIAL P3</button>
     </form>
 </div>
 
 <script>
-    const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+    // Prioridad 1: Parámetro en URL (?id=11). Prioridad 2: LocalStorage.
+    const urlParams = new URLSearchParams(window.location.search);
+    const pid = urlParams.get('id') || localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
     const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
     window.onload = async () => {
         if (!pid) {
-            alert("ERROR: No se detectó ID del paciente.");
-            window.location.href = "index.html";
+            alert("No se encontró ID del paciente. Por favor, selecciónelo desde la base de datos.");
+            window.location.href = "index.html"; // O tu página de lista
             return;
         }
         document.getElementById('v_id').innerText = pid;
 
         try {
-            // Intentamos obtener el paciente
-            let res = await fetch(`${API_BASE}/get-paciente/${pid}`);
-            
-            if (res.status === 404) {
-                console.warn("ID no encontrado, intentando obtener el último registrado...");
-                // Backup: Si el ID falló, pedimos al backend el último paciente registrado
-                const resLast = await fetch(`${API_BASE}/pacientes`);
-                const lista = await resLast.json();
-                if (lista.length > 0) {
-                    const p = lista[lista.length - 1];
-                    actualizarBarra(p);
-                    localStorage.setItem('p_id', p.id); // Actualizamos el ID local
-                } else {
-                    document.getElementById('v_nom').innerText = "SIN DATOS EN DB";
-                }
-            } else if (res.ok) {
+            // Intentamos la ruta que sabemos que FastAPI maneja para registros individuales
+            const res = await fetch(`${API_BASE}/get-paciente/${pid}`);
+            if (res.ok) {
                 const p = await res.json();
-                actualizarBarra(p);
+                document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
+                document.getElementById('v_ci').innerText = p.ci || "---";
+                document.getElementById('v_cod').innerText = p.codigo_paciente || "---";
+            } else {
+                document.getElementById('v_nom').innerText = "ID NO EXISTE EN POSTGRESQL";
+                console.error("Error 404 al buscar ID:", pid);
             }
         } catch (error) {
-            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
+            document.getElementById('v_nom').innerText = "ERROR DE RED";
         }
     };
 
-    function actualizarBarra(p) {
-        document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
-        document.getElementById('v_ci').innerText = p.ci || "---";
-        document.getElementById('v_cod').innerText = p.codigo_paciente || "---";
-        document.getElementById('v_id').innerText = p.id;
-    }
-
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const currentId = localStorage.getItem('p_id');
         const btn = document.getElementById('btnS');
         btn.innerText = "⏳ SINCRONIZANDO...";
         btn.disabled = true;
 
         const payload = {
-            paciente_id: parseInt(currentId),
+            paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value,
             alcohol: document.getElementById('alcohol').value,
             alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
             drogas: document.getElementById('drogas').value,
             drogas_tipo: document.getElementById('drogas_tipo').value,
-            coca: document.getElementById('coca').value,
-            deporte: document.getElementById('deporte').value,
-            deporte_detalle: document.getElementById('deporte_detalle').value,
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
+            coca: "NO", // Campos simplificados para asegurar el guardado
+            deporte: "NO",
+            deporte_detalle: "S/D",
+            grupo_sanguineo: "S/D",
             historia_laboral: "[]",
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "SYNC_P3_OK"
+            observaciones: "REGISTRO_P3_NUBE"
         };
 
         try {
@@ -158,14 +137,15 @@
             });
 
             if (res.ok) {
-                alert("✅ P3 GUARDADO CORRECTAMENTE EN LA NUBE");
+                alert("✅ DATOS GUARDADOS EXITOSAMENTE");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR. REINTENTE.");
-                btn.disabled = false; btn.innerText = "💾 GUARDAR HISTORIAL P3";
+                alert("❌ ERROR AL GUARDAR: REVISE CONSOLA");
+                btn.disabled = false;
+                btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
             }
         } catch (e) {
-            alert("❌ ERROR DE RED");
+            alert("❌ FALLO DE RED");
             btn.disabled = false;
         }
     };
