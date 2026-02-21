@@ -20,18 +20,19 @@ def get_db():
     finally:
         db.close()
 
+@app.get("/")
+def read_root():
+    return {"proyecto": "HISTORIAL_CLINICO_NUBE", "estado": "online"}
+
 @app.get("/api/paciente-completo/{id}")
 def get_paciente(id: int, db: Session = Depends(get_db)):
     p = db.query(models.Paciente).filter(models.Paciente.id == id).first()
-    if not p: return {"error": "No existe"}
-    
-    # Buscamos en las otras tablas para el reporte
+    if not p: return {"error": "No encontrado"}
     p1 = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == id).first()
     p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == id).first()
     p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == id).first()
-    
     return {
-        "paciente": {"nombre": p.nombre, "apellido": p.apellido, "ci": p.ci, "codigo": p.codigo_paciente},
+        "paciente": {"nombre": p.nombre, "apellido": p.apellido, "ci": p.ci},
         "p1": {k: v for k, v in p1.__dict__.items() if not k.startswith('_')} if p1 else {},
         "p2": {k: v for k, v in p2.__dict__.items() if not k.startswith('_')} if p2 else {},
         "p3": {k: v for k, v in p3.__dict__.items() if not k.startswith('_')} if p3 else {}
@@ -41,17 +42,13 @@ def get_paciente(id: int, db: Session = Depends(get_db)):
 async def guardar_p2(r: Request, db: Session = Depends(get_db)):
     data = await r.json()
     p_id = int(data.get("paciente_id"))
-    # Buscamos si ya existe el registro en AntecedentesP2
-    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
-    if not p2:
-        p2 = models.AntecedentesP2(paciente_id=p_id)
-        db.add(p2)
-    
-    # Mapeo dinámico solo para la tabla AntecedentesP2
+    obj = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
+    if not obj:
+        obj = models.AntecedentesP2(paciente_id=p_id)
+        db.add(obj)
     for k, v in data.items():
-        if hasattr(p2, k) and k != "paciente_id":
-            setattr(p2, k, str(v).upper())
-    
+        if hasattr(obj, k) and k != "paciente_id":
+            setattr(obj, k, str(v).upper()) # FUERZA MAYÚSCULAS
     db.commit()
     return {"status": "ok"}
 
@@ -59,15 +56,14 @@ async def guardar_p2(r: Request, db: Session = Depends(get_db)):
 async def guardar_p3(r: Request, db: Session = Depends(get_db)):
     data = await r.json()
     p_id = int(data.get("paciente_id"))
-    # Buscamos si ya existe en HabitosRiesgosP3
-    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
-    if not p3:
-        p3 = models.HabitosRiesgosP3(paciente_id=p_id)
-        db.add(p3)
-    
+    obj = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
+    if not obj:
+        obj = models.HabitosRiesgosP3(paciente_id=p_id)
+        db.add(obj)
     for k, v in data.items():
-        if hasattr(p3, k) and k != "paciente_id":
-            setattr(p3, k, str(v).upper())
-            
+        if hasattr(obj, k) and k != "paciente_id":
+            # Si es el campo de riesgos (lista), lo unimos como string antes de guardar
+            val = ", ".join(v) if isinstance(v, list) else str(v)
+            setattr(obj, k, val.upper()) # FUERZA MAYÚSCULAS
     db.commit()
     return {"status": "ok"}
