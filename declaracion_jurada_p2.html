@@ -85,16 +85,16 @@
             document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
             document.getElementById('v_ci').innerText = d.paciente.ci;
             document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || "S/C";
-        } catch (e) { console.error("Error al cargar paciente"); }
+        } catch (e) { console.error("Error al cargar paciente:", e); }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⏳ FORZANDO ESCRITURA EN NUBE...";
+        btn.innerText = "⏳ SINCRONIZANDO CON LA NUBE...";
         btn.disabled = true;
 
-        const data = {
+        const payload = {
             paciente_id: parseInt(p_id),
             vista: document.getElementById('vista').value.toUpperCase(),
             auditivo: document.getElementById('auditivo').value.toUpperCase(),
@@ -120,32 +120,24 @@
             observaciones: document.getElementById('observaciones').value.toUpperCase()
         };
 
-        const enviarConReintento = async (intentos = 3) => {
-            try {
-                const res = await fetch(`${API}/p2`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
+        try {
+            const res = await fetch(`${API}/p2`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-                if (res.ok) {
-                    location.href = "declaracion_jurada_p3.html";
-                } else {
-                    throw new Error("Saturación");
-                }
-            } catch (err) {
-                if (intentos > 0) {
-                    btn.innerText = `⏳ REINTENTANDO (${intentos})...`;
-                    setTimeout(() => enviarConReintento(intentos - 1), 2000);
-                } else {
-                    btn.disabled = false;
-                    btn.innerText = "💾 ERROR - REINTENTAR MANUALMENTE";
-                    alert("El servidor no responde tras varios intentos. Verifique su conexión.");
-                }
+            if (res.ok) {
+                location.href = "declaracion_jurada_p3.html";
+            } else {
+                throw new Error("Respuesta de servidor no exitosa");
             }
-        };
-
-        enviarConReintento();
+        } catch (err) {
+            console.error("Error de envío:", err);
+            alert("⚠️ EL SERVIDOR ESTÁ LENTO. Pulse Aceptar y espere un momento antes de reintentar.");
+            btn.disabled = false;
+            btn.innerText = "💾 REINTENTAR GUARDADO";
+        }
     };
 </script>
 </body>
