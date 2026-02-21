@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Depends, Request
+from fastapi import FastAPI, Depends, Request, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, database
 
 app = FastAPI()
 
+# Configuración CORS robusta para evitar bloqueos en Render
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,6 +21,25 @@ def get_db():
     finally:
         db.close()
 
+# Función de procesado en segundo plano para evitar Timeouts
+def procesar_guardado_p2(data, p_id):
+    db = database.SessionLocal()
+    try:
+        obj = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
+        if not obj:
+            obj = models.AntecedentesP2(paciente_id=p_id)
+            db.add(obj)
+            
+        for k, v in data.items():
+            if hasattr(obj, k) and k != "paciente_id":
+                setattr(obj, k, str(v).upper())
+        db.commit()
+    except Exception as e:
+        print(f"Error en segundo plano: {e}")
+        db.rollback()
+    finally:
+        db.close()
+
 @app.get("/")
 def read_root():
     return {"proyecto": "HISTORIAL_CLINICO_NUBE", "estado": "online"}
@@ -32,15 +52,12 @@ def get_paciente(id: int, db: Session = Depends(get_db)):
     p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == id).first()
     p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == id).first()
     
-    # Manejo de código de paciente para evitar errores si es None
-    cod_pac = getattr(p, 'codigo_paciente', "S/C")
-    
     return {
         "paciente": {
             "nombre": p.nombre, 
             "apellido": p.apellido, 
             "ci": p.ci,
-            "codigo_paciente": cod_pac
+            "codigo_paciente": getattr(p, 'codigo_paciente', "S/C")
         },
         "p1": {k: v for k, v in p1.__dict__.items() if not k.startswith('_')} if p1 else {},
         "p2": {k: v for k, v in p2.__dict__.items() if not k.startswith('_')} if p2 else {},
@@ -48,44 +65,24 @@ def get_paciente(id: int, db: Session = Depends(get_db)):
     }
 
 @app.post("/p2")
-async def guardar_p2(r: Request, db: Session = Depends(get_db)):
-    try:
-        data = await r.json()
-        p_id = int(data.get("paciente_id"))
-        obj = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
-        
-        if not obj:
-            obj = models.AntecedentesP2(paciente_id=p_id)
-            db.add(obj)
-            
-        for k, v in data.items():
-            if hasattr(obj, k) and k != "paciente_id":
-                setattr(obj, k, str(v).upper())
-        
-        db.commit()
-        return {"status": "ok"}
-    except Exception as e:
-        db.rollback()
-        return {"status": "error", "detail": str(e)}
+async def guardar_p2(r: Request, background_tasks: BackgroundTasks):
+    data = await r.json()
+    p_id = int(data.get("paciente_id"))
+    # Respondemos de inmediato y guardamos después
+    background_tasks.add_task(procesar_guardado_p2, data, p_id)
+    return {"status": "ok", "message": "Procesando en segundo plano"}
 
 @app.post("/p3")
 async def guardar_p3(r: Request, db: Session = Depends(get_db)):
-    try:
-        data = await r.json()
-        p_id = int(data.get("paciente_id"))
-        obj = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
-        
-        if not obj:
-            obj = models.HabitosRiesgosP3(paciente_id=p_id)
-            db.add(obj)
-            
-        for k, v in data.items():
-            if hasattr(obj, k) and k != "paciente_id":
-                val = ", ".join(v) if isinstance(v, list) else str(v)
-                setattr(obj, k, val.upper())
-        
-        db.commit()
-        return {"status": "ok"}
-    except Exception as e:
-        db.rollback()
-        return {"status": "error", "detail": str(e)}
+    data = await r.json()
+    p_id = int(data.get("paciente_id"))
+    obj = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
+    if not obj:
+        obj = models.HabitosRiesgosP3(paciente_id=p_id)
+        db.add(obj)
+    for k, v in data.items():
+        if hasattr(obj, k) and k != "paciente_id":
+            val = ", ".join(v) if isinstance(v, list) else str(v)
+            setattr(obj, k, val.upper())
+    db.commit()
+    return {"status": "ok"}
