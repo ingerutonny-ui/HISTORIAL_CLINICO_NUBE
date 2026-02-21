@@ -18,144 +18,62 @@ app.add_middleware(
 def get_db_connection():
     return psycopg2.connect(os.environ.get('DATABASE_URL'), sslmode='require')
 
-# MODELOS DE DATOS
 class Paciente(BaseModel):
-    nombre: str
-    apellido: str
-    ci: str
-    codigo: Optional[str] = None
+    nombre: str; apellido: str; ci: str; codigo: Optional[str] = None
 
 class Filiacion(BaseModel):
-    paciente_id: int
-    edad: str
-    sexo: str
-    fecha_nacimiento: str
-    profesion_oficio: str
+    paciente_id: int; edad: str; sexo: str; fecha_nacimiento: str; profesion_oficio: str
 
 class P2Data(BaseModel):
-    paciente_id: int
-    vista: str; auditivo: str; respiratorio: str; cardiovascular: str
-    digestivos: str; sangre: str; genitourinario: str; sistema_nervioso: str
-    endocrino: str; psiquiatricos: str; osteomusculares: str; reumatologicos: str
-    dermatologicos: str; alergias: str; cirugias: str; infecciones: str
-    accidentes_personales: str; accidentes_trabajo: str; medicamentos: str
-    familiares: str; otros: str; observaciones: str
+    paciente_id: int; vista: str; auditivo: str; respiratorio: str; cardiovascular: str; digestivos: str; sangre: str; genitourinario: str; sistema_nervioso: str; endocrino: str; psiquiatricos: str; osteomusculares: str; reumatologicos: str; dermatologicos: str; alergias: str; cirugias: str; infecciones: str; accidentes_personales: str; accidentes_trabajo: str; medicamentos: str; familiares: str; otros: str; observaciones: str
 
 class P3Data(BaseModel):
     paciente_id: int
-    grupo_sanguineo: str
+    grupo_sanguineo: Optional[str] = "---"
     fuma: str; alcohol: str; drogas: str; coca: str; deporte: str
-    historia_laboral: str  # JSON String
-    riesgos_expuestos: str # JSON String
-    observaciones: str
+    historia_laboral: str  # Recibe el JSON stringify
+    riesgos_expuestos: str # Recibe el JSON stringify
+    observaciones: Optional[str] = "REGISTRO COMPLETADO"
 
-# ENDPOINTS
 @app.post("/api/pacientes")
 async def crear_paciente(p: Paciente):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    # Generación de código automático (Ej: RA6678)
+    conn = get_db_connection(); cur = conn.cursor()
     codigo_gen = f"{p.nombre[:1]}{p.apellido[:1]}{p.ci[-4:]}".upper()
     try:
-        cur.execute(
-            "INSERT INTO pacientes (nombre, apellido, ci, codigo) VALUES (%s, %s, %s, %s) RETURNING id",
-            (p.nombre, p.apellido, p.ci, codigo_gen)
-        )
+        cur.execute("INSERT INTO pacientes (nombre, apellido, ci, codigo) VALUES (%s, %s, %s, %s) RETURNING id", (p.nombre, p.apellido, p.ci, codigo_gen))
         p_id = cur.fetchone()[0]
         conn.commit()
         return {"id": p_id, "codigo": codigo_gen}
     except Exception as e:
-        conn.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
-    finally:
-        cur.close(); conn.close()
-
-@app.post("/api/filiacion")
-async def guardar_filiacion(f: Filiacion):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute(
-            "INSERT INTO filiacion (paciente_id, edad, sexo, fecha_nacimiento, profesion_oficio) VALUES (%s, %s, %s, %s, %s)",
-            (f.paciente_id, f.edad, f.sexo, f.fecha_nacimiento, f.profesion_oficio)
-        )
-        conn.commit()
-        return {"status": "ok"}
-    except Exception as e:
-        conn.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
-    finally:
-        cur.close(); conn.close()
-
-@app.post("/api/p2")
-async def guardar_p2(d: P2Data):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute("""
-            INSERT INTO p2 (paciente_id, vista, auditivo, respiratorio, cardiovascular, digestivos, sangre, 
-            genitourinario, sistema_nervioso, endocrino, psiquiatricos, osteomusculares, reumatologicos, 
-            dermatologicos, alergias, cirugias, infecciones, accidentes_personales, accidentes_trabajo, 
-            medicamentos, familiares, otros, observaciones) 
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-            (d.paciente_id, d.vista, d.auditivo, d.respiratorio, d.cardiovascular, d.digestivos, d.sangre,
-             d.genitourinario, d.sistema_nervioso, d.endocrino, d.psiquiatricos, d.osteomusculares, d.reumatologicos,
-             d.dermatologicos, d.alergias, d.cirugias, d.infecciones, d.accidentes_personales, d.accidentes_trabajo,
-             d.medicamentos, d.familiares, d.otros, d.observaciones))
-        conn.commit()
-        return {"status": "ok"}
-    except Exception as e:
-        conn.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        conn.rollback(); raise HTTPException(status_code=400, detail=str(e))
     finally:
         cur.close(); conn.close()
 
 @app.post("/api/p3")
 async def guardar_p3(d: P3Data):
-    conn = get_db_connection()
-    cur = conn.cursor()
+    conn = get_db_connection(); cur = conn.cursor()
     try:
-        cur.execute("""
-            INSERT INTO p3 (paciente_id, grupo_sanguineo, fuma, alcohol, drogas, coca, deporte, 
-            historia_laboral, riesgos_expuestos, observaciones) 
-            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-            (d.paciente_id, d.grupo_sanguineo, d.fuma, d.alcohol, d.drogas, d.coca, d.deporte,
-             d.historia_laboral, d.riesgos_expuestos, d.observaciones))
+        cur.execute("""INSERT INTO p3 (paciente_id, grupo_sanguineo, fuma, alcohol, drogas, coca, deporte, historia_laboral, riesgos_expuestos, observaciones) 
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""", (d.paciente_id, d.grupo_sanguineo, d.fuma, d.alcohol, d.drogas, d.coca, d.deporte, d.historia_laboral, d.riesgos_expuestos, d.observaciones))
         conn.commit()
         return {"status": "ok"}
     except Exception as e:
-        conn.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        conn.rollback(); raise HTTPException(status_code=400, detail=str(e))
     finally:
         cur.close(); conn.close()
 
 @app.get("/api/paciente-completo/{p_id}")
 async def obtener_todo(p_id: int):
-    conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
+    conn = get_db_connection(); cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
         cur.execute("SELECT * FROM pacientes WHERE id = %s", (p_id,))
         paciente = cur.fetchone()
-        if not paciente: raise HTTPException(status_code=404, detail="No encontrado")
-        
         cur.execute("SELECT * FROM filiacion WHERE paciente_id = %s", (p_id,))
         filiacion = cur.fetchone()
-        
         cur.execute("SELECT * FROM p2 WHERE paciente_id = %s", (p_id,))
         p2 = cur.fetchone()
-        
         cur.execute("SELECT * FROM p3 WHERE paciente_id = %s", (p_id,))
         p3 = cur.fetchone()
-        
-        return {
-            "paciente": paciente,
-            "filiacion": filiacion,
-            "p2": p2,
-            "p3": p3
-        }
+        return {"paciente": paciente, "filiacion": filiacion, "p2": p2, "p3": p3}
     finally:
         cur.close(); conn.close()
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
