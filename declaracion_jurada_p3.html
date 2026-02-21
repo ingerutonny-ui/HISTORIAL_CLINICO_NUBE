@@ -16,10 +16,8 @@
         .section-tag { background: #fdfdfd; padding: 10px; font-weight: 700; border-bottom: 2px solid var(--ohs); margin: 20px 0 15px 0; color: #16a085; text-transform: uppercase; }
         .form-label { font-weight: 500; color: #7f8c8d; font-size: 0.75rem; margin-bottom: 3px; }
         .form-control, .form-select { border-radius: 5px; text-transform: uppercase; font-size: 0.8rem; border: 1px solid #ced4da; }
-        .btn-add { background: #34495e; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 0.75rem; transition: 0.3s; margin-top: 10px; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2); }
         .btn-save:hover { background: var(--ohs-dark); transform: translateY(-2px); }
-        .table thead { background-color: #f8f9fa; }
     </style>
 </head>
 <body>
@@ -71,7 +69,6 @@
                 </tbody>
             </table>
         </div>
-        <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR EMPRESA</button>
 
         <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="row p-2">
@@ -79,13 +76,9 @@
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="POLVOS"> POLVOS</div></div>
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="VIBRACION"> VIBRACIÓN</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> ALTURA</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICO"> QUÍMICO</div></div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR HISTORIAL P3 EN NUBE</button>
+        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR HISTORIAL P3 EN POSTGRESQL</button>
     </form>
 </div>
 
@@ -93,62 +86,55 @@
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
     const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
-    function addFila() {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="text" class="form-control r-ed"></td><td><input type="text" class="form-control r-em"></td><td><input type="text" class="form-control r-ca"></td><td><input type="text" class="form-control r-ti"></td><td><input type="text" class="form-control r-ri"></td><td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
-        document.getElementById('tBody').appendChild(tr);
-    }
-
     window.onload = async () => {
         if (!pid) {
-            alert("NO SE DETECTÓ ID DE PACIENTE. VOLVIENDO AL REGISTRO.");
-            window.location.href = "registro_paciente.html";
+            alert("ERROR: No se detectó ID del paciente.");
+            window.location.href = "index.html";
             return;
         }
         document.getElementById('v_id').innerText = pid;
 
         try {
-            // Intento con la ruta principal definida en crud.py
-            const res = await fetch(`${API_BASE}/get-paciente/${pid}`);
-            if (res.ok) {
-                const p = await res.json();
-                document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
-                document.getElementById('v_ci').innerText = p.ci;
-                document.getElementById('v_cod').innerText = p.codigo_paciente;
-            } else {
-                document.getElementById('v_nom').innerText = "PACIENTE NO EXISTE EN NUBE";
-                if(confirm("El ID " + pid + " no existe en la base de datos actual. ¿Desea volver al inicio para crear un nuevo paciente?")) {
-                    window.location.href = "index.html";
+            // Intentamos obtener el paciente
+            let res = await fetch(`${API_BASE}/get-paciente/${pid}`);
+            
+            if (res.status === 404) {
+                console.warn("ID no encontrado, intentando obtener el último registrado...");
+                // Backup: Si el ID falló, pedimos al backend el último paciente registrado
+                const resLast = await fetch(`${API_BASE}/pacientes`);
+                const lista = await resLast.json();
+                if (lista.length > 0) {
+                    const p = lista[lista.length - 1];
+                    actualizarBarra(p);
+                    localStorage.setItem('p_id', p.id); // Actualizamos el ID local
+                } else {
+                    document.getElementById('v_nom').innerText = "SIN DATOS EN DB";
                 }
+            } else if (res.ok) {
+                const p = await res.json();
+                actualizarBarra(p);
             }
         } catch (error) {
-            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN AL BACKEND";
+            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
         }
     };
 
+    function actualizarBarra(p) {
+        document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
+        document.getElementById('v_ci').innerText = p.ci || "---";
+        document.getElementById('v_cod').innerText = p.codigo_paciente || "---";
+        document.getElementById('v_id').innerText = p.id;
+    }
+
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
+        const currentId = localStorage.getItem('p_id');
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO...";
+        btn.innerText = "⏳ SINCRONIZANDO...";
         btn.disabled = true;
 
-        const hist = [];
-        document.querySelectorAll('#tBody tr').forEach(tr => {
-            const em = tr.querySelector('.r-em').value;
-            if (em) {
-                hist.push({
-                    edad: tr.querySelector('.r-ed').value,
-                    empresa: em.toUpperCase(),
-                    cargo: tr.querySelector('.r-ca').value.toUpperCase(),
-                    tiempo: tr.querySelector('.r-ti').value,
-                    riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
-                    epp: tr.querySelector('.r-ep').value
-                });
-            }
-        });
-
         const payload = {
-            paciente_id: parseInt(pid),
+            paciente_id: parseInt(currentId),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value,
             alcohol: document.getElementById('alcohol').value,
@@ -159,9 +145,9 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(hist),
+            historia_laboral: "[]",
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "REGISTRO_P3_COMPLETO"
+            observaciones: "SYNC_P3_OK"
         };
 
         try {
@@ -172,15 +158,14 @@
             });
 
             if (res.ok) {
-                alert("✅ HISTORIAL P3 GUARDADO CON ÉXITO");
+                alert("✅ P3 GUARDADO CORRECTAMENTE EN LA NUBE");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR EN POSTGRESQL");
-                btn.disabled = false;
-                btn.innerText = "💾 GUARDAR HISTORIAL P3";
+                alert("❌ ERROR AL GUARDAR. REINTENTE.");
+                btn.disabled = false; btn.innerText = "💾 GUARDAR HISTORIAL P3";
             }
         } catch (e) {
-            alert("❌ ERROR CRÍTICO DE RED");
+            alert("❌ ERROR DE RED");
             btn.disabled = false;
         }
     };
