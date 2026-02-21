@@ -37,7 +37,7 @@
             <div class="col-md-2"><label class="fw-bold">¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold">¿PIJCHA?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold">¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label class="fw-bold">G. SANGRE</label><input type="text" id="grupo_sanguineo" class="form-control" value="ORH+"></div>
+            <div class="col-md-2"><label class="fw-bold">G. SANGRE</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="ORH+"></div>
         </div>
 
         <div class="section-tag">II. HISTORIA LABORAL</div>
@@ -45,16 +45,16 @@
         <div class="table-responsive">
             <table class="table table-sm table-bordered">
                 <thead class="table-light text-center">
-                    <tr style="font-size: 0.65rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
+                    <tr style="font-size: 0.65rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td><input type="number" class="row-edad form-control"></td>
-                        <td><input type="text" class="row-empresa form-control"></td>
-                        <td><input type="text" class="row-cargo form-control"></td>
-                        <td><input type="number" class="row-tiempo form-control"></td>
-                        <td><input type="text" class="row-riesgos form-control"></td>
-                        <td><select class="row-epp form-select"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+                        <td><input type="number" class="form-control row-edad"></td>
+                        <td><input type="text" class="form-control row-empresa"></td>
+                        <td><input type="text" class="form-control row-cargo"></td>
+                        <td><input type="number" class="form-control row-tiempo"></td>
+                        <td><input type="text" class="form-control row-riesgos"></td>
+                        <td><select class="form-select row-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
                     </tr>
                 </tbody>
             </table>
@@ -78,89 +78,85 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    const id_paciente = localStorage.getItem('p_id') || localStorage.getItem('p_id_edicion');
+    const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if (!id_paciente) { alert("Error: Sesión no encontrada."); return; }
-        
-        // Prioridad: Datos guardados localmente para evitar el "Undefined"
-        const localNombre = localStorage.getItem('p_nombre');
-        const localCodigo = localStorage.getItem('p_codigo');
-        const localCI = localStorage.getItem('p_ci');
-
-        if (localNombre && localCodigo) {
-            document.getElementById('v_nombre').innerText = localNombre.toUpperCase();
-            document.getElementById('v_codigo').innerText = localCodigo.toUpperCase();
-            document.getElementById('v_ci').innerText = localCI || "---";
-        } else {
-            // Si no hay local, consultamos al servidor
-            try {
-                const res = await fetch(`${API}/api/pacientes/${id_paciente}`);
-                const d = await res.json();
-                document.getElementById('v_nombre').innerText = (d.nombre + " " + d.apellido).toUpperCase();
-                document.getElementById('v_codigo').innerText = d.codigo_paciente || 'S/C';
-                document.getElementById('v_ci').innerText = d.ci || "---";
-            } catch (e) { document.getElementById('v_nombre').innerText = "ERROR CARGA"; }
-        }
+        if (!id_trabajo) { window.location.href = "index.html"; return; }
+        try {
+            const res = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
+            const d = await res.json();
+            if (d.paciente) {
+                document.getElementById('v_nombre').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
+                document.getElementById('v_ci').innerText = d.paciente.ci || "---";
+                document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+            }
+        } catch (e) { console.error(e); }
     };
 
     function addRow() {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="number" class="row-edad form-control"></td><td><input type="text" class="row-empresa form-control"></td><td><input type="text" class="row-cargo form-control"></td><td><input type="number" class="row-tiempo form-control"></td><td><input type="text" class="row-riesgos form-control"></td><td><select class="row-epp form-select"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
+        tr.innerHTML = `<td><input type="number" class="form-control row-edad"></td><td><input type="text" class="form-control row-empresa"></td><td><input type="text" class="form-control row-cargo"></td><td><input type="number" class="form-control row-tiempo"></td><td><input type="text" class="form-control row-riesgos"></td><td><select class="form-select row-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
         document.getElementById('tablaLaboral').appendChild(tr);
     }
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnAccion');
+        const nF = document.getElementById('v_nombre').innerText;
+        const cF = document.getElementById('v_codigo').innerText;
+
         btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
             const emp = tr.querySelector('.row-empresa').value;
-            if(emp) {
+            if(emp.trim()) {
                 historia.push({
-                    edad: tr.querySelector('.row-edad').value,
+                    edad: tr.querySelector('.row-edad').value || 0,
                     empresa: emp.toUpperCase(),
-                    cargo: tr.querySelector('.row-cargo').value.toUpperCase(),
-                    tiempo: tr.querySelector('.row-tiempo').value,
-                    riesgos: tr.querySelector('.row-riesgos').value.toUpperCase(),
+                    cargo: tr.querySelector('.row-cargo').value.toUpperCase() || "N/A",
+                    tiempo: tr.querySelector('.row-tiempo').value || 0,
+                    riesgos: tr.querySelector('.row-riesgos').value.toUpperCase() || "NINGUNO",
                     epp: tr.querySelector('.row-epp').value
                 });
             }
         });
 
+        const riesgos_exp = [];
+        document.querySelectorAll('.check-riesgo:checked').forEach(ch => riesgos_exp.push(ch.value));
+
         const data = {
-            paciente_id: parseInt(id_paciente),
+            paciente_id: parseInt(id_trabajo),
             fuma: document.getElementById('fuma').value,
             alcohol: document.getElementById('alcohol').value,
             drogas: document.getElementById('drogas').value,
-            pijchar: document.getElementById('pijchar').value,
+            coca: document.getElementById('pijchar').value,
             deporte: document.getElementById('deporte').value,
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "S/D",
             historia_laboral: JSON.stringify(historia),
-            riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.check-riesgo:checked')).map(c => c.value))
+            riesgos_expuestos: JSON.stringify(riesgos_exp)
         };
 
         try {
-            // Usamos la ruta que Render reconoció en tus logs de consola
+            // RUTA EXACTA DEL BACKEND: guardar_p3_completo
             const response = await fetch(`${API}/api/guardar_p3_completo`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
-            if (response.ok) {
-                alert("✅ REGISTRO FINALIZADO CON ÉXITO\nPACIENTE: " + document.getElementById('v_nombre').innerText);
+            if(response.ok) {
+                alert("PACIENTE NUEVO: " + nF + "\nCÓDIGO: " + cF);
                 localStorage.clear();
                 window.location.href = "index.html";
             } else {
-                throw new Error();
+                alert("Error: Ruta no encontrada en el servidor.");
+                btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
             }
         } catch (err) {
-            alert("⚠️ Error crítico en servidor. Intenta una vez más.");
-            btn.disabled = false; btn.innerText = "💾 REINTENTAR GUARDAR";
+            alert("Error de conexión.");
+            btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
     };
 </script>
