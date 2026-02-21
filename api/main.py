@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Any
 import os
 import psycopg2
 from psycopg2.extras import RealDictCursor
@@ -18,23 +18,15 @@ app.add_middleware(
 def get_db_connection():
     return psycopg2.connect(os.environ.get('DATABASE_URL'), sslmode='require')
 
-# --- MODELOS DE DATOS ---
+# MODELOS DE DATOS
 class Paciente(BaseModel):
-    nombre: str
-    apellido: str
-    ci: str
-    codigo: Optional[str] = None
+    nombre: str; apellido: str; ci: str; codigo: Optional[str] = None
 
 class Filiacion(BaseModel):
-    paciente_id: int
-    edad: str
-    sexo: str
-    fecha_nacimiento: str
-    profesion_oficio: str
+    paciente_id: int; edad: str; sexo: str; fecha_nacimiento: str; profesion_oficio: str
 
 class P2Data(BaseModel):
-    paciente_id: int
-    vista: str; auditivo: str; respiratorio: str; cardiovascular: str
+    paciente_id: int; vista: str; auditivo: str; respiratorio: str; cardiovascular: str
     digestivos: str; sangre: str; genitourinario: str; sistema_nervioso: str
     endocrino: str; psiquiatricos: str; osteomusculares: str; reumatologicos: str
     dermatologicos: str; alergias: str; cirugias: str; infecciones: str
@@ -43,47 +35,22 @@ class P2Data(BaseModel):
 
 class P3Data(BaseModel):
     paciente_id: int
-    grupo_sanguineo: str
-    fuma: str
-    alcohol: str
-    drogas: str
-    coca: str
-    deporte: str
-    historia_laboral: str  # Recibe el JSON stringified del frontend
-    riesgos_expuestos: str # Recibe el JSON stringified del frontend
-    observaciones: str
+    grupo_sanguineo: Any  # Usamos Any para evitar el error 500 si llega un objeto
+    fuma: Any; alcohol: Any; drogas: Any; coca: Any; deporte: Any
+    historia_laboral: str 
+    riesgos_expuestos: str
+    observaciones: Any
 
-# --- ENDPOINTS ---
-
+# ENDPOINTS
 @app.post("/api/pacientes")
 async def crear_paciente(p: Paciente):
-    conn = get_db_connection()
-    cur = conn.cursor()
+    conn = get_db_connection(); cur = conn.cursor()
     codigo_gen = f"{p.nombre[:1]}{p.apellido[:1]}{p.ci[-4:]}".upper()
     try:
-        cur.execute(
-            "INSERT INTO pacientes (nombre, apellido, ci, codigo) VALUES (%s, %s, %s, %s) RETURNING id",
-            (p.nombre, p.apellido, p.ci, codigo_gen)
-        )
+        cur.execute("INSERT INTO pacientes (nombre, apellido, ci, codigo) VALUES (%s, %s, %s, %s) RETURNING id", (p.nombre, p.apellido, p.ci, codigo_gen))
         p_id = cur.fetchone()[0]
         conn.commit()
         return {"id": p_id, "codigo": codigo_gen}
-    except Exception as e:
-        conn.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
-    finally:
-        cur.close(); conn.close()
-
-@app.post("/api/filiacion")
-async def guardar_filiacion(f: Filiacion):
-    conn = get_db_connection(); cur = conn.cursor()
-    try:
-        cur.execute(
-            "INSERT INTO filiacion (paciente_id, edad, sexo, fecha_nacimiento, profesion_oficio) VALUES (%s, %s, %s, %s, %s)",
-            (f.paciente_id, f.edad, f.sexo, f.fecha_nacimiento, f.profesion_oficio)
-        )
-        conn.commit()
-        return {"status": "ok"}
     except Exception as e:
         conn.rollback(); raise HTTPException(status_code=400, detail=str(e))
     finally:
@@ -91,28 +58,28 @@ async def guardar_filiacion(f: Filiacion):
 
 @app.post("/api/p3")
 async def guardar_p3(d: P3Data):
-    conn = get_db_connection()
-    cur = conn.cursor()
+    conn = get_db_connection(); cur = conn.cursor()
     try:
+        # Convertimos a string por si el frontend envía el objeto del select
         cur.execute("""
             INSERT INTO p3 (paciente_id, grupo_sanguineo, fuma, alcohol, drogas, coca, deporte, 
             historia_laboral, riesgos_expuestos, observaciones) 
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-            (d.paciente_id, d.grupo_sanguineo, d.fuma, d.alcohol, d.drogas, d.coca, d.deporte,
-             d.historia_laboral, d.riesgos_expuestos, d.observaciones))
+            (d.paciente_id, str(d.grupo_sanguineo), str(d.fuma), str(d.alcohol), 
+             str(d.drogas), str(d.coca), str(d.deporte),
+             d.historia_laboral, d.riesgos_expuestos, str(d.observaciones)))
         conn.commit()
         return {"status": "ok"}
     except Exception as e:
         conn.rollback()
-        # Este error es el que causa el "Verifique conexión" en el frontend
+        print(f"Error en P3: {e}")
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close(); conn.close()
 
 @app.get("/api/paciente-completo/{p_id}")
 async def obtener_todo(p_id: int):
-    conn = get_db_connection()
-    cur = conn.cursor(cursor_factory=RealDictCursor)
+    conn = get_db_connection(); cur = conn.cursor(cursor_factory=RealDictCursor)
     try:
         cur.execute("SELECT * FROM pacientes WHERE id = %s", (p_id,))
         paciente = cur.fetchone()
