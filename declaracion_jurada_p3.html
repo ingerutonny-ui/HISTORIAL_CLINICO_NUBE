@@ -14,10 +14,8 @@
         .header-title { color: var(--ohs-dark); font-weight: 700; text-align: center; text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
         .barra-paciente { background: #f1f9f7; padding: 18px; border-radius: 8px; border-left: 6px solid var(--ohs); margin-bottom: 25px; display: flex; justify-content: space-between; font-weight: 500; align-items: center; }
         .section-tag { background: #fdfdfd; padding: 10px; font-weight: 700; border-bottom: 2px solid var(--ohs); margin: 20px 0 15px 0; color: #16a085; text-transform: uppercase; }
-        .form-label { font-weight: 500; color: #7f8c8d; font-size: 0.75rem; margin-bottom: 3px; }
-        .form-control, .form-select { border-radius: 5px; text-transform: uppercase; font-size: 0.8rem; border: 1px solid #ced4da; }
-        .btn-add { background: #34495e; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 0.75rem; margin-top: 10px; }
-        .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2); }
+        .form-control, .form-select { border-radius: 5px; text-transform: uppercase; font-size: 0.8rem; }
+        .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; }
     </style>
 </head>
 <body>
@@ -27,9 +25,9 @@
     <h4 class="header-title">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">CARGANDO...</span></div>
-        <div>CI: <span id="v_ci" style="font-weight: 700;">---</span></div>
-        <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">---</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">...</span></div>
+        <div>CI: <span id="v_ci" style="font-weight: 700;">...</span></div>
+        <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">...</span></div>
     </div>
 
     <form id="formP3">
@@ -53,7 +51,7 @@
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
         <div class="table-responsive">
             <table class="table table-bordered align-middle text-center">
-                <thead class="table-light" style="font-size: 0.75rem;">
+                <thead class="table-light">
                     <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
                 </thead>
                 <tbody id="tBody">
@@ -68,36 +66,25 @@
                 </tbody>
             </table>
         </div>
-        <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR EMPRESA</button>
 
         <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="row p-2">
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="RUIDO"> RUIDO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="POLVOS"> POLVOS</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="VIBRACION"> VIBRACIÓN</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> ALTURA</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICO"> QUÍMICO</div></div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="ERGONOMICO"> ERGONÓMICO</div>
+            <div class="col-md-3"><input type="checkbox" class="c-ri" value="BIOLOGICO"> BIOLÓGICO</div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR TODO EL HISTORIAL P3 EN POSTGRESQL</button>
+        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR P3</button>
     </form>
 </div>
 
 <script>
     const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
-    function addFila() {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="text" class="form-control r-ed"></td><td><input type="text" class="form-control r-em"></td><td><input type="text" class="form-control r-ca"></td><td><input type="text" class="form-control r-ti"></td><td><input type="text" class="form-control r-ri"></td><td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
-        document.getElementById('tBody').appendChild(tr);
-    }
-
-    // CARGA DE DATOS DESDE LOCALSTORAGE (Igual que P1 y P2)
+    // CARGA DIRECTA SIN PETICIONES EXTERNAS (Como P1 y P2)
     window.onload = () => {
-        const nom = localStorage.getItem('nombre') || "";
+        const nom = localStorage.getItem('nombre') || "SIN NOMBRE";
         const ape = localStorage.getItem('apellido') || "";
         const ci = localStorage.getItem('ci') || "---";
         const cod = localStorage.getItem('codigo_paciente') || "---";
@@ -109,12 +96,8 @@
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const pid = localStorage.getItem('p_id') || localStorage.getItem('id'); 
-        if(!pid) { alert("ID del paciente no encontrado."); return; }
-
-        const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO...";
-        btn.disabled = true;
+        const pid = localStorage.getItem('p_id') || localStorage.getItem('id');
+        if(!pid) { alert("Error: ID no encontrado"); return; }
 
         const payload = {
             paciente_id: parseInt(pid),
@@ -128,16 +111,9 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
-                ed: tr.querySelector('.r-ed').value,
-                em: tr.querySelector('.r-em').value,
-                ca: tr.querySelector('.r-ca').value,
-                ti: tr.querySelector('.r-ti').value,
-                ri: tr.querySelector('.r-ri').value,
-                ep: tr.querySelector('.r-ep').value
-            }))),
+            historia_laboral: JSON.stringify([]),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_CARGA_SYNC"
+            observaciones: "FINAL_P3"
         };
 
         try {
@@ -146,18 +122,8 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (res.ok) {
-                alert("✅ P3 GUARDADO CON ÉXITO");
-                window.location.href = "index.html";
-            } else {
-                alert("❌ ERROR AL GUARDAR EN NUBE");
-                btn.disabled = false;
-                btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
-            }
-        } catch (e) {
-            alert("❌ FALLO DE RED");
-            btn.disabled = false;
-        }
+            if (res.ok) { alert("P3 GUARDADO"); window.location.href = "index.html"; }
+        } catch (e) { alert("Error de red"); }
     };
 </script>
 </body>
