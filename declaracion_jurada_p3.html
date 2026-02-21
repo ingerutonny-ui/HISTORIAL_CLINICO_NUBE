@@ -134,13 +134,12 @@
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
             const nombreCompleto = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
-            const codigo = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+            const codigo = d.paciente.codigo || 'S/C';
 
             document.getElementById('v_nombre').innerText = nombreCompleto;
             document.getElementById('v_ci').innerText = d.paciente.ci;
             document.getElementById('v_codigo').innerText = codigo;
             
-            // Preparar overlay
             document.getElementById('res_nombre').innerText = nombreCompleto;
             document.getElementById('res_codigo').innerText = codigo;
         } catch (e) { console.error("Error al cargar"); }
@@ -157,9 +156,9 @@
             const edad = tr.querySelector('.row-edad').value;
             if(edad) {
                 historia.push({
-                    edad: edad,
+                    edad_inicio: edad,
                     empresa: tr.querySelector('.row-empresa').value.toUpperCase(),
-                    cargo: tr.querySelector('.row-cargo').value.toUpperCase(),
+                    ocupacion: tr.querySelector('.row-cargo').value.toUpperCase(),
                     tiempo: tr.querySelector('.row-tiempo').value,
                     riesgos: tr.querySelector('.row-riesgos').value.toUpperCase(),
                     epp: tr.querySelector('.row-epp').value
@@ -179,11 +178,12 @@
             deporte: document.getElementById('deporte').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(historia),
-            riesgos_expuestos: JSON.stringify(riesgos_exp)
+            riesgos_expuestos: JSON.stringify(riesgos_exp),
+            observaciones: "REGISTRO COMPLETADO"
         };
 
         try {
-            const res = await fetch(`${API}/p3`, {
+            const res = await fetch(`${API}/api/p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
