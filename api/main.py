@@ -8,9 +8,11 @@ from psycopg2.extras import RealDictCursor
 
 app = FastAPI()
 
+# CORS Ajustado para GitHub Pages
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -24,21 +26,13 @@ class Paciente(BaseModel):
 class Filiacion(BaseModel):
     paciente_id: int; edad: str; sexo: str; fecha_nacimiento: str; profesion_oficio: str
 
-class P2Data(BaseModel):
-    paciente_id: int; vista: str; auditivo: str; respiratorio: str; cardiovascular: str
-    digestivos: str; sangre: str; genitourinario: str; sistema_nervioso: str
-    endocrino: str; psiquiatricos: str; osteomusculares: str; reumatologicos: str
-    dermatologicos: str; alergias: str; cirugias: str; infecciones: str
-    accidentes_personales: str; accidentes_trabajo: str; medicamentos: str
-    familiares: str; otros: str; observaciones: str
-
 class P3Data(BaseModel):
     paciente_id: int
     grupo_sanguineo: str
     fuma: str
     alcohol: str
     drogas: str
-    pijchar: str  # Sincronizado con el HTML
+    coca: str  # Sincronizado con la base de datos
     deporte: str
     historia_laboral: str 
     riesgos_expuestos: str
@@ -58,7 +52,7 @@ async def crear_paciente(p: Paciente):
     finally:
         cur.close(); conn.close()
 
-@app.post("/api/p3")
+@app.post("/api/p3/")
 async def guardar_p3(d: P3Data):
     conn = get_db_connection(); cur = conn.cursor()
     try:
@@ -66,7 +60,7 @@ async def guardar_p3(d: P3Data):
             INSERT INTO p3 (paciente_id, grupo_sanguineo, fuma, alcohol, drogas, coca, deporte, 
             historia_laboral, riesgos_expuestos, observaciones) 
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-            (d.paciente_id, d.grupo_sanguineo, d.fuma, d.alcohol, d.drogas, d.pijchar, d.deporte,
+            (d.paciente_id, d.grupo_sanguineo, d.fuma, d.alcohol, d.drogas, d.coca, d.deporte,
              d.historia_laboral, d.riesgos_expuestos, d.observaciones))
         conn.commit()
         return {"status": "ok"}
