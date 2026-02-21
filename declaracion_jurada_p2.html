@@ -6,70 +6,66 @@
     <title>P2 - ANTECEDENTES | OHS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --verde-esmeralda: #2ecc71; }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.8rem; color: #333; }
-        .container { max-width: 900px; margin-top: 10px; background: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .titulo-p2 { font-size: 1rem; font-weight: bold; color: #2c3e50; margin: 0; }
-        .btn-todo-normal { background: white; color: var(--verde-esmeralda); border: 1.5px solid var(--verde-esmeralda); font-weight: bold; font-size: 0.65rem; padding: 3px 10px; border-radius: 4px; }
-        .barra-paciente { background: #f8f9fa; padding: 6px 15px; border-radius: 5px; border: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; font-size: 0.75rem; }
-        .text-blue { color: #3498db; text-transform: uppercase; font-weight: 800; }
-        .section-tag { border-left: 3px solid var(--verde-esmeralda); color: #1e4d2b; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; padding-left: 8px; margin: 12px 0 8px; background: #fcfcfc; }
-        label { font-size: 0.6rem; font-weight: bold; color: #7f8c8d; margin-bottom: 1px; display: block; }
-        .form-control { text-transform: uppercase; border-radius: 4px; font-size: 0.75rem; padding: 4px 8px; border: 1px solid #dcdde1; height: 30px; }
-        .btn-guardar { background: var(--verde-esmeralda); color: white; font-weight: bold; width: 100%; padding: 10px; border-radius: 6px; border: none; margin-top: 20px; font-size: 0.85rem; }
+        :root { --verde-ohs: #2ecc71; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.8rem; }
+        .container { max-width: 850px; margin-top: 15px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .barra-paciente { background: #f8f9fa; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6; margin-bottom: 15px; display: flex; justify-content: space-between; font-weight: bold; color: #2c3e50; }
+        .section-tag { border-left: 4px solid var(--verde-ohs); padding-left: 10px; margin: 15px 0 10px; font-weight: bold; background: #f9f9f9; text-transform: uppercase; }
+        .form-control { text-transform: uppercase; font-size: 0.75rem; height: 32px; border-radius: 4px; }
+        .btn-enviar { background: var(--verde-ohs); color: white; border: none; width: 100%; padding: 12px; font-weight: bold; border-radius: 5px; margin-top: 20px; }
+        .btn-todo-normal { font-size: 0.7rem; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-row">
-        <h2 class="titulo-p2">2. ANTECEDENTES PATOLÓGICOS (P2)</h2>
-        <button type="button" class="btn-todo-normal" onclick="llenarNormal()">✅ TODO NORMAL</button>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="fw-bold m-0">2. ANTECEDENTES PATOLÓGICOS (P2)</h5>
+        <button type="button" class="btn btn-outline-success btn-todo-normal" onclick="llenarNormal()">✅ TODO NORMAL</button>
     </div>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
-        <div>CI: <span id="v_ci" class="text-blue">---</span></div>
-        <div>CÓDIGO: <span id="v_codigo" class="text-blue" style="background: #e1f5fe; padding: 2px 8px; border-radius: 4px;">---</span></div>
+        <span>PACIENTE: <span id="v_nombre" class="text-primary">---</span></span>
+        <span>CI: <span id="v_ci" class="text-primary">---</span></span>
+        <span>CÓDIGO: <span id="v_codigo" class="text-success">---</span></span>
     </div>
 
     <form id="formP2">
         <div class="section-tag">SISTEMAS Y ÓRGANOS</div>
         <div class="row g-2">
-            <div class="col-md-4"><label>VISTA / OJOS</label><input type="text" id="vista" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>OÍDO / AUDICIÓN</label><input type="text" id="auditivo" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>RESPIRATORIO</label><input type="text" id="respiratorio" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>CARDIOVASCULAR</label><input type="text" id="cardiovascular" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>DIGESTIVOS</label><input type="text" id="digestivos" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>SANGRE / LINFA</label><input type="text" id="sangre" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>GENITOURINARIO</label><input type="text" id="genitourinario" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>SISTEMA NERVIOSO</label><input type="text" id="nervioso" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>ENDOCRINO</label><input type="text" id="endocrino" class="form-control f-p2"></div>
+            <div class="col-md-4"><label>VISTA</label><input type="text" id="vista" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>AUDITIVO</label><input type="text" id="auditivo" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>RESPIRATORIO</label><input type="text" id="respiratorio" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>CARDIOVASCULAR</label><input type="text" id="cardiovascular" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>DIGESTIVOS</label><input type="text" id="digestivos" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>SANGRE</label><input type="text" id="sangre" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>GENITOURINARIO</label><input type="text" id="genitourinario" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>NERVIOSO</label><input type="text" id="nervioso" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>ENDOCRINO</label><input type="text" id="endocrino" class="form-control f-p2" required></div>
         </div>
 
-        <div class="section-tag">CONDICIONES MÉDICAS Y QUIRÚRGICAS</div>
+        <div class="section-tag">CONDICIONES MÉDICAS</div>
         <div class="row g-2">
-            <div class="col-md-4"><label>PSIQUIÁTRICOS</label><input type="text" id="psiquiatricos" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>OSTEOMUSCULARES</label><input type="text" id="osteomusculares" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>REUMATOLÓGICOS</label><input type="text" id="reumatologicos" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>DERMATOLÓGICOS</label><input type="text" id="dermatologicos" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>ALERGIAS</label><input type="text" id="alergias" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>CIRUGÍAS</label><input type="text" id="cirugias" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>INFECCIONES</label><input type="text" id="infecciones" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>ACCIDENTES PERSONALES</label><input type="text" id="accidentes_personales" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>ACCIDENTES TRABAJO</label><input type="text" id="accidentes_trabajo" class="form-control f-p2"></div>
+            <div class="col-md-4"><label>PSIQUIÁTRICOS</label><input type="text" id="psiquiatricos" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>OSTEOMUSCULARES</label><input type="text" id="osteomusculares" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>REUMATOLÓGICOS</label><input type="text" id="reumatologicos" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>DERMATOLÓGICOS</label><input type="text" id="dermatologicos" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>ALERGIAS</label><input type="text" id="alergias" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>CIRUGÍAS</label><input type="text" id="cirugias" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>INFECCIONES</label><input type="text" id="infecciones" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>ACC. PERSONALES</label><input type="text" id="accidentes_personales" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>ACC. TRABAJO</label><input type="text" id="accidentes_trabajo" class="form-control f-p2" required></div>
         </div>
 
         <div class="section-tag">OTROS</div>
         <div class="row g-2">
-            <div class="col-md-4"><label>MEDICAMENTOS</label><input type="text" id="medicamentos" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>FAMILIARES</label><input type="text" id="familiares" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>OTROS</label><input type="text" id="otros" class="form-control f-p2"></div>
-            <div class="col-md-12"><label>OBSERVACIONES</label><textarea id="observaciones" class="form-control f-p2" rows="1"></textarea></div>
+            <div class="col-md-4"><label>MEDICAMENTOS</label><input type="text" id="medicamentos" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>FAMILIARES</label><input type="text" id="familiares" class="form-control f-p2" required></div>
+            <div class="col-md-4"><label>OTROS</label><input type="text" id="otros" class="form-control f-p2" required></div>
+            <div class="col-md-12"><label>OBSERVACIONES</label><textarea id="observaciones" class="form-control f-p2" rows="1" required></textarea></div>
         </div>
 
-        <button type="submit" class="btn-guardar" id="btnEnv">💾 GUARDAR Y CONTINUAR A PARTE 3</button>
+        <button type="submit" class="btn-enviar" id="btnEnv">💾 GUARDAR Y CONTINUAR</button>
     </form>
 </div>
 
@@ -82,46 +78,46 @@
     }
 
     window.onload = async () => {
-        if(!p_id) { location.href="registro_paciente.html"; return; }
+        if(!p_id) { alert("Sesión inválida"); return; }
         try {
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
             document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
             document.getElementById('v_ci').innerText = d.paciente.ci;
-            // Doble verificación del código
-            document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || localStorage.getItem('p_codigo') || "S/C";
+            document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || "S/C";
         } catch (e) {
-            document.getElementById('v_codigo').innerText = localStorage.getItem('p_codigo') || "S/C";
+            document.getElementById('v_codigo').innerText = "ERROR";
         }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⌛ ENVIANDO...";
+        btn.innerText = "⌛ ENVIANDO A DISK...";
         btn.disabled = true;
 
-        const data = { paciente_id: p_id };
+        const payload = { paciente_id: parseInt(p_id) };
         document.querySelectorAll('.f-p2').forEach(el => {
-            data[el.id] = el.value.toUpperCase() || "SIN PARTICULAR";
+            payload[el.id] = el.value.toUpperCase();
         });
 
         try {
-            // FIX 405: Se eliminó la barra final en /p2 para evitar redirecciones de Render
-            const res = await fetch(`${API}/p2`, { 
+            const res = await fetch(`${API}/p2`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify(payload)
             });
 
-            if(res.ok) { 
-                location.href = "declaracion_jurada_p3.html"; 
-            } else { 
-                alert("Error de Servidor (500). Revise los campos."); 
+            if (res.ok) {
+                location.href = "declaracion_jurada_p3.html";
+            } else {
+                const errData = await res.json();
+                console.error("Error Servidor:", errData);
+                alert("ERROR 500: El servidor de disco rechazó los datos.");
                 btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR";
             }
-        } catch (err) { 
-            alert("ERROR DE CONEXIÓN. Intente nuevamente."); 
+        } catch (err) {
+            alert("CONEXIÓN FALLIDA: El backend en Render no responde.");
             btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR";
         }
     };
