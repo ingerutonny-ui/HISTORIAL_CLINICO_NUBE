@@ -86,17 +86,19 @@
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if(!pid) return;
+        if(!pid) { alert("No hay ID de paciente"); return; }
         try {
-            // Se quita el prefijo /api/ para probar ruta directa
-            const res = await fetch(`${API}/paciente-completo/${pid}`);
+            // Intentamos ambas rutas para asegurar la carga de datos del paciente
+            let res = await fetch(`${API}/paciente-completo/${pid}`);
+            if(!res.ok) res = await fetch(`${API}/api/paciente-completo/${pid}`);
+            
             if(res.ok) {
                 const d = await res.json();
                 document.getElementById('v_nom').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
                 document.getElementById('v_ci').innerText = d.paciente.ci;
                 document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
             }
-        } catch(e) { console.error("Error cabecera"); }
+        } catch(e) { console.error("Error en cabecera:", e); }
     };
 
     function addRow() {
@@ -139,26 +141,24 @@
             grupo_sanguineo: document.getElementById('gs').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3 FINALIZADO"
+            observaciones: "REGISTRO COMPLETADO"
         };
 
         try {
-            // SE LLAMA A LA RUTA SIN BARRA AL FINAL Y SIN /API/
             const r = await fetch(`${API}/guardar-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
             if(r.ok) {
-                alert("✅ ÉXITO: P3 GUARDADO");
+                alert("✅ ÉXITO: P3 GUARDADO EN POSTGRESQL");
                 window.location.href = "index.html";
             } else {
-                const txt = await r.text();
-                alert("❌ ERROR: " + txt);
+                alert("❌ ERROR 404/500: No se pudo guardar.");
                 b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch(err) {
-            alert("❌ ERROR DE RED: Revisa la consola.");
+            alert("❌ ERROR DE RED: Servidor no disponible.");
             b.disabled = false;
         }
     };
