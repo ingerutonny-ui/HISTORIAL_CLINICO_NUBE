@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-import os
 
 try:
     from . import models, schemas, crud
@@ -10,10 +9,10 @@ except ImportError:
     import models, schemas, crud
     from database import SessionLocal, engine
 
-# Sincronización de integridad en la nube [cite: 2026-02-03]
+# Integridad de la base de datos [cite: 2026-02-03]
 models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(redirect_slashes=False)
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,26 +29,20 @@ def get_db():
     finally:
         db.close()
 
-# --- RUTAS DE PACIENTE ---
-@app.get("/api/paciente-completo/{p_id}")
-async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
+# RUTA DIRECTA PARA PACIENTE
+@app.get("/get-paciente/{p_id}")
+async def get_paciente(p_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == p_id).first()
     if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+        raise HTTPException(status_code=404, detail="No encontrado")
     return {"paciente": paciente}
 
-# --- RUTA P3: SINCRONIZADA CON SCHEMAS.PY ---
-@app.post("/api/guardar-p3")
+# RUTA DIRECTA PARA GUARDAR P3 (Mapeo total de P1, P2, P3) [cite: 2026-02-11]
+@app.post("/save-p3")
 async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # Mapeo total de P3 usando el esquema validado [cite: 2026-02-11]
-        # data.coca ahora recibirá el valor correctamente del frontend
+        # El campo 'coca' se recibe aquí validado por el esquema
         resultado = crud.upsert_p3(db, data.model_dump())
         return {"status": "success", "id": resultado.id}
     except Exception as e:
-        print(f"Error en validación o DB: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
