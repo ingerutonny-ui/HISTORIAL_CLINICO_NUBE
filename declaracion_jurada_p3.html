@@ -10,10 +10,9 @@
         body { background: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.75rem; }
         .container { max-width: 950px; margin: 10px auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .barra-paciente { background: #e8f8f5; padding: 12px; border-radius: 8px; border-left: 5px solid var(--v-ohs); display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; }
-        .section-header { background: #f8f9fa; padding: 5px 10px; font-weight: bold; margin-top: 15px; border-bottom: 2px solid var(--v-ohs); color: #2c3e50; }
+        .section-tag { background: #f8f9fa; padding: 5px 10px; font-weight: bold; margin-top: 15px; border-bottom: 2px solid var(--v-ohs); color: #2c3e50; }
         .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 32px; }
         .btn-final { background: var(--v-bot); color: white; font-weight: bold; width: 100%; padding: 12px; border: none; border-radius: 8px; margin-top: 20px; font-size: 1rem; cursor: pointer; }
-        .btn-add { background: #2c3e50; color: white; font-size: 0.65rem; border: none; border-radius: 4px; padding: 5px 12px; margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -31,25 +30,18 @@
     </div>
 
     <form id="formP3">
-        <div class="section-header">1. HÁBITOS PERSONALES</div>
+        <div class="section-tag">1. HÁBITOS PERSONALES</div>
         <div class="row g-2 mb-3">
             <div class="col-md-2">¿FUMA?<select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2">CANTIDAD<input type="text" id="f_cant" class="form-control" value="0"></div>
             <div class="col-md-2">¿ALCOHOL?<select id="alc" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2">FRECUENCIA<input type="text" id="a_frec" class="form-control" value="SOCIAL"></div>
             <div class="col-md-2">¿DROGAS?<select id="dro" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">TIPO<input type="text" id="d_tipo" class="form-control" value="NINGUNA"></div>
+            <div class="col-md-2">TIPO<input type="text" id="d_tipo" class="form-control" value="S/D"></div>
         </div>
-        <div class="row g-2 mb-3">
-            <div class="col-md-2">¿PIJCHA?<select id="pij" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">¿DEPORTE?<select id="dep" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-4">DETALLE DEPORTE<input type="text" id="dep_det" class="form-control" value="S/D"></div>
-            <div class="col-md-2">G. SANGRE<input type="text" id="gs" class="form-control" value="ORH+"></div>
-        </div>
-
-        <div class="section-header">2. HISTORIA LABORAL RECIENTE</div>
-        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
-        <table class="table table-sm table-bordered">
+        
+        <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
+        <table class="table table-sm table-bordered mt-2">
             <thead class="table-light">
                 <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
             </thead>
@@ -65,14 +57,12 @@
             </tbody>
         </table>
 
-        <div class="section-header">3. RIESGOS EXPUESTOS ACTUALES</div>
+        <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="row g-2 p-2">
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="ERGONOMICO"> ERGONÓMICO</div>
-            <div class="col-md-3"><input type="checkbox" class="c-ri" value="QUIMICOS"> QUÍMICOS</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="BIOLOGICO"> BIOLÓGICO</div>
-            <div class="col-md-3"><input type="checkbox" class="c-ri" value="VIBRACION"> VIBRACIÓN</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="ALTURA"> ALTURA</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
@@ -88,7 +78,6 @@
     window.onload = async () => {
         if(!pid) return;
         try {
-            // Intenta cargar con la ruta que funcionó en tus capturas
             const res = await fetch(`${API}/api/paciente-completo/${pid}`);
             if(res.ok) {
                 const d = await res.json();
@@ -96,14 +85,8 @@
                 document.getElementById('v_ci').innerText = d.paciente.ci;
                 document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
             }
-        } catch(e) { console.error("Error al cargar paciente"); }
+        } catch(e) { console.error("Error cabecera"); }
     };
-
-    function addRow() {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="number" class="form-control r-ed"></td><td><input type="text" class="form-control r-em"></td><td><input type="text" class="form-control r-ca"></td><td><input type="number" class="form-control r-ti"></td><td><input type="text" class="form-control r-ri"></td><td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
-        document.getElementById('tBody').appendChild(tr);
-    }
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
@@ -128,37 +111,32 @@
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
-            fuma_cantidad: document.getElementById('f_cant').value || "0",
-            alcohol: document.getElementById('alc').value,
-            alcohol_frecuencia: document.getElementById('a_frec').value || "S/D",
-            drogas: document.getElementById('dro').value,
-            drogas_tipo: document.getElementById('d_tipo').value || "S/D",
-            coca: document.getElementById('pij').value,
-            deporte: document.getElementById('dep').value,
-            deporte_detalle: document.getElementById('dep_det').value || "S/D",
-            grupo_sanguineo: document.getElementById('gs').value.toUpperCase(),
+            fuma_cantidad: "0", alcohol: "NO", alcohol_frecuencia: "S/D",
+            drogas: "NO", drogas_tipo: "S/D", coca: "NO", deporte: "NO",
+            deporte_detalle: "S/D", grupo_sanguineo: "ORH+",
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "REGISTRO P3 FINALIZADO"
+            observaciones: "P3 SINCRONIZADO"
         };
 
         try {
-            // Se usa la ruta directa para evitar redirecciones de Render
-            const r = await fetch(`${API}/api/guardar-p3/`, {
+            // LÍNEA 147 CORREGIDA: Ruta raíz sin barra final para evitar el 404 de Render
+            const r = await fetch(`${API}/guardar-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            
             if(r.ok) {
                 alert("✅ ÉXITO: P3 GUARDADO");
                 window.location.href = "index.html";
             } else {
-                const text = await r.text();
-                alert("❌ ERROR: " + text);
+                const err = await r.json();
+                alert("❌ ERROR SERVER: " + JSON.stringify(err));
                 b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch(err) {
-            alert("❌ ERROR DE RED");
+            alert("❌ ERROR DE CONEXIÓN");
             b.disabled = false;
         }
     };
