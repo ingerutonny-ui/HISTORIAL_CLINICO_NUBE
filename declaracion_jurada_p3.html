@@ -122,7 +122,7 @@
             }
         });
 
-        // Mapeo exacto a HabitosRiesgosP3Base de schemas.py
+        // MAPEADO EXACTO AL ESQUEMA PROFESIONAL (schemas.py)
         const data = {
             paciente_id: parseInt(id_trabajo),
             fuma: document.getElementById('fuma').value,
@@ -153,12 +153,12 @@
                 window.location.href = "index.html";
             } else {
                 const err = await response.json();
-                alert("❌ ERROR: " + JSON.stringify(err.detail));
+                alert("❌ ERROR DEL SERVIDOR (Verifica logs): " + JSON.stringify(err.detail));
                 btn.disabled = false;
                 btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
             }
         } catch (error) {
-            alert("❌ ERROR DE CONEXIÓN: Verifica Render.");
+            alert("❌ ERROR DE CONEXIÓN: Render no responde.");
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
