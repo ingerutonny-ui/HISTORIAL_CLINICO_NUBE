@@ -61,7 +61,7 @@
         <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-secondary btn-add" onclick="addRow()">+ AGREGAR FILA</button></div>
         <table class="table table-bordered">
             <thead>
-                <tr><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
+                <tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
             </thead>
             <tbody id="tablaLaboral">
                 <tr>
@@ -91,31 +91,44 @@
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="ALTURA" id="r12"><label class="form-check-label" for="r12">ALTURA</label></div>
         </div>
 
-        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR REGISTRO Y SINCRONIZAR</button>
+        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR REGISTRO Y SINCRONIZAR P3</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
+    
+    // Recuperación forzada de ID de paciente
     let p_id = localStorage.getItem('paciente_id') || localStorage.getItem('p_id');
 
     async function cargarPaciente() {
-        if (!p_id) return;
+        if (!p_id) {
+            // Intento final: buscar en la URL por si acaso
+            const params = new URLSearchParams(window.location.search);
+            p_id = params.get('id');
+            if(!p_id) {
+                alert("⚠️ PACIENTE NO SELECCIONADO. SERÁ REDIRIGIDO AL INICIO.");
+                location.href = "index.html";
+                return;
+            }
+        }
+        
         try {
             const res = await fetch(`${API}/api/pacientes`);
+            if(!res.ok) throw new Error();
             const data = await res.json();
             const p = data.find(x => x.id == p_id);
             if (p) {
                 const n = `${p.nombre} ${p.apellido}`.toUpperCase();
                 document.getElementById('v_nombre').innerText = n;
                 document.getElementById('v_ci').innerText = p.ci || '---';
-                document.getElementById('v_codigo').innerText = p.codigo && p.codigo !== "undefined" ? p.codigo : "S/C";
+                document.getElementById('v_codigo').innerText = (p.codigo && p.codigo !== "undefined") ? p.codigo : "S/C";
                 document.getElementById('res_nombre').innerText = n;
                 document.getElementById('res_codigo').innerText = document.getElementById('v_codigo').innerText;
             }
         } catch (e) {
             document.getElementById('v_nombre').innerText = "CONECTANDO CON SERVIDOR...";
-            setTimeout(cargarPaciente, 3000);
+            setTimeout(cargarPaciente, 2500);
         }
     }
 
@@ -173,7 +186,7 @@
             } else { throw new Error(); }
         } catch (err) {
             alert("❌ ERROR DE RED. INTENTE NUEVAMENTE.");
-            btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y SINCRONIZAR";
+            btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y SINCRONIZAR P3";
         }
     };
 </script>
