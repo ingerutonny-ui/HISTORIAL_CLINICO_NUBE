@@ -11,10 +11,10 @@
         .container { max-width: 950px; margin: 10px auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .barra-paciente { background: #e8f8f5; padding: 12px; border-radius: 8px; border-left: 5px solid var(--verde-ohs); display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; }
         .text-blue { color: #0d6efd; text-transform: uppercase; }
-        .section-tag { background: #f8f9fa; padding: 5px 10px; font-weight: bold; margin-top: 15px; margin-bottom: 10px; border-bottom: 2px solid var(--verde-ohs); color: #2c3e50; }
+        .section-tag { background: #f8f9fa; padding: 5px 10px; font-weight: bold; margin-top: 15px; margin-bottom: 5px; border-bottom: 2px solid var(--verde-ohs); color: #2c3e50; }
         .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 32px; border-radius: 6px; }
         .btn-final { background: var(--verde-boton); color: white; font-weight: bold; width: 100%; padding: 12px; border-radius: 8px; border: none; margin-top: 20px; font-size: 1rem; cursor: pointer; }
-        .btn-add { background: #2c3e50; color: white; font-size: 0.65rem; font-weight: bold; border-radius: 4px; padding: 4px 10px; border: none; }
+        .btn-add { background: #2c3e50; color: white; font-size: 0.65rem; font-weight: bold; border-radius: 4px; padding: 5px 12px; border: none; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -34,7 +34,7 @@
 
     <form id="formP3">
         <div class="section-tag">I. HÁBITOS PERSONALES</div>
-        <div class="row g-2 mb-2">
+        <div class="row g-2 mb-3">
             <div class="col-md-2"><label class="fw-bold">¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold">¿ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold">¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
@@ -43,11 +43,9 @@
             <div class="col-md-2"><label class="fw-bold">G. SANGRE</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="ORH+"></div>
         </div>
 
-        <div class="text-end mb-2">
-            <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA LABORAL</button>
-        </div>
-
         <div class="section-tag">II. HISTORIA LABORAL</div>
+        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
+
         <div class="table-responsive">
             <table class="table table-sm table-bordered">
                 <thead class="table-light text-center">
@@ -88,7 +86,7 @@
 
     window.onload = async () => {
         if (!id_trabajo) {
-            alert("⚠️ NO HAY PACIENTE ACTIVO");
+            alert("⚠️ PACIENTE NO DETECTADO. POR FAVOR, SELECCIONE AL PACIENTE EN EL INICIO.");
             window.location.href = "index.html";
             return;
         }
@@ -96,12 +94,15 @@
         try {
             const res = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
             const d = await res.json();
+            
             if (d.paciente) {
                 document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
                 document.getElementById('v_ci').innerText = d.paciente.ci || "---";
                 document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
             }
-        } catch (e) { console.error("Error:", e); }
+        } catch (e) {
+            console.error("Error al cargar datos:", e);
+        }
     };
 
     function addRow() {
@@ -113,7 +114,10 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnAccion');
-        btn.innerText = "⏳ PROCESANDO...";
+        const nFinal = document.getElementById('v_nombre').innerText;
+        const cFinal = document.getElementById('v_codigo').innerText;
+
+        btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
 
         const historia = [];
@@ -154,23 +158,17 @@
             });
 
             if(response.ok) {
-                const nombre = document.getElementById('v_nombre').innerText;
-                const codigo = document.getElementById('v_codigo').innerText;
-                
-                // Ventana de éxito personalizada
-                alert("PACIENTE NUEVO:\n" + nombre + "\nCÓDIGO: " + codigo);
-                
-                localStorage.removeItem('p_id_edicion');
+                alert("PACIENTE NUEVO:\n" + nFinal + "\nCÓDIGO: " + cFinal);
+                localStorage.clear(); // Limpiamos todo para el siguiente paciente
                 window.location.href = "index.html";
             } else {
-                alert("Error en el servidor al guardar P3");
-                btn.disabled = false;
+                alert("❌ ERROR AL GUARDAR REGISTRO");
                 btn.innerText = "💾 GUARDAR Y FINALIZAR HISTORIAL";
+                btn.disabled = false;
             }
         } catch (err) {
             alert("❌ ERROR DE CONEXIÓN");
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR Y FINALIZAR HISTORIAL";
         }
     };
 </script>
