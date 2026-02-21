@@ -26,7 +26,8 @@
     </div>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">SINCRONIZANDO...</span></div>
+        <div>CI: <span id="v_ci" class="text-primary">---</span></div>
         <div>CÓDIGO: <span id="v_codigo" class="text-success" style="font-family: monospace;">---</span></div>
     </div>
 
@@ -44,7 +45,7 @@
         <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-sm btn-dark float-end" onclick="addRow()">+ AGREGAR FILA</button></div>
         <table class="table table-sm table-bordered">
             <thead class="table-light text-center">
-                <tr style="font-size: 0.7rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
+                <tr style="font-size: 0.7rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>AÑOS</th><th>RIESGOS</th><th>EPP</th></tr>
             </thead>
             <tbody id="tablaLaboral">
                 <tr>
@@ -58,8 +59,8 @@
             </tbody>
         </table>
 
-        <div class="section-tag">III. RIESGOS EXPUESTOS EN SU VIDA LABORAL</div>
-        <div class="row g-2 px-2">
+        <div class="section-tag">III. RIESGOS EXPUESTOS</div>
+        <div class="row g-2 px-2" id="contenedorRiesgos">
             <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="RUIDO" id="r1"> <label for="r1">RUIDO</label></div>
             <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="POLVOS" id="r2"> <label for="r2">POLVOS</label></div>
             <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="ERGONÓMICO" id="r3"> <label for="r3">ERGONÓMICO</label></div>
@@ -76,32 +77,33 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    
-    // Forzamos la obtención del ID más reciente de la P2
     const p_id = localStorage.getItem('p_id');
 
     window.onload = async () => {
-        console.log("ID detectado:", p_id);
-        if (!p_id || p_id === "undefined") {
-            alert("⚠️ PACIENTE NO DETECTADO. POR FAVOR, SELECCIONE AL PACIENTE EN EL INICIO.");
+        // 1. Limpieza de interfaz para evitar ver nombres anteriores
+        document.getElementById('v_nombre').innerText = "BUSCANDO PACIENTE...";
+        
+        if (!p_id) {
+            alert("⚠️ PACIENTE NO DETECTADO. VOLVIENDO AL INICIO.");
             window.location.href = "index.html";
             return;
         }
 
         try {
-            // Buscamos los datos reales del servidor para sobreescribir cualquier nombre viejo
+            // 2. Traer datos frescos del servidor obligatoriamente
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
-            if (!res.ok) throw new Error("Paciente no encontrado");
-            
             const d = await res.json();
             
-            // Sincronización visual obligatoria
-            document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
-            document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
-            
+            if (d.paciente) {
+                // 3. Inyectar datos reales de Ruben (o el actual)
+                document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
+                document.getElementById('v_ci').innerText = d.paciente.ci || "---";
+                document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+                console.log("Sincronizado con:", d.paciente.nombre);
+            }
         } catch (e) {
-            console.error("Error:", e);
-            document.getElementById('v_nombre').innerText = "ERROR: SELECCIONE PACIENTE";
+            console.error("Error de sincronización:", e);
+            document.getElementById('v_nombre').innerText = "ERROR DE CONEXIÓN";
         }
     };
 
@@ -155,13 +157,11 @@
             });
 
             if(response.ok) {
-                alert("✅ DATOS DE " + document.getElementById('v_nombre').innerText + " GUARDADOS CORRECTAMENTE");
+                alert("✅ P3 GUARDADO: " + document.getElementById('v_nombre').innerText);
                 window.location.href = "index.html";
-            } else {
-                throw new Error("Error en servidor");
             }
         } catch (err) {
-            alert("❌ ERROR AL CONECTAR CON EL SERVIDOR");
+            alert("❌ ERROR AL GUARDAR");
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
