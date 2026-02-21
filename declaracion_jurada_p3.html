@@ -6,24 +6,25 @@
     <title>P3 - HÁBITOS Y RIESGOS | OHS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --ohs: #2ecc71; --ohs-dark: #27ae60; --text: #2c3e50; }
-        body { background: #f4f7f6; font-family: 'Roboto', sans-serif; color: var(--text); font-size: 0.85rem; }
-        .container { max-width: 1000px; margin: 20px auto; background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-        .header-logo { height: 70px; display: block; margin: 0 auto 15px; }
-        .barra-paciente { background: #f1f9f7; padding: 18px; border-radius: 8px; border-left: 6px solid var(--ohs); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; }
+        :root { --ohs: #2ecc71; --ohs-dark: #27ae60; }
+        body { background: #f4f7f6; font-size: 0.85rem; }
+        .container { max-width: 1000px; margin: 20px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .barra-paciente { background: #f1f9f7; padding: 15px; border-radius: 8px; border-left: 6px solid var(--ohs); margin-bottom: 25px; display: flex; justify-content: space-between; font-weight: bold; }
+        .btn-save { background: var(--ohs); color: white; width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <img src="./logo.png" alt="Logo OHS" class="header-logo">
-    <h4 class="text-center mb-4" style="color: var(--ohs-dark); font-weight: 700;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
+    <div class="text-center mb-4">
+        <img src="./logo.png" alt="Logo OHS" style="height: 60px;">
+        <h4 class="mt-2" style="color: var(--ohs-dark); font-weight: 700;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
+    </div>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">CARGANDO...</span></div>
-        <div>CI: <span id="v_ci" style="font-weight: 700;">---</span></div>
-        <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">---</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: #2980b9;">CARGANDO...</span></div>
+        <div>CI: <span id="v_ci">---</span></div>
+        <div>CÓDIGO: <span id="v_cod">---</span></div>
         <div class="badge bg-dark">ID: <span id="v_id">---</span></div>
     </div>
 
@@ -34,47 +35,46 @@
             <div class="col-md-3"><label class="form-label">¿ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-3"><label class="form-label">FRECUENCIA</label><input type="text" id="alcohol_frecuencia" class="form-control" value="SOCIAL"></div>
         </div>
-
-        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR DATOS EN POSTGRESQL</button>
+        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR HISTORIAL P3</button>
     </form>
 </div>
 
 <script>
-    // 1. LEER ID DIRECTAMENTE DE LA URL (Ej: p3.html?id=11)
-    const params = new URLSearchParams(window.location.search);
-    let pid = params.get('id') || localStorage.getItem('p_id');
+    const pid = localStorage.getItem('p_id');
     const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
     window.onload = async () => {
         if (!pid) {
-            document.getElementById('v_nom').innerText = "ERROR: SELECCIONE UN PACIENTE";
+            document.getElementById('v_nom').innerText = "SIN ID EN MEMORIA";
             return;
         }
         document.getElementById('v_id').innerText = pid;
 
         try {
-            // Usamos la ruta que tus capturas confirman que existe pero daba 404 por ID inexistente
+            // Intento 1: Consultar al Backend
             const res = await fetch(`${API_BASE}/get-paciente/${pid}`);
             if (res.ok) {
-                const p = await res.ok ? await res.json() : null;
-                if(p) {
-                    document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
-                    document.getElementById('v_ci').innerText = p.ci || "---";
-                    document.getElementById('v_cod').innerText = p.codigo_paciente || "---";
-                }
+                const p = await res.json();
+                document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
+                document.getElementById('v_ci').innerText = p.ci || "---";
+                document.getElementById('v_cod').innerText = p.codigo_paciente || "---";
             } else {
-                document.getElementById('v_nom').innerText = "PACIENTE NO ENCONTRADO EN NUBE";
+                // Intento 2: Si el servidor da 404, rescatamos de localStorage (Plan B)
+                console.warn("Paciente no hallado en BD, usando datos locales...");
+                const localNom = localStorage.getItem('p_nombre') || "PACIENTE DESCONOCIDO";
+                document.getElementById('v_nom').innerText = localNom.toUpperCase();
             }
-        } catch (e) {
-            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
+        } catch (error) {
+            // Intento 3: Fallo de red, mostrar lo que tengamos
+            document.getElementById('v_nom').innerText = (localStorage.getItem('p_nombre') || "ERROR DE CONEXIÓN").toUpperCase();
         }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ PROCESANDO...";
         btn.disabled = true;
+        btn.innerText = "⏳ GUARDANDO...";
 
         const payload = {
             paciente_id: parseInt(pid),
@@ -84,7 +84,7 @@
             alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
             drogas: "NO", drogas_tipo: "S/D", coca: "NO", deporte: "NO", 
             deporte_detalle: "S/D", grupo_sanguineo: "S/D", 
-            historia_laboral: "[]", riesgos_expuestos: "[]", observaciones: "NUBE_FIX"
+            historia_laboral: "[]", riesgos_expuestos: "[]", observaciones: "CARGA_P3"
         };
 
         try {
@@ -93,15 +93,14 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
             if (res.ok) {
-                alert("✅ GUARDADO EXITOSO");
+                alert("✅ P3 GUARDADO");
                 window.location.href = "index.html";
             } else {
-                alert("❌ FALLÓ EL GUARDADO");
+                alert("❌ ERROR EN SERVIDOR");
                 btn.disabled = false;
             }
-        } catch (err) {
+        } catch (e) {
             alert("❌ ERROR DE RED");
             btn.disabled = false;
         }
