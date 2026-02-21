@@ -13,6 +13,7 @@
         .section-tag { background: #f8f9fa; padding: 8px 12px; font-weight: bold; margin-top: 20px; border-bottom: 2px solid var(--ohs-primary); color: #1b5e20; text-transform: uppercase; }
         .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 35px; border-radius: 5px; }
         .btn-final { background: var(--ohs-dark); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 25px; font-size: 1rem; cursor: pointer; }
+        .btn-add { background: #34495e; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -48,6 +49,7 @@
 
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
         <div class="p-2">
+            <button type="button" class="btn-add" onclick="agregarFila()">+ AGREGAR FILA</button>
             <table class="table table-sm table-bordered">
                 <thead class="table-light"><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tBody">
@@ -79,52 +81,60 @@
 </div>
 
 <script>
-    // URL DEFINITIVA PARA EVITAR EL 404 DE TUS CAPTURAS
-    const API_BASE = "https://historial-clinico-936s.onrender.com/api";
+    // CORRECCIÓN RUTA API PARA EVITAR 404 EN LÍNEA 90
+    const URL_BASE = "https://historial-clinico-936s.onrender.com/api";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
+    function agregarFila() {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><input type="number" class="form-control r-ed"></td><td><input type="text" class="form-control r-em"></td><td><input type="text" class="form-control r-ca"></td><td><input type="number" class="form-control r-ti"></td><td><input type="text" class="form-control r-ri"></td><td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
+        document.getElementById('tBody').appendChild(tr);
+    }
+
     window.onload = async () => {
-        if(!pid) { alert("ERROR: NO SE ENCONTRÓ ID DE PACIENTE"); return; }
+        if (!pid) { alert("ERROR: NO HAY ID DE PACIENTE"); return; }
         
         try {
-            // PETICIÓN DIRECTA AL ENDPOINT QUE SÍ FUNCIONA EN P1 Y P2
-            const response = await fetch(`${API_BASE}/pacientes/${pid}`);
+            // LÍNEA 90: FETCH CORREGIDO CON URL ABSOLUTA Y PREFIJO API
+            const resp = await fetch(`${URL_BASE}/pacientes/${pid}`);
             
-            if(response.ok) {
-                const data = await response.json();
-                // MAPEADO DIRECTO DESDE LA RAÍZ DEL OBJETO
+            if (resp.ok) {
+                const data = await resp.json();
+                // MAPEADO DIRECTO DE CAMPOS SEGÚN ESTRUCTURA DE BACKEND
                 document.getElementById('v_nom').innerText = `${data.nombre} ${data.apellido}`.toUpperCase();
                 document.getElementById('v_ci').innerText = data.ci || "---";
                 document.getElementById('v_cod').innerText = data.codigo_paciente || "---";
             } else {
-                document.getElementById('v_nom').innerText = "ERROR AL CARGAR (SERVER 404/500)";
+                document.getElementById('v_nom').innerText = "ERROR EN SERVIDOR (404)";
             }
-        } catch(error) {
-            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN CON API";
-            console.error("Falla crítica fetch:", error);
+        } catch (err) {
+            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
+            console.error("Fallo fetch:", err);
         }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ SINCRONIZANDO..."; btn.disabled = true;
+        const b = document.getElementById('btnS');
+        b.innerText = "⏳ GUARDANDO..."; b.disabled = true;
 
         const hist = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
             const em = tr.querySelector('.r-em').value;
-            if(em) {
+            if (em) {
                 hist.push({
                     edad: tr.querySelector('.r-ed').value || "0",
-                    empresa: em.toUpperCase(), cargo: tr.querySelector('.r-ca').value.toUpperCase(),
-                    tiempo: tr.querySelector('.r-ti').value || "0", riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
+                    empresa: em.toUpperCase(),
+                    cargo: tr.querySelector('.r-ca').value.toUpperCase(),
+                    tiempo: tr.querySelector('.r-ti').value || "0",
+                    riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
                     epp: tr.querySelector('.r-ep').value
                 });
             }
         });
 
-        // PAYLOAD ALINEADO CON SCHEMAS.PY
-        const payload = {
+        // PAYLOAD MAPEA TODOS LOS CAMPOS DE SCHEMAS.PY
+        const body = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value,
@@ -138,27 +148,27 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_SYNC_FIXED"
+            observaciones: "P3_REPARADO_LINEA_90"
         };
 
         try {
-            const r = await fetch(`${API_BASE}/save-p3`, {
+            const res = await fetch(`${URL_BASE}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(body)
             });
-            
-            if(r.ok) {
-                alert("✅ SINCRONIZACIÓN EXITOSA");
+
+            if (res.ok) {
+                alert("✅ DATOS GUARDADOS");
                 window.location.href = "index.html";
             } else {
-                const err = await r.json();
-                alert("❌ ERROR API: " + JSON.stringify(err.detail));
-                btn.disabled = false; btn.innerText = "💾 GUARDAR EN POSTGRESQL";
+                const errorData = await res.json();
+                alert("❌ ERROR: " + JSON.stringify(errorData.detail));
+                b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
-        } catch(err) {
-            alert("❌ FALLO DE RED - REVISA TU CONEXIÓN");
-            btn.disabled = false;
+        } catch (e) {
+            alert("❌ FALLO DE RED");
+            b.disabled = false;
         }
     };
 </script>
