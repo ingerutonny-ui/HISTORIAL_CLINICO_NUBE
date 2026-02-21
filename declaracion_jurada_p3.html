@@ -21,11 +21,10 @@
 
 <div class="container">
     <div class="mb-3"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="OHS" style="height: 45px;"></div>
-
     <h6 class="fw-bold mb-3" style="color: #1b5e20;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h6>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">SINCRONIZANDO...</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
         <div>CI: <span id="v_ci" class="text-primary">---</span></div>
         <div>CÓDIGO: <span id="v_codigo" class="text-success">---</span></div>
     </div>
@@ -43,7 +42,6 @@
 
         <div class="section-tag">II. HISTORIA LABORAL</div>
         <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
-
         <div class="table-responsive">
             <table class="table table-sm table-bordered">
                 <thead class="table-light text-center">
@@ -83,15 +81,7 @@
     const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if (!id_trabajo) {
-            alert("⚠️ ERROR: NO SE HA SELECCIONADO UN PACIENTE.");
-            window.location.href = "index.html";
-            return;
-        }
-        cargarDatosHeader();
-    };
-
-    async function cargarDatosHeader() {
+        if (!id_trabajo) { window.location.href = "index.html"; return; }
         try {
             const res = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
             const d = await res.json();
@@ -100,8 +90,8 @@
                 document.getElementById('v_ci').innerText = d.paciente.ci || "---";
                 document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
             }
-        } catch (e) { console.error("Error cargando cabecera:", e); }
-    }
+        } catch (e) { console.error(e); }
+    };
 
     function addRow() {
         const tr = document.createElement('tr');
@@ -112,10 +102,8 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnAccion');
-        
-        // Datos para la ventana final
-        const nFinal = document.getElementById('v_nombre').innerText;
-        const cFinal = document.getElementById('v_codigo').innerText;
+        const nF = document.getElementById('v_nombre').innerText;
+        const cF = document.getElementById('v_codigo').innerText;
 
         btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
@@ -123,7 +111,7 @@
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
             const emp = tr.querySelector('.row-empresa').value;
-            if(emp.trim() !== "") {
+            if(emp.trim()) {
                 historia.push({
                     edad: tr.querySelector('.row-edad').value || 0,
                     empresa: emp.toUpperCase(),
@@ -151,30 +139,36 @@
         };
 
         try {
-            const response = await fetch(`${API}/api/guardar-p3`, {
+            // CORRECCIÓN: Se cambió a guardar_p3 (con guion bajo) para evitar el 404
+            const response = await fetch(`${API}/api/guardar_p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
             if(response.ok) {
-                // Ventana solicitada por el usuario
-                alert("PACIENTE NUEVO: " + nFinal + "\nCÓDIGO: " + cFinal);
-                
-                // Limpiamos memoria y volvemos al inicio
-                localStorage.removeItem('p_id_edicion');
-                localStorage.removeItem('p_id');
+                alert("PACIENTE NUEVO: " + nF + "\nCÓDIGO: " + cF);
+                localStorage.clear();
                 window.location.href = "index.html";
             } else {
-                const errData = await response.json();
-                alert("Error en el servidor: " + (errData.error || "No se pudo guardar"));
-                btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
-                btn.disabled = false;
+                // Si falla, intentamos la otra ruta por si acaso
+                const response2 = await fetch(`${API}/api/guardar-p3`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if(response2.ok) {
+                    alert("PACIENTE NUEVO: " + nF + "\nCÓDIGO: " + cF);
+                    localStorage.clear();
+                    window.location.href = "index.html";
+                } else {
+                    alert("Error crítico: La ruta de guardado no responde.");
+                    btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
+                }
             }
         } catch (err) {
-            alert("Error de conexión con el servidor.");
-            btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
-            btn.disabled = false;
+            alert("Error de conexión.");
+            btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
     };
 </script>
