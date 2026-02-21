@@ -74,6 +74,10 @@
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="POLVOS"> POLVOS</div></div>
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="VIBRACION"> VIBRACIÓN</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> ALTURA</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICO"> QUÍMICO</div></div>
         </div>
 
         <button type="submit" id="btnS" class="btn-save">💾 GUARDAR TODO EL HISTORIAL P3</button>
@@ -81,35 +85,37 @@
 </div>
 
 <script>
-    // Obtener ID del paciente del localStorage
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
     const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
     window.onload = async () => {
         if (!pid) {
-            document.getElementById('v_nom').innerText = "ID NO ENCONTRADO";
+            document.getElementById('v_nom').innerText = "ID NO DETECTADO";
             return;
         }
         document.getElementById('v_id').innerText = pid;
 
+        // Intentamos cargar el paciente con un sistema de respaldo (Fallback)
         try {
-            // USAMOS LA RUTA EXACTA DEL MAIN.PY: /get-paciente/
-            const response = await fetch(`${API_BASE}/get-paciente/${pid}`);
+            console.log("Intentando cargar paciente ID:", pid);
+            let response = await fetch(`${API_BASE}/get-paciente/${pid}`);
             
+            if (!response.ok) {
+                console.warn("Ruta /get-paciente/ falló, intentando /pacientes/");
+                response = await fetch(`${API_BASE}/pacientes/${pid}`);
+            }
+
             if (response.ok) {
                 const p = await response.json();
-                // MAPEO DE DATOS
                 document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
                 document.getElementById('v_ci').innerText = p.ci || "---";
                 document.getElementById('v_cod').innerText = p.codigo_paciente || "---";
-                console.log("Paciente cargado correctamente:", p);
             } else {
-                document.getElementById('v_nom').innerText = "ERROR EN SERVIDOR (404)";
-                console.error("Error al obtener paciente:", response.status);
+                document.getElementById('v_nom').innerText = "ERROR 404: NO EXISTE EN DB";
             }
         } catch (error) {
             document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
-            console.error("Fallo de red:", error);
+            console.error("Error crítico:", error);
         }
     };
 
@@ -118,6 +124,21 @@
         const btn = document.getElementById('btnS');
         btn.innerText = "⏳ SINCRONIZANDO...";
         btn.disabled = true;
+
+        const hist = [];
+        document.querySelectorAll('#tBody tr').forEach(tr => {
+            const em = tr.querySelector('.r-em').value;
+            if (em) {
+                hist.push({
+                    edad: tr.querySelector('.r-ed').value,
+                    empresa: em.toUpperCase(),
+                    cargo: tr.querySelector('.r-ca').value.toUpperCase(),
+                    tiempo: tr.querySelector('.r-ti').value,
+                    riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
+                    epp: tr.querySelector('.r-ep').value
+                });
+            }
+        });
 
         const payload = {
             paciente_id: parseInt(pid),
@@ -131,9 +152,9 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: "[]", // Simplificado para prueba
-            riesgos_expuestos: "[]",
-            observaciones: "CARGA_P3"
+            historia_laboral: JSON.stringify(hist),
+            riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
+            observaciones: "CARGA_P3_FINAL"
         };
 
         try {
@@ -144,15 +165,15 @@
             });
 
             if (res.ok) {
-                alert("✅ SINCRONIZACIÓN EXITOSA");
+                alert("✅ DATOS DE P3 GUARDADOS EN POSTGRESQL");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR");
+                alert("❌ ERROR AL GUARDAR: VERIFIQUE EL BACKEND");
                 btn.disabled = false;
                 btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
             }
         } catch (e) {
-            alert("❌ ERROR DE RED");
+            alert("❌ FALLO DE RED");
             btn.disabled = false;
         }
     };
