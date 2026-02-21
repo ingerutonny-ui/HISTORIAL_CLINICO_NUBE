@@ -3,20 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import os
 
-# Importaciones dinámicas para resolver el problema de la carpeta /api
+# Importación absoluta para garantizar que encuentre los archivos en la subcarpeta /api
 try:
-    from . import models, schemas, crud
-    from .database import SessionLocal, engine
-except ImportError:
     import models, schemas, crud
     from database import SessionLocal, engine
+except ImportError:
+    from . import models, schemas, crud
+    from .database import SessionLocal, engine
 
-# Inicialización de tablas
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración de CORS para producción
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -25,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Dependencia de DB
 def get_db():
     db = SessionLocal()
     try:
@@ -33,19 +30,18 @@ def get_db():
     finally:
         db.close()
 
-# RUTA UNIFICADA - Esto resuelve el 404 si el servidor busca con o sin prefijo
+# RUTA PARA EL BOTÓN DE P3
 @app.post("/api/guardar-p3")
 @app.post("/guardar-p3")
 async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # Usamos model_dump() para Pydantic v2 (estándar actual) [cite: 2026-02-12]
+        # Se usa model_dump() para compatibilidad total con los Schemas que me pasaste
         resultado = crud.upsert_p3(db, data.model_dump())
         return {"status": "success", "id": resultado.id}
     except Exception as e:
-        print(f"Error en el servidor: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Obtener paciente para la cabecera
+# RUTA PARA DATOS DEL PACIENTE (CABECERA)
 @app.get("/api/paciente-completo/{p_id}")
 @app.get("/paciente-completo/{p_id}")
 async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
