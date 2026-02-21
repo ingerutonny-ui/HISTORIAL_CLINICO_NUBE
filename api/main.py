@@ -10,10 +10,10 @@ except ImportError:
     import models, schemas, crud
     from database import SessionLocal, engine
 
-# Inicialización de la base de datos [cite: 2026-02-03]
+# Inicialización de la base de datos PostgreSQL en la nube [cite: 2026-02-03]
 models.Base.metadata.create_all(bind=engine)
 
-# redirect_slashes=False evita que FastAPI intente redirigir y cause el 404 en Render
+# Desactivamos redirecciones para evitar el ciclo de 404 detectado en F12
 app = FastAPI(redirect_slashes=False)
 
 app.add_middleware(
@@ -31,29 +31,31 @@ def get_db():
     finally:
         db.close()
 
-# RUTAS DE PACIENTE (Carga datos de cabecera)
-@app.get("/api/paciente-completo/{p_id}")
+# --- RUTAS DE PACIENTE (Cabecera) ---
 @app.get("/paciente-completo/{p_id}")
+@app.get("/api/paciente-completo/{p_id}")
 async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == p_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"paciente": paciente}
 
-# RUTA P3: SOPORTE MULTI-RUTA PARA ELIMINAR EL "NOT FOUND"
-@app.post("/api/guardar-p3")
-@app.post("/api/guardar-p3/")
+# --- RUTA P3: BLINDAJE TOTAL CONTRA 404 ---
+# Se definen todas las variantes posibles para que ninguna línea del frontend falle
 @app.post("/guardar-p3")
 @app.post("/guardar-p3/")
+@app.post("/api/guardar-p3")
+@app.post("/api/guardar-p3/")
 async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # Mantenemos todos los campos P1, P2 y P3 para el manual [cite: 2026-02-11]
+        # Se asegura el mapeo de cada campo para el reporte final [cite: 2026-02-11]
         resultado = crud.upsert_p3(db, data.model_dump())
         return {"status": "success", "id": resultado.id}
     except Exception as e:
-        print(f"Error en servidor: {str(e)}")
+        print(f"Error Crítico P3: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/health")
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
