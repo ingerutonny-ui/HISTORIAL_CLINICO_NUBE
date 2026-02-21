@@ -6,38 +6,41 @@
     <title>P2 - ANTECEDENTES PATOLÓGICOS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --verde-esmeralda: #198754; --fondo-claro: #f8f9fa; }
+        :root { --verde-esmeralda: #2ecc71; --verde-boton: #27ae60; --fondo-claro: #f4f7f6; }
         body { background: var(--fondo-claro); font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; }
-        .container { max-width: 1000px; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-top: 10px; }
+        .container { max-width: 1000px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); margin-top: 10px; }
         
-        /* Ajuste de Logo */
-        .logo-container { margin-bottom: 15px; }
-        .logo-img { max-height: 60px; width: auto; }
+        /* Logo */
+        .logo-header { text-align: left; margin-bottom: 15px; }
+        .logo-header img { max-height: 65px; }
 
-        .paciente-header { background: #e9f5ef; padding: 15px; border-radius: 6px; margin-bottom: 20px; border-left: 5px solid var(--verde-esmeralda); font-weight: bold; }
-        .section-title { background: #f1f3f5; padding: 10px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid var(--verde-esmeralda); color: #333; }
-        .form-control { text-transform: uppercase; font-size: 0.8rem; height: 38px; border: 1px solid #ced4da; }
+        .paciente-header { background: #e8f8f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 6px solid var(--verde-esmeralda); font-weight: bold; }
+        .section-title { background: #f8f9fa; padding: 10px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; border-bottom: 2px solid var(--verde-esmeralda); color: #2c3e50; }
+        .form-control { text-transform: uppercase; font-size: 0.8rem; height: 38px; border: 1px solid #dcdde1; }
         
-        .btn-guardar { background-color: var(--verde-esmeralda); color: white; width: 100%; padding: 15px; font-weight: bold; border: none; border-radius: 6px; margin-top: 30px; font-size: 1rem; cursor: pointer; transition: background 0.3s; }
-        .btn-guardar:hover { background-color: #157347; }
-        label { font-weight: 600; color: #495057; margin-bottom: 3px; display: block; }
+        /* Botón Verde Esmeralda Vibrante */
+        .btn-guardar { background-color: var(--verde-boton); color: white; width: 100%; padding: 16px; font-weight: bold; border: none; border-radius: 8px; margin-top: 25px; font-size: 1.1rem; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3); }
+        .btn-guardar:hover { background-color: #1e8449; transform: translateY(-1px); }
+        
+        label { font-weight: 600; color: #57606f; margin-bottom: 4px; display: block; }
+        .text-codigo { color: #27ae60; font-family: 'Courier New', monospace; font-weight: 800; font-size: 1rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="logo-container">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" class="logo-img">
+    <div class="logo-header">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo Empresa">
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="fw-bold m-0" style="color: var(--verde-esmeralda);">II. ANTECEDENTES PATOLÓGICOS (P2)</h5>
+        <h5 class="fw-bold m-0" style="color: #1b5e20;">II. ANTECEDENTES PATOLÓGICOS (P2)</h5>
         <button type="button" class="btn btn-sm btn-success" onclick="marcarNormal()">✅ TODO NORMAL</button>
     </div>
 
     <div class="paciente-header d-flex justify-content-between align-items-center">
         <div>PACIENTE: <span id="v_nombre" class="text-primary">CARGANDO...</span></div>
-        <div>CÓDIGO: <span id="v_codigo" style="color: var(--verde-esmeralda);">---</span></div>
+        <div>CÓDIGO: <span id="v_codigo" class="text-codigo">---</span></div>
     </div>
 
     <form id="formP2">
@@ -93,16 +96,13 @@
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
             
-            // Verificamos el contenido en consola para asegurar el mapeo
-            console.log("Datos recibidos:", d);
-
             document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
             
-            // CORRECCIÓN DEFINITIVA DEL CÓDIGO:
-            // Usamos d.paciente.codigo que es como viene del backend formateado
-            document.getElementById('v_codigo').innerText = d.paciente.codigo || 'S/C';
+            // MAPEO FORZADO DEL CÓDIGO (Probando ambas opciones por seguridad)
+            const cod = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+            document.getElementById('v_codigo').innerText = cod;
             
-        } catch (e) { console.error("Error al cargar datos", e); }
+        } catch (e) { console.error("Error carga:", e); }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
@@ -124,7 +124,6 @@
             setTimeout(() => {
                 location.href = "declaracion_jurada_p3.html";
             }, 600);
-
         } catch (err) {
             location.href = "declaracion_jurada_p3.html";
         }
