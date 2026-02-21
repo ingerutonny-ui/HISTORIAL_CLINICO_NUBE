@@ -15,7 +15,6 @@
         .header-title { color: var(--ohs-dark); font-weight: 700; text-align: center; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
         .barra-paciente { background: #f1f9f7; padding: 20px; border-radius: 10px; border-left: 8px solid var(--ohs); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
         .section-tag { background: #f8f9fa; padding: 12px; font-weight: 700; border-bottom: 3px solid var(--ohs); margin: 25px 0 15px 0; color: var(--dark); text-transform: uppercase; }
-        .form-label { font-weight: 600; color: #636e72; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 6px; text-transform: uppercase; font-size: 0.85rem; border: 1px solid #dcdde1; padding: 8px; }
         .btn-add { background: var(--dark); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.8rem; margin-top: 10px; cursor: pointer; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 18px; border: none; border-radius: 10px; margin-top: 40px; text-transform: uppercase; font-size: 1rem; cursor: pointer; }
@@ -24,7 +23,7 @@
 <body>
 
 <div class="container">
-    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo OHS" class="header-logo">
+    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" class="header-logo">
     <h4 class="header-title">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
 
     <div class="barra-paciente">
@@ -36,29 +35,18 @@
     <form id="formP3">
         <div class="section-tag">1. HÁBITOS PERSONALES</div>
         <div class="row g-3">
-            <div class="col-md-2"><label class="form-label">¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label class="form-label">CANTIDAD/DÍA</label><input type="text" id="fuma_cantidad" class="form-control" value="0"></div>
-            <div class="col-md-2"><label class="form-label">¿ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label class="form-label">FRECUENCIA</label><input type="text" id="alcohol_frecuencia" class="form-control" value="SOCIAL"></div>
-            <div class="col-md-2"><label class="form-label">¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label class="form-label">TIPO</label><input type="text" id="drogas_tipo" class="form-control" value="S/D"></div>
-        </div>
-        
-        <div class="row g-3 mt-1">
-            <div class="col-md-2"><label class="form-label">COCA (PIJCHA)</label><select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label class="form-label">¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-5"><label class="form-label">DETALLE ACTIVIDAD FÍSICA</label><input type="text" id="deporte_detalle" class="form-control" value="S/D"></div>
-            <div class="col-md-3"><label class="form-label">GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" value="ORH+"></div>
+            <div class="col-md-2"><label class="form-label small fw-bold">¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2"><label class="form-label small fw-bold">CANTIDAD</label><input type="text" id="fuma_cantidad" class="form-control" value="0"></div>
+            <div class="col-md-2"><label class="form-label small fw-bold">¿ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2"><label class="form-label small fw-bold">FRECUENCIA</label><input type="text" id="alcohol_frecuencia" class="form-control" value="SOCIAL"></div>
+            <div class="col-md-2"><label class="form-label small fw-bold">¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2"><label class="form-label small fw-bold">TIPO</label><input type="text" id="drogas_tipo" class="form-control" value="S/D"></div>
         </div>
 
-        <div class="section-tag">2. HISTORIA LABORAL (EMPRESAS ANTERIORES)</div>
+        <div class="section-tag">2. HISTORIA LABORAL</div>
         <div class="table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light">
-                    <tr class="text-center">
-                        <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
-                    </tr>
-                </thead>
+            <table class="table table-bordered">
+                <thead class="table-light"><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th></tr></thead>
                 <tbody id="tBody">
                     <tr>
                         <td><input type="text" class="form-control r-ed"></td>
@@ -74,7 +62,7 @@
         <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR EXPERIENCIA</button>
 
         <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
-        <div class="row g-3 p-2">
+        <div class="row g-3">
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="ERGONOMICO"> ERGONÓMICO</div>
@@ -85,13 +73,11 @@
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL</button>
+        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR TODO EL HISTORIAL P3</button>
     </form>
 </div>
 
 <script>
-    const API_BASE = "https://historial-clinico-936s.onrender.com";
-
     function addFila() {
         const tr = document.createElement('tr');
         tr.innerHTML = `<td><input type="text" class="form-control r-ed"></td><td><input type="text" class="form-control r-em"></td><td><input type="text" class="form-control r-ca"></td><td><input type="text" class="form-control r-ti"></td><td><input type="text" class="form-control r-ri"></td><td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
@@ -113,14 +99,11 @@
         const p_nom = localStorage.getItem('p_nom');
         const p_cod = localStorage.getItem('p_cod');
 
-        if(!pid) {
-            Swal.fire('Error', 'No se encontró el ID del paciente en la memoria.', 'error');
-            return;
-        }
+        if(!pid) return Swal.fire('Error', 'No hay ID de paciente', 'error');
 
         const btn = document.getElementById('btnS');
         btn.disabled = true;
-        btn.innerText = "⏳ PROCESANDO...";
+        btn.innerText = "⏳ GUARDANDO...";
 
         const payload = {
             paciente_id: parseInt(pid),
@@ -130,10 +113,10 @@
             alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
             drogas: document.getElementById('drogas').value,
             drogas_tipo: document.getElementById('drogas_tipo').value,
-            coca: document.getElementById('coca').value,
-            deporte: document.getElementById('deporte').value,
-            deporte_detalle: document.getElementById('deporte_detalle').value,
-            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
+            coca: "NO",
+            deporte: "NO",
+            deporte_detalle: "S/D",
+            grupo_sanguineo: "ORH+",
             historia_laboral: JSON.stringify(Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
                 ed: tr.querySelector('.r-ed').value,
                 em: tr.querySelector('.r-em').value,
@@ -147,7 +130,8 @@
         };
 
         try {
-            const res = await fetch(`${API_BASE}/api/save-p3`, {
+            // CORRECCIÓN DE RUTA: Eliminamos el /api/ repetido si es necesario
+            const res = await fetch(`https://historial-clinico-936s.onrender.com/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -155,20 +139,24 @@
 
             if (res.ok) {
                 Swal.fire({
-                    title: '¡P3 GUARDADO!',
-                    html: `<b>PACIENTE:</b> ${p_nom}<br><b>CÓDIGO:</b> ${p_cod}<br><br>Datos sincronizados con PostgreSQL.`,
+                    title: '¡REGISTRO P3 EXITOSO!',
+                    html: `<div style="text-align: left; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                            <p style="margin: 5px 0;"><b>PACIENTE:</b> ${p_nom}</p>
+                            <p style="margin: 5px 0;"><b>CÓDIGO:</b> ${p_cod}</p>
+                           </div><br>Los datos están seguros en la nube.`,
                     icon: 'success',
-                    confirmButtonText: 'CONTINUAR'
-                }).then(() => {
-                    window.location.href = "index.html";
-                });
+                    confirmButtonColor: '#2ecc71',
+                    confirmButtonText: 'EXCELENTE'
+                }).then(() => { window.location.href = "index.html"; });
             } else {
-                throw new Error("Error en servidor");
+                Swal.fire('Error 404', 'La ruta de guardado no es correcta en el servidor.', 'error');
+                btn.disabled = false;
+                btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
             }
         } catch (err) {
-            Swal.fire('Error de Conexión', 'No se pudo guardar en Render. Revisa tu conexión o el backend.', 'error');
+            Swal.fire('Error Fatal', 'No se pudo conectar con Render.', 'error');
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
+            btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
         }
     };
 </script>
