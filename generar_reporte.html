@@ -80,7 +80,32 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
+    
+    // Mapeo exacto basado en los nombres de tu Base de Datos (Backend)
+    const mapping_p2 = {
+        "vista_ojos": "Vista / Ojos",
+        "auditivo_oido": "Auditivo / Oído",
+        "respiratorio": "Respiratorio",
+        "cardiovascular": "Cardiovascular",
+        "digestivos": "Digestivos",
+        "sangre_linfa": "Sangre / Linfa",
+        "genitourinario": "Genitourinario",
+        "nervioso": "Sistema Nervioso",
+        "endocrino": "Endocrino",
+        "psiquiatricos": "Psiquiátricos",
+        "osteomusculares": "Osteomusculares",
+        "reumatologicos": "Reumatológicos",
+        "dermatologicos": "Dermatológicos",
+        "alergias": "Alergias",
+        "cirugias": "Cirugías",
+        "infecciones": "Infecciones",
+        "acc_personales": "Accidentes Personales",
+        "acc_trabajo": "Accidentes de Trabajo",
+        "medicamentos": "Medicamentos",
+        "familiares": "Antecedentes Familiares",
+        "otros_especificos": "Otros / Específicos",
+        "observaciones": "Observaciones Generales"
+    };
 
     window.onload = async () => {
         const p_id = localStorage.getItem('p_id_reporte');
@@ -89,7 +114,7 @@
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
 
-            // P1 - Sincronizado con nombres de tu formulario (p1 es 'filiacion' en tu JSON)
+            // P1 - Datos Personales
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('r_ci').innerText = data.paciente.ci;
             document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
@@ -110,12 +135,20 @@
                 document.getElementById('r_profesion').innerText = p1.profesion_oficio || '---';
             }
 
-            // P2 y P3 se mantienen igual
+            // P2 - Antecedentes con Mapeo Corregido
             if (data.p2) {
-                document.getElementById('grid_p2').innerHTML = fields_p2.map(f => `
-                    <div class="data-item"><span class="label">${f.replace(/_/g,' ').toUpperCase()}:</span> <span class="val">${data.p2[f] || 'NORMAL'}</span></div>`).join('');
+                const gridP2 = document.getElementById('grid_p2');
+                gridP2.innerHTML = Object.keys(mapping_p2).map(key => {
+                    const valor = data.p2[key] || 'SIN PARTICULAR';
+                    return `
+                        <div class="data-item">
+                            <span class="label">${mapping_p2[key]}:</span> 
+                            <span class="val">${valor}</span>
+                        </div>`;
+                }).join('');
             }
 
+            // P3 - Hábitos y Riesgos
             if (data.p3) {
                 document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
                 document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad || '0'})`;
@@ -128,10 +161,11 @@
                 const historia = JSON.parse(data.p3.historia_laboral || '[]');
                 document.getElementById('r_tabla_laboral').innerHTML = historia.length ? historia.map(h => `
                     <tr><td>${h.edad}</td><td>${h.empresa}</td><td>${h.cargo}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>`).join('') : '<tr><td colspan="6">SIN DATOS</td></tr>';
+                
                 const riesgos = JSON.parse(data.p3.riesgos_expuestos || '[]');
                 document.getElementById('r_riesgos_box').innerHTML = riesgos.map(r => `<span class="riesgo-tag">${r}</span>`).join('');
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Error cargando reporte:", e); }
     }
 </script>
 </body>
