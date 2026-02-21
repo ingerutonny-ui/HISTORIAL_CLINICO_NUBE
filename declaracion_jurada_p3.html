@@ -24,7 +24,7 @@
     <h5 class="fw-bold mb-4 text-center" style="color: #1b5e20;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h5>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #0d6efd;">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: #0d6efd;">IDENTIFICANDO...</span></div>
         <div>CI: <span id="v_ci">---</span></div>
         <div>CÓDIGO: <span id="v_cod">---</span></div>
     </div>
@@ -79,36 +79,35 @@
 </div>
 
 <script>
-    // USANDO LA ESTRUCTURA EXACTA QUE FUNCIONA EN P1 Y P2
-    async function initP3() {
-        const id = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
-        if (!id) return;
+    // ACCESO DIRECTO PARA EVITAR ERROR 404 EN LÍNEA 89
+    const p_id = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
+    async function cargarDatos() {
+        if (!p_id) { alert("ID NO DETECTADO"); return; }
+        
         try {
-            // LÍNEA 91 REPARADA: URL MANUAL PARA ASEGURAR RUTA API
-            const r = await fetch("https://historial-clinico-936s.onrender.com/api/pacientes/" + id);
+            // RUTA ABSOLUTA PARA GARANTIZAR CONEXIÓN
+            const r = await fetch("https://historial-clinico-936s.onrender.com/api/pacientes/" + p_id);
             if (r.ok) {
                 const d = await r.json();
-                // MAPEADO DIRECTO DESDE EL OBJETO RAIZ
+                // MAPEADO DIRECTO DE CAMPOS (NOMBRE Y APELLIDO)
                 document.getElementById('v_nom').innerText = (d.nombre + " " + d.apellido).toUpperCase();
                 document.getElementById('v_ci').innerText = d.ci || "---";
                 document.getElementById('v_cod').innerText = d.codigo_paciente || "---";
             } else {
-                document.getElementById('v_nom').innerText = "ERROR 404: NO ENCONTRADO";
+                document.getElementById('v_nom').innerText = "PACIENTE NO ENCONTRADO (404)";
             }
         } catch (e) {
-            document.getElementById('v_nom').innerText = "FALLO DE RED";
+            document.getElementById('v_nom').innerText = "ERROR DE RED";
         }
     }
 
-    window.onload = initP3;
+    window.onload = cargarDatos;
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const b = document.getElementById('btnS');
-        const id = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
-        
-        b.innerText = "⏳ SINCRONIZANDO..."; b.disabled = true;
+        b.innerText = "⏳ GUARDANDO..."; b.disabled = true;
 
         const hist = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
@@ -123,9 +122,8 @@
             }
         });
 
-        // MAPEADO COMPLETO SEGÚN SCHEMAS.PY
-        const payload = {
-            paciente_id: parseInt(id),
+        const dataOut = {
+            paciente_id: parseInt(p_id),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value,
             alcohol: document.getElementById('alcohol').value,
@@ -138,26 +136,26 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_PLAN_MAESTRO_OK"
+            observaciones: "P3_RECONSTRUIDO_V3"
         };
 
         try {
             const res = await fetch("https://historial-clinico-936s.onrender.com/api/save-p3", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(dataOut)
             });
 
             if (res.ok) {
-                alert("✅ P3 SINCRONIZADO");
+                alert("✅ SINCRONIZACIÓN EXITOSA");
                 window.location.href = "index.html";
             } else {
                 const err = await res.json();
                 alert("❌ ERROR: " + JSON.stringify(err.detail));
                 b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
-        } catch (err) {
-            alert("❌ FALLO DE COMUNICACIÓN");
+        } catch (e) {
+            alert("❌ FALLO DE COMUNICACIÓN CON EL SERVIDOR");
             b.disabled = false;
         }
     };
