@@ -18,7 +18,6 @@
         .form-control, .form-select { border-radius: 5px; text-transform: uppercase; font-size: 0.8rem; border: 1px solid #ced4da; }
         .btn-add { background: #34495e; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 0.75rem; margin-top: 10px; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2); }
-        .btn-save:hover { background: var(--ohs-dark); transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -77,6 +76,10 @@
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="POLVOS"> POLVOS</div></div>
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="VIBRACION"> VIBRACIÓN</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> ALTURA</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICO"> QUÍMICO</div></div>
         </div>
 
         <button type="submit" id="btnS" class="btn-save">💾 GUARDAR TODO EL HISTORIAL P3 EN POSTGRESQL</button>
@@ -93,26 +96,16 @@
         document.getElementById('tBody').appendChild(tr);
     }
 
-    window.onload = async () => {
-        // MOSTRAR DATOS LOCALES INMEDIATAMENTE
-        const nomLocal = localStorage.getItem('p_nombre') || "PACIENTE";
-        const apeLocal = localStorage.getItem('p_apellido') || "";
-        document.getElementById('v_nom').innerText = `${nomLocal} ${apeLocal}`.toUpperCase();
-        document.getElementById('v_ci').innerText = localStorage.getItem('p_ci') || "---";
-        document.getElementById('v_cod').innerText = localStorage.getItem('p_codigo') || "---";
+    window.onload = () => {
+        // CORRECCIÓN DE MAPEO: Usar las claves exactas del registro
+        const nombre = localStorage.getItem('p_nombre') || "";
+        const apellido = localStorage.getItem('p_apellido') || "";
+        const ci = localStorage.getItem('p_ci') || "---";
+        const codigo = localStorage.getItem('p_codigo') || "---";
 
-        if (!pid) return;
-
-        // INTENTAR REFRESCAR DESDE NUBE (Si falla, ya tenemos lo local arriba)
-        try {
-            const res = await fetch(`${API_BASE}/get-paciente/${pid}`);
-            if (res.ok) {
-                const p = await res.json();
-                document.getElementById('v_nom').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
-                document.getElementById('v_ci').innerText = p.ci;
-                document.getElementById('v_cod').innerText = p.codigo_paciente;
-            }
-        } catch (e) { console.error("Error al sincronizar con nube"); }
+        document.getElementById('v_nom').innerText = `${nombre} ${apellido}`.trim().toUpperCase() || "PACIENTE SIN NOMBRE";
+        document.getElementById('v_ci').innerText = ci;
+        document.getElementById('v_cod').innerText = codigo;
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
@@ -135,7 +128,7 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: "[]",
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "FINAL_P3_OHS"
+            observaciones: "REGISTRO_P3_OK"
         };
 
         try {
@@ -150,10 +143,9 @@
             } else {
                 alert("❌ ERROR AL GUARDAR");
                 btn.disabled = false;
-                btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
             }
         } catch (e) {
-            alert("❌ ERROR DE RED");
+            alert("❌ FALLO DE RED");
             btn.disabled = false;
         }
     };
