@@ -123,8 +123,7 @@
             }
         });
 
-        const riesgos_exp = [];
-        document.querySelectorAll('.check-riesgo:checked').forEach(ch => riesgos_exp.push(ch.value));
+        const riesgos_exp = Array.from(document.querySelectorAll('.check-riesgo:checked')).map(ch => ch.value);
 
         const data = {
             paciente_id: parseInt(id_trabajo),
@@ -139,7 +138,7 @@
         };
 
         try {
-            // CORRECCIÓN FINAL DE RUTA SEGÚN TUS LOGS: /api/guardar-p3
+            // RUTA CORRECTA PARA RENDER: guardar-p3
             const response = await fetch(`${API}/api/guardar-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -147,27 +146,15 @@
             });
 
             if(response.ok) {
-                alert("PACIENTE NUEVO: " + nF + "\nCÓDIGO: " + cF);
+                alert("PACIENTE REGISTRADO: " + nF + "\nCÓDIGO: " + cF);
                 localStorage.clear();
                 window.location.href = "index.html";
             } else {
-                // Si falla, intentamos la ruta con guion bajo como último recurso
-                const res2 = await fetch(`${API}/api/guardar_p3`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-                if(res2.ok) {
-                    alert("PACIENTE NUEVO: " + nF + "\nCÓDIGO: " + cF);
-                    localStorage.clear();
-                    window.location.href = "index.html";
-                } else {
-                    alert("Error: El servidor no reconoce ninguna ruta de guardado (404).");
-                    btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
-                }
+                alert("Error: " + response.status + " - El servidor no aceptó la ruta.");
+                btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
             }
         } catch (err) {
-            alert("Error de conexión.");
+            alert("Error de conexión con el servidor.");
             btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
     };
