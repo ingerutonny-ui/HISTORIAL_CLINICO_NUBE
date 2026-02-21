@@ -49,7 +49,7 @@
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
         <div class="p-2 text-end">
             <button type="button" class="btn btn-sm btn-dark mb-2" onclick="addFila()">+ AGREGAR FILA</button>
-            <table class="table table-sm table-bordered text-center">
+            <table class="table table-sm table-bordered">
                 <thead class="table-light"><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tBody">
                     <tr>
@@ -80,8 +80,9 @@
 </div>
 
 <script>
-    // SOLUCIÓN DEFINITIVA: BYPASS DEL ERROR 404
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+    // RUTA LIMPIA PARA EVITAR 404
+    const URL_BASE = "https://historial-clinico-936s.onrender.com";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -89,17 +90,12 @@
         document.getElementById('tBody').appendChild(tr);
     }
 
-    // ELIMINAMOS EL FETCH QUE DA ERROR 404 EN LÍNEA 92
-    window.onload = () => {
-        if (!pid) { alert("ERROR: ID NO ENCONTRADO"); return; }
-        // Los datos se mantienen del paso anterior, solo validamos ID
-        console.log("Paciente ID cargado:", pid);
-    };
+    window.onload = () => { if (!pid) alert("PACIENTE NO CARGADO"); };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const b = document.getElementById('btnS');
-        b.innerText = "⏳ ENVIANDO..."; b.disabled = true;
+        b.innerText = "⏳ SINCRONIZANDO..."; b.disabled = true;
 
         const hist = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
@@ -114,6 +110,7 @@
             }
         });
 
+        // MAPEADO COMPLETO PARA SCHEMAS.PY
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
@@ -128,27 +125,27 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_FORZADO_V1"
+            observaciones: "P3_POST_FIX_OK"
         };
 
         try {
-            // RUTA DE GUARDADO DIRECTA SIN INTERMEDIARIOS
-            const res = await fetch("https://historial-clinico-936s.onrender.com/api/save-p3", {
+            // PETICIÓN POST CORREGIDA PARA RENDER
+            const res = await fetch(`${URL_BASE}/api/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("✅ P3 GUARDADO EXITOSAMENTE");
+                alert("✅ P3 GUARDADO CORRECTAMENTE EN POSTGRESQL");
                 window.location.href = "index.html";
             } else {
                 const err = await res.json();
-                alert("❌ ERROR: " + JSON.stringify(err.detail));
+                alert("❌ ERROR DEL SERVIDOR: " + JSON.stringify(err.detail));
                 b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch (e) {
-            alert("❌ FALLO DE COMUNICACIÓN CON EL SERVIDOR");
+            alert("❌ FALLO DE COMUNICACIÓN: VERIFIQUE SU CONEXIÓN");
             b.disabled = false;
         }
     };
