@@ -31,39 +31,61 @@ def get_paciente(id: int, db: Session = Depends(get_db)):
     p1 = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == id).first()
     p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == id).first()
     p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == id).first()
+    
+    # Manejo de código de paciente para evitar errores si es None
+    cod_pac = getattr(p, 'codigo_paciente', "S/C")
+    
     return {
-        "paciente": {"nombre": p.nombre, "apellido": p.apellido, "ci": p.ci},
+        "paciente": {
+            "nombre": p.nombre, 
+            "apellido": p.apellido, 
+            "ci": p.ci,
+            "codigo_paciente": cod_pac
+        },
         "p1": {k: v for k, v in p1.__dict__.items() if not k.startswith('_')} if p1 else {},
         "p2": {k: v for k, v in p2.__dict__.items() if not k.startswith('_')} if p2 else {},
         "p3": {k: v for k, v in p3.__dict__.items() if not k.startswith('_')} if p3 else {}
     }
 
-@app.post("/p2/")
+@app.post("/p2")
 async def guardar_p2(r: Request, db: Session = Depends(get_db)):
-    data = await r.json()
-    p_id = int(data.get("paciente_id"))
-    obj = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
-    if not obj:
-        obj = models.AntecedentesP2(paciente_id=p_id)
-        db.add(obj)
-    for k, v in data.items():
-        if hasattr(obj, k) and k != "paciente_id":
-            setattr(obj, k, str(v).upper()) # FUERZA MAYÚSCULAS
-    db.commit()
-    return {"status": "ok"}
+    try:
+        data = await r.json()
+        p_id = int(data.get("paciente_id"))
+        obj = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
+        
+        if not obj:
+            obj = models.AntecedentesP2(paciente_id=p_id)
+            db.add(obj)
+            
+        for k, v in data.items():
+            if hasattr(obj, k) and k != "paciente_id":
+                setattr(obj, k, str(v).upper())
+        
+        db.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        db.rollback()
+        return {"status": "error", "detail": str(e)}
 
-@app.post("/p3/")
+@app.post("/p3")
 async def guardar_p3(r: Request, db: Session = Depends(get_db)):
-    data = await r.json()
-    p_id = int(data.get("paciente_id"))
-    obj = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
-    if not obj:
-        obj = models.HabitosRiesgosP3(paciente_id=p_id)
-        db.add(obj)
-    for k, v in data.items():
-        if hasattr(obj, k) and k != "paciente_id":
-            # Si es el campo de riesgos (lista), lo unimos como string antes de guardar
-            val = ", ".join(v) if isinstance(v, list) else str(v)
-            setattr(obj, k, val.upper()) # FUERZA MAYÚSCULAS
-    db.commit()
-    return {"status": "ok"}
+    try:
+        data = await r.json()
+        p_id = int(data.get("paciente_id"))
+        obj = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
+        
+        if not obj:
+            obj = models.HabitosRiesgosP3(paciente_id=p_id)
+            db.add(obj)
+            
+        for k, v in data.items():
+            if hasattr(obj, k) and k != "paciente_id":
+                val = ", ".join(v) if isinstance(v, list) else str(v)
+                setattr(obj, k, val.upper())
+        
+        db.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        db.rollback()
+        return {"status": "error", "detail": str(e)}
