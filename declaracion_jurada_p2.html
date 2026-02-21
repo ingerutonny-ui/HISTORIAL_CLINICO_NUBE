@@ -9,10 +9,12 @@
         body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
         .container { max-width: 1000px; margin-top: 20px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .section-title { color: #1e4d2b; border-left: 5px solid #28a745; padding-left: 15px; margin: 20px 0; font-weight: bold; text-transform: uppercase; font-size: 1rem; }
-        .form-control, .form-select { text-transform: uppercase; border-radius: 8px; font-size: 0.85rem; }
+        .form-control { text-transform: uppercase; border-radius: 8px; font-size: 0.85rem; }
         .btn-save { background: #28a745; color: white; font-weight: bold; width: 100%; padding: 15px; border-radius: 10px; border: none; margin-top: 20px; }
+        .btn-normal { background: #e8f5e9; color: #2e7d32; border: 1px solid #2e7d32; font-weight: bold; font-size: 0.8rem; }
         .banner-paciente { background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #ddd; font-weight: bold; font-size: 0.9rem; }
         label { font-size: 0.7rem; font-weight: bold; color: #555; margin-bottom: 2px; display: block; }
+        .badge-codigo { background: #fff3cd; color: #856404; padding: 5px 10px; border-radius: 5px; border: 1px solid #ffeeba; }
     </style>
 </head>
 <body>
@@ -20,42 +22,45 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" height="40">
-        <div class="banner-paciente text-primary" id="info_p">CARGANDO...</div>
+        <div class="d-flex gap-2 align-items-center">
+            <button type="button" class="btn btn-normal" onclick="llenarTodoNormal()">✅ TODO NORMAL</button>
+            <div class="banner-paciente text-primary" id="info_p">CARGANDO...</div>
+        </div>
     </div>
 
     <form id="formP2">
         <h5 class="section-title">SISTEMAS Y ÓRGANOS</h5>
         <div class="row g-3">
-            <div class="col-md-4"><label>VISTA / OJOS</label><input type="text" id="vista" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>OÍDO / AUDICIÓN</label><input type="text" id="auditivo" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>RESPIRATORIO</label><input type="text" id="respiratorio" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>CARDIOVASCULAR</label><input type="text" id="cardiovascular" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>DIGESTIVOS</label><input type="text" id="digestivos" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>SANGRE / LINFA</label><input type="text" id="sangre" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>GENITOURINARIO</label><input type="text" id="genitourinario" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>SISTEMA NERVIOSO</label><input type="text" id="nervioso" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>ENDOCRINO</label><input type="text" id="endocrino" class="form-control" value="SIN PARTICULAR"></div>
+            <div class="col-md-4"><label>VISTA / OJOS</label><input type="text" id="vista" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>OÍDO / AUDICIÓN</label><input type="text" id="auditivo" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>RESPIRATORIO</label><input type="text" id="respiratorio" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>CARDIOVASCULAR</label><input type="text" id="cardiovascular" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>DIGESTIVOS</label><input type="text" id="digestivos" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>SANGRE / LINFA</label><input type="text" id="sangre" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>GENITOURINARIO</label><input type="text" id="genitourinario" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>SISTEMA NERVIOSO</label><input type="text" id="nervioso" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>ENDOCRINO</label><input type="text" id="endocrino" class="form-control campo-p2"></div>
         </div>
 
         <h5 class="section-title">CONDICIONES MÉDICAS Y QUIRÚRGICAS</h5>
         <div class="row g-3">
-            <div class="col-md-4"><label>PSIQUIÁTRICOS</label><input type="text" id="psiquiatricos" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>OSTEOMUSCULARES</label><input type="text" id="osteomusculares" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>REUMATOLÓGICOS</label><input type="text" id="reumatologicos" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>DERMATOLÓGICOS</label><input type="text" id="dermatologicos" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>ALERGIAS</label><input type="text" id="alergias" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>CIRUGÍAS</label><input type="text" id="cirugias" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>INFECCIONES</label><input type="text" id="infecciones" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>ACCIDENTES PERSONALES</label><input type="text" id="accidentes_personales" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>ACCIDENTES TRABAJO</label><input type="text" id="accidentes_trabajo" class="form-control" value="SIN PARTICULAR"></div>
+            <div class="col-md-4"><label>PSIQUIÁTRICOS</label><input type="text" id="psiquiatricos" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>OSTEOMUSCULARES</label><input type="text" id="osteomusculares" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>REUMATOLÓGICOS</label><input type="text" id="reumatologicos" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>DERMATOLÓGICOS</label><input type="text" id="dermatologicos" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>ALERGIAS</label><input type="text" id="alergias" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>CIRUGÍAS</label><input type="text" id="cirugias" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>INFECCIONES</label><input type="text" id="infecciones" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>ACCIDENTES PERSONALES</label><input type="text" id="accidentes_personales" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>ACCIDENTES TRABAJO</label><input type="text" id="accidentes_trabajo" class="form-control campo-p2"></div>
         </div>
 
         <h5 class="section-title">MEDICAMENTOS Y OTROS</h5>
         <div class="row g-3">
-            <div class="col-md-4"><label>MEDICAMENTOS</label><input type="text" id="medicamentos" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>FAMILIARES</label><input type="text" id="familiares" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-4"><label>OTROS / ESPECÍFICOS</label><input type="text" id="otros" class="form-control" value="SIN PARTICULAR"></div>
-            <div class="col-md-12"><label>OBSERVACIONES GENERALES</label><textarea id="observaciones" class="form-control" rows="2">SIN PARTICULAR</textarea></div>
+            <div class="col-md-4"><label>MEDICAMENTOS</label><input type="text" id="medicamentos" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>FAMILIARES</label><input type="text" id="familiares" class="form-control campo-p2"></div>
+            <div class="col-md-4"><label>OTROS / ESPECÍFICOS</label><input type="text" id="otros" class="form-control campo-p2"></div>
+            <div class="col-md-12"><label>OBSERVACIONES GENERALES</label><textarea id="observaciones" class="form-control campo-p2" rows="2"></textarea></div>
         </div>
 
         <button type="submit" class="btn-save" id="btnGuardar">💾 GUARDAR Y CONTINUAR A PARTE 3</button>
@@ -66,11 +71,23 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
+    // Función para llenar todo de golpe (Lo que pediste Inge)
+    function llenarTodoNormal() {
+        document.querySelectorAll('.campo-p2').forEach(input => {
+            input.value = "SIN PARTICULAR";
+        });
+    }
+
     window.onload = async () => {
         if(!p_id) { location.href="registro_paciente.html"; return; }
-        const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
-        const d = await res.json();
-        document.getElementById('info_p').innerText = `PACIENTE: ${d.paciente.nombre} ${d.paciente.apellido} | CÓDIGO: ${d.paciente.codigo}`;
+        try {
+            const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
+            const d = await res.json();
+            // Aquí forzamos que muestre el código generado
+            document.getElementById('info_p').innerHTML = `
+                PACIENTE: <span class="text-uppercase">${d.paciente.nombre} ${d.paciente.apellido}</span> | 
+                CÓDIGO: <span class="badge-codigo">${d.paciente.codigo || 'S/C'}</span>`;
+        } catch (e) { console.error("Error al cargar datos"); }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
@@ -112,16 +129,8 @@
             });
 
             if(res.ok) { location.href = "declaracion_jurada_p3.html"; }
-            else { 
-                const errorData = await res.json();
-                console.error(errorData);
-                alert("ERROR EN SERVIDOR: Revisa que todos los campos tengan texto."); 
-                btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3";
-            }
-        } catch (err) {
-            alert("ERROR DE CONEXIÓN: Verifica tu internet o el servicio Render.");
-            btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3";
-        }
+            else { alert("Error al guardar. Reintenta."); btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3"; }
+        } catch (err) { alert("Error de conexión"); btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3"; }
     };
 </script>
 </body>
