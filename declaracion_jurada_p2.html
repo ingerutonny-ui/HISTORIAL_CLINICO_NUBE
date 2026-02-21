@@ -6,54 +6,43 @@
     <title>P2 - ANTECEDENTES PATOLÓGICOS | OHS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .container { max-width: 1000px; margin-top: 20px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        :root { --verde-esmeralda: #2ecc71; --verde-oscuro: #27ae60; }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
+        .container { max-width: 1000px; margin-top: 20px; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         
-        /* Encabezado y Datos del Paciente */
-        .header-clinico { border-bottom: 2px solid #28a745; margin-bottom: 20px; padding-bottom: 10px; }
-        .panel-paciente { background: #eef2f7; padding: 15px; border-radius: 8px; border: 1px solid #d1d9e6; margin-bottom: 15px; }
-        .info-label { font-size: 0.75rem; color: #666; text-transform: uppercase; font-weight: bold; }
-        .info-value { font-size: 1rem; color: #1e4d2b; font-weight: bold; }
-        
-        /* Botón Todo Normal (Ubicación solicitada) */
-        .btn-normal-control { background: #28a745; color: white; border: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; transition: 0.3s; width: 100%; margin-top: 10px; }
-        .btn-normal-control:hover { background: #218838; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        /* Encabezado según Captura 2 */
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .titulo-seccion { font-size: 1.5rem; font-weight: bold; color: #333; }
+        .btn-todo-normal { background: white; color: #2ecc71; border: 2px solid #2ecc71; font-weight: bold; padding: 5px 15px; border-radius: 5px; }
+        .btn-todo-normal:hover { background: #2ecc71; color: white; }
 
-        .section-title { background: #f1f1f1; padding: 8px 15px; border-radius: 5px; color: #1e4d2b; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; margin: 25px 0 15px 0; border-left: 5px solid #28a745; }
-        .form-control { text-transform: uppercase; border-radius: 6px; font-size: 0.85rem; border: 1px solid #ced4da; padding: 8px; }
-        .form-control:focus { border-color: #28a745; box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); }
-        label { font-size: 0.75rem; font-weight: bold; color: #444; margin-bottom: 3px; display: block; }
+        /* Barra de Datos del Paciente */
+        .barra-paciente { background: #f8f9fa; padding: 12px 20px; border-radius: 8px; border: 1px solid #e9ecef; display: flex; justify-content: space-between; font-weight: bold; color: #2c3e50; margin-bottom: 25px; font-size: 0.95rem; }
+        .text-paciente { color: #3498db; }
+        .text-codigo { color: #3498db; }
+
+        /* Secciones y Formularios */
+        .section-title { color: #1e4d2b; border-left: 5px solid var(--verde-esmeralda); padding-left: 15px; margin: 25px 0 15px; font-weight: bold; text-transform: uppercase; font-size: 0.9rem; background: #f9f9f9; padding-top: 8px; padding-bottom: 8px; }
+        .form-control { text-transform: uppercase; border-radius: 6px; font-size: 0.85rem; border: 1px solid #ddd; }
+        label { font-size: 0.75rem; font-weight: bold; color: #666; margin-bottom: 2px; display: block; }
         
-        .btn-save { background: #1e4d2b; color: white; font-weight: bold; width: 100%; padding: 15px; border-radius: 8px; border: none; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-save:hover { background: #15361e; }
+        /* Botón Guardar según Captura 3 */
+        .btn-save { background: var(--verde-esmeralda); color: white; font-weight: bold; width: 100%; padding: 12px; border-radius: 8px; border: none; margin-top: 30px; font-size: 1.1rem; transition: 0.3s; }
+        .btn-save:hover { background: var(--verde-oscuro); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-clinico d-flex justify-content-between align-items-center">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" height="45">
-        <h4 class="mb-0 fw-bold" style="color: #1e4d2b;">ANTECEDENTES PATOLÓGICOS (P2)</h4>
+    <div class="header-top">
+        <div class="titulo-seccion">2. ANTECEDENTES PATOLÓGICOS (P2)</div>
+        <button type="button" class="btn-todo-normal" onclick="llenarTodoNormal()">✅ TODO NORMAL</button>
     </div>
 
-    <div class="panel-paciente">
-        <div class="row text-center align-items-center">
-            <div class="col-md-5">
-                <div class="info-label">Paciente:</div>
-                <div class="info-value text-uppercase" id="p_nombre">---</div>
-            </div>
-            <div class="col-md-3">
-                <div class="info-label">Cédula:</div>
-                <div class="info-value" id="p_ci">---</div>
-            </div>
-            <div class="col-md-4">
-                <div class="info-label">Código Generado:</div>
-                <div class="info-value text-danger" id="p_codigo">---</div>
-            </div>
-            <div class="col-12">
-                <button type="button" class="btn-normal-control" onclick="llenarTodoNormal()">✅ CLIC AQUÍ PARA LLENADO RÁPIDO: "SIN PARTICULAR"</button>
-            </div>
-        </div>
+    <div class="barra-paciente">
+        <div>PACIENTE: <span id="p_nombre" class="text-paciente">CARGANDO...</span></div>
+        <div>CI: <span id="p_ci">---</span></div>
+        <div>CÓDIGO: <span id="p_codigo" class="text-codigo">---</span></div>
     </div>
 
     <form id="formP2">
@@ -110,46 +99,40 @@
         try {
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
-            document.getElementById('p_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`;
+            document.getElementById('p_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
             document.getElementById('p_ci').innerText = d.paciente.ci;
-            document.getElementById('p_codigo').innerText = d.paciente.codigo || 'GENERANDO...';
-        } catch (e) { console.error("Error al cargar datos del paciente"); }
+            document.getElementById('p_codigo').innerText = d.paciente.codigo || 'S/C';
+        } catch (e) { console.error("Error cargando datos"); }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnGuardar');
-        btn.innerText = "⌛ PROCESANDO ENVÍO...";
+        btn.innerText = "⌛ ENVIANDO...";
         btn.disabled = true;
 
-        const payload = {};
+        const data = { paciente_id: p_id };
         document.querySelectorAll('.campo-p2').forEach(el => {
-            payload[el.id] = el.value.toUpperCase() || "SIN PARTICULAR";
+            data[el.id] = el.value.toUpperCase() || "SIN PARTICULAR";
         });
-        payload.paciente_id = p_id;
 
         try {
-            const res = await fetch(`${API}/p2/`, {
+            // Se quitó la barra final de la URL para evitar conflictos de redirección/CORS en Render
+            const res = await fetch(`${API}/p2`, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(payload)
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
             });
 
             if(res.ok) { 
                 location.href = "declaracion_jurada_p3.html"; 
             } else { 
-                const error = await res.json();
-                alert("ERROR EN EL SERVIDOR: " + JSON.stringify(error)); 
-                btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3";
-                btn.disabled = false;
+                alert("Error de Servidor (500). Verifica que el paciente exista."); 
+                btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3";
             }
         } catch (err) { 
-            alert("ERROR DE CONEXIÓN: No se pudo contactar con el servidor."); 
-            btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3";
-            btn.disabled = false;
+            alert("ERROR DE CONEXIÓN: Verifica el estado del servicio en Render."); 
+            btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3";
         }
     };
 </script>
