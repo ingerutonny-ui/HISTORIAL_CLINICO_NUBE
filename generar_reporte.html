@@ -12,7 +12,7 @@
         .header-title { flex: 1; text-align: center; }
         .header-title h1 { margin: 0; font-size: 18px; color: #1e293b; text-transform: uppercase; font-weight: 900; }
         .section-title { background: #f1f5f9; padding: 5px 10px; font-size: 11px; font-weight: 800; border-left: 5px solid #22c55e; margin: 15px 0 8px 0; text-transform: uppercase; }
-        .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 11px; }
+        .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 10px; }
         .data-item { border-bottom: 1px solid #e2e8f0; padding: 4px 0; display: flex; align-items: baseline; }
         .label { font-weight: 800; color: #64748b; width: 160px; text-transform: uppercase; font-size: 9px; flex-shrink: 0; }
         .val { color: #1e293b; font-weight: 700; text-transform: uppercase; flex-grow: 1; }
@@ -35,33 +35,18 @@
     </div>
 
     <div class="section-title">I. Afiliación del Trabajador (P1)</div>
-    <div class="data-grid">
+    <div class="data-grid" id="grid_p1_personal">
         <div class="data-item"><span class="label">Apellidos y Nombres:</span> <span class="val" id="r_paciente">---</span></div>
         <div class="data-item"><span class="label">Cédula Identidad:</span> <span class="val" id="r_ci">---</span></div>
-        <div class="data-item"><span class="label">Edad:</span> <span class="val" id="r_edad">---</span></div>
-        <div class="data-item"><span class="label">Sexo:</span> <span class="val" id="r_sexo">---</span></div>
-        <div class="data-item"><span class="label">Fecha de Nacimiento:</span> <span class="val" id="r_f_nac">---</span></div>
-        <div class="data-item"><span class="label">Lugar de Nacimiento:</span> <span class="val" id="r_l_nac">---</span></div>
-        <div class="data-item"><span class="label">Domicilio:</span> <span class="val" id="r_dir">---</span></div>
-        <div class="data-item"><span class="label">Ciudad:</span> <span class="val" id="r_ciudad">---</span></div>
-        <div class="data-item"><span class="label">Estado Civil:</span> <span class="val" id="r_e_civil">---</span></div>
-        <div class="data-item"><span class="label">Profesión:</span> <span class="val" id="r_profesion">---</span></div>
-        <div class="data-item"><span class="label">Grupo Sanguíneo:</span> <span class="val" id="r_gs">---</span></div>
         <div class="data-item"><span class="label">Código Interno:</span> <span class="val" id="r_cod">---</span></div>
     </div>
+    <div class="data-grid" id="grid_p1_filiacion" style="margin-top: 5px;"></div>
 
     <div class="section-title">II. Antecedentes Patológicos (P2)</div>
     <div class="data-grid" id="grid_p2"></div>
 
     <div class="section-title">III. Hábitos y Estilos de Vida (P3)</div>
-    <div class="data-grid">
-        <div class="data-item"><span class="label">Fuma:</span> <span class="val" id="r_fuma">---</span></div>
-        <div class="data-item"><span class="label">Alcohol:</span> <span class="val" id="r_alcohol">---</span></div>
-        <div class="data-item"><span class="label">Drogas:</span> <span class="val" id="r_drogas">---</span></div>
-        <div class="data-item"><span class="label">Pijchar:</span> <span class="val" id="r_coca">---</span></div>
-        <div class="data-item"><span class="label">Deportes:</span> <span class="val" id="r_deporte">---</span></div>
-        <div class="data-item"><span class="label">Observaciones:</span> <span class="val" id="r_obs">---</span></div>
-    </div>
+    <div class="data-grid" id="grid_p3_habitos"></div>
 
     <div class="section-title">IV. Historia Laboral y Riesgos (P3)</div>
     <table class="table-report">
@@ -75,15 +60,15 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    
-    // MAPEO QUIRÚRGICO DE LA SECCIÓN II BASADO EN TUS CAPTURAS
+
+    // MAPEO DEFINITIVO DE SECCIÓN II (P2)
     const mapping_p2 = {
-        "vista_ojos": "VISTA / OJOS",
-        "auditivo_oido": "AUDITIVO / OÍDO",
+        "vista": "VISTA / OJOS",
+        "auditivo": "AUDITIVO / OÍDO",
         "respiratorio": "RESPIRATORIO",
         "cardiovascular": "CARDIOVASCULAR",
         "digestivos": "DIGESTIVOS",
-        "sangre_linfa": "SANGRE / LINFA", 
+        "sangre": "SANGRE / LINFA",
         "genitourinario": "GENITOURINARIO",
         "nervioso": "SISTEMA NERVIOSO",
         "endocrino": "ENDOCRINO",
@@ -94,11 +79,11 @@
         "alergias": "ALERGIAS",
         "cirugias": "CIRUGÍAS",
         "infecciones": "INFECCIONES",
-        "acc_personales": "ACCIDENTES PERSONALES",
-        "acc_trabajo": "ACCIDENTES DE TRABAJO",
+        "accidentes_personales": "ACCIDENTES PERSONALES",
+        "accidentes_trabajo": "ACCIDENTES DE TRABAJO",
         "medicamentos": "MEDICAMENTOS",
         "familiares": "ANTECEDENTES FAMILIARES",
-        "otros_especificos": "OTROS / ESPECÍFICOS",
+        "otros": "OTROS / ESPECÍFICOS",
         "observaciones": "OBSERVACIONES GENERALES"
     };
 
@@ -109,49 +94,51 @@
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
 
-            // P1
+            // P1 - Datos Generales
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('r_ci').innerText = data.paciente.ci;
             document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
             
             if (data.filiacion) {
-                document.getElementById('r_edad').innerText = data.filiacion.edad || '---';
-                document.getElementById('r_sexo').innerText = data.filiacion.sexo || '---';
-                document.getElementById('r_f_nac').innerText = data.filiacion.fecha_nacimiento || '---';
-                document.getElementById('r_l_nac').innerText = data.filiacion.lugar_nacimiento || '---';
-                document.getElementById('r_dir').innerText = data.filiacion.domicilio || '---';
-                document.getElementById('r_ciudad').innerText = data.filiacion.ciudad || '---';
-                document.getElementById('r_e_civil').innerText = data.filiacion.estado_civil || '---';
-                document.getElementById('r_profesion').innerText = data.filiacion.profesion_oficio || '---';
+                const f = data.filiacion;
+                const gridF = document.getElementById('grid_p1_filiacion');
+                const campos = [
+                    ["Edad", f.edad], ["Sexo", f.sexo], ["F. Nacimiento", f.fecha_nacimiento],
+                    ["Lugar Nac.", f.lugar_nacimiento], ["Domicilio", f.domicilio], ["Ciudad", f.ciudad],
+                    ["Estado Civil", f.estado_civil], ["Profesión", f.profesion_oficio]
+                ];
+                gridF.innerHTML = campos.map(c => `<div class="data-item"><span class="label">${c[0]}:</span> <span class="val">${c[1] || '---'}</span></div>`).join('');
             }
 
-            // P2 - CARGA DE LA SEGUNDA SECCIÓN
+            // P2 - SECCIÓN CRÍTICA CORREGIDA
             if (data.p2) {
                 const gridP2 = document.getElementById('grid_p2');
-                gridP2.innerHTML = Object.keys(mapping_p2).map(key => {
-                    const val = data.p2[key] ? data.p2[key].toUpperCase() : "SIN PARTICULAR";
-                    return `<div class="data-item"><span class="label">${mapping_p2[key]}:</span> <span class="val">${val}</span></div>`;
+                gridP2.innerHTML = Object.entries(mapping_p2).map(([key, label]) => {
+                    // Verificamos si la llave existe en data.p2, si no, mostramos SIN PARTICULAR
+                    const valor = (data.p2[key] && data.p2[key].trim() !== "") ? data.p2[key].toUpperCase() : "SIN PARTICULAR";
+                    return `<div class="data-item"><span class="label">${label}:</span> <span class="val">${valor}</span></div>`;
                 }).join('');
             }
 
-            // P3
+            // P3 - Hábitos y Grupo Sanguíneo
             if (data.p3) {
-                document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
-                document.getElementById('r_fuma').innerText = data.p3.fuma || '---';
-                document.getElementById('r_alcohol').innerText = data.p3.alcohol || '---';
-                document.getElementById('r_drogas').innerText = data.p3.drogas || '---';
-                document.getElementById('r_coca').innerText = data.p3.coca || '---';
-                document.getElementById('r_deporte').innerText = data.p3.deporte || '---';
-                document.getElementById('r_obs').innerText = data.p3.observaciones || '---';
-
-                const historia = JSON.parse(data.p3.historia_laboral || '[]');
-                document.getElementById('r_tabla_laboral').innerHTML = historia.map(h => 
-                    `<tr><td>${h.edad_inicio || h.edad || ''}</td><td>${h.empresa}</td><td>${h.ocupacion || h.cargo}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>`).join('');
+                const p3 = data.p3;
+                document.getElementById('grid_p1_filiacion').innerHTML += `<div class="data-item"><span class="label">GRUPO SANGUÍNEO:</span> <span class="val">${p3.grupo_sanguineo || '---'}</span></div>`;
                 
-                const riesgos = JSON.parse(data.p3.riesgos_expuestos || '[]');
+                const habitos = [
+                    ["Fuma", p3.fuma], ["Alcohol", p3.alcohol], ["Drogas", p3.drogas],
+                    ["Pijchar", p3.coca], ["Deportes", p3.deporte], ["Observaciones", p3.observaciones]
+                ];
+                document.getElementById('grid_p3_habitos').innerHTML = habitos.map(h => `<div class="data-item"><span class="label">${h[0]}:</span> <span class="val">${h[1] || '---'}</span></div>`).join('');
+
+                const historia = JSON.parse(p3.historia_laboral || '[]');
+                document.getElementById('r_tabla_laboral').innerHTML = historia.map(h => 
+                    `<tr><td>${h.edad_inicio || ''}</td><td>${h.empresa}</td><td>${h.ocupacion}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>`).join('');
+                
+                const riesgos = JSON.parse(p3.riesgos_expuestos || '[]');
                 document.getElementById('r_riesgos_box').innerHTML = riesgos.map(r => `<span class="riesgo-tag">${r}</span>`).join('');
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Error cargando reporte:", e); }
     }
 </script>
 </body>
