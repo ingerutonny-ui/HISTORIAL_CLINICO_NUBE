@@ -15,7 +15,7 @@
         .titulo-p2 { font-size: 1rem; font-weight: bold; color: #2c3e50; margin: 0; }
         .btn-todo-normal { background: white; color: var(--verde-esmeralda); border: 1.5px solid var(--verde-esmeralda); font-weight: bold; font-size: 0.65rem; padding: 3px 10px; border-radius: 4px; }
 
-        /* Barra de Datos Estilo Captura 2 */
+        /* Barra de Datos */
         .barra-paciente { background: #f8f9fa; padding: 6px 15px; border-radius: 5px; border: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; font-size: 0.75rem; }
         .text-blue { color: #3498db; text-transform: uppercase; }
 
@@ -25,11 +25,9 @@
         /* Inputs */
         label { font-size: 0.6rem; font-weight: bold; color: #7f8c8d; margin-bottom: 1px; display: block; }
         .form-control { text-transform: uppercase; border-radius: 4px; font-size: 0.75rem; padding: 4px 8px; border: 1px solid #dcdde1; height: 30px; }
-        .form-control:focus { border-color: var(--verde-esmeralda); box-shadow: none; }
         
         /* Botón Guardar Verde Esmeralda */
         .btn-guardar { background: var(--verde-esmeralda); color: white; font-weight: bold; width: 100%; padding: 8px; border-radius: 5px; border: none; margin-top: 20px; font-size: 0.85rem; }
-        .btn-guardar:hover { background: #27ae60; }
     </style>
 </head>
 <body>
@@ -43,7 +41,7 @@
     <div class="barra-paciente">
         <div>PACIENTE: <span id="v_nombre" class="text-blue">...</span></div>
         <div>CI: <span id="v_ci" class="text-blue">...</span></div>
-        <div>CÓDIGO: <span id="v_codigo" class="text-blue">...</span></div>
+        <div>CÓDIGO: <span id="v_codigo" class="text-blue" style="font-weight: 800; font-size: 0.85rem;">...</span></div>
     </div>
 
     <form id="formP2">
@@ -77,7 +75,7 @@
         <div class="row g-2">
             <div class="col-md-4"><label>MEDICAMENTOS</label><input type="text" id="medicamentos" class="form-control f-p2"></div>
             <div class="col-md-4"><label>FAMILIARES</label><input type="text" id="familiares" class="form-control f-p2"></div>
-            <div class="col-md-4"><label>OTROS / ESPECÍFICOS</label><input type="text" id="otros" class="form-control f-p2"></div>
+            <div class="col-md-4"><label>OTROS</label><input type="text" id="otros" class="form-control f-p2"></div>
             <div class="col-md-12"><label>OBSERVACIONES</label><textarea id="observaciones" class="form-control f-p2" rows="1"></textarea></div>
         </div>
 
@@ -99,22 +97,21 @@
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
             
-            // MAPEO CORRECTO DE CAMPOS SEGÚN IMAGEN 4e73c1
             document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`;
             document.getElementById('v_ci').innerText = d.paciente.ci;
-            // Se usa codigo_paciente para evitar el S/C
-            document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+            
+            // MAPEO DEFINITIVO DEL CÓDIGO
+            document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || "GENERANDO...";
             
         } catch (e) { 
-            console.error("Error al cargar"); 
-            document.getElementById('v_codigo').innerText = localStorage.getItem('p_codigo') || 'S/C';
+            console.error("Error cargando paciente");
         }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⌛ ENVIANDO...";
+        btn.innerText = "⌛ PROCESANDO...";
         btn.disabled = true;
 
         const data = { paciente_id: p_id };
@@ -125,15 +122,23 @@
         try {
             const res = await fetch(`${API}/p2`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json' 
+                },
                 body: JSON.stringify(data)
             });
 
-            if(res.ok) { location.href = "declaracion_jurada_p3.html"; }
-            else { throw new Error(); }
+            if(res.ok) { 
+                location.href = "declaracion_jurada_p3.html"; 
+            } else { 
+                const errData = await res.json();
+                alert("ERROR SERVIDOR: " + JSON.stringify(errData));
+                btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR";
+            }
         } catch (err) { 
-            alert("ERROR: No se pudo conectar con Render."); 
-            btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3";
+            alert("CONEXIÓN FALLIDA: Revise si el Backend en Render está activo."); 
+            btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR";
         }
     };
 </script>
