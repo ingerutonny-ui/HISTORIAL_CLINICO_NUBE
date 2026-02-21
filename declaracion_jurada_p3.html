@@ -34,17 +34,17 @@
         <div class="section-tag">1. HÁBITOS PERSONALES</div>
         <div class="row g-2 mb-2">
             <div class="col-md-2">¿FUMA?<select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">CANTIDAD<input type="text" id="f_cant" class="form-control" value="0"></div>
-            <div class="col-md-2">¿ALCOHOL?<select id="alc" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">FRECUENCIA<input type="text" id="a_frec" class="form-control" value="SOCIAL"></div>
-            <div class="col-md-2">¿DROGAS?<select id="dro" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">TIPO<input type="text" id="d_tipo" class="form-control" value="S/D"></div>
+            <div class="col-md-2">CANTIDAD<input type="text" id="fuma_cantidad" class="form-control" value="0"></div>
+            <div class="col-md-2">¿ALCOHOL?<select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2">FRECUENCIA<input type="text" id="alcohol_frecuencia" class="form-control" value="SOCIAL"></div>
+            <div class="col-md-2">¿DROGAS?<select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2">TIPO<input type="text" id="drogas_tipo" class="form-control" value="S/D"></div>
         </div>
         <div class="row g-2 mb-3">
-            <div class="col-md-2">¿PIJCHA?<select id="pij" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">¿DEPORTE?<select id="dep" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-4">DETALLE DEPORTE<input type="text" id="dep_det" class="form-control" value="S/D"></div>
-            <div class="col-md-2">G. SANGRE<input type="text" id="gs" class="form-control" value="ORH+"></div>
+            <div class="col-md-2">¿PIJCHA?<select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2">¿DEPORTE?<select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-4">DETALLE DEPORTE<input type="text" id="deporte_detalle" class="form-control" value="S/D"></div>
+            <div class="col-md-2">G. SANGRE<input type="text" id="grupo_sanguineo" class="form-control" value="ORH+"></div>
         </div>
 
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
@@ -76,25 +76,25 @@
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-final">💾 GUARDAR EN POSTGRESQL</button>
+        <button type="submit" id="btnS" class="btn-final">💾 FINALIZAR Y GUARDAR P3</button>
     </form>
 </div>
 
 <script>
-    const API_BASE = "https://historial-clinico-936s.onrender.com";
+    const API = "https://historial-clinico-936s.onrender.com";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
         if(!pid) return;
         try {
-            const res = await fetch(`${API_BASE}/api/paciente-completo/${pid}`);
+            const res = await fetch(`${API}/api/paciente-completo/${pid}`);
             if(res.ok) {
                 const d = await res.json();
                 document.getElementById('v_nom').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
                 document.getElementById('v_ci').innerText = d.paciente.ci;
                 document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
             }
-        } catch(e) { console.error("Error cabecera"); }
+        } catch(e) { console.error("Error cargando paciente"); }
     };
 
     function addRow() {
@@ -123,42 +123,42 @@
             }
         });
 
+        // PAYLOAD SINCRONIZADO AL 100% CON SCHEMAS.PY
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
-            fuma_cantidad: document.getElementById('f_cant').value || "0",
-            alcohol: document.getElementById('alc').value,
-            alcohol_frecuencia: document.getElementById('a_frec').value || "S/D",
-            drogas: document.getElementById('dro').value,
-            drogas_tipo: document.getElementById('d_tipo').value || "S/D",
-            coca: document.getElementById('pij').value,
-            deporte: document.getElementById('dep').value,
-            deporte_detalle: document.getElementById('dep_det').value || "S/D",
-            grupo_sanguineo: document.getElementById('gs').value.toUpperCase(),
+            fuma_cantidad: document.getElementById('fuma_cantidad').value,
+            alcohol: document.getElementById('alcohol').value,
+            alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
+            drogas: document.getElementById('drogas').value,
+            drogas_tipo: document.getElementById('drogas_tipo').value,
+            coca: document.getElementById('coca').value, // Correcto
+            deporte: document.getElementById('deporte').value,
+            deporte_detalle: document.getElementById('deporte_detalle').value,
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "REGISTRO P3"
+            observaciones: "MAPEADO SEGUN SCHEMAS.PY"
         };
 
         try {
-            // ANTICIPACIÓN: Usamos la ruta raíz directa sin prefijo 'api' para saltar el bloqueo de Render
-            const r = await fetch(`${API_BASE}/guardar-p3/`, {
+            const r = await fetch(`${API}/api/guardar-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
             
             if(r.ok) {
-                alert("✅ ÉXITO: P3 GUARDADO EN LA NUBE");
+                alert("✅ P3 GUARDADO: COCA DETECTADA CORRECTAMENTE");
                 window.location.href = "index.html";
             } else {
-                const errData = await r.json();
-                alert("❌ ERROR SERVER: " + JSON.stringify(errData));
-                b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
+                const err = await r.json();
+                alert("❌ ERROR: " + JSON.stringify(err.detail));
+                b.disabled = false; b.innerText = "💾 FINALIZAR Y GUARDAR P3";
             }
         } catch(err) {
-            alert("❌ ERROR DE RED O CONEXIÓN");
-            b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
+            alert("❌ FALLO DE CONEXIÓN A RENDER");
+            b.disabled = false;
         }
     };
 </script>
