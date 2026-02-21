@@ -5,7 +5,6 @@ def get_paciente_by_ci(db: Session, ci: str):
     return db.query(models.Paciente).filter(models.Paciente.ci == ci).first()
 
 def create_paciente(db: Session, data: dict):
-    # Verificar si el CI ya existe para evitar Error 500
     existente = db.query(models.Paciente).filter(models.Paciente.ci == data.get("ci")).first()
     if existente:
         for key, value in data.items():
@@ -86,11 +85,9 @@ def create_doctor(db: Session, data: dict):
     return existente
 
 def delete_paciente(db: Session, paciente_id: int):
-    # Borrado manual de hijos para asegurar limpieza total antes del padre
     db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).delete()
     db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).delete()
     db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).delete()
-    
     db_obj = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
     if db_obj:
         db.delete(db_obj)
