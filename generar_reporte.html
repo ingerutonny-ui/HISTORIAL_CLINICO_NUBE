@@ -7,7 +7,6 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #525659; display: flex; justify-content: center; padding: 20px; margin: 0; }
         .sheet { width: 210mm; min-height: 297mm; background: white; padding: 15mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 20px; box-sizing: border-box; }
-        @media (max-width: 210mm) { body { background: white; padding: 5px; } .sheet { width: 100%; box-shadow: none; padding: 10px; } }
         .header { display: flex; align-items: center; border-bottom: 3px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px; }
         .logo { height: 55px; }
         .header-title { flex: 1; text-align: center; }
@@ -18,12 +17,12 @@
         .label { font-weight: 800; color: #64748b; width: 160px; text-transform: uppercase; font-size: 9px; flex-shrink: 0; }
         .val { color: #1e293b; font-weight: 700; text-transform: uppercase; flex-grow: 1; }
         .table-report { width: 100%; border-collapse: collapse; font-size: 10px; margin-top: 10px; }
-        .table-report th { background: #f8fafc; border: 1px solid #cbd5e1; padding: 6px; text-align: left; text-transform: uppercase; }
+        .table-report th { background: #f8fafc; border: 1px solid #cbd5e1; padding: 6px; text-align: left; }
         .table-report td { border: 1px solid #cbd5e1; padding: 6px; text-transform: uppercase; }
         .riesgos-box { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .riesgo-tag { border: 1.5px solid #22c55e; padding: 3px 8px; border-radius: 5px; font-size: 10px; font-weight: 800; background: #f0fdf4; color: #16a34a; }
         .footer-sign { margin-top: 50px; display: flex; justify-content: space-around; text-align: center; font-size: 11px; }
-        .sign-line { border-top: 1.5px solid #1e293b; width: 220px; margin-top: 40px; padding-top: 5px; font-weight: 800; text-transform: uppercase; }
+        .sign-line { border-top: 1.5px solid #1e293b; width: 220px; margin-top: 40px; padding-top: 5px; font-weight: 800; }
         @media print { body { background: white; padding: 0; } .sheet { box-shadow: none; width: 100%; margin: 0; padding: 10mm; } .no-print { display: none; } }
     </style>
 </head>
@@ -32,7 +31,7 @@
     <div class="header">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
         <div class="header-title"><h1>Historial Clínico Ocupacional</h1><div style="font-size: 10px; font-weight: 700;">ESTADO PLURINACIONAL DE BOLIVIA</div></div>
-        <button class="no-print" onclick="window.print()" style="cursor:pointer; background:#22c55e; color:white; border:none; padding:10px 15px; border-radius:5px; font-weight:800; font-size:12px;">IMPRIMIR PDF 📄</button>
+        <button class="no-print" onclick="window.print()" style="cursor:pointer; background:#22c55e; color:white; border:none; padding:10px 15px; border-radius:5px; font-weight:800; font-size:12px;">IMPRIMIR PDF</button>
     </div>
 
     <div class="section-title">I. Afiliación del Trabajador (P1)</div>
@@ -43,14 +42,10 @@
         <div class="data-item"><span class="label">Sexo:</span> <span class="val" id="r_sexo">---</span></div>
         <div class="data-item"><span class="label">Fecha de Nacimiento:</span> <span class="val" id="r_f_nac">---</span></div>
         <div class="data-item"><span class="label">Lugar de Nacimiento:</span> <span class="val" id="r_l_nac">---</span></div>
-        <div class="data-item"><span class="label">Domicilio (Av/Calle):</span> <span class="val" id="r_dir">---</span></div>
-        <div class="data-item"><span class="label">Número:</span> <span class="val" id="r_num">---</span></div>
-        <div class="data-item"><span class="label">Barrio/Zona:</span> <span class="val" id="r_barrio">---</span></div>
+        <div class="data-item"><span class="label">Domicilio:</span> <span class="val" id="r_dir">---</span></div>
         <div class="data-item"><span class="label">Ciudad:</span> <span class="val" id="r_ciudad">---</span></div>
-        <div class="data-item"><span class="label">País:</span> <span class="val" id="r_pais">---</span></div>
-        <div class="data-item"><span class="label">Teléfono:</span> <span class="val" id="r_tel">---</span></div>
         <div class="data-item"><span class="label">Estado Civil:</span> <span class="val" id="r_e_civil">---</span></div>
-        <div class="data-item"><span class="label">Profesión o Labor:</span> <span class="val" id="r_profesion">---</span></div>
+        <div class="data-item"><span class="label">Profesión:</span> <span class="val" id="r_profesion">---</span></div>
         <div class="data-item"><span class="label">Grupo Sanguíneo:</span> <span class="val" id="r_gs">---</span></div>
         <div class="data-item"><span class="label">Código Interno:</span> <span class="val" id="r_cod">---</span></div>
     </div>
@@ -63,7 +58,7 @@
         <div class="data-item"><span class="label">Fuma:</span> <span class="val" id="r_fuma">---</span></div>
         <div class="data-item"><span class="label">Alcohol:</span> <span class="val" id="r_alcohol">---</span></div>
         <div class="data-item"><span class="label">Drogas:</span> <span class="val" id="r_drogas">---</span></div>
-        <div class="data-item"><span class="label">Pijchar (Coca):</span> <span class="val" id="r_coca">---</span></div>
+        <div class="data-item"><span class="label">Pijchar:</span> <span class="val" id="r_coca">---</span></div>
         <div class="data-item"><span class="label">Deportes:</span> <span class="val" id="r_deporte">---</span></div>
         <div class="data-item"><span class="label">Observaciones:</span> <span class="val" id="r_obs">---</span></div>
     </div>
@@ -81,14 +76,14 @@
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
     
-    // Mapeo EXACTO basado en tus formularios para capturar todo, incluido SANGRE
+    // MAPEO QUIRÚRGICO DE LA SECCIÓN II BASADO EN TUS CAPTURAS
     const mapping_p2 = {
-        "vista": "VISTA / OJOS",
-        "auditivo": "AUDITIVO / OÍDO",
+        "vista_ojos": "VISTA / OJOS",
+        "auditivo_oido": "AUDITIVO / OÍDO",
         "respiratorio": "RESPIRATORIO",
         "cardiovascular": "CARDIOVASCULAR",
         "digestivos": "DIGESTIVOS",
-        "sangre": "SANGRE / LINFA", 
+        "sangre_linfa": "SANGRE / LINFA", 
         "genitourinario": "GENITOURINARIO",
         "nervioso": "SISTEMA NERVIOSO",
         "endocrino": "ENDOCRINO",
@@ -99,11 +94,11 @@
         "alergias": "ALERGIAS",
         "cirugias": "CIRUGÍAS",
         "infecciones": "INFECCIONES",
-        "accidentes_personales": "ACCIDENTES PERSONALES",
-        "accidentes_trabajo": "ACCIDENTES DE TRABAJO",
+        "acc_personales": "ACCIDENTES PERSONALES",
+        "acc_trabajo": "ACCIDENTES DE TRABAJO",
         "medicamentos": "MEDICAMENTOS",
         "familiares": "ANTECEDENTES FAMILIARES",
-        "otros": "OTROS / ESPECÍFICOS",
+        "otros_especificos": "OTROS / ESPECÍFICOS",
         "observaciones": "OBSERVACIONES GENERALES"
     };
 
@@ -114,58 +109,49 @@
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
 
-            // Sección P1
+            // P1
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('r_ci').innerText = data.paciente.ci;
             document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
             
-            const p1 = data.filiacion;
-            if (p1) {
-                document.getElementById('r_edad').innerText = p1.edad || '---';
-                document.getElementById('r_sexo').innerText = p1.sexo || '---';
-                document.getElementById('r_f_nac').innerText = p1.fecha_nacimiento || '---';
-                document.getElementById('r_l_nac').innerText = p1.lugar_nacimiento || '---';
-                document.getElementById('r_dir').innerText = p1.domicilio || '---';
-                document.getElementById('r_num').innerText = p1.n_casa || '---';
-                document.getElementById('r_barrio').innerText = p1.zona_barrio || '---';
-                document.getElementById('r_ciudad').innerText = p1.ciudad || '---';
-                document.getElementById('r_pais').innerText = p1.pais || '---';
-                document.getElementById('r_tel').innerText = p1.telefono || '---';
-                document.getElementById('r_e_civil').innerText = p1.estado_civil || '---';
-                document.getElementById('r_profesion').innerText = p1.profesion_oficio || '---';
+            if (data.filiacion) {
+                document.getElementById('r_edad').innerText = data.filiacion.edad || '---';
+                document.getElementById('r_sexo').innerText = data.filiacion.sexo || '---';
+                document.getElementById('r_f_nac').innerText = data.filiacion.fecha_nacimiento || '---';
+                document.getElementById('r_l_nac').innerText = data.filiacion.lugar_nacimiento || '---';
+                document.getElementById('r_dir').innerText = data.filiacion.domicilio || '---';
+                document.getElementById('r_ciudad').innerText = data.filiacion.ciudad || '---';
+                document.getElementById('r_e_civil').innerText = data.filiacion.estado_civil || '---';
+                document.getElementById('r_profesion').innerText = data.filiacion.profesion_oficio || '---';
             }
 
-            // Sección P2 - Mapeo Dinámico
+            // P2 - CARGA DE LA SEGUNDA SECCIÓN
             if (data.p2) {
                 const gridP2 = document.getElementById('grid_p2');
                 gridP2.innerHTML = Object.keys(mapping_p2).map(key => {
-                    const valor = (data.p2[key] && data.p2[key].trim() !== "") ? data.p2[key] : "SIN PARTICULAR";
-                    return `
-                        <div class="data-item">
-                            <span class="label">${mapping_p2[key]}:</span> 
-                            <span class="val">${valor}</span>
-                        </div>`;
+                    const val = data.p2[key] ? data.p2[key].toUpperCase() : "SIN PARTICULAR";
+                    return `<div class="data-item"><span class="label">${mapping_p2[key]}:</span> <span class="val">${val}</span></div>`;
                 }).join('');
             }
 
-            // Sección P3
+            // P3
             if (data.p3) {
                 document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
-                document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad || '0'})`;
-                document.getElementById('r_alcohol').innerText = `${data.p3.alcohol} (${data.p3.alcohol_frecuencia || 'N/A'})`;
-                document.getElementById('r_drogas').innerText = `${data.p3.drogas} (${data.p3.drogas_tipo || 'N/A'})`;
+                document.getElementById('r_fuma').innerText = data.p3.fuma || '---';
+                document.getElementById('r_alcohol').innerText = data.p3.alcohol || '---';
+                document.getElementById('r_drogas').innerText = data.p3.drogas || '---';
                 document.getElementById('r_coca').innerText = data.p3.coca || '---';
-                document.getElementById('r_deporte').innerText = `${data.p3.deporte} (${data.p3.deporte_detalle || 'N/A'})`;
+                document.getElementById('r_deporte').innerText = data.p3.deporte || '---';
                 document.getElementById('r_obs').innerText = data.p3.observaciones || '---';
 
                 const historia = JSON.parse(data.p3.historia_laboral || '[]');
-                document.getElementById('r_tabla_laboral').innerHTML = historia.length ? historia.map(h => `
-                    <tr><td>${h.edad || h.edad_inicio}</td><td>${h.empresa}</td><td>${h.cargo || h.ocupacion}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>`).join('') : '<tr><td colspan="6">SIN DATOS</td></tr>';
+                document.getElementById('r_tabla_laboral').innerHTML = historia.map(h => 
+                    `<tr><td>${h.edad_inicio || h.edad || ''}</td><td>${h.empresa}</td><td>${h.ocupacion || h.cargo}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>`).join('');
                 
                 const riesgos = JSON.parse(data.p3.riesgos_expuestos || '[]');
                 document.getElementById('r_riesgos_box').innerHTML = riesgos.map(r => `<span class="riesgo-tag">${r}</span>`).join('');
             }
-        } catch (e) { console.error("Error en reporte:", e); }
+        } catch (e) { console.error(e); }
     }
 </script>
 </body>
