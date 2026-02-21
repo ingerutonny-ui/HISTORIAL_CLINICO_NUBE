@@ -78,6 +78,7 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
+    // Priorizamos el ID de edición para asegurar que se guarde en el paciente correcto
     const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
@@ -102,9 +103,6 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnAccion');
-        const nF = document.getElementById('v_nombre').innerText;
-        const cF = document.getElementById('v_codigo').innerText;
-
         btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
 
@@ -137,24 +135,34 @@
             riesgos_expuestos: JSON.stringify(riesgos_exp)
         };
 
-        try {
-            // RUTA CORRECTA PARA RENDER: guardar-p3
-            const response = await fetch(`${API}/api/guardar-p3`, {
+        // Función para intentar el guardado en la ruta correcta
+        async function intentarGuardar(ruta) {
+            return await fetch(`${API}${ruta}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
+        }
+
+        try {
+            // Intento 1: La ruta estándar con guion
+            let response = await intentarGuardar('/api/guardar-p3');
+            
+            // Intento 2: Si falla con 404, intentamos la ruta corta
+            if (response.status === 404) {
+                response = await intentarGuardar('/api/p3');
+            }
 
             if(response.ok) {
-                alert("PACIENTE REGISTRADO: " + nF + "\nCÓDIGO: " + cF);
-                localStorage.clear();
+                alert("REGISTRO GUARDADO CORRECTAMENTE");
+                localStorage.removeItem('p_id_edicion'); // Limpiamos solo lo necesario
                 window.location.href = "index.html";
             } else {
-                alert("Error: " + response.status + " - El servidor no aceptó la ruta.");
+                alert("Error " + response.status + ": El servidor rechazó la solicitud.");
                 btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
             }
         } catch (err) {
-            alert("Error de conexión con el servidor.");
+            alert("Error de red: Revisa tu conexión.");
             btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
     };
