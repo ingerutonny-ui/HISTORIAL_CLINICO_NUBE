@@ -4,33 +4,34 @@
     <meta charset="UTF-8">
     <title>REPORTE MÉDICO OHS</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #ffffff; margin: 0; padding: 0; }
-        .sheet { width: 210mm; min-height: 297mm; background: white; padding: 10mm; margin: auto; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: white; margin: 0; padding: 0; }
+        .sheet { width: 210mm; min-height: 297mm; padding: 10mm; margin: auto; box-sizing: border-box; }
         
-        .header { display: flex; align-items: center; border-bottom: 1px solid #2ecc71; padding-bottom: 8px; margin-bottom: 10px; }
+        .header { display: flex; align-items: center; border-bottom: 1px solid #2ecc71; padding-bottom: 10px; margin-bottom: 10px; }
         .logo { height: 45px; }
         .header-info { text-align: center; flex: 1; }
-        .header-info h1 { margin: 0; font-size: 15px; text-transform: uppercase; color: #1a3a3a; }
+        .header-info h1 { margin: 0; font-size: 16px; color: #1a3a3a; text-transform: uppercase; }
         .header-info p { margin: 1px 0; font-size: 8px; font-weight: bold; }
 
         .section-title { 
             border-bottom: 1px solid #2ecc71; 
             font-size: 10px; 
             font-weight: bold; 
-            margin: 12px 0 5px 0; 
+            margin: 15px 0 5px 0; 
             padding-bottom: 2px;
             text-transform: uppercase;
+            color: #1a3a3a;
         }
 
-        table { width: 100%; border-collapse: collapse; margin-bottom: 4px; }
-        th, td { border: 1px solid #eee; padding: 4px 6px; text-align: left; font-size: 8.5px; }
-        th { background: #fcfcfc; width: 22%; font-weight: bold; text-transform: uppercase; color: #444; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+        th, td { border: 1px solid #eee; padding: 4px 8px; text-align: left; font-size: 9px; }
+        th { background: #fcfcfc; width: 25%; font-weight: bold; color: #444; }
         td { font-weight: 600; text-transform: uppercase; color: #000; }
 
-        .tag { border: 1px solid #2ecc71; color: #27ae60; padding: 1px 4px; border-radius: 2px; font-size: 7.5px; font-weight: bold; margin-right: 3px; display: inline-block; }
+        .tag { border: 1px solid #2ecc71; color: #27ae60; padding: 1px 4px; border-radius: 2px; font-size: 8px; font-weight: bold; margin-right: 3px; display: inline-block; }
 
-        .signature-container { margin-top: 50px; display: flex; justify-content: space-around; }
-        .sig-box { width: 35%; text-align: center; border-top: 1px solid #000; padding-top: 4px; font-size: 9px; font-weight: bold; }
+        .signature-container { margin-top: 60px; display: flex; justify-content: space-around; }
+        .sig-box { width: 35%; text-align: center; border-top: 1px solid #000; padding-top: 5px; font-size: 9px; font-weight: bold; }
 
         @media print { .no-print { display: none; } .sheet { padding: 5mm; } }
     </style>
@@ -43,13 +44,13 @@
                 <h1>HISTORIAL CLÍNICO OCUPACIONAL</h1>
                 <p>ESTADO PLURINACIONAL DE BOLIVIA</p>
             </div>
-            <button class="no-print" onclick="window.print()">IMPRIMIR</button>
+            <button class="no-print" onclick="window.print()" style="cursor:pointer; background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:3px;">IMPRIMIR</button>
         </div>
 
         <div class="section-title">I. AFILIACIÓN DEL TRABAJADOR (P1)</div>
         <table>
             <tr><th>APELLIDOS Y NOMBRES:</th><td id="r_nombre" colspan="3">---</td></tr>
-            <tr><th>CÉDULA IDENTIDAD:</th><td id="r_ci">---</td><th>CÓDIGO INTERNO:</th><td id="p_codigo" style="color:#27ae60;">---</td></tr>
+            <tr><th>CÉDULA IDENTIDAD:</th><td id="r_ci">---</td><th>CÓDIGO INTERNO:</th><td id="r_cod" style="color:#27ae60;">---</td></tr>
             <tr><th>EDAD:</th><td id="r_edad">---</td><th>SEXO:</th><td id="r_sexo">---</td></tr>
             <tr><th>FECHA NACIMIENTO:</th><td id="r_fnac">---</td><th>PROFESIÓN / OFICIO:</th><td id="r_prof">---</td></tr>
         </table>
@@ -67,10 +68,10 @@
 
         <div class="section-title">IV. HISTORIA LABORAL (P3)</div>
         <table style="text-align:center;">
-            <thead><tr style="background:#f5f5f5;"><th>Edad Inicio</th><th>Empresa</th><th>Ocupación</th><th>Tiempo</th><th>Riesgos</th><th>EPP</th></tr></thead>
+            <thead><tr style="background:#f9f9f9;"><th>Edad Inicio</th><th>Empresa</th><th>Ocupación</th><th>Tiempo</th><th>Riesgos</th><th>EPP</th></tr></thead>
             <tbody id="r_historia"></tbody>
         </table>
-        <div id="r_tags" style="margin-top:5px;"></div>
+        <div id="r_tags" style="margin-top:8px;"></div>
 
         <div class="signature-container">
             <div class="sig-box">FIRMA DEL TRABAJADOR</div>
@@ -100,13 +101,13 @@
             if (!p_id) return;
 
             try {
-                const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
-                const d = await res.json();
+                const response = await fetch(`${API}/api/paciente-completo/${p_id}`);
+                const d = await response.json();
 
-                // MAPEO DIRECTO AL ID DE TU CAPTURA
+                // P1 - CÓDIGO INTERNO mapeado correctamente desde el objeto paciente
                 document.getElementById('r_nombre').innerText = `${d.paciente.apellido} ${d.paciente.nombre}`;
                 document.getElementById('r_ci').innerText = d.paciente.ci;
-                document.getElementById('p_codigo').innerText = d.paciente.codigo || 'S/C'; 
+                document.getElementById('r_cod').innerText = d.paciente.codigo || 'S/C'; 
 
                 if(d.filiacion) {
                     document.getElementById('r_edad').innerText = d.filiacion.edad;
@@ -129,7 +130,7 @@
                     document.getElementById('r_drogas').innerText = d.p3.drogas || 'NO';
                     document.getElementById('r_coca').innerText = d.p3.coca || 'NO';
                     document.getElementById('r_deporte').innerText = d.p3.deporte || 'NO';
-                    document.getElementById('r_obs_p3').innerText = d.p3.observaciones || '---';
+                    document.getElementById('r_obs_p3').innerText = d.p3.observaciones || 'REGISTRO COMPLETADO';
 
                     const h = JSON.parse(d.p3.historia_laboral || '[]');
                     document.getElementById('r_historia').innerHTML = h.map(i => 
