@@ -25,9 +25,9 @@
     </div>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">RUBEN ALMENDRAS</span></div>
-        <div>CI: <span id="v_ci" class="text-blue">568765456678</span></div>
-        <div>CÓDIGO: <span id="v_codigo" class="text-success">OHS-2026</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
+        <div>CI: <span id="v_ci" class="text-blue">---</span></div>
+        <div>CÓDIGO: <span id="v_codigo" class="text-success" style="font-family: monospace;">---</span></div>
     </div>
 
     <form id="formP3">
@@ -38,7 +38,7 @@
             <div class="col-md-2"><label class="fw-bold small">¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold small">PIJCHAR?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold small">¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label class="fw-bold small">G. SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" value="ORH+"></div>
+            <div class="col-md-2"><label class="fw-bold small">G. SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+"></div>
         </div>
 
         <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-sm btn-dark float-end" onclick="addRow()">+ AGREGAR FILA</button></div>
@@ -76,22 +76,30 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    let p_id = localStorage.getItem('paciente_id') || "1"; // Si no hay ID, por defecto usa el 1
+    let p_id = localStorage.getItem('paciente_id');
 
-    // Carga de datos ultra-segura: No arroja errores, solo intenta sincronizar
     async function cargarPaciente() {
+        if (!p_id) {
+            document.getElementById('v_nombre').innerText = "ERROR: SELECCIONE PACIENTE";
+            return;
+        }
+
         try {
             const res = await fetch(`${API}/api/pacientes`);
             const data = await res.json();
-            const p = data.find(x => x.id == p_id || x.nombre.includes("RUBEN"));
+            // Buscamos estrictamente por el ID guardado en el navegador
+            const p = data.find(x => x.id == p_id);
+            
             if (p) {
-                p_id = p.id;
                 document.getElementById('v_nombre').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
                 document.getElementById('v_ci').innerText = p.ci || '---';
                 document.getElementById('v_codigo').innerText = (p.codigo && p.codigo !== "undefined") ? p.codigo : "OHS-REG";
+            } else {
+                document.getElementById('v_nombre').innerText = "PACIENTE NO REGISTRADO";
             }
         } catch (e) {
-            console.log("Modo offline o servidor lento, usando datos locales predeterminados.");
+            document.getElementById('v_nombre').innerText = "CONECTANDO CON SERVIDOR...";
+            setTimeout(cargarPaciente, 2000); 
         }
     }
 
@@ -148,7 +156,7 @@
                 window.location.href = "index.html";
             }
         } catch (err) {
-            alert("❌ ERROR AL GUARDAR EN NUBE.");
+            alert("❌ ERROR AL GUARDAR.");
             btn.disabled = false;
         }
     };
