@@ -1,11 +1,10 @@
-from fastapi import FastAPI, Depends, HTTPException, Request
+from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from . import models, database, crud
+from . import models, database
 
 app = FastAPI()
 
-# Configuración CORS robusta
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,39 +21,46 @@ def get_db():
         db.close()
 
 @app.get("/")
-def health_check():
-    return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
+def read_root():
+    return {"proyecto": "HISTORIAL_CLINICO_NUBE", "estado": "online"}
 
-@app.get("/pacientes/")
-def list_pacientes(db: Session = Depends(get_db)):
-    return db.query(models.Paciente).all()
-
-@app.post("/pacientes/")
-async def save_paciente(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    return crud.create_paciente(db, data)
-
-@app.post("/filiacion/")
-async def save_filiacion(request: Request, db: Session = Depends(get_db)):
-    data = await request.json()
-    return crud.upsert_filiacion(db, data)
-
-@app.get("/api/paciente-completo/{paciente_id}")
-def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
-    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
-    if not paciente:
-        raise HTTPException(status_code=404, detail="No encontrado")
-    
-    # Buscamos en declaraciones_p1 (según tu models.py)
-    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
-    
+@app.get("/api/paciente-completo/{id}")
+def get_paciente(id: int, db: Session = Depends(get_db)):
+    p = db.query(models.Paciente).filter(models.Paciente.id == id).first()
+    if not p:
+        return {"error": "Paciente no encontrado"}
     return {
-        "paciente": paciente,
-        "filiacion": filiacion if filiacion else {}
+        "paciente": {
+            "nombre": p.nombre.upper(),
+            "apellido": p.apellido.upper(),
+            "ci": p.ci,
+            "codigo_paciente": p.codigo_paciente.upper()
+        },
+        "datos": {k: v for k, v in p.__dict__.items() if not k.startswith('_')}
     }
 
-@app.delete("/pacientes/{paciente_id}")
-def delete_paciente_route(paciente_id: int, db: Session = Depends(get_db)):
-    if crud.delete_paciente(db, paciente_id):
-        return {"status": "success"}
-    raise HTTPException(status_code=404, detail="Error al eliminar")
+@app.post("/p2/")
+async def guardar_p2(r: Request, db: Session = Depends(get_db)):
+    data = await r.json()
+    p_id = int(data.get("paciente_id"))
+    p = db.query(models.Paciente).filter(models.Paciente.id == p_id).first()
+    if p:
+        for k, v in data.items():
+            if hasattr(p, k) and k != "paciente_id":
+                setattr(p, k, str(v).upper())
+        db.commit()
+        return {"status": "ok"}
+    return {"error": "no encontrado"}, 404
+
+@app.post("/p3/")
+async def guardar_p3(r: Request, db: Session = Depends(get_db)):
+    data = await r.json()
+    p_id = int(data.get("paciente_id"))
+    p = db.query(models.Paciente).filter(models.Paciente.id == p_id).first()
+    if p:
+        for k, v in data.items():
+            if hasattr(p, k) and k != "paciente_id":
+                setattr(p, k, str(v).upper())
+        db.commit()
+        return {"status": "ok"}
+    return {"error": "no encontrado"}, 404
