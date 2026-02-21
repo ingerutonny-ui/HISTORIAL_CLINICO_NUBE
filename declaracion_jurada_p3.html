@@ -79,54 +79,53 @@
 </div>
 
 <script>
-    // USAMOS LA URL EXACTA DEL BACKEND
-    const API_URL = "https://historial-clinico-936s.onrender.com/api";
-    const pacienteId = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+    // USANDO LA ESTRUCTURA EXACTA QUE FUNCIONA EN P1 Y P2
+    async function initP3() {
+        const id = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+        if (!id) return;
 
-    window.onload = async () => {
-        if (!pacienteId) { alert("ERROR: ID NO ENCONTRADO"); return; }
-        
         try {
-            // LÍNEA 99 CORREGIDA: RUTA COMPATIBLE CON P1 Y P2
-            const response = await fetch(`${API_URL}/pacientes/${pacienteId}`);
-            
-            if (response.ok) {
-                const data = await response.json();
+            // LÍNEA 91 REPARADA: URL MANUAL PARA ASEGURAR RUTA API
+            const r = await fetch("https://historial-clinico-936s.onrender.com/api/pacientes/" + id);
+            if (r.ok) {
+                const d = await r.json();
                 // MAPEADO DIRECTO DESDE EL OBJETO RAIZ
-                document.getElementById('v_nom').innerText = `${data.nombre} ${data.apellido}`.toUpperCase();
-                document.getElementById('v_ci').innerText = data.ci || "---";
-                document.getElementById('v_cod').innerText = data.codigo_paciente || "---";
+                document.getElementById('v_nom').innerText = (d.nombre + " " + d.apellido).toUpperCase();
+                document.getElementById('v_ci').innerText = d.ci || "---";
+                document.getElementById('v_cod').innerText = d.codigo_paciente || "---";
             } else {
-                document.getElementById('v_nom').innerText = "ERROR EN SERVIDOR (404)";
+                document.getElementById('v_nom').innerText = "ERROR 404: NO ENCONTRADO";
             }
-        } catch (err) {
-            document.getElementById('v_nom').innerText = "FALLO DE CONEXIÓN";
+        } catch (e) {
+            document.getElementById('v_nom').innerText = "FALLO DE RED";
         }
-    };
+    }
+
+    window.onload = initP3;
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ PROCESANDO..."; btn.disabled = true;
+        const b = document.getElementById('btnS');
+        const id = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+        
+        b.innerText = "⏳ SINCRONIZANDO..."; b.disabled = true;
 
-        const historia = [];
+        const hist = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
-            const emp = tr.querySelector('.r-em').value;
-            if (emp) {
-                historia.push({
+            const em = tr.querySelector('.r-em').value;
+            if (em) {
+                hist.push({
                     edad: tr.querySelector('.r-ed').value || "0",
-                    empresa: emp.toUpperCase(),
-                    cargo: tr.querySelector('.r-ca').value.toUpperCase(),
-                    tiempo: tr.querySelector('.r-ti').value || "0",
-                    riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
+                    empresa: em.toUpperCase(), cargo: tr.querySelector('.r-ca').value.toUpperCase(),
+                    tiempo: tr.querySelector('.r-ti').value || "0", riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
                     epp: tr.querySelector('.r-ep').value
                 });
             }
         });
 
-        // ESTRUCTURA DE DATOS PARA SCHEMAS.PY
-        const dataOut = {
-            paciente_id: parseInt(pacienteId),
+        // MAPEADO COMPLETO SEGÚN SCHEMAS.PY
+        const payload = {
+            paciente_id: parseInt(id),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value,
             alcohol: document.getElementById('alcohol').value,
@@ -137,29 +136,29 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(historia),
+            historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_REPARADO_FINAL"
+            observaciones: "P3_PLAN_MAESTRO_OK"
         };
 
         try {
-            const res = await fetch(`${API_URL}/save-p3`, {
+            const res = await fetch("https://historial-clinico-936s.onrender.com/api/save-p3", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataOut)
+                body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("✅ P3 GUARDADO CON ÉXITO");
+                alert("✅ P3 SINCRONIZADO");
                 window.location.href = "index.html";
             } else {
-                const error = await res.json();
-                alert("❌ ERROR: " + JSON.stringify(error.detail));
-                btn.disabled = false; btn.innerText = "💾 GUARDAR EN POSTGRESQL";
+                const err = await res.json();
+                alert("❌ ERROR: " + JSON.stringify(err.detail));
+                b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
-        } catch (e) {
-            alert("❌ FALLO CRÍTICO DE RED");
-            btn.disabled = false;
+        } catch (err) {
+            alert("❌ FALLO DE COMUNICACIÓN");
+            b.disabled = false;
         }
     };
 </script>
