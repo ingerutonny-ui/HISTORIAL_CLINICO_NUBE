@@ -10,9 +10,10 @@ except ImportError:
     import models, schemas, crud
     from database import SessionLocal, engine
 
-# Inicialización de PostgreSQL [cite: 2026-02-03]
+# Inicialización de la base de datos [cite: 2026-02-03]
 models.Base.metadata.create_all(bind=engine)
 
+# redirect_slashes=False evita que FastAPI intente redirigir y cause el 404 en Render
 app = FastAPI(redirect_slashes=False)
 
 app.add_middleware(
@@ -30,7 +31,7 @@ def get_db():
     finally:
         db.close()
 
-# RUTAS DE PACIENTE (Garantiza que CI y Nombre aparezcan)
+# RUTAS DE PACIENTE (Carga datos de cabecera)
 @app.get("/api/paciente-completo/{p_id}")
 @app.get("/paciente-completo/{p_id}")
 async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
@@ -39,18 +40,18 @@ async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"paciente": paciente}
 
-# RUTA P3: SOPORTE TOTAL PARA EVITAR 404/500
+# RUTA P3: SOPORTE MULTI-RUTA PARA ELIMINAR EL "NOT FOUND"
 @app.post("/api/guardar-p3")
 @app.post("/api/guardar-p3/")
 @app.post("/guardar-p3")
 @app.post("/guardar-p3/")
 async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # Mapeo obligatorio de todos los campos P1, P2, P3 [cite: 2026-02-11]
+        # Mantenemos todos los campos P1, P2 y P3 para el manual [cite: 2026-02-11]
         resultado = crud.upsert_p3(db, data.model_dump())
         return {"status": "success", "id": resultado.id}
     except Exception as e:
-        print(f"Error interno: {str(e)}")
+        print(f"Error en servidor: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/health")
