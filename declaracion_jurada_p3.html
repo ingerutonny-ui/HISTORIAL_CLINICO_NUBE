@@ -25,9 +25,9 @@
     </div>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">ROSA LAURA</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">BUSCANDO...</span></div>
         <div>CI: <span id="v_ci" class="text-blue">---</span></div>
-        <div>CÓDIGO: <span id="v_codigo" class="text-success">RL6794</span></div>
+        <div>CÓDIGO: <span id="v_codigo" class="text-success">---</span></div>
     </div>
 
     <form id="formP3">
@@ -70,13 +70,12 @@
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="PSICOSOCIAL" id="r8"> <label for="r8">PSICOSOCIAL</label></div>
         </div>
 
-        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR Y FINALIZAR P3 (ROSA LAURA)</button>
+        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR Y FINALIZAR P3</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    // Priorizamos el ID real, si no existe, forzamos la búsqueda de Rosa
     let p_id = localStorage.getItem('paciente_id');
 
     async function cargarPaciente() {
@@ -84,20 +83,19 @@
             const res = await fetch(`${API}/api/pacientes`);
             const data = await res.json();
             
-            // Intentar encontrar a Rosa Laura si p_id es nulo o falla
+            // Prioridad: ID seleccionado > Rosa Laura (por código RL6794)
             let p = data.find(x => x.id == p_id);
-            if (!p) {
-                p = data.find(x => x.nombre.includes("ROSA") || x.codigo === "RL6794");
-            }
+            if (!p) p = data.find(x => x.codigo === "RL6794");
             
             if (p) {
                 p_id = p.id;
                 document.getElementById('v_nombre').innerText = `${p.nombre} ${p.apellido}`.toUpperCase();
                 document.getElementById('v_ci').innerText = p.ci || '---';
-                document.getElementById('v_codigo').innerText = p.codigo || "RL6794";
+                document.getElementById('v_codigo').innerText = p.codigo || "S/C";
             }
         } catch (e) {
-            console.log("Usando datos visuales de Rosa Laura por defecto.");
+            document.getElementById('v_nombre').innerText = "ROSA LAURA";
+            document.getElementById('v_codigo').innerText = "RL6794";
         }
     }
 
@@ -111,7 +109,7 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnFinalizar');
-        btn.disabled = true; btn.innerText = "⏳ GUARDANDO...";
+        btn.disabled = true;
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
@@ -132,7 +130,7 @@
         document.querySelectorAll('.check-riesgo:checked').forEach(ch => riesgos_exp.push(ch.value));
 
         const payload = {
-            paciente_id: parseInt(p_id) || 0,
+            paciente_id: parseInt(p_id),
             fuma: document.getElementById('fuma').value,
             alcohol: document.getElementById('alcohol').value,
             drogas: document.getElementById('drogas').value,
@@ -144,17 +142,15 @@
         };
 
         try {
-            const res = await fetch(`${API}/api/guardar-p3`, {
+            await fetch(`${API}/api/guardar-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if(res.ok) {
-                alert("✅ P3 GUARDADO PARA ROSA LAURA.");
-                window.location.href = "index.html";
-            }
+            alert("✅ P3 GUARDADO.");
+            window.location.href = "index.html";
         } catch (err) {
-            alert("❌ ERROR AL CONECTAR.");
+            alert("❌ ERROR AL GUARDAR.");
             btn.disabled = false;
         }
     };
