@@ -1,12 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Optional
-import os
+from sqlalchemy.orm import Session
+from . import schemas, crud, database
 
 app = FastAPI()
 
-# CONFIGURACIÓN CORS: Vital para que GitHub Pages hable con Render
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,41 +12,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Modelo de datos P3 ajustado a los IDs del Frontend
-class P3Data(BaseModel):
-    paciente_id: int
-    fuma: str
-    alcohol: str
-    drogas: str
-    coca: str  # Mapeado desde el campo 'pijchar' del frontend
-    deporte: str
-    grupo_sanguineo: str
-    historia_laboral: str  # JSON string
-    riesgos_expuestos: str # JSON string
-    observaciones: Optional[str] = "REGISTRO COMPLETADO"
-
-# Base de datos temporal (Esto debe conectar a tu PostgreSQL luego)
-db_p3 = []
+# Dependencia para la base de datos
+def get_db():
+    db = database.SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.post("/api/guardar-p3")
-async def guardar_p3(data: P3Data):
+async def guardar_p3(data: schemas.P3Data, db: Session = Depends(get_db)):
     try:
-        # En el futuro, aquí va: insert_en_postgres(data.dict())
-        db_p3.append(data.dict())
-        print(f"Datos recibidos para paciente {data.paciente_id}")
-        return {"status": "success", "message": "P3 Sincronizado correctamente"}
+        # Llamamos a la función de guardado real en tu archivo crud.py
+        exito = crud.crear_p3(db, data)
+        if exito:
+            return {"status": "success", "message": "P3 Guardado en PostgreSQL"}
+        raise HTTPException(status_code=400, detail="No se pudo guardar en la DB")
     except Exception as e:
-        print(f"Error en backend: {str(e)}")
+        print(f"Error Crítico: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/paciente-completo/{p_id}")
-async def get_paciente_completo(p_id: int):
-    # Simulación de retorno de datos para la barra superior
-    return {
-        "paciente": {
-            "nombre": "PACIENTE", 
-            "apellido": "IDENTIFICADO", 
-            "ci": "1234567",
-            "codigo": f"PX-{p_id}"
-        }
-    }
+async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
+    paciente = crud.obtener_paciente_por_id(db, p_id)
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return {"paciente": paciente}
