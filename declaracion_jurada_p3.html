@@ -11,8 +11,8 @@
         .container { max-width: 950px; margin: 10px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .barra-paciente { background: #e8f8f5; padding: 15px; border-radius: 8px; border-left: 6px solid var(--ohs-primary); display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 20px; color: #2c3e50; }
         .section-tag { background: #f8f9fa; padding: 8px 12px; font-weight: bold; margin-top: 20px; border-bottom: 2px solid var(--ohs-primary); color: #1b5e20; text-transform: uppercase; }
-        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 35px; }
-        .btn-final { background: var(--ohs-dark); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 25px; cursor: pointer; }
+        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 35px; border-radius: 5px; }
+        .btn-final { background: var(--ohs-dark); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 25px; font-size: 1rem; transition: 0.3s; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -49,7 +49,7 @@
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
         <div class="p-2">
             <table class="table table-sm table-bordered">
-                <thead class="table-light"><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
+                <thead class="table-light"><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tBody">
                     <tr>
                         <td><input type="number" class="form-control r-ed"></td>
@@ -79,21 +79,25 @@
 </div>
 
 <script>
-    // URL DIRECTA PARA EVITAR EL 404 DE LAS CAPTURAS
-    const API = "https://historial-clinico-936s.onrender.com";
+    const API = "https://historial-clinico-936s.onrender.com/api";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if(!pid) return;
+        if(!pid) { alert("ERROR: NO SE DETECTÓ ID DE PACIENTE"); return; }
         try {
-            const res = await fetch(`${API}/get-paciente/${pid}`);
+            // USAMOS LA RUTA QUE FUNCIONA EN P1 Y P2
+            const res = await fetch(`${API}/pacientes/${pid}`);
             if(res.ok) {
                 const d = await res.json();
-                document.getElementById('v_nom').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
-                document.getElementById('v_ci').innerText = d.paciente.ci;
-                document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
+                document.getElementById('v_nom').innerText = `${d.nombre} ${d.apellido}`.toUpperCase();
+                document.getElementById('v_ci').innerText = d.ci;
+                document.getElementById('v_cod').innerText = d.codigo_paciente;
+            } else {
+                document.getElementById('v_nom').innerText = "ERROR AL CARGAR";
             }
-        } catch(e) { console.error("Fallo carga paciente"); }
+        } catch(e) {
+            console.error("Fallo de conexión API");
+        }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
@@ -128,7 +132,7 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "MAPEADO_SIN_API_URL"
+            observaciones: "P3_SYNC_FIXED"
         };
 
         try {
@@ -139,15 +143,15 @@
             });
             
             if(r.ok) {
-                alert("✅ GUARDADO EXITOSO");
+                alert("✅ DATOS GUARDADOS CORRECTAMENTE");
                 window.location.href = "index.html";
             } else {
                 const err = await r.json();
-                alert("❌ ERROR SERVER: " + JSON.stringify(err.detail));
+                alert("❌ ERROR EN SERVIDOR: " + JSON.stringify(err.detail));
                 b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch(err) {
-            alert("❌ FALLO DE CONEXIÓN CON RENDER");
+            alert("❌ FALLO CRÍTICO DE CONEXIÓN");
             b.disabled = false;
         }
     };
