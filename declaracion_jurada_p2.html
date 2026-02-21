@@ -6,14 +6,13 @@
     <title>P2 - ANTECEDENTES | OHS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --verde-ohs: #2ecc71; }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.8rem; }
-        .container { max-width: 850px; margin-top: 15px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .barra-paciente { background: #f8f9fa; padding: 10px; border-radius: 5px; border: 1px solid #dee2e6; margin-bottom: 15px; display: flex; justify-content: space-between; font-weight: bold; color: #2c3e50; }
-        .section-tag { border-left: 4px solid var(--verde-ohs); padding-left: 10px; margin: 15px 0 10px; font-weight: bold; background: #f9f9f9; text-transform: uppercase; }
-        .form-control { text-transform: uppercase; font-size: 0.75rem; height: 32px; border-radius: 4px; }
-        .btn-enviar { background: var(--verde-ohs); color: white; border: none; width: 100%; padding: 12px; font-weight: bold; border-radius: 5px; margin-top: 20px; }
-        .btn-todo-normal { font-size: 0.7rem; font-weight: bold; }
+        :root { --verde: #2ecc71; }
+        body { background: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.8rem; }
+        .container { max-width: 800px; margin-top: 15px; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .barra-paciente { background: #e8f5e9; padding: 10px; border-radius: 6px; display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; border: 1px solid #c8e6c9; }
+        .section-tag { border-left: 4px solid var(--verde); padding-left: 10px; margin: 15px 0 10px; font-weight: bold; color: #2c3e50; text-transform: uppercase; }
+        .form-control { text-transform: uppercase; font-size: 0.75rem; height: 32px; }
+        .btn-enviar { background: var(--verde); color: white; width: 100%; padding: 12px; border: none; font-weight: bold; border-radius: 5px; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -21,12 +20,11 @@
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-2">
         <h5 class="fw-bold m-0">2. ANTECEDENTES PATOLÓGICOS (P2)</h5>
-        <button type="button" class="btn btn-outline-success btn-todo-normal" onclick="llenarNormal()">✅ TODO NORMAL</button>
+        <button type="button" class="btn btn-sm btn-outline-success" onclick="llenarNormal()">✅ TODO NORMAL</button>
     </div>
 
     <div class="barra-paciente">
         <span>PACIENTE: <span id="v_nombre" class="text-primary">---</span></span>
-        <span>CI: <span id="v_ci" class="text-primary">---</span></span>
         <span>CÓDIGO: <span id="v_codigo" class="text-success">---</span></span>
     </div>
 
@@ -78,12 +76,11 @@
     }
 
     window.onload = async () => {
-        if(!p_id) { alert("Sesión inválida"); return; }
+        if(!p_id) { alert("ERROR: ID de paciente perdido."); return; }
         try {
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
             document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
-            document.getElementById('v_ci').innerText = d.paciente.ci;
             document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || "S/C";
         } catch (e) {
             document.getElementById('v_codigo').innerText = "ERROR";
@@ -93,13 +90,35 @@
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⌛ ENVIANDO A DISK...";
+        btn.innerText = "⌛ ENVIANDO...";
         btn.disabled = true;
 
-        const payload = { paciente_id: parseInt(p_id) };
-        document.querySelectorAll('.f-p2').forEach(el => {
-            payload[el.id] = el.value.toUpperCase();
-        });
+        // Construcción manual de campos médicos (22 campos según tabla de reglas)
+        const payload = {
+            paciente_id: parseInt(p_id),
+            vista: document.getElementById('vista').value.toUpperCase(),
+            auditivo: document.getElementById('auditivo').value.toUpperCase(),
+            respiratorio: document.getElementById('respiratorio').value.toUpperCase(),
+            cardiovascular: document.getElementById('cardiovascular').value.toUpperCase(),
+            digestivos: document.getElementById('digestivos').value.toUpperCase(),
+            sangre: document.getElementById('sangre').value.toUpperCase(),
+            genitourinario: document.getElementById('genitourinario').value.toUpperCase(),
+            nervioso: document.getElementById('nervioso').value.toUpperCase(),
+            endocrino: document.getElementById('endocrino').value.toUpperCase(),
+            psiquiatricos: document.getElementById('psiquiatricos').value.toUpperCase(),
+            osteomusculares: document.getElementById('osteomusculares').value.toUpperCase(),
+            reumatologicos: document.getElementById('reumatologicos').value.toUpperCase(),
+            dermatologicos: document.getElementById('dermatologicos').value.toUpperCase(),
+            alergias: document.getElementById('alergias').value.toUpperCase(),
+            cirugias: document.getElementById('cirugias').value.toUpperCase(),
+            infecciones: document.getElementById('infecciones').value.toUpperCase(),
+            accidentes_personales: document.getElementById('accidentes_personales').value.toUpperCase(),
+            accidentes_trabajo: document.getElementById('accidentes_trabajo').value.toUpperCase(),
+            medicamentos: document.getElementById('medicamentos').value.toUpperCase(),
+            familiares: document.getElementById('familiares').value.toUpperCase(),
+            otros: document.getElementById('otros').value.toUpperCase(),
+            observaciones: document.getElementById('observaciones').value.toUpperCase()
+        };
 
         try {
             const res = await fetch(`${API}/p2`, {
@@ -111,14 +130,12 @@
             if (res.ok) {
                 location.href = "declaracion_jurada_p3.html";
             } else {
-                const errData = await res.json();
-                console.error("Error Servidor:", errData);
-                alert("ERROR 500: El servidor de disco rechazó los datos.");
-                btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR";
+                throw new Error("Rechazo del Servidor 500");
             }
         } catch (err) {
-            alert("CONEXIÓN FALLIDA: El backend en Render no responde.");
-            btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR";
+            alert("FALLO CRÍTICO: El servidor Render rechazó los datos. Intente de nuevo.");
+            btn.disabled = false;
+            btn.innerText = "💾 GUARDAR Y CONTINUAR";
         }
     };
 </script>
