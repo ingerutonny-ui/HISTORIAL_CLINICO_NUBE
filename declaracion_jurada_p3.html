@@ -20,8 +20,8 @@
 <body>
 
 <div class="container">
-    <div class="mb-3"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="OHS" style="height: 45px;"></div>
-    <h6 class="fw-bold mb-3" style="color: #1b5e20;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h6>
+    <div class="mb-3 text-center"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="OHS" style="height: 50px;"></div>
+    <h6 class="fw-bold mb-3 text-center" style="color: #1b5e20;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h6>
 
     <div class="barra-paciente">
         <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
@@ -30,8 +30,8 @@
     </div>
 
     <form id="formP3">
-        <div class="section-tag">I. HÁBITOS PERSONALES</div>
-        <div class="row g-2 mb-3">
+        <div class="section-tag">1. HÁBITOS PERSONALES</div>
+        <div class="row g-2 mb-3 text-center">
             <div class="col-md-2"><label class="fw-bold">¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold">¿ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold">¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
@@ -40,12 +40,12 @@
             <div class="col-md-2"><label class="fw-bold">G. SANGRE</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="ORH+"></div>
         </div>
 
-        <div class="section-tag">II. HISTORIA LABORAL</div>
-        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
+        <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
+        <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA LABORAL</button>
         <div class="table-responsive">
             <table class="table table-sm table-bordered">
-                <thead class="table-light text-center">
-                    <tr style="font-size: 0.65rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
+                <thead class="table-light text-center" style="font-size: 0.65rem;">
+                    <tr><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN / CARGO</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
@@ -60,19 +60,19 @@
             </table>
         </div>
 
-        <div class="section-tag">III. RIESGOS EXPUESTOS</div>
-        <div class="row g-2 px-2">
+        <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
+        <div class="row g-2 px-3">
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="RUIDO" id="r1"> <label for="r1">RUIDO</label></div>
-            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="POLVOS" id="r2"> <label for="r2">POLVOS</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="POLVOS" id="r2"> <label for="r2">POLVOS / GASES</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="ERGONÓMICO" id="r3"> <label for="r3">ERGONÓMICO</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="QUÍMICOS" id="r4"> <label for="r4">QUÍMICOS</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="BIOLÓGICO" id="r5"> <label for="r5">BIOLÓGICO</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="VIBRACIÓN" id="r6"> <label for="r6">VIBRACIÓN</label></div>
-            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="ALTURA" id="r7"> <label for="r7">ALTURA</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="ALTURA" id="r7"> <label for="r7">TRABAJO EN ALTURA</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="PSICOSOCIAL" id="r8"> <label for="r8">PSICOSOCIAL</label></div>
         </div>
 
-        <button type="submit" class="btn-final" id="btnAccion">💾 GUARDAR REGISTRO Y FINALIZAR P3</button>
+        <button type="submit" class="btn-final" id="btnAccion">💾 FINALIZAR Y GUARDAR EN POSTGRESQL</button>
     </form>
 </div>
 
@@ -81,18 +81,16 @@
     const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if (!id_trabajo) { window.location.href = "index.html"; return; }
+        if (!id_trabajo) { alert("No hay paciente seleccionado"); window.location.href = "index.html"; return; }
         try {
             const res = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
             if (res.ok) {
                 const d = await res.json();
-                if (d.paciente) {
-                    document.getElementById('v_nombre').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
-                    document.getElementById('v_ci').innerText = d.paciente.ci || "---";
-                    document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || 'S/C';
-                }
+                document.getElementById('v_nombre').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
+                document.getElementById('v_ci').innerText = d.paciente.ci;
+                document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente;
             }
-        } catch (e) { console.error("Error cargando paciente:", e); }
+        } catch (e) { console.error("Error cargando cabecera:", e); }
     };
 
     function addRow() {
@@ -104,7 +102,7 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnAccion');
-        btn.innerText = "⏳ GUARDANDO EN POSTGRESQL...";
+        btn.innerText = "⏳ SINCRONIZANDO CON POSTGRESQL...";
         btn.disabled = true;
 
         const historia = [];
@@ -122,8 +120,7 @@
             }
         });
 
-        // MAPEADO EXACTO AL ESQUEMA PROFESIONAL (schemas.py)
-        const data = {
+        const payload = {
             paciente_id: parseInt(id_trabajo),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: "S/D",
@@ -144,23 +141,22 @@
             const response = await fetch(`${API}/api/guardar-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {
-                alert("✅ P3 GUARDADO CORRECTAMENTE EN POSTGRESQL");
-                localStorage.removeItem('p_id_edicion');
+                alert("✅ P3 GUARDADO CORRECTAMENTE EN LA NUBE");
+                localStorage.clear();
                 window.location.href = "index.html";
             } else {
                 const err = await response.json();
-                alert("❌ ERROR DEL SERVIDOR (Verifica logs): " + JSON.stringify(err.detail));
+                alert("❌ ERROR: " + JSON.stringify(err.detail));
                 btn.disabled = false;
-                btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
+                btn.innerText = "💾 FINALIZAR Y GUARDAR EN POSTGRESQL";
             }
         } catch (error) {
-            alert("❌ ERROR DE CONEXIÓN: Render no responde.");
+            alert("❌ ERROR CRÍTICO DE CONEXIÓN");
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
     };
 </script>
