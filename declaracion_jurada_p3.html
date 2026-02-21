@@ -10,7 +10,7 @@
         :root { --ohs: #2ecc71; --ohs-dark: #27ae60; --text: #2c3e50; }
         body { background: #f4f7f6; font-family: 'Roboto', sans-serif; color: var(--text); font-size: 0.85rem; }
         .container { max-width: 1000px; margin: 20px auto; background: white; padding: 35px; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-        .header-logo { height: 70px; display: block; margin: 0 auto 15px; }
+        .header-logo { height: 75px; display: block; margin: 0 auto 15px; }
         .header-title { color: var(--ohs-dark); font-weight: 700; text-align: center; text-transform: uppercase; margin-bottom: 25px; letter-spacing: 1px; }
         .barra-paciente { background: #f1f9f7; padding: 18px; border-radius: 8px; border-left: 6px solid var(--ohs); margin-bottom: 25px; display: flex; justify-content: space-between; font-weight: 500; align-items: center; }
         .section-tag { background: #fdfdfd; padding: 10px; font-weight: 700; border-bottom: 2px solid var(--ohs); margin: 20px 0 15px 0; color: #16a085; text-transform: uppercase; }
@@ -18,6 +18,7 @@
         .form-control, .form-select { border-radius: 5px; text-transform: uppercase; font-size: 0.8rem; border: 1px solid #ced4da; }
         .btn-add { background: #34495e; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 0.75rem; margin-top: 10px; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2); }
+        .btn-save:hover { background: var(--ohs-dark); }
     </style>
 </head>
 <body>
@@ -27,7 +28,7 @@
     <h4 class="header-title">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">---</span></div>
         <div>CI: <span id="v_ci" style="font-weight: 700;">---</span></div>
         <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">---</span></div>
     </div>
@@ -80,9 +81,11 @@
             <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> ALTURA</div></div>
             <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
             <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICO"> QUÍMICO</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="RADIACION"> RADIACIÓN</div></div>
+            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ILUMINACION"> ILUMINACIÓN</div></div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR TODO EL HISTORIAL P3 EN POSTGRESQL</button>
+        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR HISTORIAL P3 EN POSTGRESQL</button>
     </form>
 </div>
 
@@ -96,24 +99,29 @@
     }
 
     window.onload = () => {
-        // CORRECCIÓN FINAL DE MAPEO: Usar las claves que el registro guarda realmente
-        const nombre = localStorage.getItem('p_nombre') || localStorage.getItem('nombre') || "";
-        const apellido = localStorage.getItem('p_apellido') || localStorage.getItem('apellido') || "";
-        const ci = localStorage.getItem('p_ci') || localStorage.getItem('ci') || "---";
-        const codigo = localStorage.getItem('p_codigo') || localStorage.getItem('codigo_paciente') || "---";
+        // BUSQUEDA EXHAUSTIVA EN LOCALSTORAGE (Probando todas las claves posibles)
+        const n = localStorage.getItem('p_nombre') || localStorage.getItem('nombre') || "";
+        const a = localStorage.getItem('p_apellido') || localStorage.getItem('apellido') || "";
+        const c = localStorage.getItem('p_ci') || localStorage.getItem('ci') || "---";
+        const cod = localStorage.getItem('p_codigo') || localStorage.getItem('codigo_paciente') || localStorage.getItem('codigo') || "---";
 
-        document.getElementById('v_nom').innerText = `${nombre} ${apellido}`.trim().toUpperCase() || "PACIENTE";
-        document.getElementById('v_ci').innerText = ci;
-        document.getElementById('v_cod').innerText = codigo;
+        if (n || a) {
+            document.getElementById('v_nom').innerText = `${n} ${a}`.trim().toUpperCase();
+        } else {
+            document.getElementById('v_nom').innerText = "NOMBRE NO ENCONTRADO";
+        }
+        
+        document.getElementById('v_ci').innerText = c;
+        document.getElementById('v_cod').innerText = cod;
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const pid = localStorage.getItem('p_id');
-        if(!pid) { alert("Error: No hay ID de paciente"); return; }
+        const pid = localStorage.getItem('p_id') || localStorage.getItem('id');
+        if(!pid) { alert("ERROR: Sin ID de paciente. Regrese al registro."); return; }
 
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO...";
+        btn.innerText = "⏳ PROCESANDO...";
         btn.disabled = true;
 
         const payload = {
@@ -130,7 +138,7 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: "[]",
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_FINAL_SYNC"
+            observaciones: "P3_OHS_FINAL"
         };
 
         try {
@@ -140,15 +148,15 @@
                 body: JSON.stringify(payload)
             });
             if (res.ok) {
-                alert("✅ HISTORIAL P3 GUARDADO CON ÉXITO");
+                alert("✅ P3 GUARDADO CORRECTAMENTE");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR EN NUBE");
+                alert("❌ ERROR AL GUARDAR");
                 btn.disabled = false;
-                btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
+                btn.innerText = "💾 GUARDAR HISTORIAL P3";
             }
         } catch (e) {
-            alert("❌ FALLO DE RED/SERVIDOR");
+            alert("❌ FALLO DE CONEXIÓN");
             btn.disabled = false;
         }
     };
