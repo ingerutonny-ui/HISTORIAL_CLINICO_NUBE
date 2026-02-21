@@ -5,52 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P3 - HÁBITOS Y RIESGOS | OHS</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --ohs: #2ecc71; --ohs-dark: #27ae60; }
-        body { background: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.8rem; }
-        .container { max-width: 950px; margin: 15px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .barra-paciente { background: #e8f8f5; padding: 15px; border-radius: 8px; border-left: 5px solid var(--ohs); font-weight: bold; margin-bottom: 20px; display: flex; justify-content: space-between; }
-        .section-tag { background: #f8f9fa; padding: 10px; font-weight: bold; border-left: 4px solid var(--ohs-dark); margin: 15px 0; color: #1b5e20; text-transform: uppercase; }
-        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; }
-        .btn-final { background: var(--ohs-dark); color: white; font-weight: bold; width: 100%; padding: 12px; border: none; border-radius: 6px; margin-top: 20px; transition: 0.3s; }
-        .btn-final:hover { background: #219150; transform: translateY(-2px); }
+        :root { --ohs: #2ecc71; --ohs-dark: #27ae60; --bg: #f8fafb; }
+        body { background-color: var(--bg); font-family: 'Roboto', sans-serif; color: #2c3e50; font-size: 0.85rem; }
+        .container { max-width: 1050px; margin: 30px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .header-title { color: var(--ohs-dark); font-weight: 700; text-align: center; margin-bottom: 30px; text-transform: uppercase; letter-spacing: 1px; }
+        .barra-paciente { background: #f1f9f7; padding: 20px; border-radius: 10px; border-left: 6px solid var(--ohs); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
+        .section-tag { background: #fdfdfd; padding: 12px; font-weight: 700; border-bottom: 2px solid var(--ohs); margin: 25px 0 15px 0; color: #16a085; text-transform: uppercase; font-size: 0.9rem; }
+        .form-label { font-weight: 500; color: #7f8c8d; margin-bottom: 5px; font-size: 0.75rem; }
+        .form-control, .form-select { border-radius: 6px; border: 1px solid #dcdde1; padding: 8px 12px; text-transform: uppercase; font-size: 0.8rem; transition: all 0.3s; }
+        .form-control:focus { border-color: var(--ohs); box-shadow: 0 0 0 0.2rem rgba(46, 204, 113, 0.15); }
+        .btn-add { background: #34495e; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-weight: 500; margin-top: 10px; transition: 0.3s; }
+        .btn-add:hover { background: #2c3e50; }
+        .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 30px; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .btn-save:hover { background: var(--ohs-dark); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3); }
+        .check-group { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 8px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="text-center mb-3">
-        <h4 class="fw-bold" style="color: #1b5e20;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
+    <div class="text-center mb-4">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo_ohs.png" alt="Logo" style="height: 60px;">
+        <h4 class="header-title mt-3">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
     </div>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #0d6efd;">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: #2980b9;">CARGANDO...</span></div>
         <div>CI: <span id="v_ci">---</span></div>
-        <div>ID: <span id="v_id" style="color: #e67e22;">---</span></div>
+        <div>CÓDIGO: <span id="v_cod">---</span></div>
+        <div>ID: <span id="v_id" class="badge bg-secondary">---</span></div>
     </div>
 
     <form id="formP3">
         <div class="section-tag">1. HÁBITOS PERSONALES</div>
-        <div class="row g-2 p-2">
-            <div class="col-md-2">¿FUMA?<select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">CANTIDAD<input type="text" id="fuma_cantidad" class="form-control" value="0"></div>
-            <div class="col-md-2">¿ALCOHOL?<select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">FRECUENCIA<input type="text" id="alcohol_frecuencia" class="form-control" value="SOCIAL"></div>
-            <div class="col-md-2">¿DROGAS?<select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">TIPO<input type="text" id="drogas_tipo" class="form-control" value="S/D"></div>
+        <div class="row g-3">
+            <div class="col-md-2">
+                <label class="form-label">¿FUMA?</label>
+                <select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">CANTIDAD</label>
+                <input type="text" id="fuma_cantidad" class="form-control" value="0">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">¿ALCOHOL?</label>
+                <select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">FRECUENCIA</label>
+                <input type="text" id="alcohol_frecuencia" class="form-control" value="SOCIAL">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">¿DROGAS?</label>
+                <select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">TIPO</label>
+                <input type="text" id="drogas_tipo" class="form-control" value="S/D">
+            </div>
         </div>
-        <div class="row g-2 p-2 mt-1">
-            <div class="col-md-2">COCA/PIJCHA<select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2">DEPORTE<select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-5">DETALLE DEPORTE<input type="text" id="deporte_detalle" class="form-control" value="S/D"></div>
-            <div class="col-md-3">GRUPO SANGUÍNEO<input type="text" id="grupo_sanguineo" class="form-control" value="ORH+"></div>
+
+        <div class="row g-3 mt-2">
+            <div class="col-md-2">
+                <label class="form-label">COCA/PIJCHA</label>
+                <select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">¿DEPORTE?</label>
+                <select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label">DETALLE DEPORTE</label>
+                <input type="text" id="deporte_detalle" class="form-control" value="S/D">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">GRUPO SANGUÍNEO</label>
+                <input type="text" id="grupo_sanguineo" class="form-control" value="ORH+">
+            </div>
         </div>
 
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
         <div class="table-responsive">
-            <table class="table table-sm table-bordered">
-                <thead class="table-light text-center">
-                    <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-light text-center" style="font-size: 0.7rem;">
+                    <tr>
+                        <th width="8%">EDAD</th>
+                        <th width="25%">EMPRESA</th>
+                        <th width="20%">CARGO</th>
+                        <th width="12%">TIEMPO</th>
+                        <th width="25%">RIESGOS</th>
+                        <th width="10%">EPP</th>
+                    </tr>
                 </thead>
                 <tbody id="tBody">
                     <tr>
@@ -63,24 +110,30 @@
                     </tr>
                 </tbody>
             </table>
-            <button type="button" class="btn btn-dark btn-sm" onclick="addFila()">+ AGREGAR EMPRESA</button>
+            <button type="button" class="btn-add btn-sm" onclick="addFila()">+ AGREGAR EMPRESA</button>
         </div>
 
         <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
-        <div class="row p-3">
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
+        <div class="check-group">
+            <div class="row g-3">
+                <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="RUIDO"> RUIDO</div></div>
+                <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="POLVOS"> POLVOS</div></div>
+                <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
+                <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
+                <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="VIBRACION"> VIBRACIÓN</div></div>
+                <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> ALTURA</div></div>
+                <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
+                <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICO"> QUÍMICO</div></div>
+            </div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-final">💾 GUARDAR TODO EL HISTORIAL P3</button>
+        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR TODO EL HISTORIAL P3 EN POSTGRESQL</button>
     </form>
 </div>
 
 <script>
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
-    const URL_BASE = "https://historial-clinico-936s.onrender.com/api";
+    const API_URL = "https://historial-clinico-936s.onrender.com/api";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -89,28 +142,29 @@
     }
 
     window.onload = async () => {
-        if (!pid) return;
+        if (!pid) { alert("ID DE PACIENTE NO DETECTADO"); return; }
         document.getElementById('v_id').innerText = pid;
 
-        // 1. Cargar Datos Básicos del Paciente
         try {
-            const resP = await fetch(`${URL_BASE}/pacientes/${pid}`);
-            if (resP.ok) {
-                const p = await resP.json();
+            const res = await fetch(`${API_URL}/get-paciente/${pid}`);
+            if (res.ok) {
+                const p = await res.json();
                 document.getElementById('v_nom').innerText = (p.nombre + " " + p.apellido).toUpperCase();
                 document.getElementById('v_ci').innerText = p.ci;
+                document.getElementById('v_cod').innerText = p.codigo_paciente;
+            } else {
+                document.getElementById('v_nom').innerText = "ERROR 404: NO ENCONTRADO";
             }
-
-            // 2. Intentar Cargar Datos Previos de P3 (Autocarga)
-            const res3 = await fetch(`${URL_BASE}/pacientes/${pid}`); // Aquí podrías tener una ruta específica /get-p3/
-            // Por ahora, si no hay ruta de carga específica, el formulario queda listo para guardado nuevo.
-        } catch (e) { console.log("Error de conexión inicial"); }
+        } catch (e) { 
+            console.error(e);
+            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
+        }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ SINCRONIZANDO CON POSTGRESQL...";
+        btn.innerText = "⏳ SINCRONIZANDO...";
         btn.disabled = true;
 
         const hist = [];
@@ -142,26 +196,25 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "CARGA_P3_POSTGRES"
+            observaciones: "SINCRONIZACION_EXITOSA"
         };
 
         try {
-            const res = await fetch(`${URL_BASE}/save-p3`, {
+            const res = await fetch(`${API_URL}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("✅ DATOS DE P3 SINCRONIZADOS EXITOSAMENTE");
+                alert("✅ P3 GUARDADO CORRECTAMENTE");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR EN NUBE");
-                btn.disabled = false;
-                btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
+                alert("❌ ERROR EN EL SERVIDOR (NOT FOUND)");
+                btn.disabled = false; btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
             }
         } catch (e) {
-            alert("❌ FALLO DE RED");
+            alert("❌ ERROR DE RED O BACKEND FUERA DE LÍNEA");
             btn.disabled = false;
         }
     };
