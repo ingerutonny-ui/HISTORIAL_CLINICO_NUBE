@@ -10,10 +10,9 @@ except ImportError:
     import models, schemas, crud
     from database import SessionLocal, engine
 
-# Inicialización de PostgreSQL
+# Inicialización de PostgreSQL [cite: 2026-02-03]
 models.Base.metadata.create_all(bind=engine)
 
-# Desactivamos la redirección automática de barras para que FastAPI no confunda a Render
 app = FastAPI(redirect_slashes=False)
 
 app.add_middleware(
@@ -31,7 +30,7 @@ def get_db():
     finally:
         db.close()
 
-# --- RUTAS DE PACIENTE ---
+# RUTAS DE PACIENTE (Garantiza que CI y Nombre aparezcan)
 @app.get("/api/paciente-completo/{p_id}")
 @app.get("/paciente-completo/{p_id}")
 async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
@@ -40,18 +39,18 @@ async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"paciente": paciente}
 
-# --- RUTA P3: TRIPLE BLINDAJE (Sin y con barra, con y sin API) ---
-@app.post("/guardar-p3")
-@app.post("/guardar-p3/")
+# RUTA P3: SOPORTE TOTAL PARA EVITAR 404/500
 @app.post("/api/guardar-p3")
 @app.post("/api/guardar-p3/")
+@app.post("/guardar-p3")
+@app.post("/guardar-p3/")
 async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # Mapeo íntegro de campos P1, P2 y P3 para el manual [cite: 2026-02-11]
+        # Mapeo obligatorio de todos los campos P1, P2, P3 [cite: 2026-02-11]
         resultado = crud.upsert_p3(db, data.model_dump())
         return {"status": "success", "id": resultado.id}
     except Exception as e:
-        print(f"ERROR CRÍTICO: {str(e)}")
+        print(f"Error interno: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/health")
