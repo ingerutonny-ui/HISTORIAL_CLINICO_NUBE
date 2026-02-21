@@ -28,10 +28,10 @@
 <body>
 
 <div id="successOverlay">
-    <h1 style="color: var(--verde-boton); font-weight: 800;">✅ P3 SINCRONIZADO</h1>
+    <h1 style="color: var(--verde-boton); font-weight: 800;">✅ REGISTRO GUARDADO</h1>
     <h3 id="res_nombre" style="color: #2c3e50; text-transform: uppercase;">---</h3>
     <h4 id="res_codigo" class="text-codigo" style="font-size: 1.5rem;">---</h4>
-    <p class="text-muted mt-3">Guardado exitosamente en la nube OHS.</p>
+    <p class="text-muted mt-3">DATOS SINCRONIZADOS CON LA NUBE OHS</p>
 </div>
 
 <div class="container">
@@ -42,7 +42,7 @@
     <h6 class="fw-bold mb-2" style="color: #1b5e20;">3. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h6>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">SIN SELECCIONAR</span></div>
         <div>CI: <span id="v_ci" class="text-blue">---</span></div>
         <div>CÓDIGO: <span id="v_codigo" class="text-codigo">---</span></div>
     </div>
@@ -58,12 +58,10 @@
             <div class="col-md-2"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="ORH+"></div>
         </div>
 
-        <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-secondary btn-add" onclick="addRow()">+ FILA</button></div>
+        <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-secondary btn-add" onclick="addRow()">+ AGREGAR FILA</button></div>
         <table class="table table-bordered">
             <thead>
-                <tr>
-                    <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th>
-                </tr>
+                <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
             </thead>
             <tbody id="tablaLaboral">
                 <tr>
@@ -93,31 +91,43 @@
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="ALTURA" id="r12"><label class="form-check-label" for="r12">ALTURA</label></div>
         </div>
 
-        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR P3 EN LA NUBE</button>
+        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR REGISTRO P3</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    // CORRECCIÓN: Usamos 'paciente_id' consistentemente
-    let p_id = localStorage.getItem('paciente_id'); 
+    // SOLUCIÓN AL ERROR DE SELECCIÓN: Buscamos en ambos posibles nombres de variable
+    let p_id = localStorage.getItem('paciente_id') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if(!p_id) { alert("⚠️ PACIENTE NO SELECCIONADO."); return; }
+        if (!p_id) { 
+            alert("⚠️ ERROR: REGRESE AL INICIO Y SELECCIONE UN PACIENTE."); 
+            return; 
+        }
+        
         try {
+            // SOLUCIÓN AL "CARGANDO": Usamos la ruta directa de pacientes
             const res = await fetch(`${API}/api/pacientes`);
             const data = await res.json();
             const p = data.find(x => x.id == p_id);
+            
             if (p) {
-                const nombre = `${p.nombre} ${p.apellido}`.toUpperCase();
-                document.getElementById('v_nombre').innerText = nombre;
-                document.getElementById('v_ci').innerText = p.ci || 'S/CI';
+                const nombreFull = `${p.nombre} ${p.apellido}`.toUpperCase();
+                document.getElementById('v_nombre').innerText = nombreFull;
+                document.getElementById('v_ci').innerText = p.ci || '---';
                 document.getElementById('v_codigo').innerText = (p.codigo && p.codigo !== "undefined") ? p.codigo : "S/C";
                 
-                document.getElementById('res_nombre').innerText = nombre;
+                // Cargar datos en el overlay de éxito
+                document.getElementById('res_nombre').innerText = nombreFull;
                 document.getElementById('res_codigo').innerText = document.getElementById('v_codigo').innerText;
+            } else {
+                document.getElementById('v_nombre').innerText = "PACIENTE NO ENCONTRADO";
             }
-        } catch (e) { console.error("Error al cargar datos"); }
+        } catch (e) { 
+            console.error("Error de conexión:", e);
+            document.getElementById('v_nombre').innerText = "ERROR DE CONEXIÓN";
+        }
     };
 
     function addRow() {
@@ -128,7 +138,7 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnFinalizar');
-        btn.innerText = "⏳ SINCRONIZANDO...";
+        btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
 
         const historia = [];
@@ -154,16 +164,14 @@
             fuma: document.getElementById('fuma').value,
             alcohol: document.getElementById('alcohol').value,
             drogas: document.getElementById('drogas').value,
-            coca: document.getElementById('pijchar').value, // Mapeado a 'coca' en el backend
+            coca: document.getElementById('pijchar').value,
             deporte: document.getElementById('deporte').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "S/D",
             historia_laboral: JSON.stringify(historia),
-            riesgos_expuestos: JSON.stringify(riesgos_exp),
-            observaciones: "REGISTRO P3 COMPLETADO"
+            riesgos_expuestos: JSON.stringify(riesgos_exp)
         };
 
         try {
-            // CORRECCIÓN: Ruta exacta del backend
             const res = await fetch(`${API}/api/guardar-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -175,8 +183,8 @@
                 setTimeout(() => { location.href = "index.html"; }, 3000);
             } else { throw new Error(); }
         } catch (err) {
-            alert("❌ ERROR AL GUARDAR: Verifique que el servidor Render esté activo.");
-            btn.disabled = false; btn.innerText = "💾 GUARDAR P3 EN LA NUBE";
+            alert("❌ ERROR AL GUARDAR. REINTENTE.");
+            btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO P3";
         }
     };
 </script>
