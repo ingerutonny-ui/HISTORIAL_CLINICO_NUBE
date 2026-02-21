@@ -1,68 +1,161 @@
-from fastapi import FastAPI, Depends, Request, BackgroundTasks
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from . import models, database
+from pydantic import BaseModel
+from typing import List, Optional
+import os
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-def get_db():
-    db = database.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+def get_db_connection():
+    return psycopg2.connect(os.environ.get('DATABASE_URL'), sslmode='require')
 
-def persistir_p2(data, p_id):
-    db = database.SessionLocal()
+# MODELOS DE DATOS
+class Paciente(BaseModel):
+    nombre: str
+    apellido: str
+    ci: str
+    codigo: Optional[str] = None
+
+class Filiacion(BaseModel):
+    paciente_id: int
+    edad: str
+    sexo: str
+    fecha_nacimiento: str
+    profesion_oficio: str
+
+class P2Data(BaseModel):
+    paciente_id: int
+    vista: str; auditivo: str; respiratorio: str; cardiovascular: str
+    digestivos: str; sangre: str; genitourinario: str; sistema_nervioso: str
+    endocrino: str; psiquiatricos: str; osteomusculares: str; reumatologicos: str
+    dermatologicos: str; alergias: str; cirugias: str; infecciones: str
+    accidentes_personales: str; accidentes_trabajo: str; medicamentos: str
+    familiares: str; otros: str; observaciones: str
+
+class P3Data(BaseModel):
+    paciente_id: int
+    grupo_sanguineo: str
+    fuma: str; alcohol: str; drogas: str; coca: str; deporte: str
+    historia_laboral: str  # JSON String
+    riesgos_expuestos: str # JSON String
+    observaciones: str
+
+# ENDPOINTS
+@app.post("/api/pacientes")
+async def crear_paciente(p: Paciente):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    # Generación de código automático (Ej: RA6678)
+    codigo_gen = f"{p.nombre[:1]}{p.apellido[:1]}{p.ci[-4:]}".upper()
     try:
-        obj = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
-        if not obj:
-            obj = models.AntecedentesP2(paciente_id=p_id)
-            db.add(obj)
-        for k, v in data.items():
-            if hasattr(obj, k) and k != "paciente_id":
-                setattr(obj, k, str(v).upper())
-        db.commit()
+        cur.execute(
+            "INSERT INTO pacientes (nombre, apellido, ci, codigo) VALUES (%s, %s, %s, %s) RETURNING id",
+            (p.nombre, p.apellido, p.ci, codigo_gen)
+        )
+        p_id = cur.fetchone()[0]
+        conn.commit()
+        return {"id": p_id, "codigo": codigo_gen}
     except Exception as e:
-        db.rollback()
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
     finally:
-        db.close()
+        cur.close(); conn.close()
 
-@app.get("/")
-def health():
-    return {"status": "active"}
+@app.post("/api/filiacion")
+async def guardar_filiacion(f: Filiacion):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(
+            "INSERT INTO filiacion (paciente_id, edad, sexo, fecha_nacimiento, profesion_oficio) VALUES (%s, %s, %s, %s, %s)",
+            (f.paciente_id, f.edad, f.sexo, f.fecha_nacimiento, f.profesion_oficio)
+        )
+        conn.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        cur.close(); conn.close()
 
-@app.get("/api/paciente-completo/{id}")
-def get_p(id: int, db: Session = Depends(get_db)):
-    p = db.query(models.Paciente).filter(models.Paciente.id == id).first()
-    if not p: return {"error": "404"}
-    
-    filiacion = db.query(models.FiliacionP1).filter(models.FiliacionP1.paciente_id == id).first()
-    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == id).first()
-    p3 = db.query(models.HabitosP3).filter(models.HabitosP3.paciente_id == id).first()
+@app.post("/api/p2")
+async def guardar_p2(d: P2Data):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO p2 (paciente_id, vista, auditivo, respiratorio, cardiovascular, digestivos, sangre, 
+            genitourinario, sistema_nervioso, endocrino, psiquiatricos, osteomusculares, reumatologicos, 
+            dermatologicos, alergias, cirugias, infecciones, accidentes_personales, accidentes_trabajo, 
+            medicamentos, familiares, otros, observaciones) 
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+            (d.paciente_id, d.vista, d.auditivo, d.respiratorio, d.cardiovascular, d.digestivos, d.sangre,
+             d.genitourinario, d.sistema_nervioso, d.endocrino, d.psiquiatricos, d.osteomusculares, d.reumatologicos,
+             d.dermatologicos, d.alergias, d.cirugias, d.infecciones, d.accidentes_personales, d.accidentes_trabajo,
+             d.medicamentos, d.familiares, d.otros, d.observaciones))
+        conn.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        cur.close(); conn.close()
 
-    def to_dict(obj):
-        if not obj: return None
-        return {k: v for k, v in obj.__dict__.items() if not k.startswith('_')}
+@app.post("/api/p3")
+async def guardar_p3(d: P3Data):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            INSERT INTO p3 (paciente_id, grupo_sanguineo, fuma, alcohol, drogas, coca, deporte, 
+            historia_laboral, riesgos_expuestos, observaciones) 
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+            (d.paciente_id, d.grupo_sanguineo, d.fuma, d.alcohol, d.drogas, d.coca, d.deporte,
+             d.historia_laboral, d.riesgos_expuestos, d.observaciones))
+        conn.commit()
+        return {"status": "ok"}
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        cur.close(); conn.close()
 
-    return {
-        "paciente": {"nombre": p.nombre, "apellido": p.apellido, "ci": p.ci, "codigo": getattr(p, 'codigo_paciente', 'S/C')},
-        "filiacion": to_dict(filiacion),
-        "p2": to_dict(p2),
-        "p3": to_dict(p3)
-    }
+@app.get("/api/paciente-completo/{p_id}")
+async def obtener_todo(p_id: int):
+    conn = get_db_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    try:
+        cur.execute("SELECT * FROM pacientes WHERE id = %s", (p_id,))
+        paciente = cur.fetchone()
+        if not paciente: raise HTTPException(status_code=404, detail="No encontrado")
+        
+        cur.execute("SELECT * FROM filiacion WHERE paciente_id = %s", (p_id,))
+        filiacion = cur.fetchone()
+        
+        cur.execute("SELECT * FROM p2 WHERE paciente_id = %s", (p_id,))
+        p2 = cur.fetchone()
+        
+        cur.execute("SELECT * FROM p3 WHERE paciente_id = %s", (p_id,))
+        p3 = cur.fetchone()
+        
+        return {
+            "paciente": paciente,
+            "filiacion": filiacion,
+            "p2": p2,
+            "p3": p3
+        }
+    finally:
+        cur.close(); conn.close()
 
-@app.post("/p2")
-async def save_p2(r: Request, background_tasks: BackgroundTasks):
-    data = await r.json()
-    p_id = int(data.get("paciente_id"))
-    background_tasks.add_task(persistir_p2, data, p_id)
-    return {"status": "ok"}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
