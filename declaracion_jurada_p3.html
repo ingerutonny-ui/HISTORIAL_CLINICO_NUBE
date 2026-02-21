@@ -83,22 +83,28 @@
 </div>
 
 <script>
-    // URL DE RENDER SIN /API/ PARA EVITAR 404
+    // URL SIN /API/ PARA COINCIDIR CON LOS NUEVOS ENDPOINTS
     const API = "https://historial-clinico-936s.onrender.com";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if(!pid) { alert("NO SE ENCONTRÓ ID DE PACIENTE"); return; }
+        if(!pid) { alert("ERROR: NO HAY ID DE PACIENTE EN LOCALSTORAGE"); return; }
+        
         try {
-            // RUTA CORREGIDA PARA RECUPERAR DATOS
+            // INTENTO DE RECUPERACIÓN DIRECTA
             const res = await fetch(`${API}/get-paciente/${pid}`);
             if(res.ok) {
                 const d = await res.json();
                 document.getElementById('v_nom').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
                 document.getElementById('v_ci').innerText = d.paciente.ci;
                 document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
+            } else {
+                document.getElementById('v_nom').innerText = "ERROR AL CARGAR";
             }
-        } catch(e) { console.error("Error cargando paciente"); }
+        } catch(e) {
+            console.error("Fallo de red al recuperar paciente");
+            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
+        }
     };
 
     function addRow() {
@@ -118,8 +124,10 @@
             if(em) {
                 hist.push({
                     edad: tr.querySelector('.r-ed').value || "0",
-                    empresa: em.toUpperCase(), cargo: tr.querySelector('.r-ca').value.toUpperCase(),
-                    tiempo: tr.querySelector('.r-ti').value || "0", riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
+                    empresa: em.toUpperCase(),
+                    cargo: tr.querySelector('.r-ca').value.toUpperCase(),
+                    tiempo: tr.querySelector('.r-ti').value || "0",
+                    riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
                     epp: tr.querySelector('.r-ep').value
                 });
             }
@@ -133,17 +141,16 @@
             alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
             drogas: document.getElementById('drogas').value,
             drogas_tipo: document.getElementById('drogas_tipo').value,
-            coca: document.getElementById('coca').value, // CLAVE CORREGIDA
+            coca: document.getElementById('coca').value, // VALIDADO CON SCHEMAS.PY
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "MAPEADO_TOTAL_P3"
+            observaciones: "MAPEADO_P3_FINAL"
         };
 
         try {
-            // RUTA POST CORREGIDA PARA LÍNEA 145
             const r = await fetch(`${API}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
