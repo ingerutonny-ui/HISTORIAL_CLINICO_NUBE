@@ -79,33 +79,36 @@
 </div>
 
 <script>
-    // URL DE TU BACKEND EN RENDER CON PREFIJO API [cite: 2026-01-26]
-    const API = "https://historial-clinico-936s.onrender.com/api";
+    // URL DEFINITIVA PARA EVITAR EL 404 DE TUS CAPTURAS
+    const API_BASE = "https://historial-clinico-936s.onrender.com/api";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if(!pid) { alert("ID NO ENCONTRADO"); return; }
+        if(!pid) { alert("ERROR: NO SE ENCONTRÓ ID DE PACIENTE"); return; }
+        
         try {
-            // USANDO RUTA COMPATIBLE CON P1 Y P2
-            const res = await fetch(`${API}/pacientes/${pid}`);
-            if(res.ok) {
-                const d = await res.json();
-                // MAPEADO DIRECTO DESDE EL OBJETO RAIZ (SIN .paciente)
-                document.getElementById('v_nom').innerText = `${d.nombre} ${d.apellido}`.toUpperCase();
-                document.getElementById('v_ci').innerText = d.ci || "---";
-                document.getElementById('v_cod').innerText = d.codigo_paciente || "---";
+            // PETICIÓN DIRECTA AL ENDPOINT QUE SÍ FUNCIONA EN P1 Y P2
+            const response = await fetch(`${API_BASE}/pacientes/${pid}`);
+            
+            if(response.ok) {
+                const data = await response.json();
+                // MAPEADO DIRECTO DESDE LA RAÍZ DEL OBJETO
+                document.getElementById('v_nom').innerText = `${data.nombre} ${data.apellido}`.toUpperCase();
+                document.getElementById('v_ci').innerText = data.ci || "---";
+                document.getElementById('v_cod').innerText = data.codigo_paciente || "---";
             } else {
-                document.getElementById('v_nom').innerText = "ERROR EN SERVIDOR";
+                document.getElementById('v_nom').innerText = "ERROR AL CARGAR (SERVER 404/500)";
             }
-        } catch(e) { 
-            document.getElementById('v_nom').innerText = "ERROR AL CARGAR";
+        } catch(error) {
+            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN CON API";
+            console.error("Falla crítica fetch:", error);
         }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const b = document.getElementById('btnS');
-        b.innerText = "⏳ SINCRONIZANDO..."; b.disabled = true;
+        const btn = document.getElementById('btnS');
+        btn.innerText = "⏳ SINCRONIZANDO..."; btn.disabled = true;
 
         const hist = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
@@ -120,6 +123,7 @@
             }
         });
 
+        // PAYLOAD ALINEADO CON SCHEMAS.PY
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
@@ -134,11 +138,11 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_CARGA_DIRECTA_OK"
+            observaciones: "P3_SYNC_FIXED"
         };
 
         try {
-            const r = await fetch(`${API}/save-p3`, {
+            const r = await fetch(`${API_BASE}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -149,12 +153,12 @@
                 window.location.href = "index.html";
             } else {
                 const err = await r.json();
-                alert("❌ ERROR: " + JSON.stringify(err.detail));
-                b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
+                alert("❌ ERROR API: " + JSON.stringify(err.detail));
+                btn.disabled = false; btn.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch(err) {
-            alert("❌ FALLO DE CONEXIÓN API");
-            b.disabled = false;
+            alert("❌ FALLO DE RED - REVISA TU CONEXIÓN");
+            btn.disabled = false;
         }
     };
 </script>
