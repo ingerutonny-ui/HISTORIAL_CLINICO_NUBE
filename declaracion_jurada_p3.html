@@ -8,12 +8,12 @@
     <style>
         :root { --verde-ohs: #2ecc71; --verde-boton: #27ae60; }
         body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.75rem; }
-        .container { max-width: 950px; margin: 10px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .barra-paciente { background: #e8f8f5; padding: 10px 15px; border-radius: 6px; border-left: 5px solid var(--verde-ohs); display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; }
+        .container { max-width: 950px; margin: 10px auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .barra-paciente { background: #e8f8f5; padding: 12px; border-radius: 8px; border-left: 5px solid var(--verde-ohs); display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 15px; }
         .text-blue { color: #0d6efd; text-transform: uppercase; }
         .section-tag { background: #f8f9fa; padding: 5px 10px; font-weight: bold; margin-top: 15px; margin-bottom: 10px; border-bottom: 2px solid var(--verde-ohs); color: #2c3e50; }
-        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 32px; }
-        .btn-final { background: var(--verde-boton); color: white; font-weight: bold; width: 100%; padding: 12px; border-radius: 6px; border: none; margin-top: 20px; font-size: 1rem; cursor: pointer; }
+        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 32px; border-radius: 6px; }
+        .btn-final { background: var(--verde-boton); color: white; font-weight: bold; width: 100%; padding: 12px; border-radius: 8px; border: none; margin-top: 20px; font-size: 1rem; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -26,7 +26,8 @@
     </div>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">SINCRONIZANDO...</span></div>
+        <div>CI: <span id="v_ci" class="text-primary">---</span></div>
         <div>CÓDIGO: <span id="v_codigo" class="text-success" style="font-family: monospace;">---</span></div>
     </div>
 
@@ -38,70 +39,68 @@
             <div class="col-md-2"><label class="fw-bold">¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold">¿PIJCHA?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label class="fw-bold">¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label class="fw-bold">G. SANGRE</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+"></div>
+            <div class="col-md-2"><label class="fw-bold">G. SANGRE</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="ORH+"></div>
         </div>
 
-        <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-sm btn-dark float-end" onclick="addRow()">+ AGREGAR FILA</button></div>
-        <table class="table table-sm table-bordered">
-            <thead class="table-light text-center">
-                <tr style="font-size: 0.7rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
-            </thead>
-            <tbody id="tablaLaboral">
-                <tr>
-                    <td><input type="number" class="form-control row-edad"></td>
-                    <td><input type="text" class="form-control row-empresa"></td>
-                    <td><input type="text" class="form-control row-cargo"></td>
-                    <td><input type="number" class="form-control row-tiempo"></td>
-                    <td><input type="text" class="form-control row-riesgos"></td>
-                    <td><select class="form-select row-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-sm btn-dark float-end" onclick="addRow()" style="font-size: 0.6rem;">+ AGREGAR FILA</button></div>
+        <div class="table-responsive">
+            <table class="table table-sm table-bordered">
+                <thead class="table-light text-center">
+                    <tr style="font-size: 0.65rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
+                </thead>
+                <tbody id="tablaLaboral">
+                    <tr>
+                        <td><input type="number" class="form-control row-edad"></td>
+                        <td><input type="text" class="form-control row-empresa"></td>
+                        <td><input type="text" class="form-control row-cargo"></td>
+                        <td><input type="number" class="form-control row-tiempo"></td>
+                        <td><input type="text" class="form-control row-riesgos"></td>
+                        <td><select class="form-select row-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <div class="section-tag">III. RIESGOS EXPUESTOS EN SU VIDA LABORAL</div>
+        <div class="section-tag">III. RIESGOS EXPUESTOS</div>
         <div class="row g-2 px-2">
-            <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="RUIDO" id="r1"> <label for="r1">RUIDO</label></div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="POLVOS" id="r2"> <label for="r2">POLVOS</label></div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="ERGONÓMICO" id="r3"> <label for="r3">ERGONÓMICO</label></div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="QUÍMICOS" id="r4"> <label for="r4">QUÍMICOS</label></div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="BIOLÓGICO" id="r5"> <label for="r5">BIOLÓGICO</label></div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="VIBRACIÓN" id="r6"> <label for="r6">VIBRACIÓN</label></div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="ALTURA" id="r7"> <label for="r7">ALTURA</label></div>
-            <div class="col-md-3 form-check"><input type="checkbox" class="check-riesgo" value="PSICOSOCIAL" id="r8"> <label for="r8">PSICOSOCIAL</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="RUIDO" id="r1"> <label for="r1">RUIDO</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="POLVOS" id="r2"> <label for="r2">POLVOS</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="ERGONÓMICO" id="r3"> <label for="r3">ERGONÓMICO</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="QUÍMICOS" id="r4"> <label for="r4">QUÍMICOS</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="BIOLÓGICO" id="r5"> <label for="r5">BIOLÓGICO</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="VIBRACIÓN" id="r6"> <label for="r6">VIBRACIÓN</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="ALTURA" id="r7"> <label for="r7">ALTURA</label></div>
+            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="PSICOSOCIAL" id="r8"> <label for="r8">PSICOSOCIAL</label></div>
         </div>
 
-        <button type="submit" class="btn-final" id="btnAccion">💾 GUARDAR REGISTRO Y FINALIZAR P3</button>
+        <button type="submit" class="btn-final" id="btnAccion">💾 GUARDAR Y FINALIZAR HISTORIAL</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
     
-    // Forzamos la obtención del ID más reciente de la P2
-    const p_id = localStorage.getItem('p_id');
+    // Lógica idéntica a tu P1 para no fallar
+    const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        console.log("ID detectado:", p_id);
-        if (!p_id || p_id === "undefined") {
-            alert("⚠️ PACIENTE NO DETECTADO. POR FAVOR, SELECCIONE AL PACIENTE EN EL INICIO.");
+        if (!id_trabajo) {
+            alert("⚠️ NO HAY PACIENTE ACTIVO");
             window.location.href = "index.html";
             return;
         }
 
         try {
-            // Buscamos los datos reales del servidor para sobreescribir cualquier nombre viejo
-            const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
-            if (!res.ok) throw new Error("Paciente no encontrado");
-            
+            const res = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
             const d = await res.json();
             
-            // Sincronización visual obligatoria
-            document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
-            document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
-            
+            if (d.paciente) {
+                document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
+                document.getElementById('v_ci').innerText = d.paciente.ci || "---";
+                document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+            }
         } catch (e) {
-            console.error("Error:", e);
-            document.getElementById('v_nombre').innerText = "ERROR: SELECCIONE PACIENTE";
+            console.error("Error cargando datos:", e);
         }
     };
 
@@ -136,7 +135,7 @@
         document.querySelectorAll('.check-riesgo:checked').forEach(ch => riesgos_exp.push(ch.value));
 
         const data = {
-            paciente_id: parseInt(p_id),
+            paciente_id: parseInt(id_trabajo),
             fuma: document.getElementById('fuma').value,
             alcohol: document.getElementById('alcohol').value,
             drogas: document.getElementById('drogas').value,
@@ -155,15 +154,14 @@
             });
 
             if(response.ok) {
-                alert("✅ DATOS DE " + document.getElementById('v_nombre').innerText + " GUARDADOS CORRECTAMENTE");
+                alert("✅ HISTORIAL COMPLETADO PARA: " + document.getElementById('v_nombre').innerText);
+                // Limpiamos los IDs para que el siguiente paciente no se mezcle
+                localStorage.removeItem('p_id_edicion');
                 window.location.href = "index.html";
-            } else {
-                throw new Error("Error en servidor");
             }
         } catch (err) {
-            alert("❌ ERROR AL CONECTAR CON EL SERVIDOR");
+            alert("❌ ERROR AL GUARDAR");
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
     };
 </script>
