@@ -10,8 +10,7 @@
         .container { max-width: 900px; margin-top: 30px; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .section-title { color: #1e4d2b; border-left: 5px solid #28a745; padding-left: 15px; margin-bottom: 25px; font-weight: bold; text-transform: uppercase; }
         label { font-weight: 600; font-size: 0.8rem; color: #555; margin-bottom: 5px; }
-        .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; padding: 10px; font-size: 0.9rem; }
-        .btn-add { font-size: 0.8rem; font-weight: bold; margin-bottom: 15px; }
+        .form-control, .form-select { border-radius: 8px; border: 1px solid #ced4da; padding: 10px; font-size: 0.9rem; text-transform: uppercase; }
         .btn-save { background: #28a745; color: white; font-weight: bold; width: 100%; padding: 15px; border-radius: 10px; border: none; transition: 0.3s; margin-top: 20px; }
         .btn-save:hover { background: #218838; transform: translateY(-2px); }
         .banner-paciente { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 30px; border: 1px solid #e9ecef; }
@@ -21,61 +20,54 @@
 
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo OHS" height="60">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo" height="60">
         <div class="banner-paciente m-0 py-2">
-            <span class="text-muted">PACIENTE:</span> <span id="display_nombre" class="fw-bold text-success">CARGANDO...</span>
-            <span class="ms-3 text-muted">CI:</span> <span id="display_ci" class="fw-bold text-success">---</span>
+            <span id="display_info" class="fw-bold text-success">CARGANDO PACIENTE...</span>
         </div>
     </div>
 
     <form id="formP3">
         <h5 class="section-title">I. HÁBITOS PERSONALES</h5>
         <div class="row g-3 mb-4">
-            <div class="col-md-2"><label>¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-3"><label>¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-3"><label>CANTIDAD</label><input type="text" id="fuma_cantidad" class="form-control" value="0"></div>
             <div class="col-md-3"><label>¿BEBE ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-3"><label>FRECUENCIA</label><input type="text" id="alcohol_frecuencia" class="form-control" value="SIN PARTICULAR"></div>
             <div class="col-md-3"><label>¿CONSUME DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label>PIJCHAR (COCA)</label><select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label>¿HACE DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-4"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="Ej: ORH+"></div>
+            <div class="col-md-3"><label>TIPO</label><input type="text" id="drogas_tipo" class="form-control" value="NINGUNA"></div>
+            <div class="col-md-3"><label>PIJCHAR (COCA)</label><select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-3"><label>DEPORTE</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-6"><label>DETALLE DEPORTE</label><input type="text" id="deporte_detalle" class="form-control" value="NINGUNO"></div>
+            <div class="col-md-6"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ: ORH+"></div>
         </div>
 
-        <h5 class="section-title">II. HISTORIA LABORAL (ANTECEDENTES OCUPACIONALES)</h5>
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle" id="tablaEmpleos">
+        <h5 class="section-title">II. HISTORIA LABORAL</h5>
+        <div class="table-responsive mb-4">
+            <table class="table table-bordered" id="tablaEmpleos">
                 <thead class="table-light">
                     <tr>
-                        <th>EDAD INICIO</th>
-                        <th>EMPRESA / LUGAR</th>
-                        <th>CARGO / OCUPACIÓN</th>
-                        <th>TIEMPO</th>
-                        <th>RIESGOS EXPUESTOS</th>
-                        <th>USO EPP</th>
+                        <th>EDAD INICIO</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" class="form-control edad_inicio"></td>
+                        <td><input type="text" class="form-control edad_inicio"></td>
                         <td><input type="text" class="form-control empresa"></td>
                         <td><input type="text" class="form-control cargo"></td>
                         <td><input type="text" class="form-control tiempo_lab"></td>
-                        <td><input type="text" class="form-control riesgos_exp"></td>
-                        <td><select class="form-select uso_epp"><option value="SI">SI</option><option value="NO">NO</option></select></td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <h5 class="section-title">III. FACTORES DE RIESGO EN SU VIDA LABORAL</h5>
+        <h5 class="section-title">III. FACTORES DE RIESGO</h5>
         <div class="row mb-4">
             <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="RUIDO" id="r1"><label class="form-check-label" for="r1">RUIDO</label></div></div>
-            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="VIBRACIÓN" id="r2"><label class="form-check-label" for="r2">VIBRACIÓN</label></div></div>
-            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="RADIACIÓN" id="r3"><label class="form-check-label" for="r3">RADIACIÓN</label></div></div>
-            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="POLVOS" id="r4"><label class="form-check-label" for="r4">POLVOS</label></div></div>
-            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="GASES / VAPORES" id="r5"><label class="form-check-label" for="r5">GASES / VAPORES</label></div></div>
-            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="ILUMINACIÓN" id="r6"><label class="form-check-label" for="r6">ILUMINACIÓN</label></div></div>
-            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="ERGONÓMICO" id="r7"><label class="form-check-label" for="r7">ERGONÓMICO</label></div></div>
-            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="BIOLÓGICO" id="r8"><label class="form-check-label" for="r8">BIOLÓGICO</label></div></div>
-            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="PSICOSOCIAL" id="r9"><label class="form-check-label" for="r9">PSICOSOCIAL</label></div></div>
+            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="POLVOS" id="r2"><label class="form-check-label" for="r2">POLVOS</label></div></div>
+            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="ERGONOMICO" id="r3"><label class="form-check-label" for="r3">ERGONÓMICO</label></div></div>
+            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="VIBRACION" id="r4"><label class="form-check-label" for="r4">VIBRACIÓN</label></div></div>
+            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="GASES" id="r5"><label class="form-check-label" for="r5">GASES / VAPORES</label></div></div>
+            <div class="col-md-4"><div class="form-check"><input class="form-check-input riesgo" type="checkbox" value="BIOLOGICO" id="r6"><label class="form-check-label" for="r6">BIOLÓGICO</label></div></div>
         </div>
 
         <button type="submit" class="btn-save" id="btnGuardar">💾 GUARDAR Y GENERAR REPORTE FINAL</button>
@@ -88,38 +80,36 @@
 
     window.onload = async () => {
         if (!p_id) { window.location.href = "registro_paciente.html"; return; }
-        try {
-            const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
-            const data = await res.json();
-            document.getElementById('display_nombre').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
-            document.getElementById('display_ci').innerText = data.paciente.ci;
-        } catch (e) { console.error("Error cargando paciente"); }
+        const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
+        const data = await res.json();
+        document.getElementById('display_info').innerText = `PACIENTE: ${data.paciente.apellido} ${data.paciente.nombre} | CI: ${data.paciente.ci}`;
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnGuardar');
         btn.innerText = "⌛ ENVIANDO DATOS...";
-        btn.disabled = true;
-
-        // Recolectar Riesgos (Checkboxes)
+        
         const riesgos = Array.from(document.querySelectorAll('.riesgo:checked')).map(cb => cb.value).join(', ');
+        const emp = document.querySelector('.empresa').value;
+        const car = document.querySelector('.cargo').value;
 
-        // Datos básicos
         const payload = {
-            paciente_id: parseInt(p_id),
+            paciente_id: p_id,
             fuma: document.getElementById('fuma').value,
+            fuma_cantidad: document.getElementById('fuma_cantidad').value.toUpperCase(),
             alcohol: document.getElementById('alcohol').value,
+            alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value.toUpperCase(),
             drogas: document.getElementById('drogas').value,
+            drogas_tipo: document.getElementById('drogas_tipo').value.toUpperCase(),
             coca: document.getElementById('coca').value,
             deporte: document.getElementById('deporte').value,
+            deporte_detalle: document.getElementById('deporte_detalle').value.toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            riesgos_laborales: riesgos
+            riesgos_expuestos: riesgos,
+            historia_laboral: `EMPRESA: ${emp} | CARGO: ${car}`.toUpperCase(),
+            observaciones: "SIN OBSERVACIONES"
         };
-
-        // Recolectar primer empleo de la tabla (simplificado para el historial)
-        const fila = document.querySelector('#tablaEmpleos tbody tr');
-        payload.historia_laboral = `EMPRESA: ${fila.querySelector('.empresa').value} | CARGO: ${fila.querySelector('.cargo').value} | TIEMPO: ${fila.querySelector('.tiempo_lab').value}`;
 
         try {
             const r = await fetch(`${API}/p3/`, {
@@ -127,18 +117,9 @@
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
-
-            if (r.ok) {
-                window.location.href = "generar_reporte.html";
-            } else {
-                alert("ERROR AL GUARDAR P3");
-            }
-        } catch (err) {
-            alert("ERROR DE CONEXIÓN CON EL SERVIDOR");
-        } finally {
-            btn.innerText = "💾 GUARDAR Y GENERAR REPORTE FINAL";
-            btn.disabled = false;
-        }
+            if (r.ok) { window.location.href = "generar_reporte.html"; }
+            else { alert("ERROR EN SERVIDOR"); }
+        } catch (err) { alert("ERROR DE CONEXIÓN"); }
     };
 </script>
 </body>
