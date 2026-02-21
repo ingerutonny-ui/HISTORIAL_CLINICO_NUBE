@@ -18,7 +18,6 @@ app.add_middleware(
 def get_db_connection():
     return psycopg2.connect(os.environ.get('DATABASE_URL'), sslmode='require')
 
-# MODELOS DE DATOS
 class Paciente(BaseModel):
     nombre: str; apellido: str; ci: str; codigo: Optional[str] = None
 
@@ -35,13 +34,16 @@ class P2Data(BaseModel):
 
 class P3Data(BaseModel):
     paciente_id: int
-    grupo_sanguineo: Any  # Usamos Any para evitar el error 500 si llega un objeto
-    fuma: Any; alcohol: Any; drogas: Any; coca: Any; deporte: Any
+    grupo_sanguineo: str
+    fuma: str
+    alcohol: str
+    drogas: str
+    pijchar: str  # Sincronizado con el HTML
+    deporte: str
     historia_laboral: str 
     riesgos_expuestos: str
-    observaciones: Any
+    observaciones: Optional[str] = "REGISTRO COMPLETADO"
 
-# ENDPOINTS
 @app.post("/api/pacientes")
 async def crear_paciente(p: Paciente):
     conn = get_db_connection(); cur = conn.cursor()
@@ -60,19 +62,16 @@ async def crear_paciente(p: Paciente):
 async def guardar_p3(d: P3Data):
     conn = get_db_connection(); cur = conn.cursor()
     try:
-        # Convertimos a string por si el frontend envía el objeto del select
         cur.execute("""
             INSERT INTO p3 (paciente_id, grupo_sanguineo, fuma, alcohol, drogas, coca, deporte, 
             historia_laboral, riesgos_expuestos, observaciones) 
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-            (d.paciente_id, str(d.grupo_sanguineo), str(d.fuma), str(d.alcohol), 
-             str(d.drogas), str(d.coca), str(d.deporte),
-             d.historia_laboral, d.riesgos_expuestos, str(d.observaciones)))
+            (d.paciente_id, d.grupo_sanguineo, d.fuma, d.alcohol, d.drogas, d.pijchar, d.deporte,
+             d.historia_laboral, d.riesgos_expuestos, d.observaciones))
         conn.commit()
         return {"status": "ok"}
     except Exception as e:
         conn.rollback()
-        print(f"Error en P3: {e}")
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         cur.close(); conn.close()
