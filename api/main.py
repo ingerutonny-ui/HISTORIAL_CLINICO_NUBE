@@ -10,10 +10,11 @@ except ImportError:
     import models, schemas, crud
     from database import SessionLocal, engine
 
+# Inicialización de PostgreSQL
 models.Base.metadata.create_all(bind=engine)
 
-# Se elimina el prefijo del constructor para evitar el doble /api/ que vemos en logs
-app = FastAPI()
+# Desactivamos la redirección automática de barras para que FastAPI no confunda a Render
+app = FastAPI(redirect_slashes=False)
 
 app.add_middleware(
     CORSMiddleware,
@@ -30,25 +31,29 @@ def get_db():
     finally:
         db.close()
 
-# RUTA DE PACIENTE: Acepta con y sin prefijo para asegurar recuperación de datos
-@app.get("/paciente-completo/{p_id}")
+# --- RUTAS DE PACIENTE ---
 @app.get("/api/paciente-completo/{p_id}")
+@app.get("/paciente-completo/{p_id}")
 async def get_paciente_completo(p_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == p_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"paciente": paciente}
 
-# RUTA DE GUARDADO P3: La clave es el "trailing slash" opcional
+# --- RUTA P3: TRIPLE BLINDAJE (Sin y con barra, con y sin API) ---
 @app.post("/guardar-p3")
 @app.post("/guardar-p3/")
 @app.post("/api/guardar-p3")
 @app.post("/api/guardar-p3/")
 async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # Mantenemos integridad de P1, P2 y P3 mapeados [cite: 2026-02-11]
+        # Mapeo íntegro de campos P1, P2 y P3 para el manual [cite: 2026-02-11]
         resultado = crud.upsert_p3(db, data.model_dump())
         return {"status": "success", "id": resultado.id}
     except Exception as e:
-        print(f"Error detectado: {str(e)}")
+        print(f"ERROR CRÍTICO: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/health")
+def health():
+    return {"status": "ok"}
