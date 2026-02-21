@@ -32,7 +32,6 @@
         .btn-final { background: var(--verde-boton); color: white; font-weight: bold; width: 100%; padding: 10px; border-radius: 6px; border: none; margin-top: 15px; font-size: 0.9rem; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(39, 174, 96, 0.2); }
         .btn-final:hover { background-color: #1e8449; }
 
-        /* Overlay de éxito */
         #successOverlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); z-index: 1000; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
     </style>
 </head>
@@ -133,16 +132,18 @@
         try {
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
-            const nombreCompleto = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
-            const codigo = d.paciente.codigo || 'S/C';
-
+            
+            // CORRECCIÓN: Acceso directo a d.paciente
+            const p = d.paciente;
+            const nombreCompleto = `${p.nombre} ${p.apellido}`.toUpperCase();
+            
             document.getElementById('v_nombre').innerText = nombreCompleto;
-            document.getElementById('v_ci').innerText = d.paciente.ci;
-            document.getElementById('v_codigo').innerText = codigo;
+            document.getElementById('v_ci').innerText = p.ci;
+            document.getElementById('v_codigo').innerText = p.codigo; // Mapeo de código
             
             document.getElementById('res_nombre').innerText = nombreCompleto;
-            document.getElementById('res_codigo').innerText = codigo;
-        } catch (e) { console.error("Error al cargar"); }
+            document.getElementById('res_codigo').innerText = p.codigo;
+        } catch (e) { console.error("Error al cargar datos del paciente"); }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
