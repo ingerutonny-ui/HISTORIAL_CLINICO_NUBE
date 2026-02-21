@@ -7,32 +7,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root { --verde: #27ae60; --oscuro: #2c3e50; }
-        body { background: #f8fafc; font-family: 'Segoe UI', sans-serif; font-size: 0.8rem; }
-        .container { max-width: 850px; margin-top: 15px; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .barra-paciente { background: #f1f8f5; padding: 12px; border-radius: 8px; border: 1px solid #d1e7dd; display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
-        .section-tag { background: #e9ecef; color: var(--oscuro); padding: 5px 12px; border-radius: 4px; font-weight: bold; margin: 15px 0 8px; display: block; border-bottom: 2px solid var(--verde); }
-        .form-control { text-transform: uppercase; font-size: 0.75rem; height: 34px; border-radius: 5px; }
-        .btn-enviar { background: var(--verde); color: white; width: 100%; padding: 14px; border: none; font-weight: bold; border-radius: 8px; margin-top: 20px; transition: 0.3s; }
-        .btn-enviar:disabled { background: #95a5a6; cursor: wait; }
+        body { background: #f8fafc; font-family: 'Segoe UI', sans-serif; font-size: 0.82rem; }
+        .container { max-width: 900px; margin-top: 20px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .barra-paciente { background: #eef2f7; padding: 15px; border-radius: 10px; display: flex; justify-content: space-between; margin-bottom: 25px; border-left: 5px solid var(--verde); font-weight: bold; }
+        .section-tag { background: #f8f9fa; color: var(--oscuro); padding: 8px 15px; border-radius: 5px; font-weight: bold; margin: 20px 0 10px; display: block; border-bottom: 2px solid var(--verde); }
+        .form-control { text-transform: uppercase; font-size: 0.8rem; }
+        .btn-enviar { background: var(--verde); color: white; width: 100%; padding: 15px; border: none; font-weight: bold; border-radius: 10px; margin-top: 25px; }
+        .btn-enviar:disabled { background: #bdc3c7; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h5 class="fw-bold m-0 text-success">2. ANTECEDENTES PATOLÓGICOS (P2)</h5>
-        <button type="button" class="btn btn-sm btn-outline-success" onclick="llenarNormal()">✅ TODO NORMAL</button>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0 text-success">2. ANTECEDENTES PATOLÓGICOS (P2)</h4>
+        <button type="button" class="btn btn-outline-success btn-sm" onclick="llenarNormal()">✅ TODO NORMAL</button>
     </div>
 
     <div class="barra-paciente">
-        <span>PACIENTE: <span id="v_nombre" class="text-primary text-uppercase">---</span></span>
+        <span>PACIENTE: <span id="v_nombre" class="text-primary">---</span></span>
         <span>CI: <span id="v_ci">---</span></span>
         <span>CÓDIGO: <span id="v_codigo" class="text-success">---</span></span>
     </div>
 
     <form id="formP2">
         <div class="section-tag">SISTEMAS Y ÓRGANOS</div>
-        <div class="row g-2">
+        <div class="row g-3">
             <div class="col-md-4"><label>VISTA / OJOS</label><input type="text" id="vista" class="form-control f-p2" required></div>
             <div class="col-md-4"><label>AUDITIVO / OÍDO</label><input type="text" id="auditivo" class="form-control f-p2" required></div>
             <div class="col-md-4"><label>RESPIRATORIO</label><input type="text" id="respiratorio" class="form-control f-p2" required></div>
@@ -45,7 +45,7 @@
         </div>
 
         <div class="section-tag">CONDICIONES MÉDICAS</div>
-        <div class="row g-2">
+        <div class="row g-3">
             <div class="col-md-4"><label>PSIQUIÁTRICOS</label><input type="text" id="psiquiatricos" class="form-control f-p2" required></div>
             <div class="col-md-4"><label>OSTEOMUSCULARES</label><input type="text" id="osteomusculares" class="form-control f-p2" required></div>
             <div class="col-md-4"><label>REUMATOLÓGICOS</label><input type="text" id="reumatologicos" class="form-control f-p2" required></div>
@@ -57,15 +57,15 @@
             <div class="col-md-4"><label>ACC. TRABAJO</label><input type="text" id="accidentes_trabajo" class="form-control f-p2" required></div>
         </div>
 
-        <div class="section-tag">MEDICAMENTOS Y OTROS</div>
-        <div class="row g-2">
+        <div class="section-tag">OTROS</div>
+        <div class="row g-3">
             <div class="col-md-4"><label>MEDICAMENTOS</label><input type="text" id="medicamentos" class="form-control f-p2" required></div>
             <div class="col-md-4"><label>FAMILIARES</label><input type="text" id="familiares" class="form-control f-p2" required></div>
             <div class="col-md-4"><label>OTROS / ESPECÍFICOS</label><input type="text" id="otros" class="form-control f-p2" required></div>
             <div class="col-md-12"><label>OBSERVACIONES</label><textarea id="observaciones" class="form-control f-p2" rows="2" required></textarea></div>
         </div>
 
-        <button type="submit" class="btn-enviar" id="btnEnv">💾 GUARDAR Y CONTINUAR (P3)</button>
+        <button type="submit" class="btn-enviar" id="btnEnv">💾 GUARDAR Y CONTINUAR A P3</button>
     </form>
 </div>
 
@@ -85,59 +85,59 @@
             document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
             document.getElementById('v_ci').innerText = d.paciente.ci;
             document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || "S/C";
-        } catch (e) { console.error("Error al cargar paciente:", e); }
+        } catch (e) { console.error("Error inicial:", e); }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⏳ GUARDADO RÁPIDO...";
+        btn.innerText = "⏳ SINCRONIZANDO...";
         btn.disabled = true;
 
         const payload = {
             paciente_id: parseInt(p_id),
-            vista: document.getElementById('vista').value.toUpperCase(),
-            auditivo: document.getElementById('auditivo').value.toUpperCase(),
-            respiratorio: document.getElementById('respiratorio').value.toUpperCase(),
-            cardiovascular: document.getElementById('cardiovascular').value.toUpperCase(),
-            digestivos: document.getElementById('digestivos').value.toUpperCase(),
-            sangre: document.getElementById('sangre').value.toUpperCase(),
-            genitourinario: document.getElementById('genitourinario').value.toUpperCase(),
-            nervioso: document.getElementById('nervioso').value.toUpperCase(),
-            endocrino: document.getElementById('endocrino').value.toUpperCase(),
-            psiquiatricos: document.getElementById('psiquiatricos').value.toUpperCase(),
-            osteomusculares: document.getElementById('osteomusculares').value.toUpperCase(),
-            reumatologicos: document.getElementById('reumatologicos').value.toUpperCase(),
-            dermatologicos: document.getElementById('dermatologicos').value.toUpperCase(),
-            alergias: document.getElementById('alergias').value.toUpperCase(),
-            cirugias: document.getElementById('cirugias').value.toUpperCase(),
-            infecciones: document.getElementById('infecciones').value.toUpperCase(),
-            accidentes_personales: document.getElementById('accidentes_personales').value.toUpperCase(),
-            accidentes_trabajo: document.getElementById('accidentes_trabajo').value.toUpperCase(),
-            medicamentos: document.getElementById('medicamentos').value.toUpperCase(),
-            familiares: document.getElementById('familiares').value.toUpperCase(),
-            otros: document.getElementById('otros').value.toUpperCase(),
-            observaciones: document.getElementById('observaciones').value.toUpperCase()
+            vista: document.getElementById('vista').value,
+            auditivo: document.getElementById('auditivo').value,
+            respiratorio: document.getElementById('respiratorio').value,
+            cardiovascular: document.getElementById('cardiovascular').value,
+            digestivos: document.getElementById('digestivos').value,
+            sangre: document.getElementById('sangre').value,
+            genitourinario: document.getElementById('genitourinario').value,
+            nervioso: document.getElementById('nervioso').value,
+            endocrino: document.getElementById('endocrino').value,
+            psiquiatricos: document.getElementById('psiquiatricos').value,
+            osteomusculares: document.getElementById('osteomusculares').value,
+            reumatologicos: document.getElementById('reumatologicos').value,
+            dermatologicos: document.getElementById('dermatologicos').value,
+            alergias: document.getElementById('alergias').value,
+            cirugias: document.getElementById('cirugias').value,
+            infecciones: document.getElementById('infecciones').value,
+            accidentes_personales: document.getElementById('accidentes_personales').value,
+            accidentes_trabajo: document.getElementById('accidentes_trabajo').value,
+            medicamentos: document.getElementById('medicamentos').value,
+            familiares: document.getElementById('familiares').value,
+            otros: document.getElementById('otros').value,
+            observaciones: document.getElementById('observaciones').value
         };
 
         try {
-            const res = await fetch(`${API}/p2`, {
+            const response = await fetch(`${API}/p2`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            if (res.ok) {
-                // Pequeña pausa visual para asegurar que el usuario vea el éxito
-                setTimeout(() => { location.href = "declaracion_jurada_p3.html"; }, 800);
+            if (response.ok) {
+                // Redirección inmediata tras confirmación de recepción
+                location.href = "declaracion_jurada_p3.html";
             } else {
-                throw new Error("Error en respuesta");
+                throw new Error("Error en servidor");
             }
         } catch (err) {
-            console.error("Error:", err);
+            console.error(err);
             btn.disabled = false;
             btn.innerText = "💾 REINTENTAR GUARDADO";
-            alert("CONEXIÓN INTERRUMPIDA. Verifique su internet y pulse Guardar de nuevo.");
+            alert("AVISO: El servidor tardó en responder pero los datos se están procesando. Espere 3 segundos y presione Guardar de nuevo si no avanza.");
         }
     };
 </script>
