@@ -10,24 +10,24 @@
         body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; font-size: 0.8rem; color: #333; }
         .container { max-width: 900px; margin-top: 10px; background: white; padding: 15px 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
         
-        /* Encabezado Compacto */
+        /* Encabezado según Captura 3 */
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .titulo-p2 { font-size: 1rem; font-weight: bold; color: #2c3e50; margin: 0; }
         .btn-todo-normal { background: white; color: var(--verde-esmeralda); border: 1.5px solid var(--verde-esmeralda); font-weight: bold; font-size: 0.65rem; padding: 3px 10px; border-radius: 4px; }
 
-        /* Barra de Datos */
+        /* Barra de Datos - FIX CÓDIGO */
         .barra-paciente { background: #f8f9fa; padding: 6px 15px; border-radius: 5px; border: 1px solid #e9ecef; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: 600; font-size: 0.75rem; }
-        .text-blue { color: #3498db; text-transform: uppercase; }
+        .text-blue { color: #3498db; text-transform: uppercase; font-weight: 800; }
 
         /* Secciones */
         .section-tag { border-left: 3px solid var(--verde-esmeralda); color: #1e4d2b; font-size: 0.7rem; font-weight: bold; text-transform: uppercase; padding-left: 8px; margin: 12px 0 8px; background: #fcfcfc; }
         
-        /* Inputs */
+        /* Inputs compactos */
         label { font-size: 0.6rem; font-weight: bold; color: #7f8c8d; margin-bottom: 1px; display: block; }
         .form-control { text-transform: uppercase; border-radius: 4px; font-size: 0.75rem; padding: 4px 8px; border: 1px solid #dcdde1; height: 30px; }
         
         /* Botón Guardar Verde Esmeralda */
-        .btn-guardar { background: var(--verde-esmeralda); color: white; font-weight: bold; width: 100%; padding: 8px; border-radius: 5px; border: none; margin-top: 20px; font-size: 0.85rem; }
+        .btn-guardar { background: var(--verde-esmeralda); color: white; font-weight: bold; width: 100%; padding: 10px; border-radius: 6px; border: none; margin-top: 20px; font-size: 0.85rem; }
     </style>
 </head>
 <body>
@@ -39,9 +39,9 @@
     </div>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">...</span></div>
-        <div>CI: <span id="v_ci" class="text-blue">...</span></div>
-        <div>CÓDIGO: <span id="v_codigo" class="text-blue" style="font-weight: 800; font-size: 0.85rem;">...</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
+        <div>CI: <span id="v_ci" class="text-blue">---</span></div>
+        <div>CÓDIGO: <span id="v_codigo" class="text-blue" style="background: #e1f5fe; padding: 2px 8px; border-radius: 4px;">---</span></div>
     </div>
 
     <form id="formP2">
@@ -76,7 +76,7 @@
             <div class="col-md-4"><label>MEDICAMENTOS</label><input type="text" id="medicamentos" class="form-control f-p2"></div>
             <div class="col-md-4"><label>FAMILIARES</label><input type="text" id="familiares" class="form-control f-p2"></div>
             <div class="col-md-4"><label>OTROS</label><input type="text" id="otros" class="form-control f-p2"></div>
-            <div class="col-md-12"><label>OBSERVACIONES</label><textarea id="observaciones" class="form-control f-p2" rows="1"></textarea></div>
+            <div class="col-md-12"><label>OBSERVACIONES GENERALES</label><textarea id="observaciones" class="form-control f-p2" rows="1"></textarea></div>
         </div>
 
         <button type="submit" class="btn-guardar" id="btnEnv">💾 GUARDAR Y CONTINUAR A PARTE 3</button>
@@ -92,26 +92,30 @@
     }
 
     window.onload = async () => {
-        if(!p_id) { location.href="registro_paciente.html"; return; }
+        if(!p_id) { alert("Sesión expirada"); location.href="registro_paciente.html"; return; }
+        
         try {
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const d = await res.json();
             
-            document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`;
+            document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
             document.getElementById('v_ci').innerText = d.paciente.ci;
             
-            // MAPEO DEFINITIVO DEL CÓDIGO
-            document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || "GENERANDO...";
+            // Triple verificación del código para que no salga vacío
+            const codigoFinal = d.paciente.codigo_paciente || d.paciente.codigo || localStorage.getItem('p_codigo') || "S/C";
+            document.getElementById('v_codigo').innerText = codigoFinal;
             
         } catch (e) { 
-            console.error("Error cargando paciente");
+            console.error("Error cargando datos del servidor");
+            // Recuperación de emergencia desde localStorage
+            document.getElementById('v_codigo').innerText = localStorage.getItem('p_codigo') || "S/C";
         }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⌛ PROCESANDO...";
+        btn.innerText = "⌛ ENVIANDO...";
         btn.disabled = true;
 
         const data = { paciente_id: p_id };
@@ -122,22 +126,20 @@
         try {
             const res = await fetch(`${API}/p2`, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json' 
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
 
             if(res.ok) { 
                 location.href = "declaracion_jurada_p3.html"; 
             } else { 
-                const errData = await res.json();
-                alert("ERROR SERVIDOR: " + JSON.stringify(errData));
+                const errorLog = await res.json();
+                console.error(errorLog);
+                alert("Error de servidor (500). Verifique los datos.");
                 btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR";
             }
         } catch (err) { 
-            alert("CONEXIÓN FALLIDA: Revise si el Backend en Render está activo."); 
+            alert("CONEXIÓN FALLIDA: El servidor no responde. Reintente en un momento."); 
             btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR";
         }
     };
