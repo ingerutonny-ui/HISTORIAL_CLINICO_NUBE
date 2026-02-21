@@ -13,9 +13,7 @@
         .section-tag { background: #f8f9fa; padding: 8px 12px; font-weight: bold; margin-top: 20px; border-bottom: 2px solid var(--ohs-primary); color: #1b5e20; text-transform: uppercase; }
         .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 35px; border-radius: 5px; }
         .btn-final { background: var(--ohs-dark); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 25px; font-size: 1rem; transition: 0.3s; }
-        .btn-final:hover { background: #1e8449; transform: translateY(-2px); }
         .btn-add { background: #34495e; color: white; font-size: 0.7rem; border: none; border-radius: 5px; padding: 6px 15px; margin-bottom: 10px; }
-        .table thead { background: #f2f2f2; }
     </style>
 </head>
 <body>
@@ -51,10 +49,10 @@
 
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
         <div class="p-2">
-            <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR EXPERIENCIA</button>
-            <table class="table table-sm table-bordered align-middle">
-                <thead>
-                    <tr class="text-center"><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
+            <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
+            <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                    <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
                 </thead>
                 <tbody id="tBody">
                     <tr>
@@ -71,27 +69,28 @@
 
         <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="row g-3 p-3">
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="RUIDO"> RUIDO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="POLVOS"> POLVOS / GASES</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="VIBRACION"> VIBRACIÓN</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> TRABAJO EN ALTURA</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
-            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICOS"> QUÍMICOS</div></div>
+            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div></div>
+            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div></div>
+            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="ERGONOMICO"> ERGONÓMICO</div></div>
+            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="BIOLOGICO"> BIOLÓGICO</div></div>
+            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="VIBRACION"> VIBRACIÓN</div></div>
+            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="ALTURA"> ALTURA</div></div>
+            <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-final">💾 GUARDAR Y SINCRONIZAR CON POSTGRESQL</button>
+        <button type="submit" id="btnS" class="btn-final">💾 GUARDAR EN POSTGRESQL</button>
     </form>
 </div>
 
 <script>
+    // URL DE RENDER SIN /API/ PARA EVITAR 404
     const API = "https://historial-clinico-936s.onrender.com";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if(!pid) return;
+        if(!pid) { alert("NO SE ENCONTRÓ ID DE PACIENTE"); return; }
         try {
+            // RUTA CORREGIDA PARA RECUPERAR DATOS
             const res = await fetch(`${API}/get-paciente/${pid}`);
             if(res.ok) {
                 const d = await res.json();
@@ -99,7 +98,7 @@
                 document.getElementById('v_ci').innerText = d.paciente.ci;
                 document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
             }
-        } catch(e) { console.error("Error cargando cabecera de paciente"); }
+        } catch(e) { console.error("Error cargando paciente"); }
     };
 
     function addRow() {
@@ -111,7 +110,7 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const b = document.getElementById('btnS');
-        b.innerText = "⏳ ENVIANDO A LA NUBE..."; b.disabled = true;
+        b.innerText = "⏳ SINCRONIZANDO..."; b.disabled = true;
 
         const hist = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
@@ -119,10 +118,8 @@
             if(em) {
                 hist.push({
                     edad: tr.querySelector('.r-ed').value || "0",
-                    empresa: em.toUpperCase(),
-                    cargo: tr.querySelector('.r-ca').value.toUpperCase(),
-                    tiempo: tr.querySelector('.r-ti').value || "0",
-                    riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
+                    empresa: em.toUpperCase(), cargo: tr.querySelector('.r-ca').value.toUpperCase(),
+                    tiempo: tr.querySelector('.r-ti').value || "0", riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
                     epp: tr.querySelector('.r-ep').value
                 });
             }
@@ -133,20 +130,20 @@
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value || "0",
             alcohol: document.getElementById('alcohol').value,
-            alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value || "S/D",
+            alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
             drogas: document.getElementById('drogas').value,
-            drogas_tipo: document.getElementById('drogas_tipo').value || "S/D",
-            coca: document.getElementById('coca').value, // Sincronizado con schemas.py
+            drogas_tipo: document.getElementById('drogas_tipo').value,
+            coca: document.getElementById('coca').value, // CLAVE CORREGIDA
             deporte: document.getElementById('deporte').value,
-            deporte_detalle: document.getElementById('deporte_detalle').value || "S/D",
+            deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "MAPEADO TOTAL P1-P2-P3"
+            observaciones: "MAPEADO_TOTAL_P3"
         };
 
         try {
-            // LÍNEA 145: RUTA DIRECTA SIN /API/ PARA EVITAR 404
+            // RUTA POST CORREGIDA PARA LÍNEA 145
             const r = await fetch(`${API}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -154,15 +151,15 @@
             });
             
             if(r.ok) {
-                alert("✅ SINCRONIZACIÓN EXITOSA CON POSTGRESQL");
+                alert("✅ SINCRONIZACIÓN EXITOSA");
                 window.location.href = "index.html";
             } else {
                 const err = await r.json();
-                alert("❌ ERROR EN RENDER: " + JSON.stringify(err.detail));
-                b.disabled = false; b.innerText = "💾 GUARDAR Y SINCRONIZAR CON POSTGRESQL";
+                alert("❌ ERROR SERVER: " + JSON.stringify(err.detail));
+                b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch(err) {
-            alert("❌ FALLO CRÍTICO DE CONEXIÓN CON EL SERVIDOR");
+            alert("❌ FALLO DE CONEXIÓN");
             b.disabled = false;
         }
     };
