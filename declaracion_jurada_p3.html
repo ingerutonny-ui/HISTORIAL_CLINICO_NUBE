@@ -87,7 +87,6 @@
 </div>
 
 <script>
-    const pid = localStorage.getItem('p_id');
     const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
     function addFila() {
@@ -97,19 +96,22 @@
     }
 
     window.onload = () => {
-        // CORRECCIÓN DE MAPEO: Usar las claves exactas del registro
-        const nombre = localStorage.getItem('p_nombre') || "";
-        const apellido = localStorage.getItem('p_apellido') || "";
-        const ci = localStorage.getItem('p_ci') || "---";
-        const codigo = localStorage.getItem('p_codigo') || "---";
+        // CORRECCIÓN FINAL DE MAPEO: Usar las claves que el registro guarda realmente
+        const nombre = localStorage.getItem('p_nombre') || localStorage.getItem('nombre') || "";
+        const apellido = localStorage.getItem('p_apellido') || localStorage.getItem('apellido') || "";
+        const ci = localStorage.getItem('p_ci') || localStorage.getItem('ci') || "---";
+        const codigo = localStorage.getItem('p_codigo') || localStorage.getItem('codigo_paciente') || "---";
 
-        document.getElementById('v_nom').innerText = `${nombre} ${apellido}`.trim().toUpperCase() || "PACIENTE SIN NOMBRE";
+        document.getElementById('v_nom').innerText = `${nombre} ${apellido}`.trim().toUpperCase() || "PACIENTE";
         document.getElementById('v_ci').innerText = ci;
         document.getElementById('v_cod').innerText = codigo;
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
+        const pid = localStorage.getItem('p_id');
+        if(!pid) { alert("Error: No hay ID de paciente"); return; }
+
         const btn = document.getElementById('btnS');
         btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
@@ -128,7 +130,7 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: "[]",
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "REGISTRO_P3_OK"
+            observaciones: "P3_FINAL_SYNC"
         };
 
         try {
@@ -138,14 +140,15 @@
                 body: JSON.stringify(payload)
             });
             if (res.ok) {
-                alert("✅ HISTORIAL P3 GUARDADO");
+                alert("✅ HISTORIAL P3 GUARDADO CON ÉXITO");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR");
+                alert("❌ ERROR AL GUARDAR EN NUBE");
                 btn.disabled = false;
+                btn.innerText = "💾 GUARDAR TODO EL HISTORIAL P3";
             }
         } catch (e) {
-            alert("❌ FALLO DE RED");
+            alert("❌ FALLO DE RED/SERVIDOR");
             btn.disabled = false;
         }
     };
