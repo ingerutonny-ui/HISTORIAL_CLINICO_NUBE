@@ -42,7 +42,7 @@
     <h6 class="fw-bold mb-2" style="color: #1b5e20;">3. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h6>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">SINCRONIZANDO...</span></div>
         <div>CI: <span id="v_ci" class="text-blue">---</span></div>
         <div>CÓDIGO: <span id="v_codigo" class="text-codigo">---</span></div>
     </div>
@@ -53,15 +53,15 @@
             <div class="col-md-2"><label>¿FUMA?</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿ALCOHOL?</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿DROGAS?</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label>PIJCHAR?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="col-md-2"><label>PIJCHAR (COCA)?</label><select id="pijchar" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-2"><label>¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-2"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="ORH+"></div>
+            <div class="col-md-2"><label>GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" placeholder="EJ. ORH+"></div>
         </div>
 
         <div class="section-tag">II. HISTORIA LABORAL <button type="button" class="btn btn-secondary btn-add" onclick="addRow()">+ AGREGAR FILA</button></div>
         <table class="table table-bordered">
             <thead>
-                <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
+                <tr><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
             </thead>
             <tbody id="tablaLaboral">
                 <tr>
@@ -75,8 +75,8 @@
             </tbody>
         </table>
 
-        <div class="section-tag">III. RIESGOS EXPUESTOS</div>
-        <div class="risk-grid" id="riskCheckboxes">
+        <div class="section-tag">III. RIESGOS EXPUESTOS EN SU VIDA LABORAL</div>
+        <div class="risk-grid">
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="RUIDO" id="r1"><label class="form-check-label" for="r1">RUIDO</label></div>
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="POLVOS" id="r2"><label class="form-check-label" for="r2">POLVOS</label></div>
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="ERGONÓMICO" id="r3"><label class="form-check-label" for="r3">ERGONÓMICO</label></div>
@@ -91,7 +91,7 @@
             <div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="ALTURA" id="r12"><label class="form-check-label" for="r12">ALTURA</label></div>
         </div>
 
-        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR Y SINCRONIZAR P3</button>
+        <button type="submit" class="btn-final" id="btnFinalizar">💾 GUARDAR REGISTRO Y SINCRONIZAR</button>
     </form>
 </div>
 
@@ -99,37 +99,27 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     let p_id = localStorage.getItem('paciente_id') || localStorage.getItem('p_id');
 
-    window.onload = async () => {
-        if (!p_id) { 
-            alert("⚠️ PACIENTE NO SELECCIONADO. REGRESE AL INICIO."); 
-            return; 
-        }
-        
-        // Función de carga con reintento automático
-        const cargarDatos = async () => {
-            try {
-                const res = await fetch(`${API}/api/pacientes`);
-                if (!res.ok) throw new Error();
-                const data = await res.json();
-                const p = data.find(x => x.id == p_id);
-                
-                if (p) {
-                    const nombreFull = `${p.nombre} ${p.apellido}`.toUpperCase();
-                    document.getElementById('v_nombre').innerText = nombreFull;
-                    document.getElementById('v_ci').innerText = p.ci || '---';
-                    document.getElementById('v_codigo').innerText = (p.codigo && p.codigo !== "undefined") ? p.codigo : "S/C";
-                    
-                    document.getElementById('res_nombre').innerText = nombreFull;
-                    document.getElementById('res_codigo').innerText = document.getElementById('v_codigo').innerText;
-                }
-            } catch (e) { 
-                document.getElementById('v_nombre').innerText = "REINTENTANDO CONEXIÓN...";
-                setTimeout(cargarDatos, 2000); // Reintenta cada 2 segundos si falla
+    async function cargarPaciente() {
+        if (!p_id) return;
+        try {
+            const res = await fetch(`${API}/api/pacientes`);
+            const data = await res.json();
+            const p = data.find(x => x.id == p_id);
+            if (p) {
+                const n = `${p.nombre} ${p.apellido}`.toUpperCase();
+                document.getElementById('v_nombre').innerText = n;
+                document.getElementById('v_ci').innerText = p.ci || '---';
+                document.getElementById('v_codigo').innerText = p.codigo && p.codigo !== "undefined" ? p.codigo : "S/C";
+                document.getElementById('res_nombre').innerText = n;
+                document.getElementById('res_codigo').innerText = document.getElementById('v_codigo').innerText;
             }
-        };
+        } catch (e) {
+            document.getElementById('v_nombre').innerText = "CONECTANDO CON SERVIDOR...";
+            setTimeout(cargarPaciente, 3000);
+        }
+    }
 
-        cargarDatos();
-    };
+    window.onload = cargarPaciente;
 
     function addRow() {
         const row = `<tr><td><input type="number" class="form-control row-edad"></td><td><input type="text" class="form-control row-empresa"></td><td><input type="text" class="form-control row-cargo"></td><td><input type="number" class="form-control row-tiempo"></td><td><input type="text" class="form-control row-riesgos"></td><td><select class="form-select row-epp"><option value="SI">SI</option><option value="NO">NO</option></select></td></tr>`;
@@ -139,8 +129,7 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnFinalizar');
-        btn.innerText = "⏳ SINCRONIZANDO...";
-        btn.disabled = true;
+        btn.disabled = true; btn.innerText = "⏳ SINCRONIZANDO...";
 
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
@@ -160,7 +149,6 @@
         const riesgos_exp = [];
         document.querySelectorAll('.check-riesgo:checked').forEach(ch => riesgos_exp.push(ch.value));
 
-        // Mapeo completo para P3 - Sincronizado con generar_reporte.html
         const payload = {
             paciente_id: parseInt(p_id),
             fuma: document.getElementById('fuma').value,
@@ -179,14 +167,13 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
             if(res.ok) {
                 document.getElementById('successOverlay').style.display = 'flex';
                 setTimeout(() => { location.href = "index.html"; }, 2500);
             } else { throw new Error(); }
         } catch (err) {
-            alert("❌ ERROR AL GUARDAR. EL SERVIDOR NO RESPONDE.");
-            btn.disabled = false; btn.innerText = "💾 GUARDAR Y SINCRONIZAR P3";
+            alert("❌ ERROR DE RED. INTENTE NUEVAMENTE.");
+            btn.disabled = false; btn.innerText = "💾 GUARDAR REGISTRO Y SINCRONIZAR";
         }
     };
 </script>
