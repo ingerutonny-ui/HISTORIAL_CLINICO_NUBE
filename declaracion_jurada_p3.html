@@ -11,9 +11,8 @@
         .container { max-width: 950px; margin: 10px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .barra-paciente { background: #e8f8f5; padding: 15px; border-radius: 8px; border-left: 6px solid var(--ohs-primary); display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 20px; color: #2c3e50; }
         .section-tag { background: #f8f9fa; padding: 8px 12px; font-weight: bold; margin-top: 20px; border-bottom: 2px solid var(--ohs-primary); color: #1b5e20; text-transform: uppercase; }
-        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 35px; border-radius: 5px; }
+        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 35px; }
         .btn-final { background: var(--ohs-dark); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 25px; font-size: 1rem; cursor: pointer; }
-        .btn-add { background: #34495e; color: white; border: none; padding: 5px 15px; border-radius: 4px; font-size: 0.7rem; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -49,7 +48,6 @@
 
         <div class="section-tag">2. HISTORIA LABORAL RECIENTE</div>
         <div class="p-2">
-            <button type="button" class="btn-add" onclick="agregarFila()">+ AGREGAR FILA</button>
             <table class="table table-sm table-bordered">
                 <thead class="table-light"><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tBody">
@@ -81,26 +79,20 @@
 </div>
 
 <script>
-    // CORRECCIÓN RUTA API PARA EVITAR 404 EN LÍNEA 90
-    const URL_BASE = "https://historial-clinico-936s.onrender.com/api";
-    const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
-
-    function agregarFila() {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="number" class="form-control r-ed"></td><td><input type="text" class="form-control r-em"></td><td><input type="text" class="form-control r-ca"></td><td><input type="number" class="form-control r-ti"></td><td><input type="text" class="form-control r-ri"></td><td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
-        document.getElementById('tBody').appendChild(tr);
-    }
+    // USAMOS LA URL EXACTA DEL BACKEND
+    const API_URL = "https://historial-clinico-936s.onrender.com/api";
+    const pacienteId = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if (!pid) { alert("ERROR: NO HAY ID DE PACIENTE"); return; }
+        if (!pacienteId) { alert("ERROR: ID NO ENCONTRADO"); return; }
         
         try {
-            // LÍNEA 90: FETCH CORREGIDO CON URL ABSOLUTA Y PREFIJO API
-            const resp = await fetch(`${URL_BASE}/pacientes/${pid}`);
+            // LÍNEA 99 CORREGIDA: RUTA COMPATIBLE CON P1 Y P2
+            const response = await fetch(`${API_URL}/pacientes/${pacienteId}`);
             
-            if (resp.ok) {
-                const data = await resp.json();
-                // MAPEADO DIRECTO DE CAMPOS SEGÚN ESTRUCTURA DE BACKEND
+            if (response.ok) {
+                const data = await response.json();
+                // MAPEADO DIRECTO DESDE EL OBJETO RAIZ
                 document.getElementById('v_nom').innerText = `${data.nombre} ${data.apellido}`.toUpperCase();
                 document.getElementById('v_ci').innerText = data.ci || "---";
                 document.getElementById('v_cod').innerText = data.codigo_paciente || "---";
@@ -108,23 +100,22 @@
                 document.getElementById('v_nom').innerText = "ERROR EN SERVIDOR (404)";
             }
         } catch (err) {
-            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
-            console.error("Fallo fetch:", err);
+            document.getElementById('v_nom').innerText = "FALLO DE CONEXIÓN";
         }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const b = document.getElementById('btnS');
-        b.innerText = "⏳ GUARDANDO..."; b.disabled = true;
+        const btn = document.getElementById('btnS');
+        btn.innerText = "⏳ PROCESANDO..."; btn.disabled = true;
 
-        const hist = [];
+        const historia = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
-            const em = tr.querySelector('.r-em').value;
-            if (em) {
-                hist.push({
+            const emp = tr.querySelector('.r-em').value;
+            if (emp) {
+                historia.push({
                     edad: tr.querySelector('.r-ed').value || "0",
-                    empresa: em.toUpperCase(),
+                    empresa: emp.toUpperCase(),
                     cargo: tr.querySelector('.r-ca').value.toUpperCase(),
                     tiempo: tr.querySelector('.r-ti').value || "0",
                     riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
@@ -133,9 +124,9 @@
             }
         });
 
-        // PAYLOAD MAPEA TODOS LOS CAMPOS DE SCHEMAS.PY
-        const body = {
-            paciente_id: parseInt(pid),
+        // ESTRUCTURA DE DATOS PARA SCHEMAS.PY
+        const dataOut = {
+            paciente_id: parseInt(pacienteId),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value,
             alcohol: document.getElementById('alcohol').value,
@@ -146,29 +137,29 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(hist),
+            historia_laboral: JSON.stringify(historia),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_REPARADO_LINEA_90"
+            observaciones: "P3_REPARADO_FINAL"
         };
 
         try {
-            const res = await fetch(`${URL_BASE}/save-p3`, {
+            const res = await fetch(`${API_URL}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
+                body: JSON.stringify(dataOut)
             });
 
             if (res.ok) {
-                alert("✅ DATOS GUARDADOS");
+                alert("✅ P3 GUARDADO CON ÉXITO");
                 window.location.href = "index.html";
             } else {
-                const errorData = await res.json();
-                alert("❌ ERROR: " + JSON.stringify(errorData.detail));
-                b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
+                const error = await res.json();
+                alert("❌ ERROR: " + JSON.stringify(error.detail));
+                btn.disabled = false; btn.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch (e) {
-            alert("❌ FALLO DE RED");
-            b.disabled = false;
+            alert("❌ FALLO CRÍTICO DE RED");
+            btn.disabled = false;
         }
     };
 </script>
