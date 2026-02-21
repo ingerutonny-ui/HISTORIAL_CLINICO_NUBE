@@ -11,8 +11,8 @@
         .container { max-width: 950px; margin: 10px auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
         .barra-paciente { background: #e8f8f5; padding: 15px; border-radius: 8px; border-left: 6px solid var(--ohs-primary); display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 20px; color: #2c3e50; }
         .section-tag { background: #f8f9fa; padding: 8px 12px; font-weight: bold; margin-top: 20px; border-bottom: 2px solid var(--ohs-primary); color: #1b5e20; text-transform: uppercase; }
-        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 35px; border-radius: 5px; }
-        .btn-final { background: var(--ohs-dark); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 25px; font-size: 1rem; transition: 0.3s; cursor: pointer; }
+        .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 35px; }
+        .btn-final { background: var(--ohs-dark); color: white; font-weight: bold; width: 100%; padding: 15px; border: none; border-radius: 8px; margin-top: 25px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -79,7 +79,8 @@
 </div>
 
 <script>
-    const API = "https://historial-clinico-936s.onrender.com/api";
+    // URL DIRECTA PARA EVITAR EL 404 DE LAS CAPTURAS
+    const API = "https://historial-clinico-936s.onrender.com";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
@@ -92,7 +93,7 @@
                 document.getElementById('v_ci').innerText = d.paciente.ci;
                 document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
             }
-        } catch(e) { console.error("Error recuperando paciente"); }
+        } catch(e) { console.error("Fallo carga paciente"); }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
@@ -127,7 +128,7 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_SYNC_API"
+            observaciones: "MAPEADO_SIN_API_URL"
         };
 
         try {
@@ -138,7 +139,7 @@
             });
             
             if(r.ok) {
-                alert("✅ SINCRONIZACIÓN EXITOSA");
+                alert("✅ GUARDADO EXITOSO");
                 window.location.href = "index.html";
             } else {
                 const err = await r.json();
@@ -146,7 +147,7 @@
                 b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch(err) {
-            alert("❌ FALLO DE CONEXIÓN CON API RENDER");
+            alert("❌ FALLO DE CONEXIÓN CON RENDER");
             b.disabled = false;
         }
     };
