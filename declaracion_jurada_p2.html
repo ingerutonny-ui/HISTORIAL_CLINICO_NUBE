@@ -25,7 +25,7 @@
     </div>
 
     <div class="barra-paciente">
-        <span>PACIENTE: <span id="v_nombre" class="text-primary">---</span></span>
+        <span>PACIENTE: <span id="v_nombre" class="text-primary text-uppercase">---</span></span>
         <span>CI: <span id="v_ci">---</span></span>
         <span>CÓDIGO: <span id="v_codigo" class="text-success">---</span></span>
     </div>
@@ -57,12 +57,12 @@
             <div class="col-md-4"><label>ACC. TRABAJO</label><input type="text" id="accidentes_trabajo" class="form-control f-p2" required></div>
         </div>
 
-        <div class="section-tag">OTROS</div>
+        <div class="section-tag">MEDICAMENTOS Y OTROS</div>
         <div class="row g-2">
             <div class="col-md-4"><label>MEDICAMENTOS</label><input type="text" id="medicamentos" class="form-control f-p2" required></div>
             <div class="col-md-4"><label>FAMILIARES</label><input type="text" id="familiares" class="form-control f-p2" required></div>
             <div class="col-md-4"><label>OTROS / ESPECÍFICOS</label><input type="text" id="otros" class="form-control f-p2" required></div>
-            <div class="col-md-12"><label>OBSERVACIONES</label><textarea id="observaciones" class="form-control f-p2" rows="1" required></textarea></div>
+            <div class="col-md-12"><label>OBSERVACIONES</label><textarea id="observaciones" class="form-control f-p2" rows="2" required></textarea></div>
         </div>
 
         <button type="submit" class="btn-enviar" id="btnEnv">💾 GUARDAR Y CONTINUAR (P3)</button>
@@ -91,10 +91,10 @@
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnEnv');
-        btn.innerText = "⌛ GUARDANDO EN NUBE...";
+        btn.innerText = "⏳ FORZANDO ESCRITURA EN NUBE...";
         btn.disabled = true;
 
-        const payload = {
+        const data = {
             paciente_id: parseInt(p_id),
             vista: document.getElementById('vista').value.toUpperCase(),
             auditivo: document.getElementById('auditivo').value.toUpperCase(),
@@ -120,26 +120,32 @@
             observaciones: document.getElementById('observaciones').value.toUpperCase()
         };
 
-        try {
-            // Aumentamos el tiempo de espera a 40 segundos para Render
-            const res = await fetch(`${API}/p2`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+        const enviarConReintento = async (intentos = 3) => {
+            try {
+                const res = await fetch(`${API}/p2`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-            if (res.ok) {
-                location.href = "declaracion_jurada_p3.html";
-            } else {
-                throw new Error("Servidor no aceptó los datos");
+                if (res.ok) {
+                    location.href = "declaracion_jurada_p3.html";
+                } else {
+                    throw new Error("Saturación");
+                }
+            } catch (err) {
+                if (intentos > 0) {
+                    btn.innerText = `⏳ REINTENTANDO (${intentos})...`;
+                    setTimeout(() => enviarConReintento(intentos - 1), 2000);
+                } else {
+                    btn.disabled = false;
+                    btn.innerText = "💾 ERROR - REINTENTAR MANUALMENTE";
+                    alert("El servidor no responde tras varios intentos. Verifique su conexión.");
+                }
             }
-        } catch (err) {
-            console.log("Error de red o timeout:", err);
-            // Si falla por timeout pero los datos llegaron, intentamos pasar a P3
-            alert("⚠️ PROCESANDO... Render está lento. Pulse Aceptar y espere 3 segundos. Si no avanza, presione GUARDAR de nuevo.");
-            btn.disabled = false;
-            btn.innerText = "💾 INTENTAR DE NUEVO";
-        }
+        };
+
+        enviarConReintento();
     };
 </script>
 </body>
