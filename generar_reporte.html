@@ -81,14 +81,14 @@
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
     
-    // Mapeo EXACTO para que coincida con tu base de datos y la vista
+    // Mapeo EXACTO basado en tus formularios para capturar todo, incluido SANGRE
     const mapping_p2 = {
-        "vista_ojos": "VISTA / OJOS",
-        "auditivo_oido": "AUDITIVO / OÍDO",
+        "vista": "VISTA / OJOS",
+        "auditivo": "AUDITIVO / OÍDO",
         "respiratorio": "RESPIRATORIO",
         "cardiovascular": "CARDIOVASCULAR",
         "digestivos": "DIGESTIVOS",
-        "sangre_linfa": "SANGRE / LINFA",
+        "sangre": "SANGRE / LINFA", 
         "genitourinario": "GENITOURINARIO",
         "nervioso": "SISTEMA NERVIOSO",
         "endocrino": "ENDOCRINO",
@@ -99,11 +99,11 @@
         "alergias": "ALERGIAS",
         "cirugias": "CIRUGÍAS",
         "infecciones": "INFECCIONES",
-        "acc_personales": "ACCIDENTES PERSONALES",
-        "acc_trabajo": "ACCIDENTES DE TRABAJO",
+        "accidentes_personales": "ACCIDENTES PERSONALES",
+        "accidentes_trabajo": "ACCIDENTES DE TRABAJO",
         "medicamentos": "MEDICAMENTOS",
         "familiares": "ANTECEDENTES FAMILIARES",
-        "otros_especificos": "OTROS / ESPECÍFICOS",
+        "otros": "OTROS / ESPECÍFICOS",
         "observaciones": "OBSERVACIONES GENERALES"
     };
 
@@ -114,7 +114,7 @@
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
 
-            // P1
+            // Sección P1
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('r_ci').innerText = data.paciente.ci;
             document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
@@ -135,22 +135,20 @@
                 document.getElementById('r_profesion').innerText = p1.profesion_oficio || '---';
             }
 
-            // P2 - CORRECCIÓN DE CARGA
+            // Sección P2 - Mapeo Dinámico
             if (data.p2) {
                 const gridP2 = document.getElementById('grid_p2');
                 gridP2.innerHTML = Object.keys(mapping_p2).map(key => {
-                    const valorBase = data.p2[key];
-                    // Si el valor es nulo o vacío, ponemos SIN PARTICULAR
-                    const valorFinal = (valorBase && valorBase.trim() !== "") ? valorBase : "SIN PARTICULAR";
+                    const valor = (data.p2[key] && data.p2[key].trim() !== "") ? data.p2[key] : "SIN PARTICULAR";
                     return `
                         <div class="data-item">
                             <span class="label">${mapping_p2[key]}:</span> 
-                            <span class="val">${valorFinal}</span>
+                            <span class="val">${valor}</span>
                         </div>`;
                 }).join('');
             }
 
-            // P3
+            // Sección P3
             if (data.p3) {
                 document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
                 document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad || '0'})`;
