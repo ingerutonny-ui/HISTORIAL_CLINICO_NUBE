@@ -84,13 +84,15 @@
         if (!id_trabajo) { window.location.href = "index.html"; return; }
         try {
             const res = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
-            const d = await res.json();
-            if (d.paciente) {
-                document.getElementById('v_nombre').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
-                document.getElementById('v_ci').innerText = d.paciente.ci || "---";
-                document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+            if (res.ok) {
+                const d = await res.json();
+                if (d.paciente) {
+                    document.getElementById('v_nombre').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
+                    document.getElementById('v_ci').innerText = d.paciente.ci || "---";
+                    document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+                }
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Error cargando datos:", e); }
     };
 
     function addRow() {
@@ -108,7 +110,7 @@
         const historia = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
             const emp = tr.querySelector('.row-empresa').value;
-            if(emp.trim()) {
+            if(emp && emp.trim()) {
                 historia.push({
                     edad: tr.querySelector('.row-edad').value || 0,
                     empresa: emp.toUpperCase(),
@@ -127,38 +129,32 @@
             fuma: document.getElementById('fuma').value,
             alcohol: document.getElementById('alcohol').value,
             drogas: document.getElementById('drogas').value,
-            coca: document.getElementById('pijchar').value,
+            coca: document.getElementById('pijchar').value, // Mapeado a 'coca' para el backend
             deporte: document.getElementById('deporte').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase() || "S/D",
             historia_laboral: JSON.stringify(historia),
             riesgos_expuestos: JSON.stringify(riesgos_exp)
         };
 
-        // ESTRATEGIA MULTI-RUTA PARA ROMPER EL BUCLE
-        const rutas = ['/api/guardar_p3', '/api/guardar-p3', '/api/p3'];
-        let exito = false;
+        try {
+            const response = await fetch(`${API}/api/guardar-p3`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
 
-        for (let ruta of rutas) {
-            try {
-                const response = await fetch(`${API}${ruta}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok) {
-                    exito = true;
-                    break;
-                }
-            } catch (err) { continue; }
-        }
-
-        if (exito) {
-            alert("✅ P3 GUARDADO CON ÉXITO");
-            localStorage.clear();
-            window.location.href = "index.html";
-        } else {
-            alert("❌ ERROR CRÍTICO: El servidor no reconoce ninguna ruta de guardado (404).");
+            if (response.ok) {
+                alert("✅ P3 GUARDADO CON ÉXITO");
+                localStorage.removeItem('p_id_edicion');
+                window.location.href = "index.html";
+            } else {
+                const errorData = await response.json();
+                alert("❌ ERROR: " + (errorData.detail || "Fallo en el servidor"));
+                btn.disabled = false;
+                btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
+            }
+        } catch (err) {
+            alert("❌ ERROR DE CONEXIÓN: Verifica que el backend esté activo en Render.");
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
         }
