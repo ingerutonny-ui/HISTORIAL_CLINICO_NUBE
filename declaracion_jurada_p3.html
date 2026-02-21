@@ -9,45 +9,43 @@
         body { font-family: 'Segoe UI', sans-serif; background: #eef2f3; padding: 20px; text-transform: uppercase; }
         .container { max-width: 950px; margin: auto; background: white; padding: 35px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-top: 6px solid var(--primary); }
         
-        /* Cabecera Elegante */
+        /* Cabecera */
         .header-box { display: flex; justify-content: space-between; align-items: center; background: #f0fff4; padding: 15px 25px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #d1f2eb; }
         .info-item { font-size: 13px; font-weight: 800; }
         .info-label { color: var(--primary); margin-right: 5px; }
         .info-value { color: #2c3e50; }
-        .info-code { color: #27ae60; background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid #27ae60; }
+        .info-code { color: #27ae60; background: #fff; padding: 2px 8px; border-radius: 4px; border: 1px solid #27ae60; font-weight: 900; }
 
-        .section-title { color: var(--dark); font-weight: 800; border-bottom: 2px solid var(--primary); padding-bottom: 5px; margin-top: 30px; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title { color: var(--dark); font-weight: 800; border-bottom: 2px solid var(--primary); padding-bottom: 5px; margin-top: 30px; font-size: 15px; }
         
         /* Formulario */
         .grid-habitos { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; margin-top: 15px; }
         label { display: block; font-size: 10px; font-weight: 800; color: #7f8c8d; margin-bottom: 5px; }
-        select, input, textarea { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-weight: 700; font-size: 12px; transition: 0.3s; }
-        select:focus, input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 5px rgba(46, 204, 113, 0.2); }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ced4da; border-radius: 6px; font-weight: 700; font-size: 12px; }
 
         /* Tabla Laboral */
         .table-container { overflow-x: auto; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: var(--soft); color: #555; font-size: 10px; padding: 10px; border: 1px solid #dee2e6; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: var(--soft); font-size: 10px; padding: 10px; border: 1px solid #dee2e6; }
         td { padding: 5px; border: 1px solid #dee2e6; }
-        .btn-add { background: #34495e; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 10px; }
+        .btn-add { background: #34495e; color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 10px; float: right; margin-bottom: 5px; }
 
-        /* SECCIÓN III: RIESGOS (COMPLETA) */
+        /* SECCIÓN III: RIESGOS COMPLETOS */
         .checkbox-group { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 20px; background: var(--soft); border-radius: 10px; margin-top: 15px; }
-        .check-item { display: flex; align-items: center; font-size: 10px; font-weight: 800; color: #444; cursor: pointer; }
-        .check-item input { width: 16px; height: 16px; margin-right: 10px; cursor: pointer; accent-color: var(--primary); }
+        .check-item { display: flex; align-items: center; font-size: 10px; font-weight: 800; color: #444; }
+        .check-item input { width: 16px; height: 16px; margin-right: 10px; accent-color: var(--primary); }
 
-        .btn-save { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 35px; box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3); transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-save:hover { background: #27ae60; transform: translateY(-2px); }
-        .btn-save:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        .btn-save { width: 100%; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 35px; transition: 0.3s; }
+        .btn-save:hover { background: #27ae60; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header-box">
-        <div class="info-item"><span class="info-label">PACIENTE:</span> <span id="p_nombre" class="info-value">...</span></div>
-        <div class="info-item"><span class="info-label">CI:</span> <span id="p_ci" class="info-value">...</span></div>
-        <div class="info-item"><span class="info-label">CÓDIGO:</span> <span id="p_codigo" class="info-code">...</span></div>
+        <div class="info-item"><span class="info-label">PACIENTE:</span> <span id="p_nombre" class="info-value">CARGANDO...</span></div>
+        <div class="info-item"><span class="info-label">CI:</span> <span id="p_ci" class="info-value">---</span></div>
+        <div class="info-item"><span class="info-label">CÓDIGO:</span> <span id="p_codigo" class="info-code">ESPERANDO...</span></div>
     </div>
 
     <h3 class="section-title">I. HÁBITOS PERSONALES</h3>
@@ -60,12 +58,12 @@
         <div><label>GRUPO SANGUÍNEO</label><input type="text" id="gs" placeholder="EJ. ORH+"></div>
     </div>
 
-    <h3 class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS) <button class="btn-add" onclick="addRow()">+ AGREGAR FILA</button></h3>
+    <h3 class="section-title">II. HISTORIA LABORAL <button class="btn-add" onclick="addRow()">+ AGREGAR FILA</button></h3>
     <div class="table-container">
         <table id="tabla_laboral">
             <thead>
                 <tr>
-                    <th>EDAD INICIO</th>
+                    <th>EDAD</th>
                     <th>EMPRESA</th>
                     <th>OCUPACIÓN</th>
                     <th>TIEMPO (AÑOS)</th>
@@ -91,20 +89,18 @@
         <label class="check-item"><input type="checkbox" value="RUIDO"> RUIDO</label>
         <label class="check-item"><input type="checkbox" value="POLVOS"> POLVOS</label>
         <label class="check-item"><input type="checkbox" value="ERGONÓMICO"> ERGONÓMICO</label>
-        <label class="check-item"><input type="checkbox" value="VIBRACIÓN"> VIBRACIÓN</label>
+        <label class="check-item"><input type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         <label class="check-item"><input type="checkbox" value="GASES/VAPORES"> GASES/VAPORES</label>
         <label class="check-item"><input type="checkbox" value="BIOLÓGICO"> BIOLÓGICO</label>
         <label class="check-item"><input type="checkbox" value="RADIACIÓN"> RADIACIÓN</label>
         <label class="check-item"><input type="checkbox" value="ILUMINACIÓN"> ILUMINACIÓN</label>
-        <label class="check-item"><input type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</label>
+        <label class="check-item"><input type="checkbox" value="VIBRACIÓN"> VIBRACIÓN</label>
         <label class="check-item"><input type="checkbox" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</label>
         <label class="check-item"><input type="checkbox" value="QUÍMICOS"> QUÍMICOS</label>
         <label class="check-item"><input type="checkbox" value="ALTURA"> ALTURA</label>
     </div>
 
-    <button class="btn-save" id="btnGuardar" onclick="guardarP3()">
-        <span id="btnText">💾 GUARDAR REGISTRO Y SINCRONIZAR</span>
-    </button>
+    <button class="btn-save" id="btnGuardar" onclick="guardarP3()">💾 GUARDAR REGISTRO Y SINCRONIZAR</button>
 </div>
 
 <script>
@@ -121,16 +117,13 @@
             
             if (p) {
                 document.getElementById('p_nombre').innerText = `${p.apellido} ${p.nombre}`;
-                document.getElementById('p_ci').innerText = p.ci;
+                document.getElementById('p_ci').innerText = p.ci || '---';
                 
-                // --- PARCHE DE SEGURIDAD PARA EL CÓDIGO ---
-                let cod = p.codigo;
-                if (!cod || cod === "undefined" || cod === "null") {
-                    cod = "S/C";
-                }
-                document.getElementById('p_codigo').innerText = cod;
+                // LÓGICA DE CÓDIGO GARANTIZADA
+                let codMostrado = (p.codigo && p.codigo !== "undefined") ? p.codigo : "S/C";
+                document.getElementById('p_codigo').innerText = codMostrado;
             }
-        } catch (e) { console.error("Error inicial:", e); }
+        } catch (e) { console.error("Error al cargar:", e); }
     };
 
     function addRow() {
@@ -142,25 +135,23 @@
     async function guardarP3() {
         const btn = document.getElementById('btnGuardar');
         btn.disabled = true;
-        document.getElementById('btnText').innerText = "⏳ SINCRONIZANDO CON LA NUBE...";
+        btn.innerText = "⏳ SINCRONIZANDO...";
 
-        // 1. Serializar Tabla Laboral
         const historia = [];
         document.querySelectorAll("#tabla_laboral tbody tr").forEach(tr => {
-            const inp = tr.querySelectorAll("input, select");
-            if(inp[1].value) { // Solo si puso empresa
+            const inps = tr.querySelectorAll("input, select");
+            if(inps[1].value) { 
                 historia.push({
-                    edad_inicio: inp[0].value,
-                    empresa: inp[1].value,
-                    ocupacion: inp[2].value,
-                    tiempo: inp[3].value,
-                    riesgos: inp[4].value,
-                    epp: inp[5].value
+                    edad_inicio: inps[0].value,
+                    empresa: inps[1].value,
+                    ocupacion: inps[2].value,
+                    tiempo: inps[3].value,
+                    riesgos: inps[4].value,
+                    epp: inps[5].value
                 });
             }
         });
 
-        // 2. Serializar Riesgos
         const riesgos = [];
         document.querySelectorAll("#grupo_riesgos input:checked").forEach(c => riesgos.push(c.value));
 
@@ -185,21 +176,18 @@
             });
 
             if (response.ok) {
-                alert("🚀 P3 GUARDADO CORRECTAMENTE");
+                alert("🚀 P3 SINCRONIZADO CORRECTAMENTE");
                 window.location.href = "index.html";
             } else {
-                const errData = await response.json();
-                alert("❌ ERROR DEL SERVIDOR: " + (errData.error || "Desconocido"));
+                alert("❌ ERROR EN SERVIDOR. REVISA LOGS.");
             }
         } catch (error) {
-            alert("❌ ERROR DE RED: Verifica que el Backend en Render esté activo.");
-            console.error(error);
+            alert("❌ ERROR DE CONEXIÓN.");
         } finally {
             btn.disabled = false;
-            document.getElementById('btnText').innerText = "💾 GUARDAR REGISTRO Y SINCRONIZAR";
+            btn.innerText = "💾 GUARDAR REGISTRO Y SINCRONIZAR";
         }
     }
 </script>
-
 </body>
 </html>
