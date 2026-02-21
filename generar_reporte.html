@@ -4,36 +4,32 @@
     <meta charset="UTF-8">
     <title>REPORTE MÉDICO OHS</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #525659; display: flex; justify-content: center; padding: 20px; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #525659; display: flex; justify-content: center; padding: 20px; }
         .sheet { width: 210mm; min-height: 297mm; background: white; padding: 15mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); box-sizing: border-box; }
         
-        /* Encabezado igual a captura */
-        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; border-bottom: 2px solid #2ecc71; padding-bottom: 10px; }
         .logo { height: 60px; }
-        .header-center { text-align: center; flex: 1; }
-        .header-center h1 { margin: 0; font-size: 18px; color: #1a3a3a; font-weight: bold; letter-spacing: 0.5px; }
-        .header-center p { margin: 2px 0; font-size: 10px; font-weight: bold; }
+        .header-info { text-align: center; flex: 1; }
+        .header-info h1 { margin: 0; font-size: 18px; color: #1a3a3a; text-transform: uppercase; }
+        .header-info p { margin: 2px 0; font-size: 10px; font-weight: bold; }
 
-        .btn-print { background: #2ecc71; color: white; border: none; padding: 8px 16px; border-radius: 4px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 12px; }
-
-        /* Títulos de sección con barra lateral verde clara */
         .section-title { 
-            background: #f1f4f4; 
+            background: #f8f9fa; 
             border-left: 5px solid #2ecc71; 
-            padding: 4px 10px; 
+            padding: 5px 10px; 
             font-size: 11px; 
             font-weight: bold; 
-            margin: 15px 0 8px 0; 
-            display: flex;
-            align-items: center;
+            margin: 15px 0 5px 0; 
+            text-transform: uppercase;
+            color: #1a3a3a;
         }
 
         table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
-        th, td { border: 1px solid #e1e8e8; padding: 5px 10px; text-align: left; font-size: 10px; }
-        th { color: #555; width: 25%; font-weight: bold; text-transform: uppercase; background: #fafcfc; }
+        th, td { border: 1px solid #dee2e6; padding: 6px 10px; text-align: left; font-size: 10px; }
+        th { background: #ffffff; color: #495057; width: 25%; font-weight: bold; text-transform: uppercase; }
         td { color: #000; font-weight: 600; text-transform: uppercase; }
 
-        .tag { border: 1.5px solid #2ecc71; color: #27ae60; padding: 2px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-right: 5px; display: inline-block; text-transform: uppercase; }
+        .tag { border: 1.5px solid #2ecc71; color: #27ae60; padding: 2px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; margin-right: 4px; display: inline-block; text-transform: uppercase; }
 
         @media print {
             .no-print { display: none; }
@@ -46,25 +42,23 @@
     <div class="sheet">
         <div class="header">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
-            <div class="header-center">
+            <div class="header-info">
                 <h1>HISTORIAL CLÍNICO OCUPACIONAL</h1>
                 <p>ESTADO PLURINACIONAL DE BOLIVIA</p>
             </div>
-            <button class="btn-print no-print" onclick="window.print()">IMPRIMIR PDF</button>
+            <button class="no-print" onclick="window.print()" style="background:#2ecc71; color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer; font-weight:bold;">IMPRIMIR PDF</button>
         </div>
 
         <div class="section-title">I. AFILIACIÓN DEL TRABAJADOR (P1)</div>
         <table>
             <tr><th>APELLIDOS Y NOMBRES:</th><td id="r_nombre" colspan="3">---</td></tr>
-            <tr><th>CÉDULA IDENTIDAD:</th><td id="r_ci">---</td><th>GRUPO SANGUÍNEO:</th><td id="r_gs">---</td></tr>
-            <tr><th>EDAD:</th><td id="r_edad">---</td><th>SEXO:</th><td id="r_sexo">---</td></tr>
-            <tr><th>FECHA NACIMIENTO:</th><td id="r_fnac">---</td><th>PROFESIÓN / OFICIO:</th><td id="r_prof">---</td></tr>
-            <tr><th>CÓDIGO INTERNO:</th><td id="r_cod" colspan="3">---</td></tr>
+            <tr><th>CÉDULA IDENTIDAD:</th><td id="r_ci">---</td><th>SEXO:</th><td id="r_sexo">---</td></tr>
+            <tr><th>EDAD:</th><td id="r_edad">---</td><th>FECHA NACIMIENTO:</th><td id="r_fnac">---</td></tr>
+            <tr><th>PROFESIÓN / OFICIO:</th><td id="r_prof">---</td><th>GRUPO SANGUÍNEO:</th><td id="r_gs">---</td></tr>
         </table>
 
         <div class="section-title">II. ANTECEDENTES PATOLÓGICOS (P2)</div>
-        <table id="tabla_p2">
-            </table>
+        <table id="tabla_p2"></table>
 
         <div class="section-title">III. HÁBITOS Y GRUPO SANGUÍNEO (P3)</div>
         <table>
@@ -77,25 +71,24 @@
             <thead><tr style="background:#f8f9fa;"><th>Edad Inicio</th><th>Empresa</th><th>Ocupación</th><th>Tiempo</th><th>Riesgos</th><th>EPP</th></tr></thead>
             <tbody id="r_historia"></tbody>
         </table>
-        <div id="r_tags" style="margin-top:10px;"></div>
+        <div id="r_tags" style="margin-top:8px;"></div>
     </div>
 
     <script>
         const API = 'https://historial-clinico-936s.onrender.com';
         
-        // Mapeo exacto de la Sección II de tu captura
         const estructura_p2 = [
-            ["vista", "VISTA / OJOS", "auditivo", "OÍDO / AUDICIÓN"],
-            ["respiratorio", "RESPIRATORIO", "cardiovascular", "CARDIOVASCULAR"],
-            ["digestivos", "DIGESTIVOS", "sangre", "SANGRE / LINFA"],
-            ["genitourinario", "GENITOURINARIO", "sistema_nervioso", "SISTEMA NERVIOSO"],
-            ["endocrino", "ENDOCRINO", "psiquiatricos", "PSIQUIÁTRICOS"],
-            ["osteomusculares", "OSTEOMUSCULARES", "reumatologicos", "REUMATOLÓGICOS"],
-            ["dermatologicos", "DERMATOLÓGICOS", "alergias", "ALERGIAS"],
-            ["cirugias", "CIRUGÍAS", "infecciones", "INFECCIONES"],
-            ["accidentes_personales", "ACC. PERSONALES", "accidentes_trabajo", "ACC. TRABAJO"],
-            ["medicamentos", "MEDICAMENTOS", "familiares", "FAMILIARES"],
-            ["otros", "OTROS / ESPECÍFICOS", "observaciones", "OBSERVACIONES GENERALES"]
+            ["vista", "VISTA / OJOS:", "auditivo", "OÍDO / AUDICIÓN:"],
+            ["respiratorio", "RESPIRATORIO:", "cardiovascular", "CARDIOVASCULAR:"],
+            ["digestivos", "DIGESTIVOS:", "sangre", "SANGRE / LINFA:"],
+            ["genitourinario", "GENITOURINARIO:", "sistema_nervioso", "SISTEMA NERVIOSO:"],
+            ["endocrino", "ENDOCRINO:", "psiquiatricos", "PSIQUIÁTRICOS:"],
+            ["osteomusculares", "OSTEOMUSCULARES:", "reumatologicos", "REUMATOLÓGICOS:"],
+            ["dermatologicos", "DERMATOLÓGICOS:", "alergias", "ALERGIAS:"],
+            ["cirugias", "CIRUGÍAS:", "infecciones", "INFECCIONES:"],
+            ["accidentes_personales", "ACC. PERSONALES:", "accidentes_trabajo", "ACC. TRABAJO:"],
+            ["medicamentos", "MEDICAMENTOS:", "familiares", "ANTECEDENTES FAMILIARES:"],
+            ["otros", "OTROS / ESPECÍFICOS:", "observaciones", "OBSERVACIONES GENERALES:"]
         ];
 
         window.onload = async () => {
@@ -104,46 +97,41 @@
 
             try {
                 const response = await fetch(`${API}/api/paciente-completo/${p_id}`);
-                const data = await response.json();
+                const d = await response.json();
 
-                // P1
-                document.getElementById('r_nombre').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
-                document.getElementById('r_ci').innerText = data.paciente.ci;
-                document.getElementById('r_cod').innerText = data.paciente.codigo;
-                
-                if(data.filiacion) {
-                    document.getElementById('r_edad').innerText = data.filiacion.edad || '---';
-                    document.getElementById('r_sexo').innerText = data.filiacion.sexo || '---';
-                    document.getElementById('r_fnac').innerText = data.filiacion.fecha_nacimiento || '---';
-                    document.getElementById('r_prof').innerText = data.filiacion.profesion_oficio || '---';
+                // P1 - SIN Código Interno como en image_5cf45e
+                document.getElementById('r_nombre').innerText = `${d.paciente.apellido} ${d.paciente.nombre}`;
+                document.getElementById('r_ci').innerText = d.paciente.ci;
+                if(d.filiacion) {
+                    document.getElementById('r_edad').innerText = d.filiacion.edad;
+                    document.getElementById('r_sexo').innerText = d.filiacion.sexo;
+                    document.getElementById('r_fnac').innerText = d.filiacion.fecha_nacimiento;
+                    document.getElementById('r_prof').innerText = d.filiacion.profesion_oficio;
                 }
-                
-                // Grupo Sanguíneo (de la P3 pero en cabecera)
-                document.getElementById('r_gs').innerText = (data.p3 && data.p3.grupo_sanguineo) ? data.p3.grupo_sanguineo : '---';
+                document.getElementById('r_gs').innerText = (d.p3 && d.p3.grupo_sanguineo) ? d.p3.grupo_sanguineo : '---';
 
-                // P2 - RELLENO DINÁMICO SEGÚN CAPTURA
+                // P2 - Listado exacto
                 const t2 = document.getElementById('tabla_p2');
-                estructura_p2.forEach(par => {
-                    const v1 = (data.p2 && data.p2[par[0]]) ? data.p2[par[0]] : "SIN PARTICULAR";
-                    const v2 = (data.p2 && data.p2[par[2]]) ? data.p2[par[2]] : "SIN PARTICULAR";
-                    t2.innerHTML += `<tr><th>${par[1]}:</th><td>${v1}</td><th>${par[3]}:</th><td>${v2}</td></tr>`;
+                estructura_p2.forEach(p => {
+                    const v1 = (d.p2 && d.p2[p[0]]) ? d.p2[p[0]] : "SIN PARTICULAR";
+                    const v2 = (d.p2 && d.p2[p[2]]) ? d.p2[p[2]] : "SIN PARTICULAR";
+                    t2.innerHTML += `<tr><th>${p[1]}</th><td>${v1}</td><th>${p[3]}</th><td>${v2}</td></tr>`;
                 });
 
-                // P3 y P4
-                if(data.p3) {
-                    document.getElementById('r_fuma').innerText = data.p3.fuma || 'NO';
-                    document.getElementById('r_alcohol').innerText = data.p3.alcohol || 'NO';
-                    document.getElementById('r_coca').innerText = data.p3.coca || 'NO';
+                // P3 - Solo Fuma, Alcohol y Pijchar según image_5d001d
+                if(d.p3) {
+                    document.getElementById('r_fuma').innerText = d.p3.fuma || 'NO';
+                    document.getElementById('r_alcohol').innerText = d.p3.alcohol || 'NO';
+                    document.getElementById('r_coca').innerText = d.p3.coca || 'NO';
 
-                    const h = JSON.parse(data.p3.historia_laboral || '[]');
+                    const h = JSON.parse(d.p3.historia_laboral || '[]');
                     document.getElementById('r_historia').innerHTML = h.map(i => 
                         `<tr><td>${i.edad_inicio}</td><td>${i.empresa}</td><td>${i.ocupacion}</td><td>${i.tiempo}</td><td>${i.riesgos}</td><td>${i.epp}</td></tr>`).join('');
                     
-                    const r = JSON.parse(data.p3.riesgos_expuestos || '[]');
+                    const r = JSON.parse(d.p3.riesgos_expuestos || '[]');
                     document.getElementById('r_tags').innerHTML = r.map(tag => `<span class="tag">${tag}</span>`).join('');
                 }
-
-            } catch (e) { console.error("Error cargando reporte:", e); }
+            } catch (e) { console.error(e); }
         }
     </script>
 </body>
