@@ -14,7 +14,7 @@
         .section-tag { background: #f8f9fa; padding: 5px 10px; font-weight: bold; margin-top: 15px; margin-bottom: 5px; border-bottom: 2px solid var(--verde-ohs); color: #2c3e50; }
         .form-control, .form-select { text-transform: uppercase; font-size: 0.75rem; height: 32px; border-radius: 6px; }
         .btn-final { background: var(--verde-boton); color: white; font-weight: bold; width: 100%; padding: 12px; border-radius: 8px; border: none; margin-top: 20px; font-size: 1rem; cursor: pointer; }
-        .btn-add { background: #2c3e50; color: white; font-size: 0.65rem; font-weight: bold; border-radius: 4px; padding: 5px 12px; border: none; margin-bottom: 10px; }
+        .btn-add { background: #2c3e50; color: white; font-size: 0.65rem; font-weight: bold; border-radius: 4px; padding: 5px 12px; border: none; margin-bottom: 10px; display: block; }
     </style>
 </head>
 <body>
@@ -22,14 +22,12 @@
 <div class="container">
     <div class="mb-3"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="OHS" style="height: 45px;"></div>
 
-    <div class="d-flex justify-content-between align-items-center mb-2">
-        <h6 class="fw-bold m-0" style="color: #1b5e20;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h6>
-    </div>
+    <h6 class="fw-bold mb-3" style="color: #1b5e20;">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h6>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nombre" class="text-blue">SINCRONIZANDO...</span></div>
+        <div>PACIENTE: <span id="v_nombre" class="text-blue">CARGANDO...</span></div>
         <div>CI: <span id="v_ci" class="text-primary">---</span></div>
-        <div>CÓDIGO: <span id="v_codigo" class="text-success" style="font-family: monospace;">---</span></div>
+        <div>CÓDIGO: <span id="v_codigo" class="text-success">---</span></div>
     </div>
 
     <form id="formP3">
@@ -49,7 +47,7 @@
         <div class="table-responsive">
             <table class="table table-sm table-bordered">
                 <thead class="table-light text-center">
-                    <tr style="font-size: 0.65rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
+                    <tr style="font-size: 0.65rem;"><th>EDAD</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
                 </thead>
                 <tbody id="tablaLaboral">
                     <tr>
@@ -69,19 +67,20 @@
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="RUIDO" id="r1"> <label for="r1">RUIDO</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="POLVOS" id="r2"> <label for="r2">POLVOS</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="ERGONÓMICO" id="r3"> <label for="r3">ERGONÓMICO</label></div>
-            <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="QUÍMICOS" id="r4"> <label for="r4">QUÍMICOS</label></div>
+            <div class="col-md-3"><input type="checkbox" class="col-md-3"><input type="checkbox" class="check-riesgo" value="QUÍMICOS" id="r4"> <label for="r4">QUÍMICOS</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="BIOLÓGICO" id="r5"> <label for="r5">BIOLÓGICO</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="VIBRACIÓN" id="r6"> <label for="r6">VIBRACIÓN</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="ALTURA" id="r7"> <label for="r7">ALTURA</label></div>
             <div class="col-md-3"><input type="checkbox" class="check-riesgo" value="PSICOSOCIAL" id="r8"> <label for="r8">PSICOSOCIAL</label></div>
         </div>
 
-        <button type="submit" class="btn-final" id="btnAccion">💾 GUARDAR Y FINALIZAR HISTORIAL</button>
+        <button type="submit" class="btn-final" id="btnAccion">💾 GUARDAR REGISTRO Y FINALIZAR P3</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
+    // Priorizamos p_id_edicion que es el que se genera al seleccionar un paciente en el index
     const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
@@ -92,6 +91,7 @@
         }
 
         try {
+            // Forzamos la obtención de datos reales del servidor para evitar nombres erróneos
             const res = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
             const d = await res.json();
             
@@ -99,9 +99,11 @@
                 document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
                 document.getElementById('v_ci').innerText = d.paciente.ci || "---";
                 document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
+            } else {
+                document.getElementById('v_nombre').innerText = "ERROR: SELECCIONE PACIENTE";
             }
         } catch (e) {
-            console.error("Error al cargar datos:", e);
+            console.error("Error:", e);
         }
     };
 
@@ -114,8 +116,10 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnAccion');
-        const nFinal = document.getElementById('v_nombre').innerText;
-        const cFinal = document.getElementById('v_codigo').innerText;
+        
+        // Capturamos los datos que están visualmente en la barra (los confirmados por el servidor)
+        const nombreFinal = document.getElementById('v_nombre').innerText;
+        const codigoFinal = document.getElementById('v_codigo').innerText;
 
         btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
@@ -158,16 +162,18 @@
             });
 
             if(response.ok) {
-                alert("PACIENTE NUEVO:\n" + nFinal + "\nCÓDIGO: " + cFinal);
-                localStorage.clear(); // Limpiamos todo para el siguiente paciente
+                alert("REGISTRO GUARDADO EXITOSAMENTE:\n" + nombreFinal + "\nCÓDIGO: " + codigoFinal);
+                // Limpieza total para evitar que el siguiente paciente herede datos
+                localStorage.removeItem('p_id_edicion');
+                localStorage.removeItem('p_id');
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR REGISTRO");
-                btn.innerText = "💾 GUARDAR Y FINALIZAR HISTORIAL";
+                alert("Error en el servidor al guardar P3");
+                btn.innerText = "💾 GUARDAR REGISTRO Y FINALIZAR P3";
                 btn.disabled = false;
             }
         } catch (err) {
-            alert("❌ ERROR DE CONEXIÓN");
+            alert("Error de conexión");
             btn.disabled = false;
         }
     };
