@@ -81,30 +81,30 @@
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
     
-    // Mapeo exacto basado en los nombres de tu Base de Datos (Backend)
+    // Mapeo EXACTO para que coincida con tu base de datos y la vista
     const mapping_p2 = {
-        "vista_ojos": "Vista / Ojos",
-        "auditivo_oido": "Auditivo / Oído",
-        "respiratorio": "Respiratorio",
-        "cardiovascular": "Cardiovascular",
-        "digestivos": "Digestivos",
-        "sangre_linfa": "Sangre / Linfa",
-        "genitourinario": "Genitourinario",
-        "nervioso": "Sistema Nervioso",
-        "endocrino": "Endocrino",
-        "psiquiatricos": "Psiquiátricos",
-        "osteomusculares": "Osteomusculares",
-        "reumatologicos": "Reumatológicos",
-        "dermatologicos": "Dermatológicos",
-        "alergias": "Alergias",
-        "cirugias": "Cirugías",
-        "infecciones": "Infecciones",
-        "acc_personales": "Accidentes Personales",
-        "acc_trabajo": "Accidentes de Trabajo",
-        "medicamentos": "Medicamentos",
-        "familiares": "Antecedentes Familiares",
-        "otros_especificos": "Otros / Específicos",
-        "observaciones": "Observaciones Generales"
+        "vista_ojos": "VISTA / OJOS",
+        "auditivo_oido": "AUDITIVO / OÍDO",
+        "respiratorio": "RESPIRATORIO",
+        "cardiovascular": "CARDIOVASCULAR",
+        "digestivos": "DIGESTIVOS",
+        "sangre_linfa": "SANGRE / LINFA",
+        "genitourinario": "GENITOURINARIO",
+        "nervioso": "SISTEMA NERVIOSO",
+        "endocrino": "ENDOCRINO",
+        "psiquiatricos": "PSIQUIÁTRICOS",
+        "osteomusculares": "OSTEOMUSCULARES",
+        "reumatologicos": "REUMATOLÓGICOS",
+        "dermatologicos": "DERMATOLÓGICOS",
+        "alergias": "ALERGIAS",
+        "cirugias": "CIRUGÍAS",
+        "infecciones": "INFECCIONES",
+        "acc_personales": "ACCIDENTES PERSONALES",
+        "acc_trabajo": "ACCIDENTES DE TRABAJO",
+        "medicamentos": "MEDICAMENTOS",
+        "familiares": "ANTECEDENTES FAMILIARES",
+        "otros_especificos": "OTROS / ESPECÍFICOS",
+        "observaciones": "OBSERVACIONES GENERALES"
     };
 
     window.onload = async () => {
@@ -114,7 +114,7 @@
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
 
-            // P1 - Datos Personales
+            // P1
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('r_ci').innerText = data.paciente.ci;
             document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
@@ -135,20 +135,22 @@
                 document.getElementById('r_profesion').innerText = p1.profesion_oficio || '---';
             }
 
-            // P2 - Antecedentes con Mapeo Corregido
+            // P2 - CORRECCIÓN DE CARGA
             if (data.p2) {
                 const gridP2 = document.getElementById('grid_p2');
                 gridP2.innerHTML = Object.keys(mapping_p2).map(key => {
-                    const valor = data.p2[key] || 'SIN PARTICULAR';
+                    const valorBase = data.p2[key];
+                    // Si el valor es nulo o vacío, ponemos SIN PARTICULAR
+                    const valorFinal = (valorBase && valorBase.trim() !== "") ? valorBase : "SIN PARTICULAR";
                     return `
                         <div class="data-item">
                             <span class="label">${mapping_p2[key]}:</span> 
-                            <span class="val">${valor}</span>
+                            <span class="val">${valorFinal}</span>
                         </div>`;
                 }).join('');
             }
 
-            // P3 - Hábitos y Riesgos
+            // P3
             if (data.p3) {
                 document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
                 document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad || '0'})`;
@@ -160,12 +162,12 @@
 
                 const historia = JSON.parse(data.p3.historia_laboral || '[]');
                 document.getElementById('r_tabla_laboral').innerHTML = historia.length ? historia.map(h => `
-                    <tr><td>${h.edad}</td><td>${h.empresa}</td><td>${h.cargo}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>`).join('') : '<tr><td colspan="6">SIN DATOS</td></tr>';
+                    <tr><td>${h.edad || h.edad_inicio}</td><td>${h.empresa}</td><td>${h.cargo || h.ocupacion}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>`).join('') : '<tr><td colspan="6">SIN DATOS</td></tr>';
                 
                 const riesgos = JSON.parse(data.p3.riesgos_expuestos || '[]');
                 document.getElementById('r_riesgos_box').innerHTML = riesgos.map(r => `<span class="riesgo-tag">${r}</span>`).join('');
             }
-        } catch (e) { console.error("Error cargando reporte:", e); }
+        } catch (e) { console.error("Error en reporte:", e); }
     }
 </script>
 </body>
