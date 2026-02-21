@@ -32,7 +32,7 @@ def persistir_p2(data, p_id):
                 setattr(obj, k, str(v).upper())
         db.commit()
     except Exception as e:
-        print(f"Error DB: {e}")
+        print(f"Error DB P2: {e}")
         db.rollback()
     finally:
         db.close()
@@ -44,14 +44,30 @@ def health():
 @app.get("/api/paciente-completo/{id}")
 def get_p(id: int, db: Session = Depends(get_db)):
     p = db.query(models.Paciente).filter(models.Paciente.id == id).first()
-    if not p: return {"error": "404"}
+    if not p: 
+        return {"error": "404"}
+    
+    # Consultamos todas las secciones vinculadas al paciente_id
+    filiacion = db.query(models.FiliacionP1).filter(models.FiliacionP1.paciente_id == id).first()
+    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == id).first()
+    p3 = db.query(models.HabitosP3).filter(models.HabitosP3.paciente_id == id).first()
+
+    # Convertimos a diccionario excluyendo estados internos de SQLAlchemy
+    def to_dict(obj):
+        if not obj: return None
+        d = {k: v for k, v in obj.__dict__.items() if not k.startswith('_')}
+        return d
+
     return {
         "paciente": {
             "nombre": p.nombre, 
             "apellido": p.apellido, 
             "ci": p.ci, 
-            "codigo": getattr(p, 'codigo_paciente', 'SIN CÓDIGO')
-        }
+            "codigo_paciente": getattr(p, 'codigo_paciente', 'SIN CÓDIGO')
+        },
+        "filiacion": to_dict(filiacion),
+        "p2": to_dict(p2),
+        "p3": to_dict(p3)
     }
 
 @app.post("/p2")
