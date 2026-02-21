@@ -18,7 +18,6 @@
         .form-control, .form-select { border-radius: 5px; text-transform: uppercase; font-size: 0.8rem; border: 1px solid #ced4da; }
         .btn-add { background: #34495e; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 0.75rem; margin-top: 10px; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; margin-top: 25px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(46, 204, 113, 0.2); }
-        .btn-save:hover { background: var(--ohs-dark); }
     </style>
 </head>
 <body>
@@ -28,9 +27,9 @@
     <h4 class="header-title">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">---</span></div>
-        <div>CI: <span id="v_ci" style="font-weight: 700;">---</span></div>
-        <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">---</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 700;">...</span></div>
+        <div>CI: <span id="v_ci" style="font-weight: 700;">...</span></div>
+        <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">...</span></div>
     </div>
 
     <form id="formP3">
@@ -81,11 +80,9 @@
             <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ALTURA"> ALTURA</div></div>
             <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
             <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="QUIMICO"> QUÍMICO</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="RADIACION"> RADIACIÓN</div></div>
-            <div class="col-md-3 mt-2"><div class="form-check"><input type="checkbox" class="form-check-input c-ri" value="ILUMINACION"> ILUMINACIÓN</div></div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR HISTORIAL P3 EN POSTGRESQL</button>
+        <button type="submit" id="btnS" class="btn-save">💾 GUARDAR TODO EL HISTORIAL P3 EN POSTGRESQL</button>
     </form>
 </div>
 
@@ -98,30 +95,25 @@
         document.getElementById('tBody').appendChild(tr);
     }
 
+    // ESTA ES LA LOGICA QUE FUNCIONA EN P1 Y P2
     window.onload = () => {
-        // BUSQUEDA EXHAUSTIVA EN LOCALSTORAGE (Probando todas las claves posibles)
-        const n = localStorage.getItem('p_nombre') || localStorage.getItem('nombre') || "";
-        const a = localStorage.getItem('p_apellido') || localStorage.getItem('apellido') || "";
-        const c = localStorage.getItem('p_ci') || localStorage.getItem('ci') || "---";
-        const cod = localStorage.getItem('p_codigo') || localStorage.getItem('codigo_paciente') || localStorage.getItem('codigo') || "---";
+        const nom = localStorage.getItem('nombre') || "";
+        const ape = localStorage.getItem('apellido') || "";
+        const ci = localStorage.getItem('ci') || "---";
+        const cod = localStorage.getItem('codigo_paciente') || "---";
 
-        if (n || a) {
-            document.getElementById('v_nom').innerText = `${n} ${a}`.trim().toUpperCase();
-        } else {
-            document.getElementById('v_nom').innerText = "NOMBRE NO ENCONTRADO";
-        }
-        
-        document.getElementById('v_ci').innerText = c;
+        document.getElementById('v_nom').innerText = (nom + " " + ape).toUpperCase();
+        document.getElementById('v_ci').innerText = ci;
         document.getElementById('v_cod').innerText = cod;
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
-        const pid = localStorage.getItem('p_id') || localStorage.getItem('id');
-        if(!pid) { alert("ERROR: Sin ID de paciente. Regrese al registro."); return; }
+        const pid = localStorage.getItem('p_id') || localStorage.getItem('paciente_id');
+        if(!pid) { alert("ID no encontrado"); return; }
 
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ PROCESANDO...";
+        btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
 
         const payload = {
@@ -136,9 +128,16 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: "[]",
+            historia_laboral: JSON.stringify(Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
+                ed: tr.querySelector('.r-ed').value,
+                em: tr.querySelector('.r-em').value,
+                ca: tr.querySelector('.r-ca').value,
+                ti: tr.querySelector('.r-ti').value,
+                ri: tr.querySelector('.r-ri').value,
+                ep: tr.querySelector('.r-ep').value
+            }))),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_OHS_FINAL"
+            observaciones: "P3_COMPLETO"
         };
 
         try {
@@ -148,15 +147,14 @@
                 body: JSON.stringify(payload)
             });
             if (res.ok) {
-                alert("✅ P3 GUARDADO CORRECTAMENTE");
+                alert("✅ P3 GUARDADO");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR");
+                alert("❌ ERROR EN SERVIDOR");
                 btn.disabled = false;
-                btn.innerText = "💾 GUARDAR HISTORIAL P3";
             }
         } catch (e) {
-            alert("❌ FALLO DE CONEXIÓN");
+            alert("❌ ERROR DE RED");
             btn.disabled = false;
         }
     };
