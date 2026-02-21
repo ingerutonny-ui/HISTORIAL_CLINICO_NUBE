@@ -51,9 +51,7 @@
         <div class="p-2">
             <button type="button" class="btn-add" onclick="addRow()">+ AGREGAR FILA</button>
             <table class="table table-sm table-bordered">
-                <thead class="table-light">
-                    <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
-                </thead>
+                <thead class="table-light"><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tBody">
                     <tr>
                         <td><input type="number" class="form-control r-ed"></td>
@@ -83,28 +81,21 @@
 </div>
 
 <script>
-    // URL SIN /API/ PARA COINCIDIR CON LOS NUEVOS ENDPOINTS
-    const API = "https://historial-clinico-936s.onrender.com";
+    const API = "https://historial-clinico-936s.onrender.com/api";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if(!pid) { alert("ERROR: NO HAY ID DE PACIENTE EN LOCALSTORAGE"); return; }
-        
+        if(!pid) return;
         try {
-            // INTENTO DE RECUPERACIÓN DIRECTA
+            // RUTA DE RECUPERACIÓN CON /API/
             const res = await fetch(`${API}/get-paciente/${pid}`);
             if(res.ok) {
                 const d = await res.json();
                 document.getElementById('v_nom').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
                 document.getElementById('v_ci').innerText = d.paciente.ci;
                 document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
-            } else {
-                document.getElementById('v_nom').innerText = "ERROR AL CARGAR";
             }
-        } catch(e) {
-            console.error("Fallo de red al recuperar paciente");
-            document.getElementById('v_nom').innerText = "ERROR DE CONEXIÓN";
-        }
+        } catch(e) { console.error("Fallo carga"); }
     };
 
     function addRow() {
@@ -124,10 +115,8 @@
             if(em) {
                 hist.push({
                     edad: tr.querySelector('.r-ed').value || "0",
-                    empresa: em.toUpperCase(),
-                    cargo: tr.querySelector('.r-ca').value.toUpperCase(),
-                    tiempo: tr.querySelector('.r-ti').value || "0",
-                    riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
+                    empresa: em.toUpperCase(), cargo: tr.querySelector('.r-ca').value.toUpperCase(),
+                    tiempo: tr.querySelector('.r-ti').value || "0", riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
                     epp: tr.querySelector('.r-ep').value
                 });
             }
@@ -141,16 +130,17 @@
             alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
             drogas: document.getElementById('drogas').value,
             drogas_tipo: document.getElementById('drogas_tipo').value,
-            coca: document.getElementById('coca').value, // VALIDADO CON SCHEMAS.PY
+            coca: document.getElementById('coca').value,
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "MAPEADO_P3_FINAL"
+            observaciones: "MAPEADO_TOTAL_P3"
         };
 
         try {
+            // RUTA DE GUARDADO CON /API/
             const r = await fetch(`${API}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
