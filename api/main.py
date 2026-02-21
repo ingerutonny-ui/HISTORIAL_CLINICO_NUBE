@@ -13,6 +13,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+# CONFIGURACIÓN CORS INTEGRAL [cite: 2026-02-03]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -28,21 +29,21 @@ def get_db():
     finally:
         db.close()
 
-# RUTAS DUALES PARA ASEGURAR CARGA DE PACIENTE (CORRIGE P3)
-@app.get("/get-paciente/{p_id}")
+# TÉCNICA RUTAS ESPEJO PARA P1, P2 Y P3
+@app.get("/api/pacientes/{p_id}")
 @app.get("/api/get-paciente/{p_id}")
 async def get_paciente(p_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == p_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    return {"paciente": paciente}
+    # Devolvemos el objeto directamente para compatibilidad total
+    return paciente
 
-# RUTAS DUALES PARA GUARDADO P3
-@app.post("/save-p3")
+# RUTA DE GUARDADO P3 CON MAPEO COMPLETO
 @app.post("/api/save-p3")
+@app.post("/api/guardar-p3")
 async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # Mapeo exacto según schemas.py
         resultado = crud.upsert_p3(db, data.model_dump())
         return {"status": "success", "id": resultado.id}
     except Exception as e:
