@@ -79,12 +79,11 @@
 </div>
 
 <script>
-    // URL DIRECTA SIN /API/ PARA CORREGIR 404
-    const API = "https://historial-clinico-936s.onrender.com";
+    const API = "https://historial-clinico-936s.onrender.com/api";
     const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     window.onload = async () => {
-        if(!pid) { alert("NO SE ENCONTRÓ ID"); return; }
+        if(!pid) return;
         try {
             const res = await fetch(`${API}/get-paciente/${pid}`);
             if(res.ok) {
@@ -92,18 +91,14 @@
                 document.getElementById('v_nom').innerText = (d.paciente.nombre + " " + d.paciente.apellido).toUpperCase();
                 document.getElementById('v_ci').innerText = d.paciente.ci;
                 document.getElementById('v_cod').innerText = d.paciente.codigo_paciente;
-            } else {
-                document.getElementById('v_nom').innerText = "NO ENCONTRADO";
             }
-        } catch(e) {
-            document.getElementById('v_nom').innerText = "ERROR DE RED";
-        }
+        } catch(e) { console.error("Error recuperando paciente"); }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const b = document.getElementById('btnS');
-        b.innerText = "⏳ ENVIANDO..."; b.disabled = true;
+        b.innerText = "⏳ SINCRONIZANDO..."; b.disabled = true;
 
         const hist = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
@@ -121,7 +116,7 @@
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
-            fuma_cantidad: document.getElementById('fuma_cantidad').value,
+            fuma_cantidad: document.getElementById('fuma_cantidad').value || "0",
             alcohol: document.getElementById('alcohol').value,
             alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
             drogas: document.getElementById('drogas').value,
@@ -132,7 +127,7 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(hist),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_SYNC_OK"
+            observaciones: "P3_SYNC_API"
         };
 
         try {
@@ -143,7 +138,7 @@
             });
             
             if(r.ok) {
-                alert("✅ GUARDADO EXITOSO");
+                alert("✅ SINCRONIZACIÓN EXITOSA");
                 window.location.href = "index.html";
             } else {
                 const err = await r.json();
@@ -151,7 +146,7 @@
                 b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
             }
         } catch(err) {
-            alert("❌ FALLO DE CONEXIÓN");
+            alert("❌ FALLO DE CONEXIÓN CON API RENDER");
             b.disabled = false;
         }
     };
