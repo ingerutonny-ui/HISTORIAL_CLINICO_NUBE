@@ -74,56 +74,63 @@
             <div class="col-md-3"><div class="form-check"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div></div>
         </div>
 
-        <button type="submit" id="btnS" class="btn-final">💾 GUARDAR EN POSTGRESQL</button>
+        <button type="submit" id="btnS" class="btn-final">💾 GUARDAR DATOS P3</button>
     </form>
 </div>
 
 <script>
-    // ACCESO DIRECTO PARA EVITAR ERROR 404 EN LÍNEA 89
-    const p_id = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+    // LÓGICA DE TRIPLE VALIDACIÓN PARA EVITAR ERROR 404 EN LÍNEA 90
+    const API_PACIENTE = "https://historial-clinico-936s.onrender.com/api/pacientes/";
+    const API_SAVE = "https://historial-clinico-936s.onrender.com/api/save-p3";
 
-    async function cargarDatos() {
-        if (!p_id) { alert("ID NO DETECTADO"); return; }
-        
+    async function validarYLinkear() {
+        const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+        if (!pid) { document.getElementById('v_nom').innerText = "ID NO ENCONTRADO"; return; }
+
         try {
-            // RUTA ABSOLUTA PARA GARANTIZAR CONEXIÓN
-            const r = await fetch("https://historial-clinico-936s.onrender.com/api/pacientes/" + p_id);
+            // LÍNEA 90: FETCH CON RUTA ABSOLUTA FORZADA
+            const r = await fetch(API_PACIENTE + pid);
             if (r.ok) {
                 const d = await r.json();
-                // MAPEADO DIRECTO DE CAMPOS (NOMBRE Y APELLIDO)
-                document.getElementById('v_nom').innerText = (d.nombre + " " + d.apellido).toUpperCase();
+                // MAPEADO ROBUSTO PARA DIFERENTES ESTRUCTURAS
+                const nombreCompleto = (d.nombre || "") + " " + (d.apellido || "");
+                document.getElementById('v_nom').innerText = nombreCompleto.toUpperCase() || "PACIENTE IDENTIFICADO";
                 document.getElementById('v_ci').innerText = d.ci || "---";
                 document.getElementById('v_cod').innerText = d.codigo_paciente || "---";
             } else {
-                document.getElementById('v_nom').innerText = "PACIENTE NO ENCONTRADO (404)";
+                document.getElementById('v_nom').innerText = "ERROR SERVIDOR (404)";
             }
         } catch (e) {
-            document.getElementById('v_nom').innerText = "ERROR DE RED";
+            document.getElementById('v_nom').innerText = "FALLO DE CONEXIÓN";
         }
     }
 
-    window.onload = cargarDatos;
+    window.onload = validarYLinkear;
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const b = document.getElementById('btnS');
+        const pid = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
         b.innerText = "⏳ GUARDANDO..."; b.disabled = true;
 
-        const hist = [];
+        const historia = [];
         document.querySelectorAll('#tBody tr').forEach(tr => {
-            const em = tr.querySelector('.r-em').value;
-            if (em) {
-                hist.push({
+            const emp = tr.querySelector('.r-em').value;
+            if (emp) {
+                historia.push({
                     edad: tr.querySelector('.r-ed').value || "0",
-                    empresa: em.toUpperCase(), cargo: tr.querySelector('.r-ca').value.toUpperCase(),
-                    tiempo: tr.querySelector('.r-ti').value || "0", riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
+                    empresa: emp.toUpperCase(),
+                    cargo: tr.querySelector('.r-ca').value.toUpperCase(),
+                    tiempo: tr.querySelector('.r-ti').value || "0",
+                    riesgos: tr.querySelector('.r-ri').value.toUpperCase(),
                     epp: tr.querySelector('.r-ep').value
                 });
             }
         });
 
-        const dataOut = {
-            paciente_id: parseInt(p_id),
+        // ESTRUCTURA EXACTA PARA SCHEMAS.PY
+        const data = {
+            paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value,
             alcohol: document.getElementById('alcohol').value,
@@ -134,28 +141,28 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(hist),
+            historia_laboral: JSON.stringify(historia),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_RECONSTRUIDO_V3"
+            observaciones: "RECONSTRUCCION_TOTAL_P3"
         };
 
         try {
-            const res = await fetch("https://historial-clinico-936s.onrender.com/api/save-p3", {
+            const res = await fetch(API_SAVE, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dataOut)
+                body: JSON.stringify(data)
             });
 
             if (res.ok) {
-                alert("✅ SINCRONIZACIÓN EXITOSA");
+                alert("✅ DATOS DE P3 SINCRONIZADOS CORRECTAMENTE");
                 window.location.href = "index.html";
             } else {
-                const err = await res.json();
-                alert("❌ ERROR: " + JSON.stringify(err.detail));
-                b.disabled = false; b.innerText = "💾 GUARDAR EN POSTGRESQL";
+                const error = await res.json();
+                alert("❌ ERROR AL GUARDAR: " + JSON.stringify(error.detail));
+                b.disabled = false; b.innerText = "💾 GUARDAR DATOS P3";
             }
         } catch (e) {
-            alert("❌ FALLO DE COMUNICACIÓN CON EL SERVIDOR");
+            alert("❌ ERROR DE RED: NO SE PUDO CONECTAR CON EL SERVIDOR");
             b.disabled = false;
         }
     };
