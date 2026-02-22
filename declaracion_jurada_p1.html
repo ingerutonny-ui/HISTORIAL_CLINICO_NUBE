@@ -7,102 +7,113 @@
     <style>
         :root { --primary: #2ecc71; --dark: #475569; --bg: #f8fafc; --line: #e2e8f0; --accent: #2563eb; }
         
-        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
+        /* Aumentamos el tamaño base de la fuente */
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg); margin: 0; padding: 15px; color: var(--dark); font-size: 16px; }
         
         .container { 
             background: white; 
             width: 100%; 
-            max-width: 950px; 
-            margin: 10px auto; 
-            padding: 25px; 
+            max-width: 1100px; /* Más ancho para aprovechar el espacio */
+            margin: 15px auto; 
+            padding: 35px; /* Más aire interno */
             border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06); 
             box-sizing: border-box;
         }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .logo-img { height: 45px; }
-        .status { font-size: 10px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .logo-img { height: 55px; } /* Logo un poco más grande */
+        .status { font-size: 12px; font-weight: 700; color: #f39c12; text-transform: uppercase; }
 
-        /* Banner Paciente - Estilo Fino */
+        /* Banner Paciente - Escalado */
         .patient-banner { 
             background: #f1f5f9; 
-            padding: 12px 20px; 
-            border-radius: 8px; 
-            border-left: 4px solid var(--primary); 
-            margin-bottom: 25px; 
+            padding: 18px 25px; 
+            border-radius: 10px; 
+            border-left: 5px solid var(--primary); 
+            margin-bottom: 35px; 
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            gap: 15px;
         }
         
-        .info-group label { font-size: 9px; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-right: 5px; }
-        .info-group span { font-size: 13px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
+        .info-group label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; margin-right: 8px; }
+        .info-group span { font-size: 16px; font-weight: 700; color: var(--accent); text-transform: uppercase; }
 
         .section-header { 
-            font-size: 15px; 
+            font-size: 19px; /* Título más imponente */
             font-weight: 700; 
             color: #1e293b;
             text-align: center;
-            margin-bottom: 20px; 
+            margin-bottom: 30px; 
             border-bottom: 1px solid var(--line); 
-            padding-bottom: 12px;
+            padding-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        /* Grilla Adaptativa Limpia */
+        /* Grilla más grande y cómoda */
         .form-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 15px; 
-            margin-bottom: 25px; 
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
+            gap: 25px; 
+            margin-bottom: 35px; 
         }
 
         .field { display: flex; flex-direction: column; }
-        .field label { font-size: 10px; font-weight: 700; margin-bottom: 6px; color: #64748b; text-transform: uppercase; }
+        .field label { font-size: 12px; font-weight: 700; margin-bottom: 10px; color: #64748b; text-transform: uppercase; }
         
+        /* Inputs más altos y con letra más clara */
         input, select { 
-            padding: 10px 12px; 
-            border: 1px solid #d1d5db; 
-            border-radius: 6px; 
-            font-size: 13px; 
+            padding: 14px 16px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 8px; 
+            font-size: 15px; 
             font-weight: 500; 
             color: #1e293b;
             background: #ffffff;
             text-transform: uppercase;
             width: 100%;
             box-sizing: border-box;
-            transition: border 0.2s;
+            transition: all 0.2s ease;
         }
 
-        input:focus { border-color: var(--primary); outline: none; background: #fff; }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(46, 204, 113, 0.1); }
 
         .btn-save { 
             width: 100%; 
             background: var(--primary); 
             color: white; 
             border: none; 
-            padding: 15px; 
-            border-radius: 8px; 
+            padding: 20px; 
+            border-radius: 10px; 
             font-weight: 700; 
-            font-size: 14px; 
+            font-size: 17px; 
             cursor: pointer;
             text-transform: uppercase;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
+            transition: 0.2s;
         }
+
+        .btn-save:active { transform: scale(0.98); }
 
         .full-width { grid-column: 1 / -1; }
 
+        /* Ajustes para Móvil (Pantallas pequeñas) */
         @media (max-width: 600px) {
-            .container { padding: 15px; }
-            .patient-banner { flex-direction: column; align-items: flex-start; gap: 5px; }
-            .section-header { font-size: 13px; }
+            .container { padding: 20px; margin: 5px; }
+            .header { margin-bottom: 15px; }
+            .logo-img { height: 40px; }
+            .patient-banner { padding: 15px; flex-direction: column; align-items: flex-start; gap: 8px; }
+            .section-header { font-size: 16px; }
+            .form-grid { gap: 15px; }
+            input, select { padding: 12px; font-size: 14px; }
         }
     </style>
 </head>
@@ -156,7 +167,7 @@
         <div class="field full-width"><label>Profesión / Oficio</label><input type="text" id="profesion"></div>
     </div>
 
-    <button class="btn-save" onclick="guardarP1()">💾 GUARDAR Y CONTINUAR</button>
+    <button class="btn-save" onclick="guardarP1()">💾 GUARDAR Y CONTINUAR P2</button>
 </div>
 
 <script>
@@ -170,7 +181,6 @@
         
         if (idEdicion) {
             document.getElementById('tag_estado').innerText = "MODO EDICIÓN";
-            document.getElementById('tag_estado').style.color = "#f39c12";
         }
     };
 
