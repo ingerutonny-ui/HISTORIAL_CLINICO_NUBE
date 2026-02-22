@@ -8,24 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root { --ohs: #2ecc71; --ohs-dark: #27ae60; --dark: #2c3e50; --gris-suave: #636e72; --azul-paciente: #2980b9; }
-        
         body { background: #f4f7f6; font-family: 'Roboto', sans-serif; color: var(--dark); font-size: 0.85rem; }
         .container { max-width: 1100px; margin: 20px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .header-logo { height: 70px; display: block; margin: 0 auto 10px; }
         .header-title { color: var(--ohs-dark); font-weight: 700; text-align: center; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
-        
-        /* Barra de Paciente con Datos en AZUL resaltado */
         .barra-paciente { background: #f1f9f7; padding: 20px; border-radius: 10px; border-left: 8px solid var(--ohs); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
         .dato-resaltado { color: var(--azul-paciente) !important; font-weight: 800; }
-        
         .section-tag { background: #f8f9fa; padding: 12px; font-weight: 700; border-bottom: 3px solid var(--ohs); margin: 25px 0 15px 0; color: var(--dark); text-transform: uppercase; }
-        
         .form-label { font-weight: 600; color: var(--gris-suave); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 6px; text-transform: uppercase; font-size: 0.85rem; border: 1px solid #dcdde1; padding: 8px; }
-        
         .btn-add { background: var(--dark); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.8rem; margin-top: 10px; cursor: pointer; transition: 0.3s; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 18px; border: none; border-radius: 10px; margin-top: 40px; text-transform: uppercase; font-size: 1rem; cursor: pointer; transition: 0.3s; }
         .btn-save:hover { background: var(--ohs-dark); transform: translateY(-2px); }
+        .btn-save:disabled { background: #bdc3c7; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -66,11 +61,11 @@
                 </thead>
                 <tbody id="tBody">
                     <tr>
-                        <td><input type="text" class="form-control r-ed" placeholder="Ej: 25"></td>
-                        <td><input type="text" class="form-control r-em" placeholder="Ej: MINERA SAN CRISTOBAL"></td>
-                        <td><input type="text" class="form-control r-ca" placeholder="Ej: OPERADOR DE EQUIPO"></td>
-                        <td><input type="text" class="form-control r-ti" placeholder="Ej: 5 AÑOS"></td>
-                        <td><input type="text" class="form-control r-ri" placeholder="Ej: POLVO, RUIDO"></td>
+                        <td><input type="text" class="form-control r-ed" placeholder="25"></td>
+                        <td><input type="text" class="form-control r-em" placeholder="MINERA"></td>
+                        <td><input type="text" class="form-control r-ca" placeholder="OPERADOR"></td>
+                        <td><input type="text" class="form-control r-ti" placeholder="5 AÑOS"></td>
+                        <td><input type="text" class="form-control r-ri" placeholder="RUIDO"></td>
                         <td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>
                     </tr>
                 </tbody>
@@ -115,15 +110,16 @@
         if(!pid) return alert("Error: ID del paciente no encontrado.");
 
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO EN POSTGRESQL...";
+        btn.innerText = "⏳ ENVIANDO A POSTGRESQL...";
         btn.disabled = true;
 
+        // CAPTURA SIN STRINGIFY (Para que FastAPI lo reciba como objetos/listas)
         const historia = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
             ed: tr.querySelector('.r-ed').value || "0",
-            em: tr.querySelector('.r-em').value || "N/A",
-            ca: tr.querySelector('.r-ca').value || "N/A",
-            ti: tr.querySelector('.r-ti').value || "0",
-            ri: tr.querySelector('.r-ri').value || "N/A",
+            em: (tr.querySelector('.r-em').value || "N/A").toUpperCase(),
+            ca: (tr.querySelector('.r-ca').value || "N/A").toUpperCase(),
+            ti: (tr.querySelector('.r-ti').value || "0").toUpperCase(),
+            ri: (tr.querySelector('.r-ri').value || "N/A").toUpperCase(),
             ep: tr.querySelector('.r-ep').value
         }));
 
@@ -132,18 +128,18 @@
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
-            fuma_cantidad: document.getElementById('fuma_cantidad').value,
+            fuma_cantidad: document.getElementById('fuma_cantidad').value || "0",
             alcohol: document.getElementById('alcohol').value,
-            alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value,
+            alcohol_frecuencia: (document.getElementById('alcohol_frecuencia').value || "S/D").toUpperCase(),
             drogas: document.getElementById('drogas').value,
-            drogas_tipo: document.getElementById('drogas_tipo').value,
+            drogas_tipo: (document.getElementById('drogas_tipo').value || "S/D").toUpperCase(),
             coca: document.getElementById('coca').value,
             deporte: document.getElementById('deporte').value,
-            deporte_detalle: document.getElementById('deporte_detalle').value,
+            deporte_detalle: (document.getElementById('deporte_detalle').value || "S/D").toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(historia),
-            riesgos_expuestos: JSON.stringify(riesgos),
-            observaciones: "P3_OHS_FINAL"
+            historia_laboral: historia, // Se envía como ARRAY, no como STRING
+            riesgos_expuestos: riesgos, // Se envía como ARRAY, no como STRING
+            observaciones: "P3_CARGA_EXITOSA"
         };
 
         try {
@@ -153,14 +149,18 @@
                 body: JSON.stringify(payload)
             });
 
+            const responseData = await res.json();
+
             if (res.ok) {
-                alert("✅ P3 GUARDADO CORRECTAMENTE EN LA NUBE");
+                alert("✅ DATOS GUARDADOS EN POSTGRESQL EXITOSAMENTE");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR AL GUARDAR: Verifique conexión con Render");
+                console.error("Detalle del error:", responseData);
+                alert("❌ ERROR: " + (responseData.detail || "Error desconocido en el servidor"));
             }
         } catch (err) {
-            alert("❌ ERROR CRÍTICO DE RED");
+            console.error("Error de red:", err);
+            alert("❌ ERROR DE CONEXIÓN CON RENDER");
         } finally {
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
