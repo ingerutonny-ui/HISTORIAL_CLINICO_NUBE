@@ -56,4 +56,4 @@ async def save_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_
         return crud.upsert_p3(db, data.model_dump())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+ 
