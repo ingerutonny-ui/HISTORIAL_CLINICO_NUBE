@@ -51,8 +51,7 @@ async def save_p2(data: schemas.AntecedentesP2Base, db: Session = Depends(get_db
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/save-p3")
-@app.post("/api/guardar-p3")
-async def guardar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
+async def save_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
         resultado = crud.upsert_p3(db, data.model_dump())
         return {"status": "success", "id": resultado.id}
