@@ -15,12 +15,9 @@
         .barra-paciente { background: #f1f9f7; padding: 20px; border-radius: 10px; border-left: 8px solid var(--ohs); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
         .dato-resaltado { color: var(--azul-paciente) !important; font-weight: 800; }
         .section-tag { background: #f8f9fa; padding: 12px; font-weight: 700; border-bottom: 3px solid var(--ohs); margin: 25px 0 15px 0; color: var(--dark); text-transform: uppercase; }
-        .form-label { font-weight: 600; color: var(--gris-suave); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 6px; text-transform: uppercase; font-size: 0.85rem; border: 1px solid #dcdde1; padding: 8px; }
-        .btn-add { background: var(--dark); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.8rem; margin-top: 10px; cursor: pointer; transition: 0.3s; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 18px; border: none; border-radius: 10px; margin-top: 40px; text-transform: uppercase; font-size: 1rem; cursor: pointer; transition: 0.3s; }
         .btn-save:hover { background: var(--ohs-dark); transform: translateY(-2px); }
-        .btn-save:disabled { background: #bdc3c7; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -53,25 +50,19 @@
             <div class="col-md-3"><label class="form-label">GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" value="ORH+"></div>
         </div>
 
-        <div class="section-tag">2. HISTORIA LABORAL (EMPRESAS ANTERIORES)</div>
-        <div class="table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light text-center">
-                    <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO / ACTIVIDAD</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th></tr>
-                </thead>
-                <tbody id="tBody">
-                    <tr>
-                        <td><input type="text" class="form-control r-ed" placeholder="25"></td>
-                        <td><input type="text" class="form-control r-em" placeholder="MINERA"></td>
-                        <td><input type="text" class="form-control r-ca" placeholder="OPERADOR"></td>
-                        <td><input type="text" class="form-control r-ti" placeholder="5 AÑOS"></td>
-                        <td><input type="text" class="form-control r-ri" placeholder="RUIDO"></td>
-                        <td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR OTRA EXPERIENCIA</button>
+        <div class="section-tag">2. HISTORIA LABORAL</div>
+        <table class="table table-bordered">
+            <tbody id="tBody">
+                <tr>
+                    <td><input type="text" class="form-control r-ed" placeholder="EDAD"></td>
+                    <td><input type="text" class="form-control r-em" placeholder="EMPRESA"></td>
+                    <td><input type="text" class="form-control r-ca" placeholder="CARGO"></td>
+                    <td><input type="text" class="form-control r-ti" placeholder="TIEMPO"></td>
+                    <td><input type="text" class="form-control r-ri" placeholder="RIESGOS"></td>
+                    <td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>
+                </tr>
+            </tbody>
+        </table>
 
         <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="row g-3 p-2">
@@ -90,19 +81,8 @@
 </div>
 
 <script>
-    // URL BLINDADA: Apunta a registrar-p3 que ya configuramos en el backend
-    const ENDPOINT_FINAL_P3 = "https://historial-clinico-936s.onrender.com/api/registrar-p3";
-
-    function addFila() {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="text" class="form-control r-ed"></td>
-                        <td><input type="text" class="form-control r-em"></td>
-                        <td><input type="text" class="form-control r-ca"></td>
-                        <td><input type="text" class="form-control r-ti"></td>
-                        <td><input type="text" class="form-control r-ri"></td>
-                        <td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
-        document.getElementById('tBody').appendChild(tr);
-    }
+    // USAMOS registrar-p3 QUE DEBE ESTAR EN EL MAIN.PY MAÑANA
+    const URL_POST = "https://historial-clinico-936s.onrender.com/api/registrar-p3";
 
     window.onload = () => {
         document.getElementById('v_nom').innerText = (localStorage.getItem('p_nom') || "SIN NOMBRE").toUpperCase();
@@ -110,69 +90,61 @@
         document.getElementById('v_cod').innerText = localStorage.getItem('p_cod') || "---";
     };
 
-    document.getElementById('formP3').addEventListener('submit', async function(evento) {
-        evento.preventDefault();
-        
-        const idPaciente = localStorage.getItem('p_id');
-        if (!idPaciente) {
-            alert("❌ ERROR: No se encontró ID de paciente.");
-            return;
-        }
+    document.getElementById('formP3').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = localStorage.getItem('p_id');
+        if(!id) return alert("Falta ID");
 
-        const boton = document.getElementById('btnS');
-        boton.innerText = "⏳ ENVIANDO A POSTGRESQL...";
-        boton.disabled = true;
+        const btn = document.getElementById('btnS');
+        btn.disabled = true;
+        btn.innerText = "ENVIANDO...";
 
-        // Captura de tabla con validación de nulos
-        const tablaLaboral = Array.from(document.querySelectorAll('#tBody tr')).map(fila => ({
-            ed: fila.querySelector('.r-ed').value || "0",
-            em: (fila.querySelector('.r-em').value || "N/A").toUpperCase(),
-            ca: (fila.querySelector('.r-ca').value || "N/A").toUpperCase(),
-            ti: (fila.querySelector('.r-ti').value || "0").toUpperCase(),
-            ri: (fila.querySelector('.r-ri').value || "N/A").toUpperCase(),
-            ep: fila.querySelector('.r-ep').value
+        const laboral = Array.from(document.querySelectorAll('#tBody tr')).map(f => ({
+            ed: f.querySelector('.r-ed').value || "0",
+            em: f.querySelector('.r-em').value.toUpperCase() || "N/A",
+            ca: f.querySelector('.r-ca').value.toUpperCase() || "N/A",
+            ti: f.querySelector('.r-ti').value.toUpperCase() || "0",
+            ri: f.querySelector('.r-ri').value.toUpperCase() || "N/A",
+            ep: f.querySelector('.r-ep').value
         }));
 
-        const riesgosCheck = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
+        const riesgos = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
-        const datosParaEnviar = {
-            paciente_id: parseInt(idPaciente),
+        const data = {
+            paciente_id: parseInt(id),
             fuma: document.getElementById('fuma').value,
-            fuma_cantidad: document.getElementById('fuma_cantidad').value || "0",
+            fuma_cantidad: document.getElementById('fuma_cantidad').value,
             alcohol: document.getElementById('alcohol').value,
-            alcohol_frecuencia: (document.getElementById('alcohol_frecuencia').value || "SOCIAL").toUpperCase(),
+            alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value.toUpperCase(),
             drogas: document.getElementById('drogas').value,
-            drogas_tipo: (document.getElementById('drogas_tipo').value || "S/D").toUpperCase(),
+            drogas_tipo: document.getElementById('drogas_tipo').value.toUpperCase(),
             coca: document.getElementById('coca').value,
             deporte: document.getElementById('deporte').value,
-            deporte_detalle: (document.getElementById('deporte_detalle').value || "S/D").toUpperCase(),
+            deporte_detalle: document.getElementById('deporte_detalle').value.toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(tablaLaboral),
-            riesgos_expuestos: JSON.stringify(riesgosCheck),
-            observaciones: "REGISTRO_P3_NUBE_FINAL"
+            historia_laboral: JSON.stringify(laboral),
+            riesgos_expuestos: JSON.stringify(riesgos),
+            observaciones: "FINAL_P3_CLOUD"
         };
 
         try {
-            const respuesta = await fetch(ENDPOINT_FINAL_P3, {
+            const res = await fetch(URL_POST, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(datosParaEnviar)
+                body: JSON.stringify(data)
             });
-
-            if (respuesta.ok) {
-                alert("✅ P3 GUARDADO CORRECTAMENTE EN LA NUBE");
+            if(res.ok) {
+                alert("✅ GUARDADO");
                 window.location.href = "index.html";
             } else {
-                const errorData = await respuesta.json();
-                console.error("Detalle del error:", errorData);
-                alert(`❌ ERROR DEL SERVIDOR: ${errorData.detail || "Error en proceso"}`);
+                const err = await res.json();
+                alert("❌ ERROR: " + JSON.stringify(err.detail));
             }
-        } catch (error) {
-            console.error("Error de red:", error);
-            alert("❌ ERROR DE CONEXIÓN: Verifica que el backend esté activo.");
+        } catch (e) {
+            alert("❌ ERROR DE RED");
         } finally {
-            boton.disabled = false;
-            boton.innerText = "💾 GUARDAR P3 EN POSTGRESQL";
+            btn.disabled = false;
+            btn.innerText = "💾 GUARDAR P3 EN POSTGRESQL";
         }
     });
 </script>
