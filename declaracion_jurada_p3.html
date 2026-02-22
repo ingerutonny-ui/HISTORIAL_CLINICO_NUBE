@@ -3,125 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P3 - HÁBITOS Y RIESGOS</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>P3 - FINALIZAR DECLARACIÓN</title>
     <style>
-        body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; padding: 10px; }
-        .form-container { max-width: 950px; margin: 15px auto; background: white; padding: 25px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
-        .header-ohs { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #22c55e; padding-bottom: 15px; margin-bottom: 20px; }
-        .title-center h2 { font-size: 1.2rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin: 0; }
-        .data-banner { background: #e8f8f5; padding: 15px; border-radius: 15px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-around; border: 1px solid #22c55e; }
-        .data-val { color: #1e293b; font-weight: 900; font-size: 13px; }
-        .section-title { background: #f8fafc; padding: 8px 12px; font-weight: 800; margin-top: 20px; border-left: 4px solid #22c55e; color: #1e293b; font-size: 14px; text-transform: uppercase; }
-        .form-control, .form-select { border-radius: 10px; padding: 8px; font-size: 14px; text-transform: uppercase; border: 2px solid #f1f5f9; font-weight: 600; }
-        .btn-finalizar { background: #22c55e; color: white; border: none; padding: 18px; border-radius: 15px; width: 100%; font-weight: 800; text-transform: uppercase; margin-top: 25px; font-size: 16px; transition: 0.3s; }
-        .btn-finalizar:hover { background: #16a34a; transform: translateY(-2px); }
+        :root { --primary: #2ecc71; --dark: #1e293b; --bg: #f0f2f5; --blue-info: #2563eb; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { background: white; width: 100%; max-width: 1000px; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .header-top { display: flex; justify-content: center; margin-bottom: 15px; }
+        .logo-img { height: 65px; width: auto; }
+        h2 { text-align: center; color: var(--primary); font-weight: 900; text-transform: uppercase; margin-bottom: 25px; }
+        .patient-banner { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 15px; background: #f8fafc; padding: 15px 25px; border-radius: 12px; border-left: 6px solid var(--primary); margin-bottom: 25px; }
+        .info-group label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; }
+        .info-group span { font-size: 15px; font-weight: 900; color: var(--blue-info); text-transform: uppercase; }
+        .section-box { border-top: 2px solid #e2e8f0; margin-bottom: 25px; padding-top: 10px; }
+        .section-title { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 15px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px 20px; }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
+        input, select { padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 700; text-transform: uppercase; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 15px; background: #fcfdfc; border-radius: 10px; }
+        .check-item { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 14px; font-weight: 900; font-size: 16px; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
+
+        /* Estilo para la Ventana de Éxito */
+        #modalExito { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 999; }
+        .modal-content { background: white; padding: 40px; border-radius: 25px; text-align: center; max-width: 400px; width: 90%; }
+        .modal-content h3 { color: var(--primary); font-size: 24px; margin-bottom: 10px; }
+        .modal-content p { font-weight: 800; color: var(--dark); text-transform: uppercase; margin: 5px 0; }
+        .modal-content .tag-cod { color: var(--blue-info); font-size: 22px; }
     </style>
 </head>
 <body>
 
-<div class="form-container">
-    <div class="header-ohs">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50">
-        <div class="title-center"><h2>III. Hábitos y Antecedentes Laborales</h2></div>
+<div class="container">
+    <div class="header-top"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img"></div>
+    <h2>III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h2>
+
+    <div class="patient-banner">
+        <div class="info-group"><label>Paciente</label><span id="top_nombre">---</span></div>
+        <div class="info-group"><label>Documento CI</label><span id="top_ci">---</span></div>
+        <div class="info-group"><label>Código</label><span id="top_codigo">---</span></div>
     </div>
 
-    <div class="data-banner">
-        <div>PACIENTE: <span id="v_nombre" class="data-val">---</span></div>
-        <div>CI: <span id="v_ci" class="data-val">---</span></div>
-        <div>CÓDIGO: <span id="v_codigo" class="data-val">---</span></div>
+    <div class="section-box">
+        <div class="section-title">1. HÁBITOS PERSONALES</div>
+        <div class="form-grid">
+            <div class="field"><label>¿Fuma?</label><select id="fuma"><option>NO</option><option>SI</option></select></div>
+            <div class="field"><label>¿Alcohol?</label><select id="alcohol"><option>NO</option><option>SOCIAL</option><option>SI</option></select></div>
+            <div class="field"><label>¿Drogas?</label><select id="drogas"><option>NO</option><option>SI</option></select></div>
+            <div class="field"><label>Grupo Sanguíneo</label><input type="text" id="grupo_sangre" placeholder="Ej. ORH+"></div>
+        </div>
     </div>
 
-    <form id="formP3">
-        <div class="section-title">1. Hábitos Personales</div>
-        <div class="row g-3 p-2">
-            <div class="col-md-3"><label>¿Fuma?</label><select id="fuma" class="form-select"><option>NO</option><option>SI</option></select></div>
-            <div class="col-md-3"><label>¿Alcohol?</label><select id="alcohol" class="form-select"><option>NO</option><option>SOCIAL</option><option>FRECUENTE</option></select></div>
-            <div class="col-md-3"><label>¿Drogas?</label><select id="drogas" class="form-select"><option>NO</option><option>SI</option></select></div>
-            <div class="col-md-3"><label>Grupo Sanguíneo</label><input type="text" id="gs" class="form-control" value="ORH+"></div>
+    <div class="section-box">
+        <div class="section-title">2. HISTORIA LABORAL</div>
+        <div class="form-grid">
+            <div class="field" style="grid-column: span 2;"><label>Empresa Anterior</label><input type="text" id="empresa_ant"></div>
+            <div class="field" style="grid-column: span 2;"><label>Cargo / Función</label><input type="text" id="cargo_ant"></div>
         </div>
+    </div>
 
-        <div class="section-title">2. Historia Laboral</div>
-        <div class="row g-3 p-2">
-            <div class="col-md-6"><label>Empresa Anterior</label><input type="text" id="empresa" class="form-control" value="S/D"></div>
-            <div class="col-md-6"><label>Cargo / Función</label><input type="text" id="cargo" class="form-control" value="S/D"></div>
+    <div class="section-box">
+        <div class="section-title">3. RIESGOS EXPUESTOS</div>
+        <div class="checkbox-grid">
+            <label class="check-item"><input type="checkbox" class="riesgo" value="RUIDO"> RUIDO</label>
+            <label class="check-item"><input type="checkbox" class="riesgo" value="POLVOS"> POLVOS</label>
+            <label class="check-item"><input type="checkbox" class="riesgo" value="ERGONÓMICO"> ERGONÓMICO</label>
+            <label class="check-item"><input type="checkbox" class="riesgo" value="BIOLÓGICO"> BIOLÓGICO</label>
         </div>
+    </div>
 
-        <div class="section-title">3. Riesgos Expuestos</div>
-        <div class="row g-3 p-2">
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="RUIDO" id="r1"><label class="form-check-label">RUIDO</label></div></div>
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="POLVOS" id="r2"><label class="form-check-label">POLVOS</label></div></div>
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="ERGONOMICO" id="r3"><label class="form-check-label">ERGONÓMICO</label></div></div>
-            <div class="col-6 col-md-3"><div class="form-check"><input class="form-check-input check-riesgo" type="checkbox" value="BIOLOGICO" id="r4"><label class="form-check-label">BIOLÓGICO</label></div></div>
-        </div>
+    <button class="btn-save" onclick="guardarTodo()">💾 GUARDAR DECLARACIÓN P3</button>
+</div>
 
-        <button type="submit" id="btnFinal" class="btn-finalizar">💾 FINALIZAR Y GENERAR REPORTE</button>
-    </form>
+<div id="modalExito">
+    <div class="modal-content">
+        <h3>✅ NUEVO PACIENTE</h3>
+        <p id="modal_nom">---</p>
+        <p class="tag-cod" id="modal_cod">---</p>
+        <small>Redirigiendo al menú...</small>
+    </div>
 </div>
 
 <script>
-    const API = 'https://historial-clinico-936s.onrender.com';
-    const p_id = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
-
     window.onload = () => {
-        if (!p_id) { window.location.href = "registro_paciente.html"; return; }
-        document.getElementById('v_nombre').innerText = (localStorage.getItem('p_nom') || "---").toUpperCase();
-        document.getElementById('v_ci').innerText = localStorage.getItem('p_ci') || "---";
-        document.getElementById('v_codigo').innerText = localStorage.getItem('p_cod') || "---";
+        document.getElementById('top_nombre').innerText = localStorage.getItem('p_nom') || "---";
+        document.getElementById('top_ci').innerText = localStorage.getItem('p_ci') || "---";
+        document.getElementById('top_codigo').innerText = localStorage.getItem('p_cod') || "---";
     };
 
-    document.getElementById('formP3').onsubmit = async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('btnFinal');
-        btn.innerText = "⏳ PROCESANDO...";
-        btn.disabled = true;
+    async function guardarTodo() {
+        // 1. Recopilar P3
+        const riesgosArr = [];
+        document.querySelectorAll('.riesgo:checked').forEach(i => riesgosArr.push(i.value));
 
-        // Recolectar P3
-        const riesgos = [];
-        document.querySelectorAll('.check-riesgo:checked').forEach(c => riesgos.push(c.value));
-        
-        const datosP3 = {
+        const dataFinal = {
+            ...JSON.parse(localStorage.getItem('datos_p1') || '{}'),
+            ...JSON.parse(localStorage.getItem('datos_p2') || '{}'),
             fuma: document.getElementById('fuma').value,
             alcohol: document.getElementById('alcohol').value,
             drogas: document.getElementById('drogas').value,
-            grupo_sanguineo: document.getElementById('gs').value.toUpperCase(),
-            empresa: document.getElementById('empresa').value.toUpperCase(),
-            cargo: document.getElementById('cargo').value.toUpperCase(),
-            riesgos: riesgos.join(', ')
+            grupo_sangre: document.getElementById('grupo_sangre').value.toUpperCase(),
+            empresa_ant: document.getElementById('empresa_ant').value.toUpperCase(),
+            cargo_ant: document.getElementById('cargo_ant').value.toUpperCase(),
+            riesgos: riesgosArr.join(', '),
+            nombre: localStorage.getItem('p_nom'),
+            ci: localStorage.getItem('p_ci'),
+            codigo: localStorage.getItem('p_cod')
         };
 
-        // INTEGRACIÓN FINAL: P1 + P2 + P3
-        const p1 = JSON.parse(localStorage.getItem('datos_temporales_p1') || "{}");
-        const p2 = JSON.parse(localStorage.getItem('datos_temporales_p2') || "{}");
+        // 2. Simular envío y mostrar Modal
+        document.getElementById('modal_nom').innerText = dataFinal.nombre;
+        document.getElementById('modal_cod').innerText = dataFinal.codigo;
+        document.getElementById('modalExito').style.display = 'flex';
 
-        const payloadFinal = {
-            paciente_id: parseInt(p_id),
-            ...p1,
-            ...p2,
-            ...datosP3
-        };
-
-        try {
-            // Usamos la ruta correcta definida en tu backend
-            const res = await fetch(`${API}/api/save-p2`, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payloadFinal)
-            });
-
-            if (res.ok) {
-                alert("✅ HISTORIAL COMPLETADO EXITOSAMENTE.");
-                window.location.href = "generar_reporte.html";
-            } else {
-                alert("❌ ERROR DEL SERVIDOR: " + res.statusText);
-            }
-        } catch (error) {
-            alert("❌ ERROR DE CONEXIÓN.");
-        } finally {
-            btn.disabled = false;
-            btn.innerText = "💾 FINALIZAR Y GENERAR REPORTE";
-        }
-    };
+        // 3. Limpiar y Redirigir tras 3 segundos [cite: 2026-01-20]
+        setTimeout(() => {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }, 3000);
+    }
 </script>
 </body>
 </html>
