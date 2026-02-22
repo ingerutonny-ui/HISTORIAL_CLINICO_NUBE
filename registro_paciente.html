@@ -5,90 +5,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HC NUBE | REGISTRO</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f2f5; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
         
-        /* BARRA SUPERIOR ORIGINAL */
-        .top-bar { width: 100%; background: #212529; padding: 12px 20px; color: white; display: flex; align-items: center; font-size: 13px; font-weight: 800; text-transform: uppercase; }
-        .top-bar a { color: white; text-decoration: none; cursor: pointer; }
+        /* BARRA SUPERIOR */
+        .top-bar { width: 100%; background: #212529; padding: 15px 20px; color: white; display: flex; align-items: center; font-size: 13px; font-weight: 800; text-transform: uppercase; box-sizing: border-box; }
+        .top-bar a { color: #22c55e; text-decoration: none; cursor: pointer; }
 
-        .card { background: white; padding: 35px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); width: 100%; max-width: 480px; text-align: center; margin-top: 40px; }
+        /* CONTENEDOR FULL WIDTH CON 15PX DE MARGEN */
+        .main-wrapper { 
+            width: calc(100% - 30px); 
+            max-width: 600px; /* Un poco más ancho para mejor visualización en tabletas */
+            margin: 20px auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 25px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06); 
+            text-align: center;
+            box-sizing: border-box;
+        }
         
-        .logo-img { height: 50px; margin-bottom: 10px; }
-
-        h2 { color: #1e293b; font-size: 1.5rem; margin-bottom: 30px; text-transform: uppercase; font-weight: 900; letter-spacing: -0.5px; }
+        .logo-img { height: 60px; margin-bottom: 15px; }
+        h2 { color: #1e293b; font-size: 1.6rem; margin-bottom: 25px; text-transform: uppercase; font-weight: 900; }
         
-        .input-group { text-align: left; margin-bottom: 18px; }
-        label { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-left: 2px; }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        label { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px; display: block; }
         
         input { 
-            width: 100%; padding: 14px; margin-top: 6px; border: 2px solid #e2e8f0; 
-            border-radius: 12px; box-sizing: border-box; font-size: 16px; 
+            width: 100%; padding: 16px; border: 2px solid #f1f5f9; 
+            border-radius: 15px; box-sizing: border-box; font-size: 16px; 
             font-weight: 700; text-transform: uppercase; transition: 0.3s; color: #1e293b;
+            background: #f8fafc;
         }
         input:focus { border-color: #22c55e; outline: none; background: #fff; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1); }
-        input::placeholder { color: #cbd5e1; font-weight: 400; text-transform: none; }
         
+        /* CÓDIGO EN AZUL ELÉCTRICO NOTORIO */
         .codigo-box { 
-            background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 15px; 
-            padding: 20px; margin: 25px 0;
+            background: #f0f7ff; border: 2px dashed #0044ff; border-radius: 20px; 
+            padding: 25px; margin: 25px 0;
         }
-        .cod-text { font-size: 10px; color: #94a3b8; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; }
-        #display-codigo { font-size: 2.8rem; font-weight: 900; color: #1e293b; letter-spacing: 2px; }
+        .cod-text { font-size: 11px; color: #0044ff; text-transform: uppercase; font-weight: 800; margin-bottom: 5px; }
+        #display-codigo { font-size: 3rem; font-weight: 900; color: #0044ff; letter-spacing: 3px; }
 
         .btn-guardar { 
-            width: 100%; background: #2ecc71; color: white; border: none; 
-            padding: 18px; border-radius: 12px; font-weight: 900; font-size: 16px; 
+            width: 100%; background: #22c55e; color: white; border: none; 
+            padding: 20px; border-radius: 15px; font-weight: 900; font-size: 18px; 
             cursor: pointer; transition: 0.3s; text-transform: uppercase;
-            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.2);
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.2);
         }
-        .btn-guardar:hover { background: #27ae60; transform: translateY(-1px); }
+        .btn-guardar:hover { background: #16a34a; transform: translateY(-2px); }
 
         .btn-consultar {
-            background: #007bff; color: white; border: none; padding: 14px 35px;
-            border-radius: 8px; font-weight: 800; margin-top: 25px; cursor: pointer;
-            font-size: 15px; text-transform: uppercase; transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+            background: #ffffff; color: #0044ff; border: 2px solid #0044ff; padding: 15px 40px;
+            border-radius: 12px; font-weight: 800; margin: 20px 0; cursor: pointer;
+            font-size: 14px; text-transform: uppercase; transition: 0.3s;
         }
-        .btn-consultar:hover { background: #0069d9; }
+
+        @media (max-width: 480px) {
+            .main-wrapper { padding: 20px; }
+            #display-codigo { font-size: 2.2rem; }
+        }
     </style>
 </head>
 <body>
 
 <div class="top-bar">
-    <a href="index.html">← VOLVER AL MENÚ PRINCIPAL</a>
+    <a href="index.html">← VOLVER</a>
 </div>
 
-<div class="card">
-    <div class="logo-container">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img">
-    </div>
-    
+<div class="main-wrapper">
+    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img">
     <h2>REGISTRO DE PACIENTE</h2>
 
     <div class="input-group">
         <label>Nombres Completos</label>
-        <input type="text" id="nombre" placeholder="EJ. ELMER" oninput="generarCodigo()">
+        <input type="text" id="nombre" placeholder="NOMBRES" oninput="generarCodigo()">
     </div>
 
     <div class="input-group">
-        <label>Apellidos Paterno/Materno</label>
-        <input type="text" id="apellido" placeholder="EJ. HERMOSA" oninput="generarCodigo()">
+        <label>Apellidos</label>
+        <input type="text" id="apellido" placeholder="APELLIDOS" oninput="generarCodigo()">
     </div>
 
     <div class="input-group">
         <label>Cédula de Identidad (CI)</label>
-        <input type="number" id="ci" placeholder="EJ. 2543253" oninput="generarCodigo()">
+        <input type="number" id="ci" placeholder="NÚMERO DE DOCUMENTO" oninput="generarCodigo()">
     </div>
 
     <div class="codigo-box">
-        <div class="cod-text">Código Generado</div>
+        <div class="cod-text">Código Único</div>
         <div id="display-codigo">----</div>
     </div>
 
-    <button class="btn-guardar" onclick="enviarDatos()">GUARDAR REGISTRO FINAL</button>
+    <button id="btnFinal" class="btn-guardar" onclick="enviarDatos()">💾 REGISTRAR Y PASAR A P1</button>
 </div>
 
-<button class="btn-consultar" onclick="location.href='lista_historial.html'">CONSULTAR BASE DE DATOS</button>
+<button class="btn-consultar" onclick="location.href='lista_historial.html'">Ver Base de Datos</button>
 
 <script>
     const API_URL = 'https://historial-clinico-936s.onrender.com';
@@ -100,21 +111,21 @@
         const display = document.getElementById('display-codigo');
 
         if (nom && ape && ciVal) {
-            const inicialN = nom.charAt(0);
-            const inicialA = ape.charAt(0);
-            const ultimos4 = ciVal.slice(-4);
-            const codigo = inicialN + inicialA + ultimos4;
+            const codigo = nom.charAt(0) + ape.charAt(0) + ciVal.slice(-4);
             display.innerText = codigo;
             return codigo;
-        } else {
-            display.innerText = "----";
-            return "";
         }
+        display.innerText = "----";
+        return "";
     }
 
     async function enviarDatos() {
         const codigo = generarCodigo();
-        if (!codigo) { alert("COMPLETE TODOS LOS CAMPOS."); return; }
+        if (!codigo) { alert("⚠️ POR FAVOR, COMPLETE LOS DATOS."); return; }
+
+        const btn = document.getElementById('btnFinal');
+        btn.innerText = "⏳ REGISTRANDO...";
+        btn.disabled = true;
 
         const datos = {
             nombre: document.getElementById('nombre').value.toUpperCase(),
@@ -124,9 +135,6 @@
         };
 
         try {
-            // Limpieza total antes de iniciar nuevo flujo
-            localStorage.clear();
-
             const response = await fetch(`${API_URL}/pacientes/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -135,15 +143,24 @@
 
             if (response.ok) {
                 const paciente = await response.json();
+                
+                // Guardado de sesión sin borrar todo el localStorage para evitar conflictos
                 localStorage.setItem('p_id', paciente.id);
                 localStorage.setItem('p_nom', `${paciente.apellido} ${paciente.nombre}`);
                 localStorage.setItem('p_ci', paciente.ci);
                 localStorage.setItem('p_cod', paciente.codigo_paciente);
                 
-                alert("✅ REGISTRADO CON ÉXITO.");
                 window.location.href = 'declaracion_jurada_p1.html';
+            } else {
+                alert("❌ ERROR AL GUARDAR. INTENTE OTRA VEZ.");
+                btn.disabled = false;
+                btn.innerText = "💾 REGISTRAR Y PASAR A P1";
             }
-        } catch (e) { alert("❌ ERROR DE CONEXIÓN CON RENDER."); }
+        } catch (e) { 
+            alert("❌ FALLO DE CONEXIÓN CON EL SERVIDOR."); 
+            btn.disabled = false;
+            btn.innerText = "💾 REGISTRAR Y PASAR A P1";
+        }
     }
 </script>
 </body>
