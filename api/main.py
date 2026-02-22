@@ -50,10 +50,11 @@ async def save_p2(data: schemas.AntecedentesP2Base, db: Session = Depends(get_db
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# CAMBIO ESTRATÉGICO DE RUTA PARA EVITAR EL 404 DE CACHÉ
+# RUTA NUEVA PARA FORZAR ACTUALIZACIÓN EN RENDER Y EVITAR 404
 @app.post("/api/registrar-p3")
 async def save_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
+        # El trillizo perfecto: directo al CRUD
         return crud.upsert_p3(db, data.model_dump())
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
