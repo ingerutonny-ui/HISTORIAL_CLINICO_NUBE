@@ -3,78 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P1 - FILIACIÓN | HC NUBE</title>
+    <title>P1 - FILIACIÓN | HISTORIAL CLÍNICO NUBE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Fondo y reseteo de márgenes */
-        body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        /* Estructura Full Width con 15px de margen */
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
         
-        /* Contenedor que ocupa toda la pantalla con 15px de margen a los lados */
-        .form-container { 
-            max-width: 100%; 
-            margin: 15px; 
-            background: white; 
-            padding: 25px; 
+        .main-wrapper { 
+            width: calc(100% - 30px); /* 15px a cada lado */
+            margin: 15px auto; 
+            background: #ffffff; 
             border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+            padding: 30px;
         }
 
-        .header-ohs { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #22c55e; padding-bottom: 15px; margin-bottom: 20px; }
-        .title-center h2 { font-size: 1.3rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin: 0; }
-        
-        /* Banner de datos con AZUL NOTORIO */
-        .data-banner { background: #f8fafc; padding: 15px; border-radius: 15px; margin-bottom: 25px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-around; border: 1px solid #e2e8f0; }
-        .data-val { color: #0056b3; font-weight: 900; font-size: 16px; text-shadow: 0.5px 0.5px 0px rgba(0,0,0,0.1); }
-        
-        .label-custom { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 6px; }
-        .form-control, .form-select { border-radius: 10px; padding: 12px; font-size: 14px; text-transform: uppercase; border: 2px solid #f1f5f9; font-weight: 600; }
-        
-        .btn-next { background: #22c55e; color: white; border: none; padding: 20px; border-radius: 15px; width: 100%; font-weight: 800; text-transform: uppercase; margin-top: 25px; font-size: 18px; transition: 0.3s; cursor: pointer; }
-        .btn-next:hover { background: #16a34a; transform: scale(1.01); }
+        /* Encabezado OHS */
+        .header-ohs { 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            border-bottom: 4px solid #22c55e; 
+            padding-bottom: 20px; 
+            margin-bottom: 30px; 
+        }
+        .header-ohs img { height: 60px; }
+        .header-ohs h2 { font-weight: 900; color: #1e293b; text-transform: uppercase; margin: 0; font-size: 1.5rem; }
 
-        /* Ajustes para móviles */
+        /* Banner de Datos del Paciente - AZUL ELÉCTRICO NOTORIO */
+        .patient-banner { 
+            background: #f8fafc; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 15px; 
+            padding: 20px; 
+            margin-bottom: 35px; 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 25px; 
+            justify-content: space-around; 
+        }
+        .data-label { font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; }
+        .data-value { 
+            font-size: 18px; 
+            font-weight: 900; 
+            color: #0044ff; /* Azul Eléctrico vibrante */
+            text-transform: uppercase;
+        }
+
+        /* Estilo de Inputs */
+        .label-custom { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; margin-bottom: 8px; }
+        .form-control, .form-select { 
+            border-radius: 12px; 
+            padding: 14px; 
+            border: 2px solid #f1f5f9; 
+            font-weight: 700; 
+            color: #1e293b;
+            background-color: #fdfdfd;
+            transition: 0.3s;
+        }
+        .form-control:focus { border-color: #22c55e; box-shadow: none; background: #fff; }
+
+        /* Botón de Acción */
+        .btn-submit { 
+            background: #22c55e; 
+            color: white; 
+            border: none; 
+            padding: 22px; 
+            border-radius: 18px; 
+            width: 100%; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            font-size: 18px; 
+            margin-top: 30px; 
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+            cursor: pointer;
+            transition: 0.4s ease;
+        }
+        .btn-submit:hover { background: #16a34a; transform: translateY(-3px); }
+
+        /* Responsividad */
         @media (max-width: 768px) {
-            .form-container { margin: 10px; padding: 15px; }
-            .title-center h2 { font-size: 1rem; }
-            .data-val { font-size: 13px; }
+            .main-wrapper { padding: 15px; width: calc(100% - 20px); margin: 10px auto; }
+            .header-ohs h2 { font-size: 1.1rem; }
+            .data-value { font-size: 14px; }
+            .patient-banner { gap: 10px; padding: 10px; }
         }
     </style>
 </head>
 <body>
 
-<div class="form-container">
+<div class="main-wrapper">
     <div class="header-ohs">
-        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50">
-        <div class="title-center"><h2>1. Datos de Filiación</h2></div>
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="OHS LOGO">
+        <h2>1. Datos de Filiación</h2>
+        <span style="color: #22c55e; font-weight: 800; font-size: 10px;">NUEVO REGISTRO</span>
     </div>
 
-    <div class="data-banner">
-        <div>PACIENTE: <span id="p_nombre" class="data-val">---</span></div>
-        <div>CI: <span id="p_ci" class="data-val">---</span></div>
-        <div>CÓDIGO: <span id="p_codigo" class="data-val">---</span></div>
+    <div class="patient-banner shadow-sm">
+        <div><span class="data-label">Paciente</span><span id="p_nombre" class="data-value">---</span></div>
+        <div><span class="data-label">Documento CI</span><span id="p_ci" class="data-value">---</span></div>
+        <div><span class="data-label">Código Sistema</span><span id="p_codigo" class="data-value">---</span></div>
     </div>
 
-    <form id="formP1" class="row g-3">
-        <div class="col-md-3"><label class="label-custom">Edad</label><input type="number" id="edad" class="form-control" required></div>
-        <div class="col-md-3">
+    <form id="formP1" class="row g-4">
+        <div class="col-6 col-md-3"><label class="label-custom">Edad</label><input type="number" id="edad" class="form-control" placeholder="0" required></div>
+        <div class="col-6 col-md-3">
             <label class="label-custom">Sexo</label>
             <select id="sexo" class="form-select">
                 <option value="MASCULINO">MASCULINO</option>
                 <option value="FEMENINO">FEMENINO</option>
             </select>
         </div>
-        <div class="col-md-3"><label class="label-custom">Fecha Nacimiento</label><input type="date" id="fecha_nac" class="form-control" required></div>
-        <div class="col-md-3"><label class="label-custom">Lugar Nacimiento</label><input type="text" id="lugar_nac" class="form-control" value="S/D"></div>
+        <div class="col-12 col-md-3"><label class="label-custom">Fecha Nacimiento</label><input type="date" id="fecha_nac" class="form-control" required></div>
+        <div class="col-12 col-md-3"><label class="label-custom">Lugar Nacimiento</label><input type="text" id="lugar_nac" class="form-control" value="S/D" style="text-transform: uppercase;"></div>
         
-        <div class="col-md-6"><label class="label-custom">Domicilio Actual</label><input type="text" id="domicilio" class="form-control" value="S/D"></div>
-        <div class="col-md-2"><label class="label-custom">N° Casa</label><input type="text" id="n_casa" class="form-control" value="S/N"></div>
-        <div class="col-md-4"><label class="label-custom">Zona / Barrio</label><input type="text" id="zona" class="form-control" value="S/D"></div>
+        <div class="col-12 col-md-6"><label class="label-custom">Domicilio Actual</label><input type="text" id="domicilio" class="form-control" value="S/D" style="text-transform: uppercase;"></div>
+        <div class="col-6 col-md-2"><label class="label-custom">N° Casa</label><input type="text" id="n_casa" class="form-control" value="S/N"></div>
+        <div class="col-6 col-md-4"><label class="label-custom">Zona / Barrio</label><input type="text" id="zona" class="form-control" value="S/D" style="text-transform: uppercase;"></div>
         
-        <div class="col-md-4"><label class="label-custom">Ciudad</label><input type="text" id="ciudad" class="form-control" value="S/D"></div>
-        <div class="col-md-4"><label class="label-custom">País</label><input type="text" id="pais" class="form-control" value="BOLIVIA"></div>
-        <div class="col-md-4"><label class="label-custom">Teléfono/Celular</label><input type="text" id="tel" class="form-control" value="0"></div>
+        <div class="col-12 col-md-4"><label class="label-custom">Ciudad</label><input type="text" id="ciudad" class="form-control" value="S/D" style="text-transform: uppercase;"></div>
+        <div class="col-12 col-md-4"><label class="label-custom">País</label><input type="text" id="pais" class="form-control" value="BOLIVIA" style="text-transform: uppercase;"></div>
+        <div class="col-12 col-md-4"><label class="label-custom">Teléfono/Celular</label><input type="text" id="tel" class="form-control" value="0"></div>
         
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
             <label class="label-custom">Estado Civil</label>
             <select id="est_civil" class="form-select">
                 <option value="SOLTERO/A">SOLTERO/A</option>
@@ -83,9 +135,9 @@
                 <option value="VIUDO/A">VIUDO/A</option>
             </select>
         </div>
-        <div class="col-md-6"><label class="label-custom">Profesión / Oficio</label><input type="text" id="profesion" class="form-control" value="S/D"></div>
+        <div class="col-12 col-md-6"><label class="label-custom">Profesión / Oficio</label><input type="text" id="profesion" class="form-control" value="S/D" style="text-transform: uppercase;"></div>
 
-        <button type="submit" id="btnNext" class="btn-next">💾 Guardar P1 y Continuar</button>
+        <button type="submit" id="btnNext" class="btn-submit">💾 Guardar Filiación y Continuar</button>
     </form>
 </div>
 
@@ -95,6 +147,8 @@
 
     window.onload = () => {
         if (!p_id) { window.location.href = "registro_paciente.html"; return; }
+        
+        // Cargar datos visuales con azul notorio
         document.getElementById('p_nombre').innerText = (localStorage.getItem('p_nom') || "---").toUpperCase();
         document.getElementById('p_ci').innerText = localStorage.getItem('p_ci') || "---";
         document.getElementById('p_codigo').innerText = localStorage.getItem('p_cod') || "---";
@@ -103,7 +157,7 @@
     document.getElementById('formP1').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnNext');
-        btn.innerText = "⏳ GUARDANDO...";
+        btn.innerText = "⏳ PROCESANDO...";
         btn.disabled = true;
 
         const payload = {
@@ -122,6 +176,7 @@
             profesion_oficio: document.getElementById('profesion').value.toUpperCase()
         };
 
+        // Respaldo local para P3
         localStorage.setItem('datos_temporales_p1', JSON.stringify(payload));
 
         try {
@@ -131,12 +186,10 @@
                 body: JSON.stringify(payload)
             });
 
-            if (res.ok) {
-                window.location.href = "declaracion_jurada_p2.html";
-            } else {
-                window.location.href = "declaracion_jurada_p2.html"; 
-            }
+            // Si el servidor responde (aunque sea error de ruta), pasamos a P2 para no detener el manual
+            window.location.href = "declaracion_jurada_p2.html";
         } catch (error) {
+            console.warn("Modo Offline activado por fallo de red.");
             window.location.href = "declaracion_jurada_p2.html";
         }
     };
