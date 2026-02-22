@@ -81,12 +81,12 @@
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR P3 EN POSTGRESQL</button>
+        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR DECLARACIÓN JURADA COMPLETA</button>
     </form>
 </div>
 
 <script>
-    const URL_POST = "https://historial-clinico-936s.onrender.com/api/save-p3";
+    const URL_POST = "https://historial-clinico-936s.onrender.com/api/save-p2"; // RUTA INTEGRADA OK
 
     window.onload = () => {
         document.getElementById('v_nom').innerText = (localStorage.getItem('p_nom') || "SIN NOMBRE").toUpperCase();
@@ -97,11 +97,14 @@
     document.getElementById('formP3').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = localStorage.getItem('p_id');
-        if(!id) return alert("Error: ID de paciente no encontrado en memoria.");
+        if(!id) return alert("Error: ID de paciente no encontrado.");
+
+        // 1. RECUPERAR DATOS DE P2 GUARDADOS EN EL PASO ANTERIOR
+        const datosP2 = JSON.parse(localStorage.getItem('datos_temporales_p2') || "{}");
 
         const btn = document.getElementById('btnS');
         btn.disabled = true;
-        btn.innerText = "PROCESANDO...";
+        btn.innerText = "⏳ ENVIANDO TODO A LA NUBE...";
 
         const laboral = Array.from(document.querySelectorAll('#tBody tr')).map(f => ({
             ed: f.querySelector('.r-ed').value || "0",
@@ -114,8 +117,10 @@
 
         const riesgos = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
-        const data = {
+        // 2. FUSIÓN DE DATOS (P2 + P3)
+        const dataFinal = {
             paciente_id: parseInt(id),
+            ...datosP2, // Aquí entran automáticamente vista, auditivo, respiratorio, etc.
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value,
             alcohol: document.getElementById('alcohol').value,
@@ -128,25 +133,25 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(laboral),
             riesgos_expuestos: JSON.stringify(riesgos),
-            observaciones: "FINAL_P3_CLOUD"
+            observaciones: "INTEGRACION_P2_P3_EXITOSA"
         };
 
         try {
             const res = await fetch(URL_POST, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
+                body: JSON.stringify(dataFinal)
             });
             
             if(res.ok) {
-                alert("✅ DATOS P3 GUARDADOS CORRECTAMENTE");
+                alert("✅ HISTORIAL COMPLETO GUARDADO EN LA NUBE");
+                localStorage.removeItem('datos_temporales_p2'); // Limpiamos memoria
                 window.location.href = "index.html";
             } else {
-                const err = await res.json();
-                alert("❌ ERROR DEL SERVIDOR: " + (err.detail || "Error desconocido"));
+                alert("❌ ERROR EN EL SERVIDOR");
             }
         } catch (e) {
-            alert("❌ ERROR DE RED: Verifica que el servidor en Render esté despierto.");
+            alert("❌ ERROR DE RED");
         } finally {
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR DECLARACIÓN JURADA COMPLETA";
