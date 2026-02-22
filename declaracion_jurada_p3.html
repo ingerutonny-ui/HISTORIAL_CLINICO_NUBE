@@ -15,7 +15,7 @@
         .header-title { color: var(--ohs-dark); font-weight: 700; text-align: center; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
         .barra-paciente { background: #f1f9f7; padding: 20px; border-radius: 10px; border-left: 8px solid var(--ohs); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
         .section-tag { background: #f8f9fa; padding: 12px; font-weight: 700; border-bottom: 3px solid var(--ohs); margin: 25px 0 15px 0; color: var(--dark); text-transform: uppercase; }
-        .form-label { font-weight: 600; color: #636e72; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; }
+        .form-label { font-weight: 600; color: #636e72; font-size: 0.75rem; text-transform: uppercase; }
         .form-control, .form-select { border-radius: 6px; text-transform: uppercase; font-size: 0.85rem; border: 1px solid #dcdde1; padding: 8px; }
         .btn-add { background: var(--dark); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.8rem; margin-top: 10px; cursor: pointer; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 18px; border: none; border-radius: 10px; margin-top: 40px; text-transform: uppercase; font-size: 1rem; cursor: pointer; }
@@ -24,11 +24,11 @@
 <body>
 
 <div class="container">
-    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo OHS" class="header-logo">
+    <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="header-logo">
     <h4 class="header-title">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 800;">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: #2980b9; font-weight: 800;">...</span></div>
         <div>CI: <span id="v_ci" style="font-weight: 700;">---</span></div>
         <div>CÓDIGO: <span id="v_cod" style="font-weight: 700;">---</span></div>
     </div>
@@ -47,17 +47,15 @@
         <div class="row g-3 mt-1">
             <div class="col-md-3"><label class="form-label">COCA (PIJCHA)</label><select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="col-md-3"><label class="form-label">¿DEPORTE?</label><select id="deporte" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="col-md-3"><label class="form-label">DETALLE ACTIVIDAD FÍSICA</label><input type="text" id="deporte_detalle" class="form-control" value="S/D"></div>
+            <div class="col-md-3"><label class="form-label">DETALLE ACTIVIDAD</label><input type="text" id="deporte_detalle" class="form-control" value="S/D"></div>
             <div class="col-md-3"><label class="form-label">GRUPO SANGUÍNEO</label><input type="text" id="grupo_sanguineo" class="form-control" value="ORH+"></div>
         </div>
 
         <div class="section-tag">2. HISTORIA LABORAL (EMPRESAS ANTERIORES)</div>
         <div class="table-responsive">
             <table class="table table-bordered align-middle">
-                <thead class="table-light">
-                    <tr class="text-center">
-                        <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
-                    </tr>
+                <thead class="table-light text-center">
+                    <tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th></tr>
                 </thead>
                 <tbody id="tBody">
                     <tr>
@@ -90,7 +88,7 @@
 </div>
 
 <script>
-    const API_BASE = "https://historial-clinico-936s.onrender.com";
+    const API_URL = "https://historial-clinico-936s.onrender.com/api/save-p3";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -99,30 +97,18 @@
     }
 
     window.onload = () => {
-        const nom = localStorage.getItem('p_nombre') || "SIN NOMBRE";
-        const ape = localStorage.getItem('p_apellido') || "";
-        const ci = localStorage.getItem('p_ci') || "---";
-        const cod = localStorage.getItem('p_codigo') || "---";
-        
-        document.getElementById('v_nom').innerText = (nom + " " + ape).toUpperCase();
-        document.getElementById('v_ci').innerText = ci;
-        document.getElementById('v_cod').innerText = cod;
+        document.getElementById('v_nom').innerText = (localStorage.getItem('p_nombre') || "SIN NOMBRE").toUpperCase();
+        document.getElementById('v_ci').innerText = localStorage.getItem('p_ci') || "---";
+        document.getElementById('v_cod').innerText = localStorage.getItem('p_codigo') || "---";
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const pid = localStorage.getItem('p_id');
-        const completo_nom = document.getElementById('v_nom').innerText;
-        const p_cod = document.getElementById('v_cod').innerText;
-
-        if(!pid) {
-            Swal.fire('Error', 'No se encontró el ID del paciente.', 'error');
-            return;
-        }
+        if(!pid) return Swal.fire('Error', 'Falta ID de Paciente', 'error');
 
         const btn = document.getElementById('btnS');
-        btn.disabled = true;
-        btn.innerText = "⏳ PROCESANDO...";
+        btn.disabled = true; btn.innerText = "⏳ GUARDANDO...";
 
         const payload = {
             paciente_id: parseInt(pid),
@@ -137,20 +123,16 @@
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
-                ed: tr.querySelector('.r-ed').value,
-                em: tr.querySelector('.r-em').value,
-                ca: tr.querySelector('.r-ca').value,
-                ti: tr.querySelector('.r-ti').value,
-                ri: tr.querySelector('.r-ri').value,
-                ep: tr.querySelector('.r-ep').value
+                ed: tr.querySelector('.r-ed').value, em: tr.querySelector('.r-em').value,
+                ca: tr.querySelector('.r-ca').value, ti: tr.querySelector('.r-ti').value,
+                ri: tr.querySelector('.r-ri').value, ep: tr.querySelector('.r-ep').value
             }))),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "REGISTRO COMPLETO P3"
+            observaciones: "REGISTRO P3 COMPLETO"
         };
 
         try {
-            // SEGÚN TU MAIN.PY: La ruta es /api/save-p3
-            const res = await fetch(`${API_BASE}/api/save-p3`, {
+            const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -158,23 +140,17 @@
 
             if (res.ok) {
                 Swal.fire({
-                    title: '¡PACIENTE NUEVO!',
-                    html: `<p style="font-size: 1.2rem; font-weight: bold; color: var(--ohs-dark);">${completo_nom}</p>
-                           <p style="font-weight: 500;">CÓDIGO: ${p_cod}</p>`,
+                    title: '¡REGISTRO P3 EXITOSO!',
+                    html: `<div style="text-align: left; background: #f1f9f7; padding: 15px; border-radius: 8px; border-left: 5px solid #2ecc71;">
+                            <b>PACIENTE:</b> ${localStorage.getItem('p_nombre')}<br>
+                            <b>CÓDIGO:</b> ${localStorage.getItem('p_codigo')}</div>`,
                     icon: 'success',
-                    confirmButtonColor: '#2ecc71',
-                    confirmButtonText: 'CONTINUAR'
-                }).then(() => {
-                    window.location.href = "index.html";
-                });
-            } else {
-                const errorData = await res.json();
-                throw new Error(errorData.detail || "Error en servidor");
-            }
+                    confirmButtonColor: '#2ecc71'
+                }).then(() => { window.location.href = "index.html"; });
+            } else { throw new Error(); }
         } catch (err) {
-            Swal.fire('Error al Guardar', err.message, 'error');
-            btn.disabled = false;
-            btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
+            Swal.fire('Error 404', 'Error de ruta /api/save-p3 en el servidor.', 'error');
+            btn.disabled = false; btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
         }
     };
 </script>
