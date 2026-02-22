@@ -5,26 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P1 - DATOS DE FILIACIÓN</title>
     <style>
-        :root { --primary: #2ecc71; --dark: #1e293b; --ghost: #cbd5e1; --bg: #f0f2f5; --line: #e2e8f0; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 25px; color: var(--dark); display: flex; justify-content: center; }
-        .container { background: white; width: 100%; max-width: 1050px; padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .logo-img { height: 60px; width: auto; }
-        .status-tag { color: var(--primary); font-weight: 800; font-size: 11px; letter-spacing: 1px; }
-        .patient-banner { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px 25px; border-radius: 12px; border-left: 5px solid var(--primary); margin-bottom: 25px; }
-        .patient-banner .info-group { display: flex; gap: 10px; align-items: baseline; }
-        .patient-banner label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; }
-        .patient-banner span { font-size: 15px; font-weight: 900; color: #2563eb; text-transform: uppercase; }
-        .section-title { font-size: 16px; font-weight: 900; color: #0f172a; border-bottom: 2px solid var(--line); padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
-        .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px 25px; margin-bottom: 30px; }
+        :root { --primary: #2ecc71; --dark: #1e293b; --ghost: #cbd5e1; --bg: #f0f2f5; --line: #e2e8f0; --blue-info: #2563eb; }
+        
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
+        
+        .container { 
+            background: white; 
+            width: 95%; 
+            max-width: 1050px; 
+            margin: 10px auto;
+            padding: 20px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+        }
+        
+        /* Cabecera Responsiva */
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .logo-img { height: 50px; width: auto; }
+        .status-tag { font-weight: 800; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+
+        /* Banner de Paciente Líquido */
+        .patient-banner { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: #f8fafc; 
+            padding: 15px; 
+            border-radius: 12px; 
+            border-left: 5px solid var(--primary); 
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .info-group { display: flex; gap: 8px; align-items: baseline; }
+        .info-group label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        .info-group span { font-size: 14px; font-weight: 900; color: var(--blue-info); text-transform: uppercase; }
+
+        .section-title { font-size: 15px; font-weight: 900; color: #0f172a; border-bottom: 2px solid var(--line); padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase; }
+
+        /* Grilla Adaptable */
+        .form-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 15px; 
+            margin-bottom: 30px; 
+        }
+        
         .field { display: flex; flex-direction: column; }
-        .field label { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; color: #475569; }
-        input, select { padding: 10px 15px; border: 1.5px solid var(--line); border-radius: 8px; font-size: 14px; font-weight: 700; color: var(--dark); background: #fff; text-transform: uppercase; transition: all 0.2s; }
+        .field label { font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; color: #475569; }
+        
+        input, select { 
+            padding: 12px; 
+            border: 1.5px solid var(--line); 
+            border-radius: 10px; 
+            font-size: 14px; 
+            font-weight: 700; 
+            color: var(--dark); 
+            background: #fff; 
+            text-transform: uppercase;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
         input:focus { border-color: var(--primary); outline: none; background: #fcfdfc; }
-        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-save:hover { filter: brightness(1.1); }
-        @media (max-width: 900px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .patient-banner { flex-direction: column; align-items: flex-start; gap: 10px; } }
+
+        .btn-save { 
+            width: 100%; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            padding: 18px; 
+            border-radius: 15px; 
+            font-weight: 900; 
+            font-size: 14px; 
+            cursor: pointer; 
+            text-transform: uppercase; 
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+        }
+        .btn-save:hover { transform: translateY(-2px); filter: brightness(1.05); }
+
+        /* Ajustes específicos para móviles muy pequeños */
+        @media (max-width: 480px) {
+            .container { padding: 15px; }
+            .info-group span { font-size: 12px; }
+            .section-title { font-size: 13px; }
+        }
     </style>
 </head>
 <body>
@@ -32,11 +98,11 @@
 <div class="container">
     <div class="header-top">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img">
-        <span class="status-tag" id="modo_tag">NUEVO REGISTRO</span>
+        <span class="status-tag" id="modo_tag" style="color: var(--primary);">NUEVO REGISTRO</span>
     </div>
 
     <div class="patient-banner">
-        <div class="info-group"><label>Paciente:</label><span id="top_nombre">---</span></div>
+        <div class="info-group"><label>Paciente:</label><span id="top_nombre">CARGANDO...</span></div>
         <div class="info-group"><label>Código:</label><span id="top_codigo">---</span></div>
     </div>
 
@@ -53,7 +119,7 @@
         </div>
         <div class="field"><label>Fecha Nacimiento</label><input type="date" id="fecha_nac"></div>
         <div class="field"><label>Lugar Nacimiento</label><input type="text" id="lugar_nac"></div>
-        <div class="field" style="grid-column: span 2;"><label>Domicilio Actual</label><input type="text" id="domicilio"></div>
+        <div class="field" style="grid-column: span auto;"><label>Domicilio Actual</label><input type="text" id="domicilio"></div>
         <div class="field"><label>N° Casa</label><input type="text" id="n_casa"></div>
         <div class="field"><label>Zona / Barrio</label><input type="text" id="zona"></div>
         <div class="field"><label>Ciudad</label><input type="text" id="ciudad"></div>
@@ -68,12 +134,10 @@
                 <option value="VIUDO/A">VIUDO/A</option>
             </select>
         </div>
-        <div class="field" style="grid-column: span 4;"><label>Profesión / Oficio</label><input type="text" id="profesion"></div>
+        <div class="field" style="grid-column: 1 / -1;"><label>Profesión / Oficio</label><input type="text" id="profesion"></div>
     </div>
 
-    <div class="btn-container">
-        <button class="btn-save" onclick="guardarP1()">🖫 GUARDAR FILIACIÓN Y CONTINUAR</button>
-    </div>
+    <button class="btn-save" onclick="guardarP1()">🖫 GUARDAR Y CONTINUAR</button>
 </div>
 
 <script>
@@ -82,13 +146,11 @@
     window.onload = async () => {
         const idEdicion = localStorage.getItem('p_id_edicion');
         
-        // Si hay ID de edición, cargamos datos de la nube
         if (idEdicion) {
             document.getElementById('modo_tag').innerText = "MODO EDICIÓN";
             document.getElementById('modo_tag').style.color = "#f59e0b";
             await cargarDatosEdicion(idEdicion);
         } else {
-            // Flujo normal de nuevo paciente
             const nom = localStorage.getItem('p_nom');
             const cod = localStorage.getItem('p_cod');
             if (!nom || !cod) {
@@ -106,11 +168,11 @@
             if (resp.ok) {
                 const p = await resp.json();
                 
-                // Seteamos info en el banner
-                document.getElementById('top_nombre').innerText = `${p.apellido} ${p.nombre}`;
+                // Forzamos actualización visual inmediata
+                document.getElementById('top_nombre').innerText = `${p.apellido} ${p.nombre}`.toUpperCase();
                 document.getElementById('top_codigo').innerText = p.codigo_paciente;
                 
-                // Rellenamos campos
+                // Relleno de campos
                 document.getElementById('edad').value = p.edad || '';
                 document.getElementById('sexo').value = p.sexo || 'MASCULINO';
                 document.getElementById('fecha_nac').value = p.fecha_nac || '';
@@ -124,26 +186,33 @@
                 document.getElementById('estado_civil').value = p.estado_civil || 'SOLTERO/A';
                 document.getElementById('profesion').value = p.profesion || '';
 
-                // Importante: Guardar datos de P2 en localStorage para que no se pierdan al editar
-                // Si la API trae datos de P2, los precargamos aquí
-                const p2_actual = {
-                    vista: p.vista, oido: p.oido, respiratorio: p.respiratorio,
-                    cardiovascular: p.cardiovascular, digestivo: p.digestivo, sangre: p.sangre,
-                    genitourinario: p.genitourinario, sistema_nervioso: p.sistema_nervioso, endocrino: p.endocrino,
-                    psiquiatricos: p.psiquiatricos, osteomusculares: p.osteomusculares, reumatologicos: p.reumatologicos,
-                    dermatologicos: p.dermatologicos, alergias: p.alergias, cirugias: p.cirugias,
-                    infecciones: p.infecciones, acc_personales: p.acc_personales, acc_trabajo: p.acc_trabajo,
-                    medicamentos: p.medicamentos, familiares: p.familiares, otros_especificos: p.otros_especificos,
-                    observaciones: p.observaciones
+                // Respaldar P2 para no perderlo durante la cadena de edición
+                const p2_data = {
+                    vista: p.vista, oido: p.oido, respiratorio: p.respiratorio, cardiovascular: p.cardiovascular,
+                    digestivo: p.digestivo, sangre: p.sangre, genitourinario: p.genitourinario,
+                    sistema_nervioso: p.sistema_nervioso, endocrino: p.endocrino, psiquiatricos: p.psiquiatricos,
+                    osteomusculares: p.osteomusculares, reumatologicos: p.reumatologicos, dermatologicos: p.dermatologicos,
+                    alergias: p.alergias, cirugias: p.cirugias, infecciones: p.infecciones, acc_personales: p.acc_personales,
+                    acc_trabajo: p.acc_trabajo, medicamentos: p.medicamentos, familiares: p.familiares,
+                    otros_especificos: p.otros_especificos, observaciones: p.observaciones
                 };
-                localStorage.setItem('datos_p2', JSON.stringify(p2_actual));
+                localStorage.setItem('datos_p2', JSON.stringify(p2_data));
                 
-                // También guardamos nombre, ci y cod originales para el flujo
+                // Respaldar datos P3 (Historia Laboral y Riesgos)
+                const p3_data = {
+                    fuma: p.fuma, alcohol: p.alcohol, drogas: p.drogas, grupo_sanguineo: p.grupo_sanguineo,
+                    empresa_ant: p.empresa_ant, cargo_ant: p.cargo_ant,
+                    riesgo_ruido: p.riesgo_ruido, riesgo_polvos: p.riesgo_polvos,
+                    riesgo_ergonomico: p.riesgo_ergonomico, riesgo_biologico: p.riesgo_biologico
+                };
+                localStorage.setItem('datos_p3', JSON.stringify(p3_data));
+
+                // Datos de control
                 localStorage.setItem('p_nom', `${p.apellido} ${p.nombre}`);
                 localStorage.setItem('p_ci', p.ci);
                 localStorage.setItem('p_cod', p.codigo_paciente);
             }
-        } catch (e) { console.error("Error cargando edición:", e); }
+        } catch (e) { console.error("Error en carga:", e); }
     }
 
     function guardarP1() {
