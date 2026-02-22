@@ -90,8 +90,8 @@
 </div>
 
 <script>
-    // URL verificada con image_f52ce1.png
-    const API_URL = "https://historial-clinico-936s.onrender.com/api/save-p3";
+    // URL LIMPIA: Sin barras diagonales extras al final
+    const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -107,13 +107,18 @@
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
+        
         const pid = localStorage.getItem('p_id');
-        if(!pid) return alert("Error: ID del paciente no encontrado.");
+        if(!pid) {
+            alert("❌ Error: No se encontró el ID del paciente.");
+            return;
+        }
 
         const btn = document.getElementById('btnS');
         btn.innerText = "⏳ ENVIANDO A POSTGRESQL...";
         btn.disabled = true;
 
+        // Captura de Tabla
         const historiaArray = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
             ed: tr.querySelector('.r-ed').value || "0",
             em: (tr.querySelector('.r-em').value || "N/A").toUpperCase(),
@@ -123,8 +128,10 @@
             ep: tr.querySelector('.r-ep').value
         }));
 
+        // Captura de Riesgos (Checkboxes)
         const riesgosArray = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
+        // Payload según schemas.py
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
@@ -139,31 +146,31 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(historiaArray),
             riesgos_expuestos: JSON.stringify(riesgosArray),
-            observaciones: "P3_OK"
+            observaciones: "P3_CARGA_EXITOSA"
         };
 
         try {
-            const res = await fetch(API_URL, {
+            // PETICIÓN A RUTA EXACTA SIN PARÁMETROS EN LA URL
+            const res = await fetch(`${API_BASE}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            const data = await res.json();
-
             if (res.ok) {
-                alert("✅ DATOS GUARDADOS DECLARACIÓN JURADA COMPLETA");
+                alert("✅ DATOS P3 GUARDADOS EXITOSAMENTE");
                 window.location.href = "index.html";
             } else {
-                console.error("Error Servidor:", data);
-                alert("❌ ERROR EN EL SERVIDOR: " + (data.detail || "Revisa la consola"));
+                const errorData = await res.json();
+                console.error("Respuesta del servidor:", errorData);
+                alert("❌ ERROR " + res.status + ": " + (errorData.detail || "Error desconocido"));
             }
         } catch (err) {
-            console.error("Error Red:", err);
-            alert("❌ ERROR DE CONEXIÓN: Verifica que Render esté activo.");
+            console.error("Error de conexión:", err);
+            alert("❌ ERROR DE CONEXIÓN: El servidor no responde.");
         } finally {
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR DECLARACIÓN JURADA COMPLETA";
+            btn.innerText = "💾 GUARDAR P3 EN POSTGRESQL";
         }
     };
 </script>
