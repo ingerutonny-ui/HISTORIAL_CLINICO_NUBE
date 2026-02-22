@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC NUBE - HISTORIA CLÍNICA DIGITAL</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { 
+            --primary: #2c3e50; 
+            --secondary: #3498db; 
+            --success: #27ae60; 
+            --bg: #f4f7f6; 
+            --border: #ddd; 
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg); 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+        }
+
+        /* Estilo de la cabecera igual al de doctor.html */
+        .nav-header { 
+            width: 100%; 
+            background: var(--primary); 
+            padding: 10px 20px; 
+            color: white; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-sizing: border-box;
+        }
+        .back-link { color: white; text-decoration: none; font-weight: bold; font-size: 0.9em; }
+
+        .container { 
+            max-width: 1000px; 
+            width: 90%;
+            margin: 20px auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+        }
+
+        .logo { width: 80px; margin-bottom: 10px; }
+        
+        h1 { color: var(--primary); border-bottom: 3px solid var(--secondary); padding-bottom: 10px; margin-bottom: 20px; font-size: 1.8rem; }
+        h3 { background: var(--primary); color: white; padding: 10px; border-radius: 4px; margin-top: 30px; font-size: 1rem; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .full-width { grid-column: span 3; }
+        .half-width { grid-column: span 2; }
+
+        .field-group { display: flex; flex-direction: column; margin-bottom: 15px; }
+        label { font-weight: bold; font-size: 0.85rem; margin-bottom: 5px; color: #555; }
+        input, select, textarea { padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+        
+        .vital-signs { background: #f9f9f9; border: 1px solid var(--secondary); padding: 15px; border-radius: 10px; }
+
+        .btn-container { margin-top: 30px; display: flex; gap: 10px; }
+        .btn { padding: 15px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; flex: 1; transition: 0.3s; }
+        .btn-primary { background: var(--secondary); color: white; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .full-width, .half-width { grid-column: span 1; } }
+    </style>
+</head>
+<body>
+
+<nav class="nav-header">
+    <a href="index.html" class="back-link">
+        <i class="fas fa-arrow-left"></i> Volver al Menú
+    </a>
+    <span style="font-weight: bold;">SISTEMA MÉDICO NUBE</span>
+</nav>
+
+<div class="container">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h1>Historia Clínica Digital <span style="font-size: 0.5em; float: right; color: #777;">Mod. RV.062024</span></h1>
+
+    <form id="hc-form">
+        <h3>1. Datos de Filiación (Paciente)</h3>
+        <div class="form-grid">
+            <div class="field-group half-width">
+                <label>Nombre Completo</label>
+                <input type="text" name="nombre" placeholder="Apellidos y Nombres" required>
+            </div>
+            <div class="field-group">
+                <label>DNI / Documento Identidad</label>
+                <input type="text" name="dni" required>
+            </div>
+            <div class="field-group">
+                <label>Fecha de Nacimiento</label>
+                <input type="date" name="fecha_nac" id="fecha_nac" onchange="calcularEdad()" required>
+            </div>
+            <div class="field-group">
+                <label>Edad</label>
+                <input type="text" id="edad" readonly style="background: #eee;">
+            </div>
+            <div class="field-group">
+                <label>Sexo</label>
+                <select name="sexo">
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                    <option value="O">Otro</option>
+                </select>
+            </div>
+        </div>
+
+        <h3>2. Antecedentes Clínicos</h3>
+        <div class="form-grid">
+            <div class="field-group full-width">
+                <label>Antecedentes Heredofamiliares</label>
+                <textarea name="ant_familiares" rows="2"></textarea>
+            </div>
+            <div class="field-group full-width">
+                <label>Antecedentes Personales Patológicos / Quirúrgicos</label>
+                <textarea name="ant_personales" rows="2"></textarea>
+            </div>
+            <div class="field-group">
+                <label>Alergias Conocidas</label>
+                <input type="text" name="alergias" placeholder="Ninguna">
+            </div>
+            <div class="field-group half-width">
+                <label>Medicamentos en Uso</label>
+                <input type="text" name="meds" placeholder="Nombre, dosis, frecuencia">
+            </div>
+        </div>
+
+        <h3>3. Evaluación Física Actual</h3>
+        <div class="form-grid vital-signs">
+            <div class="field-group">
+                <label>Peso (kg)</label>
+                <input type="number" step="0.1" name="peso" id="peso" oninput="updateMetrics()" required>
+            </div>
+            <div class="field-group">
+                <label>Talla (cm)</label>
+                <input type="number" name="talla" id="talla" oninput="updateMetrics()" required>
+            </div>
+            <div class="field-group">
+                <label>IMC</label>
+                <input type="text" name="imc" id="imc" readonly>
+            </div>
+            <div class="field-group">
+                <label>Tensión Arterial (mmHg)</label>
+                <input type="text" name="tension_arterial" placeholder="120/80" required>
+            </div>
+            <div class="field-group">
+                <label>Frecuencia Cardíaca (LPM)</label>
+                <input type="number" name="frecuencia_cardiaca" required>
+            </div>
+            <div class="field-group">
+                <label>Saturación O2 (%)</label>
+                <input type="number" name="saturacion_o2" required>
+            </div>
+        </div>
+
+        <div class="form-grid" style="margin-top: 20px;">
+            <div class="field-group full-width">
+                <label>Examen Físico Segmentario</label>
+                <textarea name="examen_fisico" rows="4" placeholder="Describa hallazgos..."></textarea>
+            </div>
+        </div>
+
+        <h3>4. Diagnóstico y Plan</h3>
+        <div class="form-grid">
+            <div class="field-group half-width">
+                <label>Impresión Diagnóstica</label>
+                <textarea name="dx" rows="3" required></textarea>
+            </div>
+            <div class="field-group">
+                <label>Próximo Control</label>
+                <input type="date" name="prox_cita">
+            </div>
+            <div class="field-group full-width">
+                <label>Plan de Tratamiento / Indicaciones</label>
+                <textarea name="plan" rows="3" required></textarea>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="btn btn-secondary" onclick="window.print()">
+                <i class="fas fa-print"></i> Imprimir PDF
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Guardar en Servidor
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    function calcularEdad() {
+        const fechaNac = new Date(document.getElementById('fecha_nac').value);
+        const hoy = new Date();
+        let edad = hoy.getFullYear() - fechaNac.getFullYear();
+        const m = hoy.getMonth() - fechaNac.getMonth();
+        if (m < 0 || (m === 0 && hoy.getDate() < fechaNac.getDate())) { edad--; }
+        document.getElementById('edad').value = isNaN(edad) ? "" : edad + " años";
+    }
+
+    function updateMetrics() {
+        const peso = parseFloat(document.getElementById('peso').value);
+        const tallaCm = parseFloat(document.getElementById('talla').value);
+        if (peso > 0 && tallaCm > 0) {
+            const tallaM = tallaCm / 100;
+            const imc = (peso / (tallaM * tallaM)).toFixed(2);
+            const imcField = document.getElementById('imc');
+            imcField.value = imc;
+            if (imc >= 25) imcField.style.color = "red";
+            else if (imc < 18.5) imcField.style.color = "orange";
+            else imcField.style.color = "green";
+        }
+    }
+
+    // Integración con el backend del equipo
+    document.getElementById('hc-form').onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch('/api/historias', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                alert("✅ Éxito: Historia Clínica guardada en la base de datos.");
+                window.location.href = "lista_historial.html";
+            } else {
+                alert("⚠️ Error: El servidor no aceptó los datos. Revisa la consola.");
+            }
+        } catch (error) {
+            console.error("Error de conexión:", error);
+            alert("Modo Demo: No se pudo conectar a la API, pero el formulario está listo.");
+        }
+    };
+</script>
+
+</body>
+</html>
