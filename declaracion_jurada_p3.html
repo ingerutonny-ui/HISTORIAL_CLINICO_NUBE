@@ -90,12 +90,17 @@
 </div>
 
 <script>
-    // URL LIMPIA: Sin barras diagonales extras al final
-    const API_BASE = "https://historial-clinico-936s.onrender.com/api";
+    // URL LIMPIA Y EXACTA: Sin parámetros extras
+    const API_URL = "https://historial-clinico-936s.onrender.com/api/save-p3";
 
     function addFila() {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input type="text" class="form-control r-ed"></td><td><input type="text" class="form-control r-em"></td><td><input type="text" class="form-control r-ca"></td><td><input type="text" class="form-control r-ti"></td><td><input type="text" class="form-control r-ri"></td><td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
+        tr.innerHTML = `<td><input type="text" class="form-control r-ed"></td>
+                        <td><input type="text" class="form-control r-em"></td>
+                        <td><input type="text" class="form-control r-ca"></td>
+                        <td><input type="text" class="form-control r-ti"></td>
+                        <td><input type="text" class="form-control r-ri"></td>
+                        <td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>`;
         document.getElementById('tBody').appendChild(tr);
     }
 
@@ -108,17 +113,16 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         
-        const pid = localStorage.getItem('p_id');
-        if(!pid) {
-            alert("❌ Error: No se encontró el ID del paciente.");
-            return;
-        }
+        // Verificación estricta del ID
+        const rawId = localStorage.getItem('p_id');
+        if(!rawId) return alert("❌ ERROR: No existe ID de paciente en memoria.");
+        const pid = parseInt(rawId);
 
         const btn = document.getElementById('btnS');
         btn.innerText = "⏳ ENVIANDO A POSTGRESQL...";
         btn.disabled = true;
 
-        // Captura de Tabla
+        // Construcción del objeto historia_laboral
         const historiaArray = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
             ed: tr.querySelector('.r-ed').value || "0",
             em: (tr.querySelector('.r-em').value || "N/A").toUpperCase(),
@@ -128,16 +132,15 @@
             ep: tr.querySelector('.r-ep').value
         }));
 
-        // Captura de Riesgos (Checkboxes)
         const riesgosArray = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
-        // Payload según schemas.py
+        // PAYLOAD EXACTO SEGÚN schemas.py
         const payload = {
-            paciente_id: parseInt(pid),
+            paciente_id: pid,
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value || "0",
             alcohol: document.getElementById('alcohol').value,
-            alcohol_frecuencia: (document.getElementById('alcohol_frecuencia').value || "S/D").toUpperCase(),
+            alcohol_frecuencia: (document.getElementById('alcohol_frecuencia').value || "SOCIAL").toUpperCase(),
             drogas: document.getElementById('drogas').value,
             drogas_tipo: (document.getElementById('drogas_tipo').value || "S/D").toUpperCase(),
             coca: document.getElementById('coca').value,
@@ -146,33 +149,31 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(historiaArray),
             riesgos_expuestos: JSON.stringify(riesgosArray),
-            observaciones: "P3_CARGA_EXITOSA"
+            observaciones: "P3_CARGA_MANUAL_OK"
         };
 
         try {
-            // PETICIÓN A RUTA EXACTA SIN PARÁMETROS EN LA URL
-            const res = await fetch(`${API_BASE}/save-p3`, {
+            // USAMOS LA URL LIMPIA SIN CONCATENAR NADA
+            const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("✅ DATOS P3 GUARDADOS EXITOSAMENTE");
+                alert("✅ P3 GUARDADO CON ÉXITO");
                 window.location.href = "index.html";
             } else {
                 const errorData = await res.json();
-                console.error("Respuesta del servidor:", errorData);
-                alert("❌ ERROR " + res.status + ": " + (errorData.detail || "Error desconocido"));
+                console.error("Error Servidor:", errorData);
+                alert(`❌ ERROR ${res.status}: ${errorData.detail || "Ruta no encontrada"}`);
             }
         } catch (err) {
-            console.error("Error de conexión:", err);
-            alert("❌ ERROR DE CONEXIÓN: El servidor no responde.");
+            console.error("Error Red:", err);
+            alert("❌ ERROR DE CONEXIÓN: Revisa si el backend está activo.");
         } finally {
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR P3 EN POSTGRESQL";
         }
     };
 </script>
-</body>
-</html>
