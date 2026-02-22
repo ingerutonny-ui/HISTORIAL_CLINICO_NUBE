@@ -60,11 +60,11 @@
                 </thead>
                 <tbody id="tBody">
                     <tr>
-                        <td><input type="text" class="form-control r-ed" placeholder="30"></td>
-                        <td><input type="text" class="form-control r-em" placeholder="EMPRESA"></td>
-                        <td><input type="text" class="form-control r-ca" placeholder="CARGO"></td>
-                        <td><input type="text" class="form-control r-ti" placeholder="2 AÑOS"></td>
-                        <td><input type="text" class="form-control r-ri" placeholder="RUIDO"></td>
+                        <td><input type="text" class="form-control r-ed"></td>
+                        <td><input type="text" class="form-control r-em"></td>
+                        <td><input type="text" class="form-control r-ca"></td>
+                        <td><input type="text" class="form-control r-ti"></td>
+                        <td><input type="text" class="form-control r-ri"></td>
                         <td><select class="form-select r-ep"><option value="SI">SI</option><option value="NO">NO</option></select></td>
                     </tr>
                 </tbody>
@@ -72,7 +72,7 @@
         </div>
         <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR OTRA EXPERIENCIA</button>
 
-        <div class="section-tag">3. RIESGOS EXPUESTOS EN PUESTO ACTUAL</div>
+        <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="row g-3 p-2">
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div>
@@ -89,7 +89,7 @@
 </div>
 
 <script>
-    // CORRECCIÓN: Usamos guion medio para coincidir con main.py
+    // USAMOS LA RUTA EXACTA DEL BACKEND (CON GUION MEDIO)
     const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
     function addFila() {
@@ -99,6 +99,7 @@
     }
 
     window.onload = () => {
+        // Obtenemos los datos de CORIA NANCY guardados en memoria
         document.getElementById('v_nom').innerText = (localStorage.getItem('p_nom') || "SIN NOMBRE").toUpperCase();
         document.getElementById('v_ci').innerText = localStorage.getItem('p_ci') || "---";
         document.getElementById('v_cod').innerText = localStorage.getItem('p_cod') || "---";
@@ -107,22 +108,26 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const pid = localStorage.getItem('p_id');
-        if(!pid) return alert("Falta ID del paciente");
+        
+        if(!pid) {
+            alert("❌ ERROR: No se encontró el ID del paciente.");
+            return;
+        }
 
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO...";
+        btn.innerText = "⏳ ENVIANDO A POSTGRESQL...";
         btn.disabled = true;
 
-        const historia = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
+        const historia_laboral = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
             ed: tr.querySelector('.r-ed').value || "0",
-            em: tr.querySelector('.r-em').value || "N/A",
-            ca: tr.querySelector('.r-ca').value || "N/A",
+            em: tr.querySelector('.r-em').value || "S/D",
+            ca: tr.querySelector('.r-ca').value || "S/D",
             ti: tr.querySelector('.r-ti').value || "0",
-            ri: tr.querySelector('.r-ri').value || "N/A",
+            ri: tr.querySelector('.r-ri').value || "S/D",
             ep: tr.querySelector('.r-ep').value
         }));
 
-        const riesgos = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
+        const riesgos_actuales = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
         const payload = {
             paciente_id: parseInt(pid),
@@ -136,13 +141,13 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(historia),
-            riesgos_expuestos: JSON.stringify(riesgos),
-            observaciones: "P3_SUBMIT"
+            historia_laboral: JSON.stringify(historia_laboral),
+            riesgos_expuestos: JSON.stringify(riesgos_actuales),
+            observaciones: "REGISTRO_P3_NUBE"
         };
 
         try {
-            // Se usa la ruta con guion medio: save-p3
+            // CORRECCIÓN CLAVE: La ruta es /save-p3 (con guion medio)
             const res = await fetch(`${API_BASE}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -150,14 +155,14 @@
             });
 
             if (res.ok) {
-                alert("✅ P3 GUARDADO CON ÉXITO");
+                alert("✅ P3 GUARDADO CON ÉXITO EN POSTGRESQL");
                 window.location.href = "index.html";
             } else {
-                const error = await res.json();
-                alert("❌ ERROR: " + (error.detail || "Error desconocido"));
+                const errorData = await res.json();
+                alert("❌ ERROR DEL SERVIDOR: " + (errorData.detail || "Ruta no encontrada"));
             }
         } catch (err) {
-            alert("❌ ERROR DE RED");
+            alert("❌ ERROR DE RED: Verifica la conexión con Render.");
         } finally {
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
