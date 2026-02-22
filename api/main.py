@@ -10,12 +10,10 @@ except ImportError:
     import models, schemas, crud
     from database import SessionLocal, engine
 
-# Inicialización de DB
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración de CORS para GitHub Pages y Render
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -31,9 +29,10 @@ def get_db():
     finally:
         db.close()
 
-@app.get("/")
-async def root():
-    return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
+# PRUEBA DE VIDA: Entra a https://historial-clinico-936s.onrender.com/api/test
+@app.get("/api/test")
+async def test():
+    return {"mensaje": "El servidor responde correctamente"}
 
 @app.get("/api/pacientes/{p_id}")
 async def get_paciente(p_id: int, db: Session = Depends(get_db)):
@@ -56,12 +55,13 @@ async def save_p2(data: schemas.AntecedentesP2Base, db: Session = Depends(get_db
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-# RUTA DEFINITIVA PARA P3 - SIN FALLOS
+# RUTA REFORZADA
 @app.post("/api/registrar-p3")
-async def save_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
+async def registrar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
     try:
-        # El crud debe manejar el upsert para mapear P1, P2 y P3 correctamente
-        return crud.upsert_p3(db, data.model_dump())
+        # IMPORTANTE: Asegúrate que en crud.py exista la función upsert_p3
+        resultado = crud.upsert_p3(db, data.model_dump())
+        return resultado
     except Exception as e:
-        logging.error(f"Error en P3: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error interno: {str(e)}")
+        logging.error(f"ERROR EN P3: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
