@@ -3,68 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P1 - FILIACIÓN | HISTORIAL CLÍNICO</title>
+    <title>P1 - DATOS DE FILIACIÓN</title>
     <style>
-        :root { --primary: #2ecc71; --dark: #1e293b; --ghost: #cbd5e1; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px 35px; color: var(--dark); display: flex; justify-content: center; }
+        :root { --primary: #2ecc71; --dark: #1e293b; --ghost: #cbd5e1; --bg: #f0f2f5; --line: #e2e8f0; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 25px; color: var(--dark); display: flex; justify-content: center; }
         
-        .container { background: white; width: 100%; max-width: 1100px; padding: 25px 45px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
+        .container { background: white; width: 100%; max-width: 1050px; padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         
-        /* Logo con tamaño corregido y menos margen inferior */
-        .logo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .logo-img { height: 70px; width: auto; }
-        .reg-tag { color: var(--primary); font-weight: 800; font-size: 12px; letter-spacing: 1px; }
+        /* Cabecera idéntica a P3 */
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo-img { height: 60px; width: auto; }
+        .status-tag { color: var(--primary); font-weight: 800; font-size: 11px; letter-spacing: 1px; }
 
-        /* Trillizos más compactos */
-        .header-info { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 20px; background: #f8fafc; padding: 15px 25px; border-radius: 15px; margin-bottom: 20px; border-top: 4px solid var(--primary); }
-        .info-box label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; }
-        .info-box span { font-size: 17px; font-weight: 900; color: #2563eb; text-transform: uppercase; }
+        /* Banner de Paciente estilo P3 */
+        .patient-banner { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px 25px; border-radius: 12px; border-left: 5px solid var(--primary); margin-bottom: 25px; }
+        .patient-banner .info-group { display: flex; gap: 10px; align-items: baseline; }
+        .patient-banner label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        .patient-banner span { font-size: 15px; font-weight: 900; color: #2563eb; text-transform: uppercase; }
 
-        h2 { text-align: center; text-transform: uppercase; font-weight: 900; margin: 15px 0 25px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; font-size: 1.4rem; }
+        /* Títulos de sección */
+        .section-title { font-size: 16px; font-weight: 900; color: #0f172a; border-bottom: 2px solid var(--line); padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
 
-        /* Grilla optimizada: Reducimos el GAP vertical a 15px */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px 35px; }
+        /* Grilla y Campos */
+        .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px 25px; margin-bottom: 30px; }
         
         .field { display: flex; flex-direction: column; }
-        
-        /* Texto en 12px como pediste */
-        .field label { font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; color: #475569; padding-left: 2px; }
+        .field label { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; color: #475569; }
         
         input, select { 
-            padding: 12px 18px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 12px; 
-            font-size: 15px; 
+            padding: 10px 15px; 
+            border: 1.5px solid var(--line); 
+            border-radius: 8px; 
+            font-size: 14px; 
             font-weight: 700; 
             color: var(--dark); 
-            background: #fdfdfd; 
+            background: #fff; 
             text-transform: uppercase;
+            transition: all 0.2s;
         }
 
         input::placeholder { color: var(--ghost); font-weight: 400; text-transform: none; }
-        input:focus { border-color: var(--primary); outline: none; background: white; }
+        input:focus { border-color: var(--primary); outline: none; background: #fcfdfc; }
 
-        .btn-container { grid-column: 1 / -1; margin-top: 30px; text-align: center; }
-        .btn-next { background: var(--primary); color: white; border: none; padding: 18px 60px; border-radius: 15px; font-weight: 900; font-size: 17px; cursor: pointer; text-transform: uppercase; box-shadow: 0 8px 20px rgba(46, 204, 113, 0.25); }
+        /* Botón estilo P3 */
+        .btn-container { margin-top: 20px; }
+        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; }
+        .btn-save:hover { filter: brightness(1.1); }
 
-        @media (max-width: 768px) { body { padding: 10px; } .container { padding: 20px; } .header-info { grid-template-columns: 1fr; gap: 10px; } }
+        /* Responsividad */
+        @media (max-width: 900px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .patient-banner { flex-direction: column; align-items: flex-start; gap: 10px; } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="logo-header">
+    <div class="header-top">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img">
-        <span class="reg-tag">NUEVO REGISTRO</span>
+        <span class="status-tag">NUEVO REGISTRO</span>
     </div>
 
-    <div class="header-info">
-        <div class="info-box"><label>Paciente</label><span id="top_nombre">---</span></div>
-        <div class="info-box"><label>Documento CI</label><span id="top_ci">---</span></div>
-        <div class="info-box"><label>Código Sistema</label><span id="top_codigo">---</span></div>
+    <div class="patient-banner">
+        <div class="info-group"><label>Paciente:</label><span id="top_nombre">---</span></div>
+        <div class="info-group"><label>Código:</label><span id="top_codigo">---</span></div>
     </div>
 
-    <h2>1. DATOS DE FILIACIÓN</h2>
+    <div class="section-title">1. DATOS DE FILIACIÓN</div>
 
     <div class="form-grid">
         <div class="field"><label>Edad</label><input type="number" id="edad" placeholder="Ej. 25"></div>
@@ -77,12 +81,14 @@
         </div>
         <div class="field"><label>Fecha Nacimiento</label><input type="date" id="fecha_nac"></div>
         <div class="field"><label>Lugar Nacimiento</label><input type="text" id="lugar_nac" placeholder="Ej. La Paz"></div>
-        <div class="field"><label>Domicilio Actual</label><input type="text" id="domicilio" placeholder="Ej. Av. 6 de Marzo"></div>
-        <div class="field"><label>N° Casa</label><input type="text" id="n_casa" placeholder="Ej. 123"></div>
-        <div class="field"><label>Zona / Barrio</label><input type="text" id="zona" placeholder="Ej. El Alto"></div>
+        
+        <div class="field" style="grid-column: span 2;"><label>Domicilio Actual</label><input type="text" id="domicilio" placeholder="Ej. Av. 6 de Marzo"></div>
+        <div class="field"><label>N° Casa</label><input type="text" id="n_casa" placeholder="S/N"></div>
+        <div class="field"><label>Zona / Barrio</label><input type="text" id="zona" placeholder="Ej. Satélite"></div>
+        
         <div class="field"><label>Ciudad</label><input type="text" id="ciudad" placeholder="Ej. El Alto"></div>
         <div class="field"><label>País</label><input type="text" id="pais" value="BOLIVIA"></div>
-        <div class="field"><label>Teléfono/Celular</label><input type="number" id="celular" placeholder="Ej. 70000000"></div>
+        <div class="field"><label>Teléfono/Celular</label><input type="number" id="celular" placeholder="70000000"></div>
         <div class="field">
             <label>Estado Civil</label>
             <select id="estado_civil">
@@ -92,25 +98,23 @@
                 <option value="VIUDO/A">VIUDO/A</option>
             </select>
         </div>
-        <div class="field"><label>Profesión / Oficio</label><input type="text" id="profesion" placeholder="Ej. Ingeniero"></div>
+        
+        <div class="field" style="grid-column: span 4;"><label>Profesión / Oficio</label><input type="text" id="profesion" placeholder="Ej. Ingeniero Industrial"></div>
+    </div>
 
-        <div class="btn-container">
-            <button class="btn-next" onclick="guardarP1()">💾 GUARDAR FILIACIÓN Y CONTINUAR</button>
-        </div>
+    <div class="btn-container">
+        <button class="btn-save" onclick="guardarP1()">🖫 GUARDAR FILIACIÓN Y CONTINUAR</button>
     </div>
 </div>
 
 <script>
     window.onload = () => {
         const nom = localStorage.getItem('p_nom');
-        const ci = localStorage.getItem('p_ci');
         const cod = localStorage.getItem('p_cod');
-
-        if (!nom || !ci || !cod) {
+        if (!nom || !cod) {
             window.location.replace('registro_paciente.html');
         } else {
             document.getElementById('top_nombre').innerText = nom;
-            document.getElementById('top_ci').innerText = ci;
             document.getElementById('top_codigo').innerText = cod;
         }
     };
