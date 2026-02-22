@@ -73,7 +73,7 @@
         </div>
         <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR OTRA EXPERIENCIA</button>
 
-        <div class="section-tag">3. RIESGOS EXPUESTOS EN PUESTO ACTUAL</div>
+        <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="row g-3 p-2">
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div>
@@ -85,12 +85,13 @@
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL</button>
+        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR P3 EN POSTGRESQL</button>
     </form>
 </div>
 
 <script>
-    const API_BASE = "https://historial-clinico-936s.onrender.com/api";
+    // URL verificada con image_f52ce1.png
+    const API_URL = "https://historial-clinico-936s.onrender.com/api/save-p3";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -136,34 +137,33 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: (document.getElementById('deporte_detalle').value || "S/D").toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(historiaArray), 
-            riesgos_expuestos: JSON.stringify(riesgosArray), 
-            observaciones: "P3_CARGA_EXITOSA"
+            historia_laboral: JSON.stringify(historiaArray),
+            riesgos_expuestos: JSON.stringify(riesgosArray),
+            observaciones: "P3_OK"
         };
 
         try {
-            // RUTA CORREGIDA A /api/save-p3 SEGÚN TU BACKEND (image_f52ce1.png)
-            const res = await fetch(`${API_BASE}/save-p3`, {
+            const res = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            const responseData = await res.json();
+            const data = await res.json();
 
             if (res.ok) {
-                alert("✅ DATOS GUARDADOS EN POSTGRESQL EXITOSAMENTE");
+                alert("✅ DATOS GUARDADOS DECLARACIÓN JURADA COMPLETA");
                 window.location.href = "index.html";
             } else {
-                console.error("Detalle del error:", responseData);
-                alert("❌ ERROR EN EL SERVIDOR: " + (responseData.detail || "Error de validación"));
+                console.error("Error Servidor:", data);
+                alert("❌ ERROR EN EL SERVIDOR: " + (data.detail || "Revisa la consola"));
             }
         } catch (err) {
-            console.error("Error de red:", err);
-            alert("❌ ERROR DE CONEXIÓN CON RENDER");
+            console.error("Error Red:", err);
+            alert("❌ ERROR DE CONEXIÓN: Verifica que Render esté activo.");
         } finally {
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
+            btn.innerText = "💾 GUARDAR DECLARACIÓN JURADA COMPLETA";
         }
     };
 </script>
