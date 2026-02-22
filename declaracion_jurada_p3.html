@@ -13,7 +13,7 @@
         .header-logo { height: 70px; display: block; margin: 0 auto 10px; }
         .header-title { color: var(--ohs-dark); font-weight: 700; text-align: center; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
         .barra-paciente { background: #f1f9f7; padding: 20px; border-radius: 10px; border-left: 8px solid var(--ohs); margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
-        .section-tag { background: #f8f9fa; padding: 12px; font-weight: 700; border-bottom: 3px solid var(--ohs); margin: 25px 0 15px 0; color: var(--dark); text-transform: uppercase; }
+        .section-tag { background: #2c3e50; color: white; padding: 12px; font-weight: 700; margin: 25px 0 15px 0; text-transform: uppercase; border-radius: 4px; }
         .form-label { font-weight: 600; color: #636e72; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 5px; }
         .form-control, .form-select { border-radius: 6px; text-transform: uppercase; font-size: 0.85rem; border: 1px solid #dcdde1; padding: 8px; }
         .btn-add { background: var(--dark); color: white; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.8rem; margin-top: 10px; cursor: pointer; }
@@ -55,7 +55,7 @@
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
                     <tr class="text-center">
-                       <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
+                       <th>EDAD</th><th>EMPRESA</th><th>CARGO / ACTIVIDAD</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
                     </tr>
                 </thead>
                 <tbody id="tBody">
@@ -70,9 +70,9 @@
                 </tbody>
             </table>
         </div>
-        <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR EXPERIENCIA</button>
+        <button type="button" class="btn-add" onclick="addFila()">+ AGREGAR OTRA EXPERIENCIA</button>
 
-        <div class="section-tag">3. RIESGOS EXPUESTOS ACTUALES</div>
+        <div class="section-tag">3. RIESGOS EXPUESTOS EN PUESTO ACTUAL</div>
         <div class="row g-3 p-2">
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="RUIDO"> RUIDO</div>
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="POLVOS"> POLVOS</div>
@@ -97,26 +97,43 @@
         document.getElementById('tBody').appendChild(tr);
     }
 
-    // CARGA DE DATOS DESDE LOCALSTORAGE (Mapeo exacto según tu Dashboard)
+    // CARGA DE DATOS INICIAL
     window.onload = () => {
-        const nom = localStorage.getItem('p_nombre') || "NOMBRE";
-        const ape = localStorage.getItem('p_apellido') || "NO ENCONTRADO";
+        const nom = localStorage.getItem('p_nom') || "SIN NOMBRE";
         const ci = localStorage.getItem('p_ci') || "---";
-        const cod = localStorage.getItem('p_codigo') || "---";
+        const cod = localStorage.getItem('p_cod') || "---";
 
-        document.getElementById('v_nom').innerText = (nom + " " + ape).toUpperCase();
+        document.getElementById('v_nom').innerText = nom.toUpperCase();
         document.getElementById('v_ci').innerText = ci;
         document.getElementById('v_cod').innerText = cod;
     };
 
+    // GUARDADO COMPLETO
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const pid = localStorage.getItem('p_id');
-        if(!pid) { alert("ERROR: NO SE ENCONTRÓ EL ID DEL PACIENTE"); return; }
+        
+        if(!pid) {
+            alert("ERROR: No se encontró el ID del paciente.");
+            return;
+        }
 
         const btn = document.getElementById('btnS');
         btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
+
+        // Recolección de datos de la tabla de historia laboral
+        const historia_laboral = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
+            ed: tr.querySelector('.r-ed').value,
+            em: tr.querySelector('.r-em').value,
+            ca: tr.querySelector('.r-ca').value,
+            ti: tr.querySelector('.r-ti').value,
+            ri: tr.querySelector('.r-ri').value,
+            ep: tr.querySelector('.r-ep').value
+        }));
+
+        // Recolección de riesgos marcados
+        const riesgos_actuales = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
         const payload = {
             paciente_id: parseInt(pid),
@@ -130,37 +147,28 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: document.getElementById('deporte_detalle').value,
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
-                ed: tr.querySelector('.r-ed').value,
-                em: tr.querySelector('.r-em').value,
-                ca: tr.querySelector('.r-ca').value,
-                ti: tr.querySelector('.r-ti').value,
-                ri: tr.querySelector('.r-ri').value,
-                ep: tr.querySelector('.r-ep').value
-            }))),
-            riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_POSTGRES_SYNC"
+            historia_laboral: JSON.stringify(historia_laboral),
+            riesgos_expuestos: JSON.stringify(riesgos_actuales),
+            observaciones: "P3_POSTGRES_OK"
         };
 
         try {
-            // USANDO save_p3 (GUION BAJO) COMO EN TU BACKEND
             const res = await fetch(`${API_BASE}/save_p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            if (res.ok) { 
-                alert("✅ P3 GUARDADO EXITOSAMENTE"); 
-                window.location.href = "index.html"; 
+            if (res.ok) {
+                alert("✅ DATOS GUARDADOS CORRECTAMENTE");
+                window.location.href = "index.html";
             } else {
-                const errData = await res.json();
-                alert("❌ ERROR EN SERVIDOR: " + (errData.detail || "Error en ruta"));
-                btn.disabled = false;
-                btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
+                const error = await res.json();
+                alert("❌ ERROR EN EL SERVIDOR: " + (error.detail || "No se pudo guardar"));
             }
-        } catch (err) { 
-            alert("❌ ERROR DE CONEXIÓN: Backend no responde"); 
+        } catch (err) {
+            alert("❌ ERROR DE CONEXIÓN: Revisa que el servidor en Render esté activo.");
+        } finally {
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
         }
