@@ -5,71 +5,163 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HC NUBE | REGISTRO</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
-        .top-bar { width: 100%; background: #212529; padding: 15px 20px; color: white; display: flex; align-items: center; box-sizing: border-box; }
-        .top-bar a { color: #22c55e; text-decoration: none; font-weight: 800; }
-        .main-wrapper { width: calc(100% - 30px); max-width: 500px; margin: 20px auto; background: white; padding: 30px; border-radius: 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.06); text-align: center; box-sizing: border-box; }
-        .logo-img { height: 60px; margin-bottom: 15px; }
-        h2 { color: #1e293b; font-size: 1.4rem; margin-bottom: 25px; text-transform: uppercase; font-weight: 900; }
-        .input-group { text-align: left; margin-bottom: 15px; }
-        label { font-size: 11px; font-weight: 800; color: #475569; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        input { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 16px; font-weight: 700; text-transform: uppercase; box-sizing: border-box; }
-        input:focus { border-color: #22c55e; outline: none; }
-        .codigo-box { background: #f0f7ff; border: 2px dashed #0044ff; border-radius: 15px; padding: 20px; margin: 20px 0; }
-        #display-codigo { font-size: 2.5rem; font-weight: 900; color: #0044ff; letter-spacing: 2px; }
-        .btn-guardar { width: 100%; background: #22c55e; color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f7f6; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; }
+        
+        /* BARRA SUPERIOR ELEGANTE */
+        .top-bar { width: 100%; background: #1e293b; padding: 15px 20px; color: white; display: flex; align-items: center; box-sizing: border-box; }
+        .top-bar a { color: #22c55e; text-decoration: none; font-weight: 800; text-transform: uppercase; font-size: 13px; }
+
+        /* CONTENEDOR FULL WIDTH 15PX MARGEN */
+        .main-wrapper { 
+            width: calc(100% - 30px); 
+            max-width: 600px; 
+            margin: 25px auto; 
+            background: #ffffff; 
+            padding: 40px; 
+            border-radius: 30px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
+            text-align: center;
+            box-sizing: border-box;
+        }
+        
+        .logo-img { height: 70px; margin-bottom: 20px; }
+        h2 { color: #1e293b; font-size: 1.8rem; margin-bottom: 30px; text-transform: uppercase; font-weight: 900; letter-spacing: -1px; }
+        
+        .input-group { text-align: left; margin-bottom: 22px; }
+        label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 8px; display: block; padding-left: 5px; }
+        
+        input { 
+            width: 100%; padding: 18px; border: 2px solid #f1f5f9; 
+            border-radius: 16px; box-sizing: border-box; font-size: 17px; 
+            font-weight: 700; text-transform: uppercase; transition: 0.3s; color: #1e293b;
+            background: #f8fafc;
+        }
+        input:focus { border-color: #22c55e; outline: none; background: #fff; box-shadow: 0 0 0 5px rgba(34, 197, 94, 0.1); }
+        
+        /* CÓDIGO EN AZUL ELÉCTRICO VIBRANTE */
+        .codigo-box { 
+            background: #eff6ff; border: 2px dashed #0044ff; border-radius: 20px; 
+            padding: 30px; margin: 30px 0; position: relative;
+        }
+        .cod-text { font-size: 11px; color: #0044ff; text-transform: uppercase; font-weight: 900; margin-bottom: 8px; }
+        #display-codigo { font-size: 3.5rem; font-weight: 900; color: #0044ff; letter-spacing: 5px; text-shadow: 1px 1px 0px rgba(0,0,0,0.05); }
+
+        /* BOTÓN DE GUARDADO IMPACTANTE */
+        .btn-guardar { 
+            width: 100%; background: #22c55e; color: white; border: none; 
+            padding: 22px; border-radius: 18px; font-weight: 900; font-size: 18px; 
+            cursor: pointer; transition: 0.4s; text-transform: uppercase;
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+        }
+        .btn-guardar:hover { background: #16a34a; transform: translateY(-3px); box-shadow: 0 15px 30px rgba(34, 197, 94, 0.4); }
+
+        .btn-consultar {
+            background: transparent; color: #64748b; border: 2px solid #e2e8f0; padding: 14px 40px;
+            border-radius: 14px; font-weight: 800; margin-top: 25px; cursor: pointer;
+            font-size: 13px; text-transform: uppercase; transition: 0.3s;
+        }
+        .btn-consultar:hover { background: #f8fafc; color: #1e293b; }
+
+        @media (max-width: 480px) {
+            .main-wrapper { padding: 25px; width: calc(100% - 20px); }
+            #display-codigo { font-size: 2.5rem; }
+        }
     </style>
 </head>
 <body>
-<div class="top-bar"><a href="index.html">← VOLVER</a></div>
+
+<div class="top-bar"><a href="index.html">← VOLVER AL MENÚ</a></div>
+
 <div class="main-wrapper">
     <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img">
-    <h2>REGISTRO DE PACIENTE</h2>
-    <div class="input-group"><label>Nombres</label><input type="text" id="nombre" oninput="generarCodigo()"></div>
-    <div class="input-group"><label>Apellidos</label><input type="text" id="apellido" oninput="generarCodigo()"></div>
-    <div class="input-group"><label>CI</label><input type="number" id="ci" oninput="generarCodigo()"></div>
-    <div class="codigo-box"><div id="display-codigo">----</div></div>
-    <button id="btnFinal" class="btn-guardar" onclick="enviarDatos()">💾 GUARDAR Y EMPEZAR P1</button>
+    <h2>Registro de Paciente</h2>
+
+    <div class="input-group">
+        <label>Nombres Completos</label>
+        <input type="text" id="nombre" placeholder="Ej. Juan" oninput="generarCodigo()">
+    </div>
+
+    <div class="input-group">
+        <label>Apellidos</label>
+        <input type="text" id="apellido" placeholder="Ej. Pérez" oninput="generarCodigo()">
+    </div>
+
+    <div class="input-group">
+        <label>Cédula de Identidad (CI)</label>
+        <input type="number" id="ci" placeholder="Número de documento" oninput="generarCodigo()">
+    </div>
+
+    <div class="codigo-box">
+        <div class="cod-text">Código Generado</div>
+        <div id="display-codigo">----</div>
+    </div>
+
+    <button id="btnFinal" class="btn-guardar" onclick="enviarDatos()">💾 REGISTRAR Y PASAR A P1</button>
 </div>
+
+<button class="btn-consultar" onclick="location.href='lista_historial.html'">Ver Base de Datos</button>
+
 <script>
     const API_URL = 'https://historial-clinico-936s.onrender.com';
+
     function generarCodigo() {
         const nom = document.getElementById('nombre').value.trim().toUpperCase();
         const ape = document.getElementById('apellido').value.trim().toUpperCase();
-        const ci = document.getElementById('ci').value.trim();
+        const ciVal = document.getElementById('ci').value.trim();
         const display = document.getElementById('display-codigo');
-        if(nom && ape && ci) {
-            const cod = nom[0] + ape[0] + ci.slice(-4);
-            display.innerText = cod; return cod;
+
+        if (nom && ape && ciVal) {
+            const codigo = nom.charAt(0) + ape.charAt(0) + ciVal.slice(-4);
+            display.innerText = codigo;
+            return codigo;
         }
-        display.innerText = "----"; return "";
+        display.innerText = "----";
+        return "";
     }
+
     async function enviarDatos() {
         const codigo = generarCodigo();
-        if(!codigo) return alert("COMPLETE DATOS");
+        if (!codigo) { alert("⚠️ COMPLETE TODOS LOS CAMPOS POR FAVOR."); return; }
+
         const btn = document.getElementById('btnFinal');
-        btn.disabled = true; btn.innerText = "GUARDANDO...";
+        btn.innerText = "⏳ GUARDANDO REGISTRO...";
+        btn.disabled = true;
+
         const datos = {
             nombre: document.getElementById('nombre').value.toUpperCase(),
             apellido: document.getElementById('apellido').value.toUpperCase(),
             ci: document.getElementById('ci').value,
             codigo_paciente: codigo
         };
+
         try {
-            const res = await fetch(`${API_URL}/pacientes/`, {
+            const response = await fetch(`${API_URL}/pacientes/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
             });
-            if(res.ok) {
-                const p = await res.json();
-                localStorage.setItem('p_id', p.id);
-                localStorage.setItem('p_nom', `${p.apellido} ${p.nombre}`);
-                localStorage.setItem('p_ci', p.ci);
-                localStorage.setItem('p_cod', p.codigo_paciente);
+
+            if (response.ok) {
+                const paciente = await response.json();
+                
+                // Mantenemos la integridad de los datos para los trillizos (P1, P2, P3)
+                localStorage.setItem('p_id', paciente.id);
+                localStorage.setItem('p_nom', `${paciente.apellido} ${paciente.nombre}`);
+                localStorage.setItem('p_ci', paciente.ci);
+                localStorage.setItem('p_cod', paciente.codigo_paciente);
+                
+                // Salto automático a P1
                 window.location.href = 'declaracion_jurada_p1.html';
+            } else {
+                alert("❌ ERROR EN EL SERVIDOR. REINTENTE.");
+                btn.disabled = false;
+                btn.innerText = "💾 REGISTRAR Y PASAR A P1";
             }
-        } catch(e) { alert("Error de conexión"); btn.disabled = false; }
+        } catch (e) { 
+            alert("❌ FALLO DE RED. REVISE SU CONEXIÓN."); 
+            btn.disabled = false;
+            btn.innerText = "💾 REGISTRAR Y PASAR A P1";
+        }
     }
 </script>
 </body>
