@@ -84,7 +84,7 @@
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR DECLARACIÓN P3</button>
+        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL</button>
     </form>
 </div>
 
@@ -97,9 +97,10 @@
         document.getElementById('tBody').appendChild(tr);
     }
 
+    // CARGA DE DATOS DESDE LOCALSTORAGE (Mapeo exacto según tu Dashboard)
     window.onload = () => {
-        const nom = localStorage.getItem('p_nombre') || "SIN NOMBRE";
-        const ape = localStorage.getItem('p_apellido') || "";
+        const nom = localStorage.getItem('p_nombre') || "NOMBRE";
+        const ape = localStorage.getItem('p_apellido') || "NO ENCONTRADO";
         const ci = localStorage.getItem('p_ci') || "---";
         const cod = localStorage.getItem('p_codigo') || "---";
 
@@ -138,11 +139,11 @@
                 ep: tr.querySelector('.r-ep').value
             }))),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_SYNC_OK"
+            observaciones: "P3_POSTGRES_SYNC"
         };
 
         try {
-            // CORRECCIÓN CLAVE: Usamos guion bajo 'save_p3' como en P1
+            // USANDO save_p3 (GUION BAJO) COMO EN TU BACKEND
             const res = await fetch(`${API_BASE}/save_p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -150,18 +151,18 @@
             });
 
             if (res.ok) { 
-                alert("✅ P3 GUARDADO EXITOSAMENTE EN POSTGRESQL"); 
+                alert("✅ P3 GUARDADO EXITOSAMENTE"); 
                 window.location.href = "index.html"; 
             } else {
                 const errData = await res.json();
-                alert("❌ ERROR EN EL SERVIDOR: " + (errData.detail || "Error desconocido"));
+                alert("❌ ERROR EN SERVIDOR: " + (errData.detail || "Error en ruta"));
                 btn.disabled = false;
-                btn.innerText = "💾 GUARDAR DECLARACIÓN P3";
+                btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
             }
         } catch (err) { 
-            alert("❌ ERROR DE CONEXIÓN: Verifica que el Backend esté encendido en Render"); 
+            alert("❌ ERROR DE CONEXIÓN: Backend no responde"); 
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR DECLARACIÓN P3";
+            btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
         }
     };
 </script>
