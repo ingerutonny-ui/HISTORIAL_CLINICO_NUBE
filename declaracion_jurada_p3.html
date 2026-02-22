@@ -3,58 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P3 - HÁBITOS Y LABORAL | RESPONSIVO</title>
+    <title>P3 - HÁBITOS Y LABORAL</title>
     <style>
         :root { --primary: #2ecc71; --dark: #1e293b; --bg: #f0f2f5; --blue-info: #2563eb; --border: #e2e8f0; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
         
-        .container { background: white; width: 95%; max-width: 1050px; margin: auto; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .header-top { text-align: center; margin-bottom: 15px; }
-        .logo-img { height: 55px; width: auto; }
+        /* Reset y Base */
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); line-height: 1.4; }
+        
+        .container { background: white; width: 100%; max-width: 1000px; margin: auto; padding: 15px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        
+        .header-top { text-align: center; margin-bottom: 10px; }
+        .logo-img { height: 45px; width: auto; }
 
-        h2 { text-align: center; color: var(--primary); font-weight: 800; text-transform: uppercase; margin-bottom: 20px; font-size: 1.2rem; }
+        h2 { text-align: center; color: var(--primary); font-weight: 800; text-transform: uppercase; margin: 10px 0; font-size: 1.1rem; }
 
-        /* Banner Paciente Responsivo */
-        .patient-banner { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; background: #f8fafc; padding: 15px; border-radius: 12px; border-left: 5px solid var(--primary); margin-bottom: 20px; }
-        .info-group label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; }
-        .info-group span { font-size: 13px; font-weight: 800; color: var(--blue-info); text-transform: uppercase; }
+        /* Banner Paciente Adaptable */
+        .patient-banner { display: flex; flex-wrap: wrap; gap: 10px; background: #f8fafc; padding: 12px; border-radius: 10px; border-left: 5px solid var(--primary); margin-bottom: 15px; }
+        .info-group { flex: 1 1 120px; }
+        .info-group label { font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; display: block; }
+        .info-group span { font-size: 12px; font-weight: 800; color: var(--blue-info); text-transform: uppercase; }
 
-        .section-box { border-top: 2.5px solid var(--primary); margin-bottom: 20px; padding-top: 10px; }
-        .section-title { font-size: 12px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 15px; background: #f1f5f9; padding: 8px 12px; border-radius: 4px; }
+        /* Secciones */
+        .section-box { border-top: 2px solid var(--primary); margin-top: 20px; padding-top: 10px; }
+        .section-title { font-size: 11px; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 12px; background: #f1f5f9; padding: 6px 10px; border-radius: 4px; }
 
-        /* Grilla adaptable: 6 columnas en PC, 1 en Móvil */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 15px; }
+        /* Grillas Responsivas */
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        
         .field { display: flex; flex-direction: column; }
-        .field label { font-size: 10px; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; color: #475569; }
+        .field label { font-size: 10px; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; color: #475569; }
         
-        input, select { padding: 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; text-transform: uppercase; background: #fdfdfd; width: 100%; box-sizing: border-box; }
+        input, select { padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; text-transform: uppercase; width: 100%; }
 
-        /* Tabla Laboral Responsiva */
-        .table-wrapper { overflow-x: auto; margin-bottom: 15px; }
-        table { width: 100%; min-width: 600px; border-collapse: collapse; }
-        th { font-size: 10px; font-weight: 800; padding: 8px; border-bottom: 2px solid var(--primary); text-align: center; }
-        
+        /* Manejo de Tablas en Móvil */
+        .table-container { width: 100%; overflow-x: auto; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border); }
+        table { width: 100%; min-width: 700px; border-collapse: collapse; background: white; }
+        th { font-size: 10px; padding: 10px; background: #f8fafc; border-bottom: 2px solid var(--primary); text-align: center; }
+        td { padding: 8px; border-bottom: 1px solid var(--border); }
+
         /* Riesgos Checkboxes */
-        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; padding: 10px; }
-        .check-item { display: flex; align-items: center; gap: 8px; font-size: 10.5px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
+        .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 10px; }
+        .check-item { display: flex; align-items: center; gap: 8px; font-size: 10px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
+        .check-item input { width: 18px; height: 18px; accent-color: var(--primary); }
 
-        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
+        /* Botón Guardar */
+        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
 
-        #modalExito { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 30px; border-radius: 20px; text-align: center; border-top: 8px solid var(--primary); width: 80%; max-width: 350px; }
-
-        /* Ajustes para pantallas pequeñas */
-        @media (max-width: 600px) {
-            .form-grid { grid-template-columns: 1fr 1fr; } /* 2 columnas en móvil para ahorrar espacio */
-            .full-mobile { grid-column: span 2; }
-            h2 { font-size: 1rem; }
+        /* --- MEDIA QUERIES PARA TABLET Y PC --- */
+        @media (min-width: 768px) {
+            .form-grid { grid-template-columns: repeat(3, 1fr); }
+            .checkbox-grid { grid-template-columns: repeat(4, 1fr); }
+            h2 { font-size: 1.4rem; }
+            .logo-img { height: 60px; }
         }
+
+        /* Modal */
+        #modalExito { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; z-index: 1000; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; text-align: center; width: 100%; max-width: 350px; border-top: 6px solid var(--primary); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header-top"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img"></div>
+    <div class="header-top">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img">
+    </div>
+
     <h2>III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h2>
 
     <div class="patient-banner">
@@ -74,14 +89,14 @@
             <div class="field"><label>Tipo</label><input type="text" id="drogas_tipo" value="S/D"></div>
             <div class="field"><label>Coca (Pijcha)</label><select id="coca"><option>NO</option><option>SI</option></select></div>
             <div class="field"><label>¿Deporte?</label><select id="deporte"><option>NO</option><option>SI</option></select></div>
-            <div class="field full-mobile"><label>Detalle Actividad Física</label><input type="text" id="deporte_det" value="S/D"></div>
-            <div class="field full-mobile"><label>Grupo Sanguíneo</label><input type="text" id="grupo_sangre" value="ORH+"></div>
+            <div class="field"><label>Detalle Deporte</label><input type="text" id="deporte_det" value="S/D"></div>
+            <div class="field"><label>Grupo Sanguíneo</label><input type="text" id="grupo_sangre" value="ORH+"></div>
         </div>
     </div>
 
     <div class="section-box">
         <div class="section-title">2. HISTORIA LABORAL (EMPRESAS ANTERIORES)</div>
-        <div class="table-wrapper">
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
@@ -90,12 +105,12 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td><input type="number" id="lab_edad"></td>
+                        <td><input type="number" id="lab_edad" style="width: 60px;"></td>
                         <td><input type="text" id="lab_empresa"></td>
                         <td><input type="text" id="lab_cargo"></td>
-                        <td><input type="number" id="lab_tiempo"></td>
+                        <td><input type="number" id="lab_tiempo" style="width: 60px;"></td>
                         <td><input type="text" id="lab_riesgos"></td>
-                        <td><select id="lab_epp"><option>SI</option><option>NO</option></select></td>
+                        <td><select id="lab_epp" style="width: 70px;"><option>SI</option><option>NO</option></select></td>
                     </tr>
                 </tbody>
             </table>
@@ -121,10 +136,10 @@
 
 <div id="modalExito">
     <div class="modal-content">
-        <h3 style="color: var(--primary); margin-top: 0;">✅ NUEVO PACIENTE</h3>
-        <p style="font-weight: 700; margin-bottom: 5px;" id="m_nom">---</p>
-        <p style="font-weight: 900; color: var(--blue-info); font-size: 20px; margin: 0;" id="m_cod">---</p>
-        <p style="font-size: 11px; color: #64748b; margin-top: 15px;">Sincronizando con la nube...</p>
+        <h3 style="color: var(--primary); margin: 0 0 10px 0;">✅ NUEVO PACIENTE</h3>
+        <p style="font-weight: 800; margin-bottom: 5px;" id="m_nom">---</p>
+        <p style="font-weight: 900; color: var(--blue-info); font-size: 22px;" id="m_cod">---</p>
+        <p style="font-size: 11px; color: #64748b; margin-top: 15px;">Redirigiendo al menú principal...</p>
     </div>
 </div>
 
@@ -142,7 +157,7 @@
         setTimeout(() => { 
             localStorage.clear(); 
             window.location.href = 'index.html'; 
-        }, 3000);
+        }, 3500);
     }
 </script>
 </body>
