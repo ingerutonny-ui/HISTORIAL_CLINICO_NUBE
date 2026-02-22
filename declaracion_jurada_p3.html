@@ -86,6 +86,7 @@
 </div>
 
 <script>
+    // URL DEFINITIVA
     const URL_POST = "https://historial-clinico-936s.onrender.com/api/registrar-p3";
 
     window.onload = () => {
@@ -97,12 +98,13 @@
     document.getElementById('formP3').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = localStorage.getItem('p_id');
-        if(!id) return alert("Error: ID de paciente no encontrado en memoria.");
+        if(!id) return alert("Error: ID de paciente no encontrado.");
 
         const btn = document.getElementById('btnS');
         btn.disabled = true;
-        btn.innerText = "PROCESANDO...";
+        btn.innerText = "PROCESANDO EN LA NUBE...";
 
+        // Captura de tabla laboral
         const laboral = Array.from(document.querySelectorAll('#tBody tr')).map(f => ({
             ed: f.querySelector('.r-ed').value || "0",
             em: f.querySelector('.r-em').value.toUpperCase() || "N/A",
@@ -112,6 +114,7 @@
             ep: f.querySelector('.r-ep').value
         }));
 
+        // Captura de riesgos
         const riesgos = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
         const data = {
@@ -134,19 +137,23 @@
         try {
             const res = await fetch(URL_POST, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
                 body: JSON.stringify(data)
             });
             
             if(res.ok) {
-                alert("✅ DATOS P3 GUARDADOS CORRECTAMENTE");
+                alert("✅ P3 GUARDADO EXITOSAMENTE");
                 window.location.href = "index.html";
             } else {
                 const err = await res.json();
-                alert("❌ ERROR DEL SERVIDOR: " + (err.detail || "Error desconocido"));
+                alert("❌ ERROR 404/500: El servidor no reconoce la ruta o está caído.");
+                console.error(err);
             }
         } catch (e) {
-            alert("❌ ERROR DE RED: Verifica que el servidor en Render esté despierto.");
+            alert("❌ ERROR DE CONEXIÓN: Verifica el Deploy en Render.");
         } finally {
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR P3 EN POSTGRESQL";
