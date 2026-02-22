@@ -12,11 +12,13 @@
         .header-logo { height: 60px; display: block; margin: 0 auto 10px; }
         .header-title { color: var(--ohs); font-weight: 700; text-align: center; text-transform: uppercase; margin-bottom: 25px; }
         .barra-paciente { background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 5px solid var(--ohs); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
+        /* ELIMINADO COLOR AZUL - AHORA ES GRIS OSCURO PROFESIONAL */
         .section-tag { background: var(--dark); color: white; padding: 8px 15px; font-weight: 600; border-radius: 4px; margin: 20px 0 15px 0; text-transform: uppercase; font-size: 0.8rem; }
         .form-label { font-weight: 600; color: #555; font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px; }
         .form-control, .form-select { border-radius: 4px; text-transform: uppercase; font-size: 0.85rem; border: 1px solid #ccc; }
         .btn-add { background: var(--dark); color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 0.75rem; margin-top: 10px; cursor: pointer; }
         .btn-save { background: var(--ohs); color: white; font-weight: 700; width: 100%; padding: 15px; border: none; border-radius: 6px; margin-top: 30px; text-transform: uppercase; cursor: pointer; }
+        .btn-save:disabled { background: #95a5a6; }
     </style>
 </head>
 <body>
@@ -26,7 +28,7 @@
     <h4 class="header-title">III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h4>
 
     <div class="barra-paciente">
-        <div>PACIENTE: <span id="v_nom" style="color: #2980b9;">CARGANDO...</span></div>
+        <div>PACIENTE: <span id="v_nom" style="color: var(--dark);">CARGANDO...</span></div>
         <div>CI: <span id="v_ci">---</span></div>
         <div>CÓDIGO: <span id="v_cod">---</span></div>
     </div>
@@ -148,7 +150,7 @@
                 alert("✅ P3 GUARDADO CORRECTAMENTE");
                 window.location.href = "index.html";
             } else {
-                alert("❌ ERROR EN EL SERVIDOR");
+                alert("❌ ERROR EN EL SERVIDOR (404/500)");
             }
         } catch (err) {
             alert("❌ ERROR DE CONEXIÓN");
