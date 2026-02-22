@@ -5,91 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>P1 - DATOS DE FILIACIÓN</title>
     <style>
-        :root { --primary: #2ecc71; --dark: #1e293b; --ghost: #cbd5e1; --bg: #f0f2f5; --line: #e2e8f0; --blue-info: #2563eb; }
+        :root { --primary: #2ecc71; --dark: #1e293b; --bg: #f0f2f5; --line: #e2e8f0; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; color: var(--dark); }
+        .container { background: white; width: 100%; max-width: 1000px; margin: auto; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); box-sizing: border-box; }
         
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: var(--dark); }
-        
-        .container { 
-            background: white; 
-            width: 95%; 
-            max-width: 1050px; 
-            margin: 10px auto;
-            padding: 20px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
-        }
-        
-        /* Cabecera Responsiva */
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .logo-img { height: 50px; width: auto; }
-        .status-tag { font-weight: 800; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
+        /* Cabecera */
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .logo-img { height: 50px; }
+        .modo-tag { font-weight: 900; font-size: 12px; text-transform: uppercase; }
 
-        /* Banner de Paciente Líquido */
-        .patient-banner { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            background: #f8fafc; 
-            padding: 15px; 
-            border-radius: 12px; 
-            border-left: 5px solid var(--primary); 
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .info-group { display: flex; gap: 8px; align-items: baseline; }
-        .info-group label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; }
-        .info-group span { font-size: 14px; font-weight: 900; color: var(--blue-info); text-transform: uppercase; }
+        /* Banner Paciente - Corregido para Móvil */
+        .patient-banner { background: #f8fafc; padding: 15px; border-radius: 12px; border-left: 5px solid var(--primary); margin-bottom: 25px; display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+        .info-group label { display: block; font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; }
+        .info-group span { font-size: 15px; font-weight: 900; color: #2563eb; text-transform: uppercase; }
 
-        .section-title { font-size: 15px; font-weight: 900; color: #0f172a; border-bottom: 2px solid var(--line); padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase; }
-
-        /* Grilla Adaptable */
-        .form-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 15px; 
-            margin-bottom: 30px; 
-        }
+        /* Formulario Responsivo */
+        .section-title { font-size: 16px; font-weight: 900; border-bottom: 2px solid var(--line); padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 30px; }
         
         .field { display: flex; flex-direction: column; }
-        .field label { font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; color: #475569; }
+        .field label { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; color: #475569; }
         
-        input, select { 
-            padding: 12px; 
-            border: 1.5px solid var(--line); 
-            border-radius: 10px; 
-            font-size: 14px; 
-            font-weight: 700; 
-            color: var(--dark); 
-            background: #fff; 
-            text-transform: uppercase;
-            width: 100%;
-            box-sizing: border-box;
-        }
+        input, select { padding: 12px; border: 1.5px solid var(--line); border-radius: 8px; font-size: 14px; font-weight: 700; color: var(--dark); text-transform: uppercase; width: 100%; box-sizing: border-box; }
+        input:focus { border-color: var(--primary); outline: none; }
 
-        input:focus { border-color: var(--primary); outline: none; background: #fcfdfc; }
-
-        .btn-save { 
-            width: 100%; 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            padding: 18px; 
-            border-radius: 15px; 
-            font-weight: 900; 
-            font-size: 14px; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
-        }
-        .btn-save:hover { transform: translateY(-2px); filter: brightness(1.05); }
-
-        /* Ajustes específicos para móviles muy pequeños */
-        @media (max-width: 480px) {
-            .container { padding: 15px; }
-            .info-group span { font-size: 12px; }
-            .section-title { font-size: 13px; }
+        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        
+        @media (max-width: 600px) {
+            .patient-banner { grid-template-columns: 1fr; }
+            body { padding: 10px; }
         }
     </style>
 </head>
@@ -98,11 +42,11 @@
 <div class="container">
     <div class="header-top">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img">
-        <span class="status-tag" id="modo_tag" style="color: var(--primary);">NUEVO REGISTRO</span>
+        <span id="modo_tag" class="modo-tag" style="color: var(--primary);">NUEVO REGISTRO</span>
     </div>
 
     <div class="patient-banner">
-        <div class="info-group"><label>Paciente:</label><span id="top_nombre">CARGANDO...</span></div>
+        <div class="info-group"><label>Paciente:</label><span id="top_nombre">---</span></div>
         <div class="info-group"><label>Código:</label><span id="top_codigo">---</span></div>
     </div>
 
@@ -110,55 +54,41 @@
 
     <div class="form-grid">
         <div class="field"><label>Edad</label><input type="number" id="edad"></div>
-        <div class="field">
-            <label>Sexo</label>
-            <select id="sexo">
-                <option value="MASCULINO">MASCULINO</option>
-                <option value="FEMENINO">FEMENINO</option>
-            </select>
-        </div>
+        <div class="field"><label>Sexo</label><select id="sexo"><option value="MASCULINO">MASCULINO</option><option value="FEMENINO">FEMENINO</option></select></div>
         <div class="field"><label>Fecha Nacimiento</label><input type="date" id="fecha_nac"></div>
         <div class="field"><label>Lugar Nacimiento</label><input type="text" id="lugar_nac"></div>
-        <div class="field" style="grid-column: span auto;"><label>Domicilio Actual</label><input type="text" id="domicilio"></div>
+        <div class="field"><label>Domicilio Actual</label><input type="text" id="domicilio"></div>
         <div class="field"><label>N° Casa</label><input type="text" id="n_casa"></div>
         <div class="field"><label>Zona / Barrio</label><input type="text" id="zona"></div>
         <div class="field"><label>Ciudad</label><input type="text" id="ciudad"></div>
         <div class="field"><label>País</label><input type="text" id="pais" value="BOLIVIA"></div>
         <div class="field"><label>Teléfono/Celular</label><input type="number" id="celular"></div>
-        <div class="field">
-            <label>Estado Civil</label>
-            <select id="estado_civil">
-                <option value="SOLTERO/A">SOLTERO/A</option>
-                <option value="CASADO/A">CASADO/A</option>
-                <option value="DIVORCIADO/A">DIVORCIADO/A</option>
-                <option value="VIUDO/A">VIUDO/A</option>
-            </select>
-        </div>
-        <div class="field" style="grid-column: 1 / -1;"><label>Profesión / Oficio</label><input type="text" id="profesion"></div>
+        <div class="field"><label>Estado Civil</label><select id="estado_civil"><option value="SOLTERO/A">SOLTERO/A</option><option value="CASADO/A">CASADO/A</option><option value="DIVORCIADO/A">DIVORCIADO/A</option><option value="VIUDO/A">VIUDO/A</option></select></div>
+        <div class="field"><label>Profesión / Oficio</label><input type="text" id="profesion"></div>
     </div>
 
-    <button class="btn-save" onclick="guardarP1()">🖫 GUARDAR Y CONTINUAR</button>
+    <button class="btn-save" onclick="guardarP1()">🖫 GUARDAR FILIACIÓN Y CONTINUAR</button>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
 
     window.onload = async () => {
-        const idEdicion = localStorage.getItem('p_id_edicion');
+        // 1. Carga inmediata de lo que tenemos local (Para no ver el "Cargando...")
+        const nomLocal = localStorage.getItem('p_nom');
+        const codLocal = localStorage.getItem('p_cod');
         
+        if (nomLocal) document.getElementById('top_nombre').innerText = nomLocal;
+        if (codLocal) document.getElementById('top_codigo').innerText = codLocal;
+
+        // 2. Verificar si es edición
+        const idEdicion = localStorage.getItem('p_id_edicion');
         if (idEdicion) {
             document.getElementById('modo_tag').innerText = "MODO EDICIÓN";
             document.getElementById('modo_tag').style.color = "#f59e0b";
             await cargarDatosEdicion(idEdicion);
-        } else {
-            const nom = localStorage.getItem('p_nom');
-            const cod = localStorage.getItem('p_cod');
-            if (!nom || !cod) {
-                window.location.replace('registro_paciente.html');
-            } else {
-                document.getElementById('top_nombre').innerText = nom;
-                document.getElementById('top_codigo').innerText = cod;
-            }
+        } else if (!nomLocal) {
+            window.location.replace('registro_paciente.html');
         }
     };
 
@@ -168,11 +98,11 @@
             if (resp.ok) {
                 const p = await resp.json();
                 
-                // Forzamos actualización visual inmediata
+                // Actualizar banner con datos reales de la base
                 document.getElementById('top_nombre').innerText = `${p.apellido} ${p.nombre}`.toUpperCase();
                 document.getElementById('top_codigo').innerText = p.codigo_paciente;
                 
-                // Relleno de campos
+                // Rellenar formulario
                 document.getElementById('edad').value = p.edad || '';
                 document.getElementById('sexo').value = p.sexo || 'MASCULINO';
                 document.getElementById('fecha_nac').value = p.fecha_nac || '';
@@ -186,8 +116,8 @@
                 document.getElementById('estado_civil').value = p.estado_civil || 'SOLTERO/A';
                 document.getElementById('profesion').value = p.profesion || '';
 
-                // Respaldar P2 para no perderlo durante la cadena de edición
-                const p2_data = {
+                // Guardar resto de partes para que no se pierdan al editar
+                const p2 = {
                     vista: p.vista, oido: p.oido, respiratorio: p.respiratorio, cardiovascular: p.cardiovascular,
                     digestivo: p.digestivo, sangre: p.sangre, genitourinario: p.genitourinario,
                     sistema_nervioso: p.sistema_nervioso, endocrino: p.endocrino, psiquiatricos: p.psiquiatricos,
@@ -196,23 +126,17 @@
                     acc_trabajo: p.acc_trabajo, medicamentos: p.medicamentos, familiares: p.familiares,
                     otros_especificos: p.otros_especificos, observaciones: p.observaciones
                 };
-                localStorage.setItem('datos_p2', JSON.stringify(p2_data));
+                localStorage.setItem('datos_p2', JSON.stringify(p2));
                 
-                // Respaldar datos P3 (Historia Laboral y Riesgos)
-                const p3_data = {
+                const p3 = {
                     fuma: p.fuma, alcohol: p.alcohol, drogas: p.drogas, grupo_sanguineo: p.grupo_sanguineo,
                     empresa_ant: p.empresa_ant, cargo_ant: p.cargo_ant,
                     riesgo_ruido: p.riesgo_ruido, riesgo_polvos: p.riesgo_polvos,
                     riesgo_ergonomico: p.riesgo_ergonomico, riesgo_biologico: p.riesgo_biologico
                 };
-                localStorage.setItem('datos_p3', JSON.stringify(p3_data));
-
-                // Datos de control
-                localStorage.setItem('p_nom', `${p.apellido} ${p.nombre}`);
-                localStorage.setItem('p_ci', p.ci);
-                localStorage.setItem('p_cod', p.codigo_paciente);
+                localStorage.setItem('datos_p3', JSON.stringify(p3));
             }
-        } catch (e) { console.error("Error en carga:", e); }
+        } catch (e) { console.error("Error de conexión:", e); }
     }
 
     function guardarP1() {
