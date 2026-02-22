@@ -55,7 +55,7 @@
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
                     <tr class="text-center">
-                       <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
+                        <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
                     </tr>
                 </thead>
                 <tbody id="tBody">
@@ -84,13 +84,12 @@
             <div class="col-md-3"><input type="checkbox" class="c-ri" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL</button>
+        <button type="submit" class="btn-save" id="btnS">💾 GUARDAR DECLARACIÓN P3</button>
     </form>
 </div>
 
 <script>
-    // URL exacta del backend para evitar Error 404
-    const API_URL = "https://historial-clinico-936s.onrender.com/api/save-p3";
+    const API_BASE = "https://historial-clinico-936s.onrender.com/api";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -99,23 +98,23 @@
     }
 
     window.onload = () => {
-        // Mapeo corregido usando las llaves de tu función prepararP3
-        const nombre = localStorage.getItem('p_nombre') || "";
-        const apellido = localStorage.getItem('p_apellido') || "";
-        const fullNom = (nombre + " " + apellido).trim();
-        
-        document.getElementById('v_nom').innerText = fullNom || "SIN NOMBRE";
-        document.getElementById('v_ci').innerText = localStorage.getItem('p_ci') || "---";
-        document.getElementById('v_cod').innerText = localStorage.getItem('p_codigo') || "---";
+        // CORRECCIÓN DE MAPEADO: Usamos las llaves exactas de registro_paciente.html
+        const nom = localStorage.getItem('p_nom') || "SIN NOMBRE";
+        const ci = localStorage.getItem('p_ci') || "---";
+        const cod = localStorage.getItem('p_cod') || "---";
+
+        document.getElementById('v_nom').innerText = nom.toUpperCase();
+        document.getElementById('v_ci').innerText = ci;
+        document.getElementById('v_cod').innerText = cod;
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const pid = localStorage.getItem('p_id');
-        if(!pid) { alert("ERROR: ID DE PACIENTE NO ENCONTRADO"); return; }
+        if(!pid) { alert("ERROR: NO SE ENCONTRÓ EL ID DEL PACIENTE"); return; }
 
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO EN POSTGRESQL...";
+        btn.innerText = "⏳ GUARDANDO...";
         btn.disabled = true;
 
         const payload = {
@@ -139,29 +138,26 @@
                 ep: tr.querySelector('.r-ep').value
             }))),
             riesgos_expuestos: JSON.stringify(Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value)),
-            observaciones: "P3_FINALIZADO"
+            observaciones: "P3_SYNC_OK"
         };
 
         try {
-            const res = await fetch(API_URL, {
+            const res = await fetch(`${API_BASE}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-
             if (res.ok) { 
-                alert("✅ P3 GUARDADO CORRECTAMENTE EN RENDER"); 
+                alert("✅ P3 GUARDADO EXITOSAMENTE"); 
                 window.location.href = "index.html"; 
             } else {
-                const errorData = await res.json();
-                alert("❌ ERROR EN SERVIDOR: " + (errorData.detail || "Error desconocido"));
+                alert("❌ ERROR AL GUARDAR EN EL SERVIDOR");
                 btn.disabled = false;
-                btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
+                btn.innerText = "💾 GUARDAR DECLARACIÓN P3";
             }
         } catch (err) { 
-            alert("❌ ERROR DE CONEXIÓN: No se pudo alcanzar el servidor Render."); 
+            alert("❌ ERROR DE CONEXIÓN"); 
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
         }
     };
 </script>
