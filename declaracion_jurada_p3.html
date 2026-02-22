@@ -98,12 +98,12 @@
     }
 
     window.onload = () => {
-        // Mantenemos tu lógica de mapeado que confirmaste que funciona
-        const nom = localStorage.getItem('p_nom') || "SIN NOMBRE";
+        const nom = localStorage.getItem('p_nombre') || "SIN NOMBRE";
+        const ape = localStorage.getItem('p_apellido') || "";
         const ci = localStorage.getItem('p_ci') || "---";
-        const cod = localStorage.getItem('p_cod') || "---";
+        const cod = localStorage.getItem('p_codigo') || "---";
 
-        document.getElementById('v_nom').innerText = nom.toUpperCase();
+        document.getElementById('v_nom').innerText = (nom + " " + ape).toUpperCase();
         document.getElementById('v_ci').innerText = ci;
         document.getElementById('v_cod').innerText = cod;
     };
@@ -142,25 +142,24 @@
         };
 
         try {
-            // Aseguramos que la ruta sea /save_p3 (con guion bajo) o la que tengas en main.py
-            const res = await fetch(`${API_BASE}/save-p3`, {
+            // CORRECCIÓN CLAVE: Usamos guion bajo 'save_p3' como en P1
+            const res = await fetch(`${API_BASE}/save_p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) { 
-                alert("✅ P3 GUARDADO EXITOSAMENTE"); 
+                alert("✅ P3 GUARDADO EXITOSAMENTE EN POSTGRESQL"); 
                 window.location.href = "index.html"; 
             } else {
-                // Captura el error específico del servidor
-                const errorData = await res.json();
-                alert("❌ ERROR EN EL SERVIDOR: " + (errorData.detail || "Revisa el backend"));
+                const errData = await res.json();
+                alert("❌ ERROR EN EL SERVIDOR: " + (errData.detail || "Error desconocido"));
                 btn.disabled = false;
                 btn.innerText = "💾 GUARDAR DECLARACIÓN P3";
             }
         } catch (err) { 
-            alert("❌ ERROR DE CONEXIÓN: No se pudo contactar con Render"); 
+            alert("❌ ERROR DE CONEXIÓN: Verifica que el Backend esté encendido en Render"); 
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR DECLARACIÓN P3";
         }
