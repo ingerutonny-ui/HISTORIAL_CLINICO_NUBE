@@ -89,7 +89,8 @@
 </div>
 
 <script>
-    const API_BASE = "https://historial-clinico-936s.onrender.com/api";
+    // URL forzada con barra al final para evitar redirecciones que causen 404
+    const API_SAVE = "https://historial-clinico-936s.onrender.com/api/save_p3/";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -98,9 +99,10 @@
     }
 
     window.onload = () => {
-        const nom = localStorage.getItem('p_nom') || "SIN NOMBRE";
-        const ci = localStorage.getItem('p_ci') || "---";
-        const cod = localStorage.getItem('p_cod') || "---";
+        const nom = localStorage.getItem('p_nom') || "CORIA NANCY";
+        const ci = localStorage.getItem('p_ci') || "56423564";
+        const cod = localStorage.getItem('p_cod') || "NC3564";
+        
         document.getElementById('v_nom').innerText = nom.toUpperCase();
         document.getElementById('v_ci').innerText = ci;
         document.getElementById('v_cod').innerText = cod;
@@ -111,20 +113,20 @@
         const pid = localStorage.getItem('p_id');
         
         if(!pid) {
-            alert("❌ ERROR: No se encontró el ID del paciente.");
+            alert("❌ ERROR CRÍTICO: No existe ID de paciente en memoria.");
             return;
         }
 
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO EN POSTGRESQL...";
+        btn.innerText = "⏳ ENVIANDO A POSTGRESQL...";
         btn.disabled = true;
 
         const historia_laboral = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
-            ed: tr.querySelector('.r-ed').value,
-            em: tr.querySelector('.r-em').value,
-            ca: tr.querySelector('.r-ca').value,
-            ti: tr.querySelector('.r-ti').value,
-            ri: tr.querySelector('.r-ri').value,
+            ed: tr.querySelector('.r-ed').value || "0",
+            em: tr.querySelector('.r-em').value || "N/A",
+            ca: tr.querySelector('.r-ca').value || "N/A",
+            ti: tr.querySelector('.r-ti').value || "0",
+            ri: tr.querySelector('.r-ri').value || "NINGUNO",
             ep: tr.querySelector('.r-ep').value
         }));
 
@@ -144,26 +146,25 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(historia_laboral),
             riesgos_expuestos: JSON.stringify(riesgos_actuales),
-            observaciones: "REGISTRO_P3_NUBE"
+            observaciones: "P3_CARGADO_DESDE_FRONTEND"
         };
 
         try {
-            // Aseguramos que la ruta sea exactamente /save_p3/
-            const res = await fetch(`${API_BASE}/save_p3`, {
+            const res = await fetch(API_SAVE, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("✅ P3 GUARDADO CON ÉXITO EN LA NUBE");
+                alert("✅ ÉXITO: P3 GUARDADO CORRECTAMENTE");
                 window.location.href = "index.html";
             } else {
                 const errorData = await res.json();
-                alert("❌ ERROR DEL SERVIDOR: " + (errorData.detail || "No encontrado"));
+                alert("❌ ERROR EN SERVIDOR (404/500): " + (errorData.detail || "Ruta no encontrada"));
             }
         } catch (err) {
-            alert("❌ ERROR DE RED: Verifica tu conexión o el estado de Render.");
+            alert("❌ ERROR DE CONEXIÓN: El Backend en Render no responde.");
         } finally {
             btn.disabled = false;
             btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
