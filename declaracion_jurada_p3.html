@@ -90,8 +90,8 @@
 </div>
 
 <script>
-    // DEFINICIÓN DE URL PURA - SIN CONCATENACIONES
-    const API_URL_P3 = "https://historial-clinico-936s.onrender.com/api/save-p3";
+    // CAMBIO DE NOMBRE DE VARIABLE PARA ELIMINAR CACHÉ
+    const ENDPOINT_FINAL_P3 = "https://historial-clinico-936s.onrender.com/api/save-p3";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -110,32 +110,36 @@
         document.getElementById('v_cod').innerText = localStorage.getItem('p_cod') || "---";
     };
 
-    document.getElementById('formP3').onsubmit = async (e) => {
-        e.preventDefault();
+    // NUEVA LÓGICA DE ENVÍO BLINDADA
+    document.getElementById('formP3').addEventListener('submit', async function(evento) {
+        evento.preventDefault();
         
-        // Obtenemos el ID del paciente de forma segura
-        const paciente_id_raw = localStorage.getItem('p_id');
-        if (!paciente_id_raw) return alert("❌ ERROR: No se encontró ID de paciente.");
+        const idPaciente = localStorage.getItem('p_id');
+        if (!idPaciente) {
+            alert("❌ ERROR: No se encontró ID de paciente.");
+            return;
+        }
 
-        const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ ENVIANDO...";
-        btn.disabled = true;
+        const boton = document.getElementById('btnS');
+        boton.innerText = "⏳ PROCESANDO ENVÍO...";
+        boton.disabled = true;
 
-        // Mapeo de tabla a JSON
-        const historiaArray = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
-            ed: tr.querySelector('.r-ed').value || "0",
-            em: (tr.querySelector('.r-em').value || "N/A").toUpperCase(),
-            ca: (tr.querySelector('.r-ca').value || "N/A").toUpperCase(),
-            ti: (tr.querySelector('.r-ti').value || "0").toUpperCase(),
-            ri: (tr.querySelector('.r-ri').value || "N/A").toUpperCase(),
-            ep: tr.querySelector('.r-ep').value
+        // Captura de tabla
+        const tablaLaboral = Array.from(document.querySelectorAll('#tBody tr')).map(fila => ({
+            ed: fila.querySelector('.r-ed').value || "0",
+            em: (fila.querySelector('.r-em').value || "N/A").toUpperCase(),
+            ca: (fila.querySelector('.r-ca').value || "N/A").toUpperCase(),
+            ti: (fila.querySelector('.r-ti').value || "0").toUpperCase(),
+            ri: (fila.querySelector('.r-ri').value || "N/A").toUpperCase(),
+            ep: fila.querySelector('.r-ep').value
         }));
 
-        const riesgosArray = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
+        // Captura de Riesgos
+        const riesgosCheck = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
-        // PAYLOAD EXACTO SEGÚN schemas.py
-        const payload = {
-            paciente_id: parseInt(paciente_id_raw),
+        // Objeto final exacto según schemas.py
+        const datosParaEnviar = {
+            paciente_id: parseInt(idPaciente),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value || "0",
             alcohol: document.getElementById('alcohol').value,
@@ -146,33 +150,35 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: (document.getElementById('deporte_detalle').value || "S/D").toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(historiaArray),
-            riesgos_expuestos: JSON.stringify(riesgosArray),
-            observaciones: "CARGA_P3_EXITOSA"
+            historia_laboral: JSON.stringify(tablaLaboral),
+            riesgos_expuestos: JSON.stringify(riesgosCheck),
+            observaciones: "ENVIO_LIMPIO_POSTGRES"
         };
 
         try {
-            // LLAMADA CON URL ESTÁTICA PARA EVITAR EL ":1"
-            const res = await fetch(API_URL_P3, {
+            // FETCH DIRECTO A LA URL PURA
+            const respuesta = await fetch(ENDPOINT_FINAL_P3, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
+                body: JSON.stringify(datosParaEnviar)
             });
 
-            if (res.ok) {
-                alert("✅ P3 GUARDADO CORRECTAMENTE EN POSTGRESQL");
+            if (respuesta.ok) {
+                alert("✅ P3 GUARDADO CON ÉXITO");
                 window.location.href = "index.html";
             } else {
-                const errorInfo = await res.json();
-                console.error("Error Servidor:", errorInfo);
-                alert(`❌ ERROR ${res.status}: ${errorInfo.detail || "Error de ruta"}`);
+                const errorData = await respuesta.json();
+                console.error("Error Servidor:", errorData);
+                alert(`❌ ERROR DEL SERVIDOR: ${errorData.detail || "Verifica los datos"}`);
             }
-        } catch (err) {
-            console.error("Error de Red:", err);
-            alert("❌ ERROR: No se pudo conectar con el servidor Render.");
+        } catch (error) {
+            console.error("Error de Red:", error);
+            alert("❌ ERROR DE RED: No hay conexión con Render.");
         } finally {
-            btn.disabled = false;
-            btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
+            boton.disabled = false;
+            boton.innerText = "💾 GUARDAR P3 EN POSTGRESQL";
         }
-    };
+    });
 </script>
+</body>
+</html>
