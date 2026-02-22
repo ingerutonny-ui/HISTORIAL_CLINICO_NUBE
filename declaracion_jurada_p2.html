@@ -79,20 +79,30 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    const p_id = localStorage.getItem('p_id');
+    const p_id = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
     function marcarNormal() {
         document.querySelectorAll('.f-campo').forEach(i => i.value = "SIN PARTICULAR");
     }
 
     window.onload = async () => {
-        if (!p_id) return;
+        if (!p_id) {
+            window.location.href = "registro_paciente.html";
+            return;
+        }
+
+        // CARGA DE RESPALDO (Banner)
+        document.getElementById('v_nombre').innerText = (localStorage.getItem('p_nom') || "---").toUpperCase();
+        document.getElementById('v_codigo').innerText = localStorage.getItem('p_cod') || "---";
+
         try {
             const res = await fetch(`${API}/api/paciente-completo/${p_id}`);
-            const d = await res.json();
-            document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
-            document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || d.paciente.codigo || 'S/C';
-        } catch (e) { console.error("Error:", e); }
+            if(res.ok){
+                const d = await res.json();
+                document.getElementById('v_nombre').innerText = `${d.paciente.nombre} ${d.paciente.apellido}`.toUpperCase();
+                document.getElementById('v_codigo').innerText = d.paciente.codigo_paciente || 'S/C';
+            }
+        } catch (e) { console.error("Error en Banner P2"); }
     };
 
     document.getElementById('formP2').onsubmit = (e) => {
@@ -101,16 +111,12 @@
         btn.innerText = "⏳ PROCESANDO...";
         btn.disabled = true;
 
-        // RECOLECCIÓN LOCAL (No enviamos al servidor todavía)
         const datosP2 = {};
         document.querySelectorAll('.f-campo').forEach(i => datosP2[i.id] = i.value.toUpperCase());
-        
-        // Guardamos en la memoria del navegador
         localStorage.setItem('datos_temporales_p2', JSON.stringify(datosP2));
-
-        // Saltamos directamente a P3
         location.href = "declaracion_jurada_p3.html";
     };
 </script>
+    
 </body>
 </html>
