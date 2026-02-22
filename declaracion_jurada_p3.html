@@ -55,7 +55,7 @@
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
                     <tr class="text-center">
-                        <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
+                       <th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>¿EPP?</th>
                     </tr>
                 </thead>
                 <tbody id="tBody">
@@ -98,7 +98,7 @@
     }
 
     window.onload = () => {
-        // CORRECCIÓN DE MAPEADO: Usamos las llaves exactas de registro_paciente.html
+        // Mantenemos tu lógica de mapeado que confirmaste que funciona
         const nom = localStorage.getItem('p_nom') || "SIN NOMBRE";
         const ci = localStorage.getItem('p_ci') || "---";
         const cod = localStorage.getItem('p_cod') || "---";
@@ -142,22 +142,27 @@
         };
 
         try {
+            // Aseguramos que la ruta sea /save_p3 (con guion bajo) o la que tengas en main.py
             const res = await fetch(`${API_BASE}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
             if (res.ok) { 
                 alert("✅ P3 GUARDADO EXITOSAMENTE"); 
                 window.location.href = "index.html"; 
             } else {
-                alert("❌ ERROR AL GUARDAR EN EL SERVIDOR");
+                // Captura el error específico del servidor
+                const errorData = await res.json();
+                alert("❌ ERROR EN EL SERVIDOR: " + (errorData.detail || "Revisa el backend"));
                 btn.disabled = false;
                 btn.innerText = "💾 GUARDAR DECLARACIÓN P3";
             }
         } catch (err) { 
-            alert("❌ ERROR DE CONEXIÓN"); 
+            alert("❌ ERROR DE CONEXIÓN: No se pudo contactar con Render"); 
             btn.disabled = false;
+            btn.innerText = "💾 GUARDAR DECLARACIÓN P3";
         }
     };
 </script>
