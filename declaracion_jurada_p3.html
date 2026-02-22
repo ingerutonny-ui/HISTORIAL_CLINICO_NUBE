@@ -113,8 +113,8 @@
         btn.innerText = "⏳ ENVIANDO A POSTGRESQL...";
         btn.disabled = true;
 
-        // CAPTURA SIN STRINGIFY (Para que FastAPI lo reciba como objetos/listas)
-        const historia = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
+        // Captura de datos
+        const historiaArray = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
             ed: tr.querySelector('.r-ed').value || "0",
             em: (tr.querySelector('.r-em').value || "N/A").toUpperCase(),
             ca: (tr.querySelector('.r-ca').value || "N/A").toUpperCase(),
@@ -123,8 +123,9 @@
             ep: tr.querySelector('.r-ep').value
         }));
 
-        const riesgos = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
+        const riesgosArray = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
+        // PAYLOAD AJUSTADO AL SCHEMAS.PY (Campos historia y riesgos como STRING)
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
@@ -137,8 +138,8 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: (document.getElementById('deporte_detalle').value || "S/D").toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: historia, // Se envía como ARRAY, no como STRING
-            riesgos_expuestos: riesgos, // Se envía como ARRAY, no como STRING
+            historia_laboral: JSON.stringify(historiaArray), // ENVIADO COMO TEXTO PARA EL ESQUEMA
+            riesgos_expuestos: JSON.stringify(riesgosArray), // ENVIADO COMO TEXTO PARA EL ESQUEMA
             observaciones: "P3_CARGA_EXITOSA"
         };
 
@@ -156,7 +157,7 @@
                 window.location.href = "index.html";
             } else {
                 console.error("Detalle del error:", responseData);
-                alert("❌ ERROR: " + (responseData.detail || "Error desconocido en el servidor"));
+                alert("❌ ERROR: " + (responseData.detail || "Error en la validación de datos"));
             }
         } catch (err) {
             console.error("Error de red:", err);
