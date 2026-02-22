@@ -3,44 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P3 - FINALIZAR DECLARACIÓN</title>
+    <title>P3 - HÁBITOS Y LABORAL | HISTORIAL CLÍNICO</title>
     <style>
-        :root { --primary: #2ecc71; --dark: #1e293b; --bg: #f0f2f5; --blue-info: #2563eb; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .container { background: white; width: 100%; max-width: 1000px; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .header-top { display: flex; justify-content: center; margin-bottom: 15px; }
-        .logo-img { height: 65px; width: auto; }
-        h2 { text-align: center; color: var(--primary); font-weight: 900; text-transform: uppercase; margin-bottom: 25px; }
-        .patient-banner { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 15px; background: #f8fafc; padding: 15px 25px; border-radius: 12px; border-left: 6px solid var(--primary); margin-bottom: 25px; }
-        .info-group label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; }
-        .info-group span { font-size: 15px; font-weight: 900; color: var(--blue-info); text-transform: uppercase; }
-        .section-box { border-top: 2px solid #e2e8f0; margin-bottom: 25px; padding-top: 10px; }
-        .section-title { font-size: 14px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 15px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px 20px; }
-        .field { display: flex; flex-direction: column; }
-        .field label { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
-        input, select { padding: 10px; border: 1.5px solid #e2e8f0; border-radius: 8px; font-size: 14px; font-weight: 700; text-transform: uppercase; }
-        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 15px; background: #fcfdfc; border-radius: 10px; }
-        .check-item { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 800; text-transform: uppercase; }
-        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 18px; border-radius: 14px; font-weight: 900; font-size: 16px; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
+        :root { --primary: #2ecc71; --dark: #1e293b; --ghost: #cbd5e1; --bg: #f0f2f5; --blue-info: #2563eb; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: var(--dark); display: flex; justify-content: center; }
+        
+        .container { background: white; width: 100%; max-width: 1000px; padding: 25px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        .header-top { display: flex; justify-content: center; margin-bottom: 10px; }
+        .logo-img { height: 60px; width: auto; }
 
-        /* Estilo para la Ventana de Éxito */
-        #modalExito { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 999; }
-        .modal-content { background: white; padding: 40px; border-radius: 25px; text-align: center; max-width: 400px; width: 90%; }
-        .modal-content h3 { color: var(--primary); font-size: 24px; margin-bottom: 10px; }
-        .modal-content p { font-weight: 800; color: var(--dark); text-transform: uppercase; margin: 5px 0; }
-        .modal-content .tag-cod { color: var(--blue-info); font-size: 22px; }
+        h2 { text-align: center; color: var(--primary); font-weight: 800; text-transform: uppercase; margin: 10px 0 20px 0; font-size: 1.4rem; letter-spacing: 0.5px; }
+
+        /* Banner de Paciente - Estilo P1/P2 */
+        .patient-banner { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 15px; background: #f8fafc; padding: 12px 25px; border-radius: 12px; border-left: 6px solid var(--primary); margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; }
+        .info-group label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; }
+        .info-group span { font-size: 14px; font-weight: 900; color: var(--blue-info); text-transform: uppercase; }
+
+        /* Secciones con borde estilo P2 */
+        .section-box { border-top: 1.5px solid #e2e8f0; margin-bottom: 20px; padding-top: 10px; }
+        .section-title { font-size: 13px; font-weight: 900; color: #0f172a; text-transform: uppercase; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .section-title::before { content: ""; width: 3px; height: 15px; background: var(--primary); display: inline-block; border-radius: 2px; }
+
+        /* Grilla de campos optimizada */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px 20px; }
+        .field { display: flex; flex-direction: column; }
+        
+        /* Estilo de letra de P1/P2 (Labels en 11px) */
+        .field label { font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; color: #475569; }
+        
+        input, select { 
+            padding: 9px 12px; 
+            border: 1.5px solid #e2e8f0; 
+            border-radius: 8px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: var(--dark); 
+            background: #fdfdfd;
+            text-transform: uppercase;
+        }
+
+        input:focus { border-color: var(--primary); outline: none; background: white; }
+
+        /* Área de Riesgos con Checkboxes */
+        .checkbox-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px; background: #fcfdfc; border-radius: 10px; border: 1px solid #f1f5f9; }
+        .check-item { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: #334155; text-transform: uppercase; cursor: pointer; }
+        .check-item input { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+
+        /* Botón Final solicitado */
+        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; text-transform: uppercase; margin-top: 15px; box-shadow: 0 6px 15px rgba(46, 204, 113, 0.2); transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-save:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+        /* Modal de éxito */
+        #modalExito { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-content { background: white; padding: 35px; border-radius: 20px; text-align: center; max-width: 400px; width: 85%; border-top: 6px solid var(--primary); }
+        .modal-content h3 { color: var(--primary); font-size: 22px; margin: 0 0 15px 0; font-weight: 900; }
+        .modal_paciente { font-weight: 800; color: var(--dark); font-size: 16px; text-transform: uppercase; margin-bottom: 5px; }
+        .modal_codigo { font-weight: 900; color: var(--blue-info); font-size: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header-top"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img"></div>
-    <h2>III. HÁBITOS Y ANTECEDENTES LABORALES (P3)</h2>
+    <h2>III. HÁBITOS Y ANTECEDENTES LABORALES</h2>
 
     <div class="patient-banner">
         <div class="info-group"><label>Paciente</label><span id="top_nombre">---</span></div>
-        <div class="info-group"><label>Documento CI</label><span id="top_ci">---</span></div>
+        <div class="info-group"><label>CI</label><span id="top_ci">---</span></div>
         <div class="info-group"><label>Código</label><span id="top_codigo">---</span></div>
     </div>
 
@@ -48,39 +78,46 @@
         <div class="section-title">1. HÁBITOS PERSONALES</div>
         <div class="form-grid">
             <div class="field"><label>¿Fuma?</label><select id="fuma"><option>NO</option><option>SI</option></select></div>
+            <div class="field"><label>Frecuencia / Cantidad</label><input type="text" id="fuma_detalle" placeholder="Ej. 2 al día"></div>
             <div class="field"><label>¿Alcohol?</label><select id="alcohol"><option>NO</option><option>SOCIAL</option><option>SI</option></select></div>
             <div class="field"><label>¿Drogas?</label><select id="drogas"><option>NO</option><option>SI</option></select></div>
             <div class="field"><label>Grupo Sanguíneo</label><input type="text" id="grupo_sangre" placeholder="Ej. ORH+"></div>
+            <div class="field"><label>Realiza Deporte</label><input type="text" id="deporte" placeholder="Ej. FÚTBOL"></div>
         </div>
     </div>
 
     <div class="section-box">
-        <div class="section-title">2. HISTORIA LABORAL</div>
+        <div class="section-title">2. HISTORIA LABORAL (ANTERIOR)</div>
         <div class="form-grid">
-            <div class="field" style="grid-column: span 2;"><label>Empresa Anterior</label><input type="text" id="empresa_ant"></div>
-            <div class="field" style="grid-column: span 2;"><label>Cargo / Función</label><input type="text" id="cargo_ant"></div>
+            <div class="field" style="grid-column: span 2;"><label>Empresa Anterior</label><input type="text" id="empresa_ant" placeholder="Nombre de la empresa"></div>
+            <div class="field"><label>Cargo / Función</label><input type="text" id="cargo_ant" placeholder="Ej. Técnico"></div>
+            <div class="field"><label>Tiempo (Años)</label><input type="number" id="tiempo_ant" placeholder="0"></div>
         </div>
     </div>
 
     <div class="section-box">
-        <div class="section-title">3. RIESGOS EXPUESTOS</div>
+        <div class="section-title">3. RIESGOS EXPUESTOS ACTUALES</div>
         <div class="checkbox-grid">
             <label class="check-item"><input type="checkbox" class="riesgo" value="RUIDO"> RUIDO</label>
             <label class="check-item"><input type="checkbox" class="riesgo" value="POLVOS"> POLVOS</label>
             <label class="check-item"><input type="checkbox" class="riesgo" value="ERGONÓMICO"> ERGONÓMICO</label>
             <label class="check-item"><input type="checkbox" class="riesgo" value="BIOLÓGICO"> BIOLÓGICO</label>
+            <label class="check-item"><input type="checkbox" class="riesgo" value="QUÍMICO"> QUÍMICO</label>
+            <label class="check-item"><input type="checkbox" class="riesgo" value="ALTURA"> ALTURA</label>
+            <label class="check-item"><input type="checkbox" class="riesgo" value="VIBRACIÓN"> VIBRACIÓN</label>
+            <label class="check-item"><input type="checkbox" class="riesgo" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         </div>
     </div>
 
-    <button class="btn-save" onclick="guardarTodo()">💾 GUARDAR DECLARACIÓN P3</button>
+    <button class="btn-save" onclick="finalizarProceso()">💾 GUARDAR DECLARACIÓN JURADA</button>
 </div>
 
 <div id="modalExito">
     <div class="modal-content">
         <h3>✅ NUEVO PACIENTE</h3>
-        <p id="modal_nom">---</p>
-        <p class="tag-cod" id="modal_cod">---</p>
-        <small>Redirigiendo al menú...</small>
+        <p class="modal_paciente" id="modal_nom">---</p>
+        <p class="modal_codigo" id="modal_cod">---</p>
+        <p style="font-size: 12px; color: #64748b; margin-top: 15px;">Datos sincronizados correctamente.<br>Redirigiendo al menú principal...</p>
     </div>
 </div>
 
@@ -91,36 +128,35 @@
         document.getElementById('top_codigo').innerText = localStorage.getItem('p_cod') || "---";
     };
 
-    async function guardarTodo() {
-        // 1. Recopilar P3
-        const riesgosArr = [];
-        document.querySelectorAll('.riesgo:checked').forEach(i => riesgosArr.push(i.value));
+    function finalizarProceso() {
+        const riesgos = [];
+        document.querySelectorAll('.riesgo:checked').forEach(r => riesgos.push(r.value));
 
-        const dataFinal = {
-            ...JSON.parse(localStorage.getItem('datos_p1') || '{}'),
-            ...JSON.parse(localStorage.getItem('datos_p2') || '{}'),
+        const p3_data = {
             fuma: document.getElementById('fuma').value,
+            fuma_detalle: document.getElementById('fuma_detalle').value.toUpperCase(),
             alcohol: document.getElementById('alcohol').value,
             drogas: document.getElementById('drogas').value,
-            grupo_sangre: document.getElementById('grupo_sangre').value.toUpperCase(),
+            sangre: document.getElementById('grupo_sangre').value.toUpperCase(),
+            deporte: document.getElementById('deporte').value.toUpperCase(),
             empresa_ant: document.getElementById('empresa_ant').value.toUpperCase(),
             cargo_ant: document.getElementById('cargo_ant').value.toUpperCase(),
-            riesgos: riesgosArr.join(', '),
-            nombre: localStorage.getItem('p_nom'),
-            ci: localStorage.getItem('p_ci'),
-            codigo: localStorage.getItem('p_cod')
+            tiempo_ant: document.getElementById('tiempo_ant').value,
+            riesgos: riesgos.join(', ')
         };
 
-        // 2. Simular envío y mostrar Modal
-        document.getElementById('modal_nom').innerText = dataFinal.nombre;
-        document.getElementById('modal_cod').innerText = dataFinal.codigo;
+        localStorage.setItem('datos_p3', JSON.stringify(p3_data));
+
+        // Mostrar Ventana de Éxito
+        document.getElementById('modal_nom').innerText = localStorage.getItem('p_nom');
+        document.getElementById('modal_cod').innerText = localStorage.getItem('p_cod');
         document.getElementById('modalExito').style.display = 'flex';
 
-        // 3. Limpiar y Redirigir tras 3 segundos [cite: 2026-01-20]
+        // Redirigir al Menú Principal tras 3.5 segundos
         setTimeout(() => {
             localStorage.clear();
             window.location.href = 'index.html';
-        }, 3000);
+        }, 3500);
     }
 </script>
 </body>
