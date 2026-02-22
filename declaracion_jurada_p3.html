@@ -113,7 +113,6 @@
         btn.innerText = "⏳ ENVIANDO A POSTGRESQL...";
         btn.disabled = true;
 
-        // Captura de datos
         const historiaArray = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
             ed: tr.querySelector('.r-ed').value || "0",
             em: (tr.querySelector('.r-em').value || "N/A").toUpperCase(),
@@ -125,7 +124,6 @@
 
         const riesgosArray = Array.from(document.querySelectorAll('.c-ri:checked')).map(c => c.value);
 
-        // PAYLOAD AJUSTADO AL SCHEMAS.PY (Campos historia y riesgos como STRING)
         const payload = {
             paciente_id: parseInt(pid),
             fuma: document.getElementById('fuma').value,
@@ -138,12 +136,13 @@
             deporte: document.getElementById('deporte').value,
             deporte_detalle: (document.getElementById('deporte_detalle').value || "S/D").toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-            historia_laboral: JSON.stringify(historiaArray), // ENVIADO COMO TEXTO PARA EL ESQUEMA
-            riesgos_expuestos: JSON.stringify(riesgosArray), // ENVIADO COMO TEXTO PARA EL ESQUEMA
+            historia_laboral: JSON.stringify(historiaArray), 
+            riesgos_expuestos: JSON.stringify(riesgosArray), 
             observaciones: "P3_CARGA_EXITOSA"
         };
 
         try {
+            // RUTA CORREGIDA A /api/save-p3 SEGÚN TU BACKEND (image_f52ce1.png)
             const res = await fetch(`${API_BASE}/save-p3`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -157,7 +156,7 @@
                 window.location.href = "index.html";
             } else {
                 console.error("Detalle del error:", responseData);
-                alert("❌ ERROR: " + (responseData.detail || "Error en la validación de datos"));
+                alert("❌ ERROR EN EL SERVIDOR: " + (responseData.detail || "Error de validación"));
             }
         } catch (err) {
             console.error("Error de red:", err);
