@@ -90,7 +90,7 @@
 </div>
 
 <script>
-    // URL ACTUALIZADA PARA COINCIDIR CON EL BACKEND
+    // URL SINCRONIZADA CON EL NUEVO ENDPOINT DEL BACKEND
     const ENDPOINT_FINAL_P3 = "https://historial-clinico-936s.onrender.com/api/registrar-p3";
 
     function addFila() {
@@ -120,7 +120,7 @@
         }
 
         const boton = document.getElementById('btnS');
-        boton.innerText = "⏳ ENVIANDO A POSTGRESQL...";
+        boton.innerText = "⏳ PROCESANDO ENVÍO...";
         boton.disabled = true;
 
         const tablaLaboral = Array.from(document.querySelectorAll('#tBody tr')).map(fila => ({
@@ -148,7 +148,7 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(tablaLaboral),
             riesgos_expuestos: JSON.stringify(riesgosCheck),
-            observaciones: "REGISTRO_P3_EXITOSO"
+            observaciones: "REGISTRO_P3_NUBE_OK"
         };
 
         try {
@@ -159,14 +159,14 @@
             });
 
             if (respuesta.ok) {
-                alert("✅ P3 GUARDADO CORRECTAMENTE");
+                alert("✅ P3 GUARDADO CON ÉXITO");
                 window.location.href = "index.html";
             } else {
                 const errorData = await respuesta.json();
-                alert(`❌ ERROR DEL SERVIDOR: ${errorData.detail || "Error desconocido"}`);
+                alert(`❌ ERROR DEL SERVIDOR: ${errorData.detail || "Error en datos"}`);
             }
         } catch (error) {
-            alert("❌ ERROR DE RED: Verifica la conexión con Render.");
+            alert("❌ ERROR DE RED: El servidor Render no responde.");
         } finally {
             boton.disabled = false;
             boton.innerText = "💾 GUARDAR P3 EN POSTGRESQL";
