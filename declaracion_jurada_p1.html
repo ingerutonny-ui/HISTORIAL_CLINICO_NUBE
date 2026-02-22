@@ -75,56 +75,50 @@
     const API = 'https://historial-clinico-936s.onrender.com';
 
     window.onload = async () => {
-        const p_id_edicion = localStorage.getItem('p_id_edicion');
-        const p_id_nuevo = localStorage.getItem('p_id');
-        const id_trabajo = p_id_edicion || p_id_nuevo;
+        // PRIORIDAD 1: Buscar ID de edición o nuevo
+        const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
 
         if (!id_trabajo) { 
-            console.error("No hay ID de paciente en localStorage");
-            window.location.href = "lista_historial.html";
+            console.error("No hay ID de paciente");
+            window.location.href = "registro_paciente.html";
             return; 
         }
 
-        try {
-            const resp = await fetch(`${API}/api/paciente-completo/${id_trabajo}`, {
-                method: 'GET',
-                headers: { 
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (!resp.ok) {
-                console.warn("Respuesta de servidor no exitosa");
-                return;
-            }
-            
-            const data = await resp.json();
-            
-            // Renderizado de Banner Principal
-            document.getElementById('p_nombre').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
-            document.getElementById('p_ci').innerText = data.paciente.ci;
-            document.getElementById('p_codigo').innerText = data.paciente.codigo_paciente;
+        // CARGA PREVENTIVA: Rellenar con lo que hay en memoria local por si el fetch falla
+        document.getElementById('p_nombre').innerText = (localStorage.getItem('p_nom') || "---").toUpperCase();
+        document.getElementById('p_ci').innerText = localStorage.getItem('p_ci') || "---";
+        document.getElementById('p_codigo').innerText = localStorage.getItem('p_cod') || "---";
 
-            // Lógica de llenado para modo edición
-            if (data.filiacion && data.filiacion.paciente_id) {
-                document.getElementById('modo-indicador').innerText = "MODO EDICIÓN";
-                document.getElementById('modo-indicador').style.color = "#f59e0b";
-                document.getElementById('edad').value = data.filiacion.edad || '';
-                document.getElementById('sexo').value = data.filiacion.sexo || 'MASCULINO';
-                document.getElementById('fecha_nac').value = data.filiacion.fecha_nacimiento || '';
-                document.getElementById('lugar_nac').value = data.filiacion.lugar_nacimiento || '';
-                document.getElementById('domicilio').value = data.filiacion.domicilio || '';
-                document.getElementById('n_casa').value = data.filiacion.n_casa || '';
-                document.getElementById('zona').value = data.filiacion.zona_barrio || '';
-                document.getElementById('ciudad').value = data.filiacion.ciudad || '';
-                document.getElementById('pais').value = data.filiacion.pais || 'BOLIVIA';
-                document.getElementById('tel').value = data.filiacion.telefono || '';
-                document.getElementById('est_civil').value = data.filiacion.estado_civil || 'SOLTERO/A';
-                document.getElementById('profesion').value = data.filiacion.profesion_oficio || '';
+        try {
+            const resp = await fetch(`${API}/api/paciente-completo/${id_trabajo}`);
+            if (resp.ok) {
+                const data = await resp.json();
+                
+                // Actualizar Banner con datos oficiales del servidor
+                document.getElementById('p_nombre').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`.toUpperCase();
+                document.getElementById('p_ci').innerText = data.paciente.ci;
+                document.getElementById('p_codigo').innerText = data.paciente.codigo_paciente;
+
+                // Si es edición, llenar campos
+                if (data.filiacion && data.filiacion.paciente_id) {
+                    document.getElementById('modo-indicador').innerText = "MODO EDICIÓN";
+                    document.getElementById('modo-indicador').style.color = "#f59e0b";
+                    document.getElementById('edad').value = data.filiacion.edad || '';
+                    document.getElementById('sexo').value = data.filiacion.sexo || 'MASCULINO';
+                    document.getElementById('fecha_nac').value = data.filiacion.fecha_nacimiento || '';
+                    document.getElementById('lugar_nac').value = data.filiacion.lugar_nacimiento || '';
+                    document.getElementById('domicilio').value = data.filiacion.domicilio || '';
+                    document.getElementById('n_casa').value = data.filiacion.n_casa || '';
+                    document.getElementById('zona').value = data.filiacion.zona_barrio || '';
+                    document.getElementById('ciudad').value = data.filiacion.ciudad || '';
+                    document.getElementById('pais').value = data.filiacion.pais || 'BOLIVIA';
+                    document.getElementById('tel').value = data.filiacion.telefono || '';
+                    document.getElementById('est_civil').value = data.filiacion.estado_civil || 'SOLTERO/A';
+                    document.getElementById('profesion').value = data.filiacion.profesion_oficio || '';
+                }
             }
         } catch (err) {
-            console.error("Error crítico en la carga inicial:", err);
+            console.warn("Usando datos de respaldo local solamente.");
         }
     };
 
@@ -132,7 +126,7 @@
         e.preventDefault();
         const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
         const btn = document.getElementById('btnNext');
-        btn.innerText = "⏳ PROCESANDO...";
+        btn.innerText = "⏳ GUARDANDO P1...";
         btn.disabled = true;
 
         const payload = {
@@ -140,16 +134,19 @@
             edad: document.getElementById('edad').value,
             sexo: document.getElementById('sexo').value,
             fecha_nacimiento: document.getElementById('fecha_nac').value,
-            lugar_nacimiento: document.getElementById('lugar_nac').value,
-            domicilio: document.getElementById('domicilio').value,
+            lugar_nacimiento: document.getElementById('lugar_nac').value.toUpperCase(),
+            domicilio: document.getElementById('domicilio').value.toUpperCase(),
             n_casa: document.getElementById('n_casa').value,
-            zona_barrio: document.getElementById('zona').value,
-            ciudad: document.getElementById('ciudad').value,
-            pais: document.getElementById('pais').value,
+            zona_barrio: document.getElementById('zona').value.toUpperCase(),
+            ciudad: document.getElementById('ciudad').value.toUpperCase(),
+            pais: document.getElementById('pais').value.toUpperCase(),
             telefono: document.getElementById('tel').value,
             estado_civil: document.getElementById('est_civil').value,
-            profesion_oficio: document.getElementById('profesion').value
+            profesion_oficio: document.getElementById('profesion').value.toUpperCase()
         };
+
+        // GUARDAR TAMBIÉN EN LOCAL PARA P2 Y P3 (Failsafe)
+        localStorage.setItem('datos_temporales_p1', JSON.stringify(payload));
 
         try {
             const r = await fetch(`${API}/filiacion/`, {
@@ -160,16 +157,17 @@
             if(r.ok) {
                 window.location.href = "declaracion_jurada_p2.html";
             } else {
-                alert("Error al intentar guardar los datos.");
+                alert("Error al guardar P1. Revisa la conexión.");
             }
         } catch(e) { 
-            alert("Sin conexión con el servidor."); 
+            alert("Servidor no responde. Los datos se mantendrán en memoria local."); 
         } finally { 
             btn.disabled = false; 
             btn.innerText = "💾 Guardar y Continuar a Parte 2"; 
         }
     };
 </script>
+    
 
 </body>
 </html>
