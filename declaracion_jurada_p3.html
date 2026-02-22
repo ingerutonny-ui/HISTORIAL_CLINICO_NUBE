@@ -90,8 +90,8 @@
 </div>
 
 <script>
-    // URL LIMPIA Y EXACTA: Sin parámetros extras
-    const API_URL = "https://historial-clinico-936s.onrender.com/api/save-p3";
+    // DEFINICIÓN DE URL PURA - SIN CONCATENACIONES
+    const API_URL_P3 = "https://historial-clinico-936s.onrender.com/api/save-p3";
 
     function addFila() {
         const tr = document.createElement('tr');
@@ -113,16 +113,15 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         
-        // Verificación estricta del ID
-        const rawId = localStorage.getItem('p_id');
-        if(!rawId) return alert("❌ ERROR: No existe ID de paciente en memoria.");
-        const pid = parseInt(rawId);
+        // Obtenemos el ID del paciente de forma segura
+        const paciente_id_raw = localStorage.getItem('p_id');
+        if (!paciente_id_raw) return alert("❌ ERROR: No se encontró ID de paciente.");
 
         const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ ENVIANDO A POSTGRESQL...";
+        btn.innerText = "⏳ ENVIANDO...";
         btn.disabled = true;
 
-        // Construcción del objeto historia_laboral
+        // Mapeo de tabla a JSON
         const historiaArray = Array.from(document.querySelectorAll('#tBody tr')).map(tr => ({
             ed: tr.querySelector('.r-ed').value || "0",
             em: (tr.querySelector('.r-em').value || "N/A").toUpperCase(),
@@ -136,7 +135,7 @@
 
         // PAYLOAD EXACTO SEGÚN schemas.py
         const payload = {
-            paciente_id: pid,
+            paciente_id: parseInt(paciente_id_raw),
             fuma: document.getElementById('fuma').value,
             fuma_cantidad: document.getElementById('fuma_cantidad').value || "0",
             alcohol: document.getElementById('alcohol').value,
@@ -149,31 +148,31 @@
             grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
             historia_laboral: JSON.stringify(historiaArray),
             riesgos_expuestos: JSON.stringify(riesgosArray),
-            observaciones: "P3_CARGA_MANUAL_OK"
+            observaciones: "CARGA_P3_EXITOSA"
         };
 
         try {
-            // USAMOS LA URL LIMPIA SIN CONCATENAR NADA
-            const res = await fetch(API_URL, {
+            // LLAMADA CON URL ESTÁTICA PARA EVITAR EL ":1"
+            const res = await fetch(API_URL_P3, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("✅ P3 GUARDADO CON ÉXITO");
+                alert("✅ P3 GUARDADO CORRECTAMENTE EN POSTGRESQL");
                 window.location.href = "index.html";
             } else {
-                const errorData = await res.json();
-                console.error("Error Servidor:", errorData);
-                alert(`❌ ERROR ${res.status}: ${errorData.detail || "Ruta no encontrada"}`);
+                const errorInfo = await res.json();
+                console.error("Error Servidor:", errorInfo);
+                alert(`❌ ERROR ${res.status}: ${errorInfo.detail || "Error de ruta"}`);
             }
         } catch (err) {
-            console.error("Error Red:", err);
-            alert("❌ ERROR DE CONEXIÓN: Revisa si el backend está activo.");
+            console.error("Error de Red:", err);
+            alert("❌ ERROR: No se pudo conectar con el servidor Render.");
         } finally {
             btn.disabled = false;
-            btn.innerText = "💾 GUARDAR P3 EN POSTGRESQL";
+            btn.innerText = "💾 GUARDAR DECLARACIÓN P3 EN POSTGRESQL";
         }
     };
 </script>
