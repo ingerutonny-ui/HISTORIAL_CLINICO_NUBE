@@ -6,50 +6,48 @@
     <title>P1 - FILIACIÓN | HISTORIAL CLÍNICO</title>
     <style>
         :root { --primary: #2ecc71; --dark: #1e293b; --ghost: #cbd5e1; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 35px; color: var(--dark); display: flex; justify-content: center; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px 35px; color: var(--dark); display: flex; justify-content: center; }
         
-        .container { background: white; width: 100%; max-width: 1200px; padding: 45px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.08); position: relative; }
+        .container { background: white; width: 100%; max-width: 1100px; padding: 25px 45px; border-radius: 25px; box-shadow: 0 15px 40px rgba(0,0,0,0.08); }
         
-        /* LOGO AGRANDADO */
-        .logo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .logo-img { height: 75px; width: auto; } /* Subimos de 50px a 75px */
-        .reg-tag { color: var(--primary); font-weight: 800; font-size: 13px; letter-spacing: 1px; }
+        /* Logo con tamaño corregido y menos margen inferior */
+        .logo-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logo-img { height: 70px; width: auto; }
+        .reg-tag { color: var(--primary); font-weight: 800; font-size: 12px; letter-spacing: 1px; }
 
-        /* Encabezado de trillizos */
-        .header-info { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 25px; background: #f8fafc; padding: 25px; border-radius: 18px; margin-bottom: 40px; border-top: 5px solid var(--primary); }
-        .info-box label { font-size: 12px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        .info-box span { font-size: 20px; font-weight: 900; color: #2563eb; text-transform: uppercase; }
+        /* Trillizos más compactos */
+        .header-info { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 20px; background: #f8fafc; padding: 15px 25px; border-radius: 15px; margin-bottom: 20px; border-top: 4px solid var(--primary); }
+        .info-box label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; }
+        .info-box span { font-size: 17px; font-weight: 900; color: #2563eb; text-transform: uppercase; }
 
-        h2 { text-align: center; text-transform: uppercase; font-weight: 900; letter-spacing: 1.5px; margin-bottom: 40px; border-bottom: 2.5px solid #e2e8f0; padding-bottom: 20px; font-size: 1.6rem; }
+        h2 { text-align: center; text-transform: uppercase; font-weight: 900; margin: 15px 0 25px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; font-size: 1.4rem; }
 
-        /* Grilla con 35px de holgura */
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 35px; }
+        /* Grilla optimizada: Reducimos el GAP vertical a 15px */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 15px 35px; }
         
         .field { display: flex; flex-direction: column; }
         
-        /* TEXTO SUBIDO A 12PX */
-        .field label { font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; color: #475569; padding-left: 5px; }
+        /* Texto en 12px como pediste */
+        .field label { font-size: 12px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; color: #475569; padding-left: 2px; }
         
         input, select { 
-            padding: 16px 22px; 
+            padding: 12px 18px; 
             border: 2px solid #e2e8f0; 
-            border-radius: 15px; 
-            font-size: 16px; 
+            border-radius: 12px; 
+            font-size: 15px; 
             font-weight: 700; 
             color: var(--dark); 
             background: #fdfdfd; 
-            transition: all 0.3s ease;
             text-transform: uppercase;
         }
 
-        /* Texto fantasma suave */
         input::placeholder { color: var(--ghost); font-weight: 400; text-transform: none; }
-        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 15px rgba(46, 204, 113, 0.15); background: white; }
+        input:focus { border-color: var(--primary); outline: none; background: white; }
 
-        .btn-container { grid-column: 1 / -1; margin-top: 50px; text-align: center; }
-        .btn-next { background: var(--primary); color: white; border: none; padding: 22px 70px; border-radius: 18px; font-weight: 900; font-size: 19px; cursor: pointer; text-transform: uppercase; box-shadow: 0 12px 30px rgba(46, 204, 113, 0.3); }
+        .btn-container { grid-column: 1 / -1; margin-top: 30px; text-align: center; }
+        .btn-next { background: var(--primary); color: white; border: none; padding: 18px 60px; border-radius: 15px; font-weight: 900; font-size: 17px; cursor: pointer; text-transform: uppercase; box-shadow: 0 8px 20px rgba(46, 204, 113, 0.25); }
 
-        @media (max-width: 768px) { body { padding: 15px; } .container { padding: 25px; } .header-info { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { body { padding: 10px; } .container { padding: 20px; } .header-info { grid-template-columns: 1fr; gap: 10px; } }
     </style>
 </head>
 <body>
@@ -136,6 +134,5 @@
         window.location.href = 'declaracion_jurada_p2.html';
     }
 </script>
-
 </body>
 </html>
