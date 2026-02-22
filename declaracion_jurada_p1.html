@@ -7,50 +7,22 @@
     <style>
         :root { --primary: #2ecc71; --dark: #1e293b; --ghost: #cbd5e1; --bg: #f0f2f5; --line: #e2e8f0; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 25px; color: var(--dark); display: flex; justify-content: center; }
-        
         .container { background: white; width: 100%; max-width: 1050px; padding: 30px 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        
-        /* Cabecera idéntica a P3 */
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .logo-img { height: 60px; width: auto; }
         .status-tag { color: var(--primary); font-weight: 800; font-size: 11px; letter-spacing: 1px; }
-
-        /* Banner de Paciente estilo P3 */
         .patient-banner { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px 25px; border-radius: 12px; border-left: 5px solid var(--primary); margin-bottom: 25px; }
         .patient-banner .info-group { display: flex; gap: 10px; align-items: baseline; }
         .patient-banner label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; }
         .patient-banner span { font-size: 15px; font-weight: 900; color: #2563eb; text-transform: uppercase; }
-
-        /* Títulos de sección */
         .section-title { font-size: 16px; font-weight: 900; color: #0f172a; border-bottom: 2px solid var(--line); padding-bottom: 8px; margin-bottom: 20px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
-
-        /* Grilla y Campos */
         .form-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px 25px; margin-bottom: 30px; }
-        
         .field { display: flex; flex-direction: column; }
         .field label { font-size: 11px; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; color: #475569; }
-        
-        input, select { 
-            padding: 10px 15px; 
-            border: 1.5px solid var(--line); 
-            border-radius: 8px; 
-            font-size: 14px; 
-            font-weight: 700; 
-            color: var(--dark); 
-            background: #fff; 
-            text-transform: uppercase;
-            transition: all 0.2s;
-        }
-
-        input::placeholder { color: var(--ghost); font-weight: 400; text-transform: none; }
+        input, select { padding: 10px 15px; border: 1.5px solid var(--line); border-radius: 8px; font-size: 14px; font-weight: 700; color: var(--dark); background: #fff; text-transform: uppercase; transition: all 0.2s; }
         input:focus { border-color: var(--primary); outline: none; background: #fcfdfc; }
-
-        /* Botón estilo P3 */
-        .btn-container { margin-top: 20px; }
-        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; }
+        .btn-save { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 900; font-size: 15px; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
         .btn-save:hover { filter: brightness(1.1); }
-
-        /* Responsividad */
         @media (max-width: 900px) { .form-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 500px) { .form-grid { grid-template-columns: 1fr; } .patient-banner { flex-direction: column; align-items: flex-start; gap: 10px; } }
     </style>
@@ -60,7 +32,7 @@
 <div class="container">
     <div class="header-top">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-img">
-        <span class="status-tag">NUEVO REGISTRO</span>
+        <span class="status-tag" id="modo_tag">NUEVO REGISTRO</span>
     </div>
 
     <div class="patient-banner">
@@ -71,7 +43,7 @@
     <div class="section-title">1. DATOS DE FILIACIÓN</div>
 
     <div class="form-grid">
-        <div class="field"><label>Edad</label><input type="number" id="edad" placeholder="Ej. 25"></div>
+        <div class="field"><label>Edad</label><input type="number" id="edad"></div>
         <div class="field">
             <label>Sexo</label>
             <select id="sexo">
@@ -80,15 +52,13 @@
             </select>
         </div>
         <div class="field"><label>Fecha Nacimiento</label><input type="date" id="fecha_nac"></div>
-        <div class="field"><label>Lugar Nacimiento</label><input type="text" id="lugar_nac" placeholder="Ej. La Paz"></div>
-        
-        <div class="field" style="grid-column: span 2;"><label>Domicilio Actual</label><input type="text" id="domicilio" placeholder="Ej. Av. 6 de Marzo"></div>
-        <div class="field"><label>N° Casa</label><input type="text" id="n_casa" placeholder="S/N"></div>
-        <div class="field"><label>Zona / Barrio</label><input type="text" id="zona" placeholder="Ej. Satélite"></div>
-        
-        <div class="field"><label>Ciudad</label><input type="text" id="ciudad" placeholder="Ej. El Alto"></div>
+        <div class="field"><label>Lugar Nacimiento</label><input type="text" id="lugar_nac"></div>
+        <div class="field" style="grid-column: span 2;"><label>Domicilio Actual</label><input type="text" id="domicilio"></div>
+        <div class="field"><label>N° Casa</label><input type="text" id="n_casa"></div>
+        <div class="field"><label>Zona / Barrio</label><input type="text" id="zona"></div>
+        <div class="field"><label>Ciudad</label><input type="text" id="ciudad"></div>
         <div class="field"><label>País</label><input type="text" id="pais" value="BOLIVIA"></div>
-        <div class="field"><label>Teléfono/Celular</label><input type="number" id="celular" placeholder="70000000"></div>
+        <div class="field"><label>Teléfono/Celular</label><input type="number" id="celular"></div>
         <div class="field">
             <label>Estado Civil</label>
             <select id="estado_civil">
@@ -98,8 +68,7 @@
                 <option value="VIUDO/A">VIUDO/A</option>
             </select>
         </div>
-        
-        <div class="field" style="grid-column: span 4;"><label>Profesión / Oficio</label><input type="text" id="profesion" placeholder="Ej. Ingeniero Industrial"></div>
+        <div class="field" style="grid-column: span 4;"><label>Profesión / Oficio</label><input type="text" id="profesion"></div>
     </div>
 
     <div class="btn-container">
@@ -108,16 +77,74 @@
 </div>
 
 <script>
-    window.onload = () => {
-        const nom = localStorage.getItem('p_nom');
-        const cod = localStorage.getItem('p_cod');
-        if (!nom || !cod) {
-            window.location.replace('registro_paciente.html');
+    const API = 'https://historial-clinico-936s.onrender.com';
+
+    window.onload = async () => {
+        const idEdicion = localStorage.getItem('p_id_edicion');
+        
+        // Si hay ID de edición, cargamos datos de la nube
+        if (idEdicion) {
+            document.getElementById('modo_tag').innerText = "MODO EDICIÓN";
+            document.getElementById('modo_tag').style.color = "#f59e0b";
+            await cargarDatosEdicion(idEdicion);
         } else {
-            document.getElementById('top_nombre').innerText = nom;
-            document.getElementById('top_codigo').innerText = cod;
+            // Flujo normal de nuevo paciente
+            const nom = localStorage.getItem('p_nom');
+            const cod = localStorage.getItem('p_cod');
+            if (!nom || !cod) {
+                window.location.replace('registro_paciente.html');
+            } else {
+                document.getElementById('top_nombre').innerText = nom;
+                document.getElementById('top_codigo').innerText = cod;
+            }
         }
     };
+
+    async function cargarDatosEdicion(id) {
+        try {
+            const resp = await fetch(`${API}/pacientes/${id}`);
+            if (resp.ok) {
+                const p = await resp.json();
+                
+                // Seteamos info en el banner
+                document.getElementById('top_nombre').innerText = `${p.apellido} ${p.nombre}`;
+                document.getElementById('top_codigo').innerText = p.codigo_paciente;
+                
+                // Rellenamos campos
+                document.getElementById('edad').value = p.edad || '';
+                document.getElementById('sexo').value = p.sexo || 'MASCULINO';
+                document.getElementById('fecha_nac').value = p.fecha_nac || '';
+                document.getElementById('lugar_nac').value = p.lugar_nac || '';
+                document.getElementById('domicilio').value = p.domicilio || '';
+                document.getElementById('n_casa').value = p.n_casa || '';
+                document.getElementById('zona').value = p.zona || '';
+                document.getElementById('ciudad').value = p.ciudad || '';
+                document.getElementById('pais').value = p.pais || 'BOLIVIA';
+                document.getElementById('celular').value = p.celular || '';
+                document.getElementById('estado_civil').value = p.estado_civil || 'SOLTERO/A';
+                document.getElementById('profesion').value = p.profesion || '';
+
+                // Importante: Guardar datos de P2 en localStorage para que no se pierdan al editar
+                // Si la API trae datos de P2, los precargamos aquí
+                const p2_actual = {
+                    vista: p.vista, oido: p.oido, respiratorio: p.respiratorio,
+                    cardiovascular: p.cardiovascular, digestivo: p.digestivo, sangre: p.sangre,
+                    genitourinario: p.genitourinario, sistema_nervioso: p.sistema_nervioso, endocrino: p.endocrino,
+                    psiquiatricos: p.psiquiatricos, osteomusculares: p.osteomusculares, reumatologicos: p.reumatologicos,
+                    dermatologicos: p.dermatologicos, alergias: p.alergias, cirugias: p.cirugias,
+                    infecciones: p.infecciones, acc_personales: p.acc_personales, acc_trabajo: p.acc_trabajo,
+                    medicamentos: p.medicamentos, familiares: p.familiares, otros_especificos: p.otros_especificos,
+                    observaciones: p.observaciones
+                };
+                localStorage.setItem('datos_p2', JSON.stringify(p2_actual));
+                
+                // También guardamos nombre, ci y cod originales para el flujo
+                localStorage.setItem('p_nom', `${p.apellido} ${p.nombre}`);
+                localStorage.setItem('p_ci', p.ci);
+                localStorage.setItem('p_cod', p.codigo_paciente);
+            }
+        } catch (e) { console.error("Error cargando edición:", e); }
+    }
 
     function guardarP1() {
         const p1_data = {
