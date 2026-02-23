@@ -132,7 +132,8 @@
         };
 
         try {
-            const res = await fetch(`${API}/p1`, {
+            // RUTA CORRECTA PARA GUARDAR DIRECTO EN BASE DE DATOS
+            const res = await fetch(`${API}/filiacion`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
