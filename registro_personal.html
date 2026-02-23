@@ -12,7 +12,7 @@
             font-family: 'Montserrat', sans-serif; 
             text-transform: uppercase; 
             background-color: #f4f6f9;
-            zoom: 1.2; 
+            zoom: 1.1; 
         }
         .btn-seccion { transition: all 0.3s ease; border-radius: 12px; border: 2px solid #e5e7eb; }
         .active-doc { border-color: #1e40af; background-color: #eff6ff; color: #1e40af; }
@@ -29,8 +29,6 @@
             color: #1a202c;
             text-transform: uppercase;
         }
-        .input-ohs::placeholder { color: #a0aec0; font-weight: 500; }
-        
         label { 
             font-size: 10px; 
             font-weight: 800; 
@@ -135,25 +133,11 @@
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
             const data = tipo === 'doctor' ? 
-                { 
-                    ci_doc: document.getElementById('ci_val').value, 
-                    nombre_doc: document.getElementById('nombre_val').value, 
-                    appaterno_doc: document.getElementById('paterno_val').value, 
-                    apmaterno_doc: document.getElementById('materno_val').value, 
-                    turno_doc: document.getElementById('turno_val').value, 
-                    especialidad: document.getElementById('extra_val').value 
-                } :
-                { 
-                    ci_enfe: document.getElementById('ci_val').value, 
-                    nombre_enfe: document.getElementById('nombre_val').value, 
-                    appaterno_enfe: document.getElementById('paterno_val').value, 
-                    apmaterno_enfe: document.getElementById('materno_val').value, 
-                    turno_enfe: document.getElementById('turno_val').value, 
-                    edu_enfe: document.getElementById('extra_val').value 
-                };
+                { ci_doc: document.getElementById('ci_val').value, nombre_doc: document.getElementById('nombre_val').value, appaterno_doc: document.getElementById('paterno_val').value, apmaterno_doc: document.getElementById('materno_val').value, turno_doc: document.getElementById('turno_val').value, especialidad: document.getElementById('extra_val').value } :
+                { ci_enfe: document.getElementById('ci_val').value, nombre_enfe: document.getElementById('nombre_val').value, appaterno_enfe: document.getElementById('paterno_val').value, apmaterno_enfe: document.getElementById('materno_val').value, turno_enfe: document.getElementById('turno_val').value, edu_enfe: document.getElementById('extra_val').value };
 
             try {
-                const endpoint = tipo === 'doctor' ? '/doctor/' : '/enfermera/';
+                const endpoint = tipo === 'doctor' ? '/doctor' : '/enfermera';
                 const res = await fetch(`${API}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -163,14 +147,11 @@
                 if(res.ok) { 
                     alert("¡REGISTRO GUARDADO EN LA NUBE!"); 
                     e.target.reset(); 
-                    setModo(tipo); 
+                    setModo(tipo);
                 } else {
-                    const error = await res.json();
-                    alert("ERROR: " + JSON.stringify(error.detail));
+                    alert("ERROR AL GUARDAR");
                 }
-            } catch (err) { 
-                alert("ERROR DE CONEXIÓN"); 
-            }
+            } catch (err) { alert("ERROR DE CONEXIÓN"); }
         });
     </script>
 </body>
