@@ -78,13 +78,11 @@
 
     window.onload = async () => {
         const id_paciente = localStorage.getItem('p_id');
-        if (!id_paciente) {
-            alert("❌ NO SE ENCONTRÓ ID DE PACIENTE. REGRESE A LA PARTE 1.");
-            return;
-        }
+        if (!id_paciente) return;
 
         try {
-            const resp = await fetch(`${API}/api/paciente-completo/${id_paciente}`);
+            // RUTA SIN /API/ SI TU BACKEND ESTÁ EN LA RAÍZ
+            const resp = await fetch(`${API}/paciente-completo/${id_paciente}`);
             const data = await resp.json();
             
             if (data.paciente) {
@@ -94,26 +92,20 @@
 
             if (data.p2) {
                 existeP2 = true;
-                document.getElementById('modo-indicador').innerText = "MODO EDICIÓN (P2)";
-                document.getElementById('modo-indicador').style.color = "#f59e0b";
                 fields.forEach(f => {
                     const valor = data.p2[f.id];
                     if (valor && valor !== "NORMAL") {
                         document.getElementById(`s_${f.id}`).value = "SI";
                         document.getElementById(`d_${f.id}`).value = valor;
-                        document.getElementById(`d_${f.id}`).style.color = "#1e293b";
                     }
                 });
             }
-        } catch (err) { console.error("Error al cargar:", err); }
+        } catch (err) { console.error(err); }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
         const id_paciente = localStorage.getItem('p_id');
-        const btn = document.getElementById('btnS');
-        btn.innerText = "⏳ GUARDANDO..."; btn.disabled = true;
-
         const data = { paciente_id: parseInt(id_paciente) };
         fields.forEach(f => {
             const isSi = document.getElementById(`s_${f.id}`).value === "SI";
@@ -121,17 +113,14 @@
         });
 
         try {
-            const url = existeP2 ? `${API}/api/p2/${id_paciente}` : `${API}/api/p2/`;
+            const url = existeP2 ? `${API}/p2/${id_paciente}` : `${API}/p2/`;
             const r = await fetch(url, {
                 method: existeP2 ? 'PUT' : 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-
             if(r.ok) window.location.href = "declaracion_jurada_p3.html";
-            else alert("❌ ERROR AL GUARDAR. REVISE CONEXIÓN.");
-        } catch(e) { alert("❌ ERROR DE RED."); }
-        finally { btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3"; }
+        } catch(e) { alert("ERROR"); }
     };
 </script>
 </body>
