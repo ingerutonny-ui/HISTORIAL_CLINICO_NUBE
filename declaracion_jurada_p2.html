@@ -22,14 +22,13 @@
 
         .title-center h2 { font-size: 1.4rem; font-weight: 800; color: var(--dark); text-transform: uppercase; margin: 0; }
 
-        /* Banner de Paciente */
+        /* Banner de Paciente Responsivo */
         .data-banner { 
             background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px; 
             display: flex; justify-content: space-around; font-size: 13px; font-weight: 800; 
             border: 1px solid #e2e8f0; color: var(--dark); text-transform: uppercase; flex-wrap: wrap; gap: 10px;
         }
 
-        /* Botón de Auto-llenado con color del Logo */
         .btn-fill { 
             background: transparent; color: var(--ohs-cyan); border: 2px solid var(--ohs-cyan); 
             padding: 10px; border-radius: 10px; font-size: 11px; font-weight: 800; 
@@ -37,11 +36,19 @@
         }
         .btn-fill:hover { background: var(--ohs-cyan); color: white; }
 
-        /* Grilla Responsiva */
+        /* Grilla Responsiva: 3 col PC, 2 col Tablet, 1 col Móvil */
         .grid-layout { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
 
         @media (max-width: 992px) { .grid-layout { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .grid-layout { grid-template-columns: 1fr; } }
+        
+        @media (max-width: 600px) { 
+            .grid-layout { grid-template-columns: 1fr; } 
+            .field-card { flex-direction: column; align-items: flex-start; gap: 8px; }
+            .select-yn { width: 100%; }
+            .input-det { width: 100%; margin-left: 0; }
+            .header-ohs { justify-content: center; text-align: center; }
+            .title-center { width: 100%; }
+        }
 
         .field-card { 
             display: flex; align-items: center; background: white; padding: 12px; 
@@ -53,7 +60,6 @@
         .select-yn { width: 65px; font-size: 12px; border: 2px solid var(--ohs-green); border-radius: 8px; padding: 5px; font-weight: 700; color: var(--dark); }
         .input-det { flex: 2; font-size: 12px; border: 1px solid #e2e8f0; border-radius: 8px; margin-left: 10px; text-transform: uppercase; padding: 8px; font-weight: 600; }
 
-        /* Botón Guardar - Verde del logo */
         .btn-next { 
             background: var(--ohs-green); color: white; border: none; padding: 20px; 
             border-radius: 15px; width: 100%; font-weight: 800; text-transform: uppercase; 
