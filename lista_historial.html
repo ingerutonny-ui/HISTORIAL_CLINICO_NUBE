@@ -13,30 +13,22 @@
         .table thead { background-color: #f8fafc; }
         .table th { font-size: 0.75rem; font-weight: 800; color: #475569; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
         .table td { vertical-align: middle; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; color: #1e293b; }
-        
-        .btn-action { 
-            padding: 6px 10px; border-radius: 8px; border: none; font-size: 1.1rem; 
-            transition: 0.3s; margin: 0 2px; cursor: pointer;
-        }
+        .btn-action { padding: 6px 10px; border-radius: 8px; border: none; font-size: 1.1rem; transition: 0.3s; margin: 0 2px; cursor: pointer; }
         .btn-reporte { background-color: #22c55e; color: white; }
         .btn-reporte:hover { background-color: #16a34a; transform: scale(1.1); }
-        
         .btn-editar { background-color: #f59e0b; color: white; }
         .btn-editar:hover { background-color: #d97706; transform: scale(1.1); }
-        
         .btn-borrar { background-color: #ef4444; color: white; }
         .btn-borrar:hover { background-color: #dc2626; transform: scale(1.1); }
-
         .top-bar { width: 100%; background: #343a40; padding: 10px 20px; color: white; margin-bottom: 20px; }
         .top-bar a { color: white; text-decoration: none; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; }
-
         .contador-badge { background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; margin-left: 10px; vertical-align: middle; }
     </style>
 </head>
 <body>
 
 <div class="top-bar">
-    <a href="registro_paciente.html">← VOLVER AL REGISTRO</a>
+    <a href="registro_paciente.html" onclick="limpiarEdicion()">← NUEVO REGISTRO / VOLVER</a>
 </div>
 
 <div class="container">
@@ -56,8 +48,7 @@
                             <th class="text-center">ACCIONES</th>
                         </tr>
                     </thead>
-                    <tbody id="listaPacientes">
-                        </tbody>
+                    <tbody id="listaPacientes"></tbody>
                 </table>
             </div>
         </div>
@@ -70,24 +61,17 @@
     async function cargarPacientes() {
         const tabla = document.getElementById('listaPacientes');
         const contador = document.getElementById('totalPacientes');
-        
         try {
             const resp = await fetch(`${API}/pacientes/`);
-            
             if (!resp.ok) throw new Error("Error en servidor");
-            
             const pacientes = await resp.json();
             tabla.innerHTML = "";
-            
-            // Validación para base de datos vacía
             if (!pacientes || pacientes.length === 0) {
                 contador.innerText = "TOTAL: 0";
                 tabla.innerHTML = `<tr><td colspan="4" class="text-center py-4">NO HAY REGISTROS DISPONIBLES</td></tr>`;
                 return;
             }
-
             contador.innerText = `TOTAL: ${pacientes.length}`;
-
             pacientes.forEach(p => {
                 tabla.innerHTML += `
                     <tr>
@@ -99,11 +83,9 @@
                             <button class="btn-action btn-editar" title="EDITAR" onclick="editarPaciente(${p.id})">✏️</button>
                             <button class="btn-action btn-borrar" title="BORRAR" onclick="eliminarPaciente(${p.id})">🗑️</button>
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
         } catch (e) { 
-            console.error("Error al cargar lista:", e); 
             contador.innerText = "ERROR DE CONEXIÓN";
             tabla.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-danger">EL SERVIDOR NO RESPONDE</td></tr>`;
         }
@@ -115,8 +97,15 @@
     }
 
     function editarPaciente(id) {
-        localStorage.setItem('p_id_edicion', id);
+        // Marcamos que es una EDICIÓN y guardamos el ID
+        localStorage.setItem('edit_modo', 'true');
+        localStorage.setItem('p_id', id); 
         window.location.href = "declaracion_jurada_p1.html";
+    }
+
+    function limpiarEdicion() {
+        localStorage.removeItem('edit_modo');
+        localStorage.removeItem('p_id');
     }
 
     async function eliminarPaciente(id) {
