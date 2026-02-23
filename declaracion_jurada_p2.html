@@ -16,7 +16,7 @@
         .select-yn { width: 55px; font-size: 11px; border: 1px solid #22c55e; border-radius: 6px; padding: 4px; font-weight: 700; }
         .input-det { flex: 2; font-size: 11px; border: 1px solid #cbd5e1; border-radius: 6px; margin-left: 8px; text-transform: uppercase; padding: 5px; font-weight: 600; }
         .data-banner { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; color: #1e293b; text-transform: uppercase; }
-        .btn-next { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: 800; text-transform: uppercase; margin-top: 20px; font-size: 13px; transition: 0.3s; }
+        .btn-next { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: 800; text-transform: uppercase; margin-top: 20px; font-size: 13px; transition: 0.3s; cursor: pointer; }
         .btn-next:hover { background: #16a34a; transform: translateY(-2px); }
     </style>
 </head>
@@ -36,14 +36,12 @@
 
     <form id="formP2">
         <div id="gridWrapper" class="grid-layout"></div>
-        <button type="submit" id="btnS" class="btn-next">💾 GUARDAR Y CONTINUAR A PARTE 3</button>
+        <button type="submit" id="btnS" class="btn-next">💾 CONTINUAR A PARTE 3 (HÁBITOS)</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-    let existeP2 = false;
-    
     const fields = [
         {id:"vista", n:"1. VISTA"}, {id:"auditivo", n:"2. AUDITIVO"}, {id:"respiratorio", n:"3. RESPIRATORIO"},
         {id:"cardio", n:"4. CARDIOVASCULARES"}, {id:"digestivos", n:"5. DIGESTIVOS"}, {id:"sangre", n:"6. SANGRE"},
@@ -75,49 +73,29 @@
     }
 
     window.onload = async () => {
-        const id_paciente = localStorage.getItem('p_id');
-        if (!id_paciente) return;
-
+        const id_p = localStorage.getItem('p_id');
+        if (!id_p) return;
         try {
-            const resp = await fetch(`${API}/api/paciente-completo/${id_paciente}`);
+            const resp = await fetch(`${API}/api/paciente-completo/${id_p}`);
             const data = await resp.json();
-            
             if (data.paciente) {
                 document.getElementById('b_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
                 document.getElementById('b_codigo').innerText = data.paciente.codigo_paciente;
             }
-
-            if (data.p2) {
-                existeP2 = true;
-                fields.forEach(f => {
-                    const valor = data.p2[f.id];
-                    if (valor && valor !== "NORMAL") {
-                        document.getElementById(`s_${f.id}`).value = "SI";
-                        document.getElementById(`d_${f.id}`).value = valor;
-                    }
-                });
-            }
         } catch (err) { console.error(err); }
     };
 
-    document.getElementById('formP2').onsubmit = async (e) => {
+    document.getElementById('formP2').onsubmit = (e) => {
         e.preventDefault();
-        const id_paciente = localStorage.getItem('p_id');
-        const data = { paciente_id: parseInt(id_paciente) };
+        const dataP2 = {};
         fields.forEach(f => {
             const isSi = document.getElementById(`s_${f.id}`).value === "SI";
-            data[f.id] = isSi ? document.getElementById(`d_${f.id}`).value.toUpperCase() : "NORMAL";
+            dataP2[f.id] = isSi ? document.getElementById(`d_${f.id}`).value.toUpperCase() : "NORMAL";
         });
-
-        try {
-            const url = `${API}/api/p2/${id_paciente}`;
-            await fetch(url, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            window.location.href = "declaracion_jurada_p3.html";
-        } catch(e) { console.error(e); }
+        
+        // GUARDAR EN MEMORIA PARA LA PARTE 3
+        localStorage.setItem('temp_p2', JSON.stringify(dataP2));
+        window.location.href = "declaracion_jurada_p3.html";
     };
 </script>
 </body>
