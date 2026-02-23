@@ -3,104 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LISTA DE PERSONAL - OHS NANCY</title>
+    <title>Personal Médico - OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; text-transform: uppercase; background-color: #0f172a; }
-        .bg-ohs-dark { background-color: #1e293b; }
-        .text-ohs-blue { color: #3b82f6; }
-        .text-ohs-green { color: #10b981; }
-        .table-container { background-color: #1e293b; border: 1px solid #334155; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #0a0e1a; /* Fondo oscuro profundo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .hoja-flotante {
+            background-color: white;
+            width: 100%;
+            max-width: 1100px;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+
+        .btn-accion {
+            transition: all 0.2s;
+        }
+        .btn-accion:hover {
+            transform: scale(1.1);
+        }
+
+        /* Colores exactos del logo para coherencia */
+        .text-ohs-blue { color: #0056b3; }
+        .bg-ohs-blue { background-color: #0056b3; }
+        .border-ohs-green { border-color: #28a745; }
     </style>
 </head>
-<body class="p-4 md:p-10">
-    <div class="max-w-6xl mx-auto bg-slate-900 shadow-2xl rounded-3xl overflow-hidden border border-slate-800">
-        
-        <div class="p-8 flex flex-col md:flex-row justify-between items-center border-b border-slate-800">
-            <div class="flex items-center gap-6">
-                <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-20">
-                <button onclick="location.href='index.html'" class="bg-slate-800 text-slate-400 px-4 py-2 rounded-lg hover:text-white transition text-xs font-bold">
-                    <i class="fa-solid fa-arrow-left mr-2"></i>INICIO
+<body>
+
+    <div class="hoja-flotante">
+        <div class="p-8 flex justify-between items-center border-b border-gray-100">
+            <div class="flex items-center gap-4">
+                <img src="logo.png" alt="Logo OHS" class="h-16">
+                <button onclick="location.href='index.html'" class="text-gray-400 hover:text-black transition text-xs font-bold">
+                    <i class="fa-solid fa-chevron-left mr-1"></i> INICIO
                 </button>
             </div>
-            <div class="text-right mt-4 md:mt-0">
-                <h1 class="text-3xl font-black text-white tracking-tighter">PERSONAL MÉDICO</h1>
-                <p class="text-ohs-blue font-bold tracking-[0.3em] text-[10px]">SISTEMA OHS EN LA NUBE</p>
+            <div class="text-right">
+                <h1 class="text-2xl font-black text-blue-900 tracking-tighter">PERSONAL MÉDICO</h1>
+                <p class="text-[10px] font-bold text-emerald-600 tracking-[0.2em]">SISTEMA OHS EN LA NUBE</p>
             </div>
         </div>
 
         <div class="p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-sm font-black text-slate-400 tracking-widest uppercase italic">📋 Listado de Profesionales</h2>
-                <a href="registro_personal.html" class="bg-blue-600 text-white px-8 py-3 rounded-full font-black text-xs hover:scale-105 transition-transform shadow-lg shadow-blue-900/20">
-                    + NUEVO REGISTRO
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-sm font-bold text-gray-500">📋 Personal Registrado en Sistema</h2>
+                <a href="registro_personal.html" class="bg-ohs-blue text-white px-6 py-2 rounded-full font-bold text-xs shadow-lg hover:bg-blue-800 transition">
+                    + REGISTRAR NUEVO
                 </a>
             </div>
 
-            <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/50">
-                <table class="w-full text-left border-collapse">
+            <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+                <table class="w-full text-left">
                     <thead>
-                        <tr class="bg-slate-800/50 text-slate-400 text-[10px] uppercase tracking-widest">
-                            <th class="p-5 font-black">C.I.</th>
-                            <th class="p-5 font-black">Nombre Completo</th>
-                            <th class="p-5 font-black">Especialidad / Cargo</th>
-                            <th class="p-5 text-center font-black">Acciones</th>
+                        <tr class="bg-blue-700 text-white text-[11px] font-black uppercase tracking-wider">
+                            <th class="p-4">C.I.</th>
+                            <th class="p-4">Nombre Completo</th>
+                            <th class="p-4">Especialidad / Rol</th>
+                            <th class="p-4">Turno</th>
+                            <th class="p-4 text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-doctores" class="text-slate-300 text-xs font-bold">
-                        </tbody>
+                    <tbody class="text-gray-700 text-[11px] font-bold">
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                            <td class="p-4 text-blue-700">1234567</td>
+                            <td class="p-4">JUAN CARLOS GARCIA LOPEZ</td>
+                            <td class="p-4">
+                                <span class="bg-green-50 text-green-600 border border-green-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
+                                    <i class="fa-solid fa-user-doctor"></i> DOCTOR: CARDIOLOGÍA
+                                </span>
+                            </td>
+                            <td class="p-4"><span class="bg-gray-100 px-2 py-1 rounded">MAÑANA</span></td>
+                            <td class="p-4">
+                                <div class="flex justify-center gap-2">
+                                    <button class="btn-accion bg-amber-500 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-accion bg-red-600 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="btn-accion bg-slate-700 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
+                            <td class="p-4 text-blue-700">7654321</td>
+                            <td class="p-4">MARIA ELENA MENDOZA RIVAS</td>
+                            <td class="p-4">
+                                <span class="bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
+                                    <i class="fa-solid fa-user-nurse"></i> ENFERMERA: GENERAL
+                                </span>
+                            </td>
+                            <td class="p-4"><span class="bg-gray-100 px-2 py-1 rounded">TARDE</span></td>
+                            <td class="p-4">
+                                <div class="flex justify-center gap-2">
+                                    <button class="btn-accion bg-amber-500 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-pen"></i></button>
+                                    <button class="btn-accion bg-red-600 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="btn-accion bg-slate-700 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
+        
+        <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
+            <p class="text-[9px] text-gray-400 font-bold tracking-widest">SISTEMA DE GESTIÓN HOSPITALARIA V1.0</p>
+        </div>
     </div>
 
-    <script>
-        const personal = [
-            { ci: "1234567", nombre: "JUAN CARLOS", apellidos: "GARCIA LOPEZ", especialidad: "CARDIOLOGÍA", tipo: "DOCTOR" },
-            { ci: "8822334", nombre: "ANA BEATRIZ", apellidos: "SOSA MONTERO", especialidad: "PEDIATRÍA", tipo: "DOCTORA" },
-            { ci: "7654321", nombre: "MARIA ELENA", apellidos: "MENDOZA RIVAS", especialidad: "ENFERMERÍA GENERAL", tipo: "ENFERMERA" },
-            { ci: "4455667", nombre: "PEDRO LUIS", apellidos: "RODRIGUEZ PAZ", especialidad: "INSTRUMENTACIÓN", tipo: "ENFERMERO" }
-        ];
-
-        function cargarPersonal() {
-            const tabla = document.getElementById('tabla-doctores');
-            tabla.innerHTML = '';
-
-            personal.forEach(p => {
-                // Diferenciación visual por tipo
-                const esDoctor = p.tipo.includes("DOCTOR");
-                const colorBadge = esDoctor ? "bg-green-900/30 text-green-400 border-green-800" : "bg-blue-900/30 text-blue-400 border-blue-800";
-                const iconoRol = esDoctor ? "fa-user-doctor" : "fa-user-nurse";
-
-                tabla.innerHTML += `
-                    <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition-all">
-                        <td class="p-5 text-blue-400 font-black tracking-tighter">${p.ci}</td>
-                        <td class="p-5 uppercase tracking-tight">${p.nombre} ${p.apellidos}</td>
-                        <td class="p-5">
-                            <span class="${colorBadge} px-4 py-1.5 rounded-full text-[9px] font-black border flex items-center w-fit gap-2">
-                                <i class="fa-solid ${iconoRol}"></i> ${p.tipo}: ${p.especialidad}
-                            </span>
-                        </td>
-                        <td class="p-5">
-                            <div class="flex justify-center gap-2">
-                                <button onclick="alert('EDITAR: ${p.nombre}')" class="bg-amber-500/10 text-amber-500 p-2.5 rounded-lg border border-amber-500/50 hover:bg-amber-500 hover:text-white transition-all shadow-lg shadow-amber-900/20" title="EDITAR">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button onclick="alert('BORRAR: ${p.nombre}')" class="bg-red-500/10 text-red-500 p-2.5 rounded-lg border border-red-500/50 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-900/20" title="BORRAR">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                                <button onclick="alert('PDF GENERADO')" class="bg-slate-700/50 text-white p-2.5 rounded-lg border border-slate-600 hover:bg-blue-600 hover:border-blue-500 transition-all shadow-lg" title="VER PDF">
-                                    <i class="fa-solid fa-file-pdf"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>`;
-            });
-        }
-
-        window.onload = cargarPersonal;
-    </script>
 </body>
 </html>
