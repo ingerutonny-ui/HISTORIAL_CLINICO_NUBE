@@ -11,10 +11,11 @@
         .bg-ohs-blue { background-color: #1e40af; }
         .text-ohs-blue { color: #1e40af; }
         .text-ohs-green { color: #059669; }
+        .border-ohs-blue { border-color: #1e40af; }
     </style>
 </head>
 <body class="bg-slate-100 p-4 md:p-10">
-    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden border-t-8 border-blue-900">
+    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden border-t-8 border-ohs-blue">
         
         <div class="p-8 bg-white flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-100">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-24 mb-4 md:mb-0">
@@ -57,15 +58,19 @@
         const API_BASE = "https://historial-clinico-936s.onrender.com";
 
         async function cargarDoctores() {
+            const tabla = document.getElementById('tabla-doctores');
             try {
+                // Sincronización estricta con endpoint /doctores/ en main.py
                 const response = await fetch(`${API_BASE}/doctores/`);
-                if (!response.ok) throw new Error("Error Servidor");
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
                 
                 const doctores = await response.json();
-                const tabla = document.getElementById('tabla-doctores');
                 tabla.innerHTML = '';
 
-                if (doctores.length === 0) {
+                if (!doctores || doctores.length === 0) {
                     tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500">NO HAY MÉDICOS REGISTRADOS</td></tr>';
                     return;
                 }
@@ -83,7 +88,8 @@
                     tabla.innerHTML += fila;
                 });
             } catch (error) {
-                document.getElementById('tabla-doctores').innerHTML = 
+                console.error("Error al cargar:", error);
+                tabla.innerHTML = 
                     '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR: EL SERVIDOR NO RESPONDE</td></tr>';
             }
         }
