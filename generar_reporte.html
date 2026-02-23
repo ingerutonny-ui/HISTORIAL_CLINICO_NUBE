@@ -70,7 +70,7 @@
 
     <div class="section-title">IV. Historia Laboral y Riesgos (P3)</div>
     <table class="table-report">
-        <thead><tr><th>Edad</th><th>Empresa</th><th>Cargo</th><th>Tiempo</th><th>Riesgos</th><th>EPP</th></tr></thead>
+        <thead><tr><th>Edad Inicio</th><th>Empresa</th><th>Cargo</th><th>Tiempo</th><th>Riesgos</th><th>EPP</th></tr></thead>
         <tbody id="r_tabla_laboral"></tbody>
     </table>
     <div class="riesgos-box" id="r_riesgos_box"></div>
@@ -89,7 +89,7 @@
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
 
-            // P1 - Sincronizado con nombres de tu formulario (p1 es 'filiacion' en tu JSON)
+            // P1 - Datos Personales
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('r_ci').innerText = data.paciente.ci;
             document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
@@ -110,28 +110,45 @@
                 document.getElementById('r_profesion').innerText = p1.profesion_oficio || '---';
             }
 
-            // P2 y P3 se mantienen igual
+            // P2 - Antecedentes
             if (data.p2) {
                 document.getElementById('grid_p2').innerHTML = fields_p2.map(f => `
                     <div class="data-item"><span class="label">${f.replace(/_/g,' ').toUpperCase()}:</span> <span class="val">${data.p2[f] || 'NORMAL'}</span></div>`).join('');
             }
 
+            // P3 - Hábitos y Laboral
             if (data.p3) {
                 document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
-                document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad || '0'})`;
+                document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad || 'N/A'})`;
                 document.getElementById('r_alcohol').innerText = `${data.p3.alcohol} (${data.p3.alcohol_frecuencia || 'N/A'})`;
                 document.getElementById('r_drogas').innerText = `${data.p3.drogas} (${data.p3.drogas_tipo || 'N/A'})`;
                 document.getElementById('r_coca').innerText = data.p3.coca || '---';
                 document.getElementById('r_deporte').innerText = `${data.p3.deporte} (${data.p3.deporte_detalle || 'N/A'})`;
                 document.getElementById('r_obs').innerText = data.p3.observaciones || '---';
 
-                const historia = JSON.parse(data.p3.historia_laboral || '[]');
-                document.getElementById('r_tabla_laboral').innerHTML = historia.length ? historia.map(h => `
-                    <tr><td>${h.edad}</td><td>${h.empresa}</td><td>${h.cargo}</td><td>${h.tiempo}</td><td>${h.riesgos}</td><td>${h.epp}</td></tr>`).join('') : '<tr><td colspan="6">SIN DATOS</td></tr>';
-                const riesgos = JSON.parse(data.p3.riesgos_expuestos || '[]');
-                document.getElementById('r_riesgos_box').innerHTML = riesgos.map(r => `<span class="riesgo-tag">${r}</span>`).join('');
+                // DESEMPAQUETADO DE HISTORIA LABORAL (TEXTO PLANO A TABLA)
+                const histRaw = data.p3.historia_laboral || "";
+                if (histRaw && histRaw.includes('|')) {
+                    const partes = histRaw.split('|').map(p => p.split(':')[1]?.trim() || '---');
+                    document.getElementById('r_tabla_laboral').innerHTML = `
+                        <tr>
+                            <td>${partes[0]}</td>
+                            <td>${partes[1]}</td>
+                            <td>${partes[2]}</td>
+                            <td>${partes[3]}</td>
+                            <td>${partes[4]}</td>
+                            <td>${partes[5]}</td>
+                        </tr>`;
+                } else {
+                    document.getElementById('r_tabla_laboral').innerHTML = '<tr><td colspan="6">SIN DATOS REGISTRADOS</td></tr>';
+                }
+
+                // DESEMPAQUETADO DE RIESGOS (TEXTO PLANO A TAGS)
+                const riesgosRaw = data.p3.riesgos_expuestos || "NINGUNO";
+                const riesgosArr = riesgosRaw.split(',').map(r => r.trim());
+                document.getElementById('r_riesgos_box').innerHTML = riesgosArr.map(r => `<span class="riesgo-tag">${r}</span>`).join('');
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Error en reporte:", e); }
     }
 </script>
 </body>
