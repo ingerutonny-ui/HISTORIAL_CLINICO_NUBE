@@ -7,23 +7,35 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; padding: 10px; }
-        .form-container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .section-title { border-left: 5px solid #22c55e; padding-left: 10px; margin: 20px 0 15px; font-weight: 800; color: #1e293b; text-transform: uppercase; font-size: 14px; }
-        .data-banner { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; color: #1e293b; }
-        .grid-habitos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; background: #f8fafc; padding: 15px; border-radius: 10px; }
-        label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        select, input { font-size: 12px !important; font-weight: 600 !important; text-transform: uppercase; }
-        .btn-save { background: #22c55e; color: white; width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 800; margin-top: 20px; }
-        .table-custom { font-size: 11px; width: 100%; border-collapse: collapse; }
-        .table-custom th { background: #f1f5f9; color: #475569; padding: 8px; border: 1px solid #e2e8f0; text-align: center; }
-        .table-custom td { padding: 5px; border: 1px solid #e2e8f0; }
-        .risk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px; }
-        .risk-item { font-size: 10px; font-weight: 700; display: flex; align-items: center; gap: 5px; }
+        .form-container { max-width: 1200px; margin: 10px auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .header-ohs { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #22c55e; padding-bottom: 10px; margin-bottom: 15px; }
+        .title-center h2 { font-size: 1rem; font-weight: 800; color: #1e293b; text-transform: uppercase; margin: 0; }
+        .section-title { border-left: 5px solid #22c55e; padding-left: 10px; margin: 20px 0 10px; font-weight: 800; color: #1e293b; text-transform: uppercase; font-size: 12px; }
+        .data-banner { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; color: #1e293b; text-transform: uppercase; }
+        .grid-habitos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .field-card { display: flex; align-items: center; background: #f8fafc; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .label-text { font-size: 9px; font-weight: 800; color: #475569; flex: 1.2; text-transform: uppercase; }
+        .select-yn { width: 60px; font-size: 11px; border: 1px solid #22c55e; border-radius: 6px; padding: 4px; font-weight: 700; }
+        .input-det { flex: 2; font-size: 11px; border: 1px solid #cbd5e1; border-radius: 6px; margin-left: 8px; text-transform: uppercase; padding: 5px; font-weight: 600; }
+        .table-custom { width: 100%; font-size: 11px; border-collapse: separate; border-spacing: 0 5px; }
+        .table-custom th { background: #1e293b; color: white; padding: 10px; text-transform: uppercase; font-size: 10px; }
+        .table-custom td { background: #f8fafc; padding: 5px; border: 1px solid #e2e8f0; }
+        .table-custom input, .table-custom select { width: 100%; border: none; background: transparent; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+        .risk-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; }
+        .risk-item { font-size: 10px; font-weight: 800; color: #475569; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+        .btn-save { background: #22c55e; color: white; width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: 800; margin-top: 20px; text-transform: uppercase; transition: 0.3s; }
+        .btn-save:hover { background: #16a34a; transform: translateY(-2px); }
     </style>
 </head>
 <body>
 
 <div class="form-container">
+    <div class="header-ohs">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="35">
+        <div class="title-center"><h2>3. HÁBITOS Y ANTECEDENTES LABORALES</h2></div>
+        <div style="font-size: 9px; font-weight: 800; color: #94a3b8;">PARTE 3 / 3</div>
+    </div>
+
     <div class="data-banner">
         <div>PACIENTE: <span id="b_paciente">---</span></div>
         <div>CÓDIGO: <span id="b_codigo">---</span></div>
@@ -32,18 +44,18 @@
     <form id="formP3">
         <div class="section-title">I. HÁBITOS</div>
         <div class="grid-habitos">
-            <div><label>FUMA</label><select id="fuma" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select><input id="fuma_det" value="NO FUMA" class="form-control mt-1"></div>
-            <div><label>ALCOHOL</label><select id="alcohol" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select><input id="alcohol_det" value="NO CONSUME" class="form-control mt-1"></div>
-            <div><label>DROGAS</label><select id="drogas" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select><input id="drogas_det" value="NO CONSUME" class="form-control mt-1"></div>
-            <div><label>PIJCHAR (COCA)</label><select id="coca" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div><label>DEPORTES</label><select id="deportes" class="form-select"><option value="NO">NO</option><option value="SI">SI</option></select><input id="deportes_det" value="NINGUNO" class="form-control mt-1"></div>
-            <div><label>GRUPO SANGUÍNEO</label><input id="grupo_sangre" value="ORH+" class="form-control"></div>
+            <div class="field-card"><span class="label-text">FUMA</span><select id="fuma" class="select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="fuma_det" class="input-det" value="NO FUMA"></div>
+            <div class="field-card"><span class="label-text">ALCOHOL</span><select id="alcohol" class="select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="alcohol_det" class="input-det" value="NO CONSUME"></div>
+            <div class="field-card"><span class="label-text">DROGAS</span><select id="drogas" class="select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="drogas_det" class="input-det" value="NO CONSUME"></div>
+            <div class="field-card"><span class="label-text">PIJCHAR</span><select id="coca" class="select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input class="input-det" value="COCA" readonly></div>
+            <div class="field-card"><span class="label-text">DEPORTES</span><select id="deportes" class="select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="deportes_det" class="input-det" value="NINGUNO"></div>
+            <div class="field-card"><span class="label-text">G. SANGRE</span><input id="grupo_sangre" class="input-det" value="ORH+"></div>
         </div>
 
         <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
         <table class="table-custom">
             <thead>
-                <tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr>
+                <tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
             </thead>
             <tbody id="tablaLaboral"></tbody>
         </table>
@@ -52,11 +64,15 @@
         <div class="risk-grid" id="riesgosCheck">
             <div class="risk-item"><input type="checkbox" value="RUIDO"> RUIDO</div>
             <div class="risk-item"><input type="checkbox" value="VIBRACIÓN"> VIBRACIÓN</div>
+            <div class="risk-item"><input type="checkbox" value="RADIACIÓN"> RADIACIÓN</div>
+            <div class="risk-item"><input type="checkbox" value="TEMP. EXTREMAS"> TEMP. EXTREMAS</div>
             <div class="risk-item"><input type="checkbox" value="POLVOS"> POLVOS</div>
+            <div class="risk-item"><input type="checkbox" value="GASES/VAPORES"> GASES/VAPORES</div>
             <div class="risk-item"><input type="checkbox" value="ERGONÓMICOS"> ERGONÓMICOS</div>
+            <div class="risk-item"><input type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</div>
         </div>
 
-        <button type="submit" id="btnG" class="btn-save">💾 GUARDAR DECLARACIÓN COMPLETA (P2+P3)</button>
+        <button type="submit" id="btnG" class="btn-save">💾 FINALIZAR Y GUARDAR DECLARACIÓN JURADA</button>
     </form>
 </div>
 
@@ -66,13 +82,19 @@
 
     function addRow() {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input class="form-control edad"></td><td><input class="form-control empresa"></td><td><input class="form-control cargo"></td><td><input class="form-control tiempo"></td><td><input class="form-control riesgos"></td><td><select class="form-select epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>`;
+        tr.innerHTML = `
+            <td><input type="number" class="edad"></td>
+            <td><input type="text" class="empresa"></td>
+            <td><input type="text" class="cargo"></td>
+            <td><input type="text" class="tiempo"></td>
+            <td><input type="text" class="riesgos"></td>
+            <td><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>`;
         document.getElementById('tablaLaboral').appendChild(tr);
     }
 
     window.onload = async () => {
         if(!id_p) return;
-        for(let i=0; i<2; i++) addRow();
+        for(let i=0; i<3; i++) addRow();
         const r = await fetch(`${API}/api/paciente-completo/${id_p}`);
         const d = await r.json();
         if(d.paciente) {
@@ -84,11 +106,9 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerText = "PROCESANDO TODO..."; btn.disabled = true;
+        btn.innerText = "ENVIANDO DATOS..."; btn.disabled = true;
 
-        // Recuperar datos de P2 guardados en localStorage
         const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
-        
         const laboral = [];
         document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
             const emp = tr.querySelector('.empresa').value;
@@ -105,37 +125,33 @@
         const riesgos = [];
         document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
 
-        // OBJETO ÚNICO CONSOLIDADO
         const payload = {
             ...dataP2,
             paciente_id: parseInt(id_p),
-            fuma: document.getElementById('fuma').value,
-            fuma_det: document.getElementById('fuma_det').value.toUpperCase(),
-            alcohol: document.getElementById('alcohol').value,
-            alcohol_det: document.getElementById('alcohol_det').value.toUpperCase(),
-            drogas: document.getElementById('drogas').value,
-            drogas_det: document.getElementById('drogas_det').value.toUpperCase(),
+            fuma: document.getElementById('fuma').value, fuma_det: document.getElementById('fuma_det').value.toUpperCase(),
+            alcohol: document.getElementById('alcohol').value, alcohol_det: document.getElementById('alcohol_det').value.toUpperCase(),
+            drogas: document.getElementById('drogas').value, drogas_det: document.getElementById('drogas_det').value.toUpperCase(),
             pijchar: document.getElementById('coca').value,
-            deportes: document.getElementById('deportes').value,
-            deportes_det: document.getElementById('deportes_det').value.toUpperCase(),
+            deportes: document.getElementById('deportes').value, deportes_det: document.getElementById('deportes_det').value.toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sangre').value.toUpperCase(),
             historia_laboral: JSON.stringify(laboral),
             riesgos_expuestos: riesgos.join(', ')
         };
 
         try {
-            const res = await fetch(`${API}/api/guardar-declaracion-unificada/`, {
+            // USANDO ENDPOINT CORRECTO P3 (QUE DEBE PROCESAR EL PAYLOAD COMPLETO)
+            const res = await fetch(`${API}/api/p3/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
             if(res.ok) {
-                alert("✅ DECLARACIÓN GUARDADA");
+                alert("✅ DECLARACIÓN GUARDADA CORRECTAMENTE");
                 localStorage.removeItem('temp_p2');
                 window.location.href = "lista_historial.html";
-            } else { alert("❌ ERROR EN ENVÍO"); }
-        } catch(err) { alert("❌ ERROR DE RED"); }
-        finally { btn.innerText = "💾 GUARDAR DECLARACIÓN COMPLETA (P2+P3)"; btn.disabled = false; }
+            } else { alert("❌ ERROR AL GUARDAR. VERIFIQUE BACKEND."); }
+        } catch(err) { alert("❌ ERROR DE CONEXIÓN."); }
+        finally { btn.innerText = "💾 FINALIZAR Y GUARDAR DECLARACIÓN JURADA"; btn.disabled = false; }
     };
 </script>
 </body>
