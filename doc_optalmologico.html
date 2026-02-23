@@ -36,9 +36,8 @@
 
     <form id="oftalmoForm">
         <div class="no-print mb-2 p-2" style="background: #ecfdf5; border: 2px solid var(--emerald); border-radius: 8px;">
-            <label style="font-weight: 900; color: #065f46;">ESCRIBA CÓDIGO DE PACIENTE:</label>
-            <input type="text" id="codigo_search" class="form-control form-control-sm d-inline-block w-25 ms-2" placeholder="EJ: PAC-101" autofocus>
-            <small class="ms-2 text-muted">Presione ENTER para jalar datos.</small>
+            <label style="font-weight: 900; color: #065f46;">CÓDIGO PACIENTE:</label>
+            <input type="text" id="codigo_search" class="form-control form-control-sm d-inline-block w-25 ms-2" placeholder="EJ: RE4534" autofocus>
         </div>
 
         <div class="section-title">I. FILIACION DEL PACIENTE</div>
@@ -80,7 +79,7 @@
             <div class="col-6">
                 <div class="section-title">III. AGUDEZA VISUAL DE LEJOS</div>
                 <table class="table-legal">
-                    <tr class="bg-grey"><td>OJO</td><td>SIN CORRECCIÓN</td><td>CON CORRECCIÓN</td><td>DIOPTRIAS</td></tr>
+                    <tr class="bg-grey"><td>OJO</td><td>SC</td><td>CC</td><td>DIOPTRIAS</td></tr>
                     <tr><td>OD</td><td><input id="od_l_sc" class="form-control"></td><td><input id="od_l_cc" class="form-control"></td><td><input id="od_l_dio" class="form-control"></td></tr>
                     <tr><td>OI</td><td><input id="oi_l_sc" class="form-control"></td><td><input id="oi_l_cc" class="form-control"></td><td><input id="oi_l_dio" class="form-control"></td></tr>
                 </table>
@@ -88,7 +87,7 @@
             <div class="col-6">
                 <div class="section-title">IV. AGUDEZA VISUAL DE CERCA</div>
                 <table class="table-legal">
-                    <tr class="bg-grey"><td>OJO</td><td>SIN CORRECCIÓN</td><td>CON CORRECCIÓN</td><td>DIOPTRIAS</td></tr>
+                    <tr class="bg-grey"><td>OJO</td><td>SC</td><td>CC</td><td>DIOPTRIAS</td></tr>
                     <tr><td>OD</td><td><input id="od_c_sc" class="form-control"></td><td><input id="od_c_cc" class="form-control"></td><td><input id="od_c_dio" class="form-control"></td></tr>
                     <tr><td>OI</td><td><input id="oi_c_sc" class="form-control"></td><td><input id="oi_c_cc" class="form-control"></td><td><input id="oi_c_dio" class="form-control"></td></tr>
                 </table>
@@ -98,16 +97,16 @@
         <div class="section-title">V. EXAMENES COMPLEMENTARIOS</div>
         <table class="table-legal bg-green-soft">
             <tr class="bg-grey"><td>CAMPO VISUAL</td><td>NORMAL</td><td>ALTERADO</td><td>OBSERVACIONES</td></tr>
-            <tr><td>OJO DERECHO</td><td class="text-center"><input type="radio" name="cv_od" value="N"></td><td class="text-center"><input type="radio" name="cv_od" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
-            <tr><td>OJO IZQUIERDO</td><td class="text-center"><input type="radio" name="cv_oi" value="N"></td><td class="text-center"><input type="radio" name="cv_oi" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td>OJO DERECHO</td><td class="text-center"><input type="radio" name="cv_od" value="N"></td><td class="text-center"><input type="radio" name="cv_od" value="A"></td><td><input id="cv_od_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td>OJO IZQUIERDO</td><td class="text-center"><input type="radio" name="cv_oi" value="N"></td><td class="text-center"><input type="radio" name="cv_oi" value="A"></td><td><input id="cv_oi_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
             <tr class="bg-grey"><td>FONDO DE OJO / ISHIHARA</td><td>NORMAL</td><td>ALTERADO</td><td>OBSERVACIONES</td></tr>
-            <tr><td>FONDO DE OJO</td><td class="text-center"><input type="radio" name="fo" value="N"></td><td class="text-center"><input type="radio" name="fo" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
-            <tr><td>TEST ISHIHARA</td><td class="text-center"><input type="radio" name="ish" value="N"></td><td class="text-center"><input type="radio" name="ish" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td>FONDO DE OJO</td><td class="text-center"><input type="radio" name="fo" value="N"></td><td class="text-center"><input type="radio" name="fo" value="A"></td><td><input id="fo_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td>TEST ISHIHARA</td><td class="text-center"><input type="radio" name="ish" value="N"></td><td class="text-center"><input type="radio" name="ish" value="A"></td><td><input id="ish_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
         </table>
 
         <table class="table-legal bg-green-soft">
             <tr class="bg-grey"><td>P. INTRAOCULAR (PIO)</td><td>OJO DERECHO</td><td>OJO IZQUIERDO</td><td>DIAGNOSTICO</td></tr>
-            <tr><td class="text-center">RESULTADO</td><td><input id="pio_od" class="form-control w-100" placeholder="mmHg"></td><td><input id="pio_oi" class="form-control w-100" placeholder="mmHg"></td><td><textarea id="diag" class="form-control w-100" rows="2"></textarea></td></tr>
+            <tr><td class="text-center">RESULTADO</td><td><input id="pio_od" class="form-control w-100"></td><td><input id="pio_oi" class="form-control w-100"></td><td><textarea id="diag" class="form-control w-100" rows="2"></textarea></td></tr>
         </table>
 
         <div class="signature-section">
@@ -116,7 +115,7 @@
         </div>
 
         <div class="no-print mt-4">
-            <button type="submit" class="btn btn-success w-100 p-3" style="background: var(--emerald); border:none; font-weight: 900; font-size: 14px;">💾 GUARDAR Y MANDAR A IMPRIMIR</button>
+            <button type="submit" class="btn btn-success w-100 p-3" style="background: var(--emerald); border:none; font-weight: 900;">💾 GUARDAR Y REGISTRAR FICHA</button>
         </div>
     </form>
 </div>
@@ -124,43 +123,54 @@
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
 
-    // FUNCIÓN DE JALADO AUTOMÁTICO (Instantánea)
     document.getElementById('codigo_search').addEventListener('change', async (e) => {
         const cod = e.target.value.trim();
         if(!cod) return;
-        
         try {
-            // 1. Buscamos datos básicos del paciente
             const resp = await fetch(`${API}/pacientes/codigo/${cod}`);
-            if(!resp.ok) throw new Error();
             const data = await resp.json();
-            
             if(data) {
                 document.getElementById('nombre_completo').value = `${data.nombre} ${data.apellido}`;
                 document.getElementById('ci').value = data.ci;
                 window.p_id = data.id;
-
-                // 2. Buscamos datos de filiación (Edad, Sexo, Profesión)
                 const respF = await fetch(`${API}/api/paciente-completo/${data.id}`);
                 const dF = await respF.json();
-                
                 if(dF.filiacion) {
-                    document.getElementById('edad').value = dF.filiacion.edad || '';
-                    document.getElementById('sexo').value = dF.filiacion.sexo || '';
-                    document.getElementById('ocupacion').value = dF.filiacion.profesion_oficio || '';
+                    document.getElementById('edad').value = dF.filiacion.edad;
+                    document.getElementById('sexo').value = dF.filiacion.sexo;
+                    document.getElementById('ocupacion').value = dF.filiacion.profesion_oficio;
                 }
             }
-        } catch (err) { 
-            alert("CÓDIGO NO ENCONTRADO EN LA NUBE"); 
-            // Limpiamos campos si no existe
-            ['nombre_completo','ci','edad','sexo','ocupacion'].forEach(id => document.getElementById(id).value = '');
-        }
+        } catch (err) { alert("CÓDIGO NO ENCONTRADO"); }
     });
 
-    document.getElementById('oftalmoForm').onsubmit = (e) => {
+    document.getElementById('oftalmoForm').onsubmit = async (e) => {
         e.preventDefault();
         if(!window.p_id) { alert("ERROR: PRIMERO JALE LOS DATOS CON EL CÓDIGO"); return; }
-        window.print();
+        
+        const payload = {
+            paciente_id: window.p_id,
+            datos: {
+                lentes: document.querySelector('[name="lentes"]:checked')?.value,
+                dalto: document.querySelector('[name="dalto"]:checked')?.value,
+                diab: document.querySelector('[name="diab"]:checked')?.value,
+                estra: document.querySelector('[name="estra"]:checked')?.value,
+                infec: document.querySelector('[name="infec"]:checked')?.value,
+                hta: document.querySelector('[name="hta"]:checked')?.value,
+                obs_ant: document.getElementById('obs_ant').value,
+                diag: document.getElementById('diag').value
+            }
+        };
+
+        try {
+            const res = await fetch(`${API}/api/guardar-oftalmologia`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if(res.ok) { alert("GUARDADO EXITOSO"); window.print(); }
+            else { throw new Error(); }
+        } catch (err) { alert("ERROR AL GUARDAR EN LA NUBE"); }
     };
 </script>
 </body>
