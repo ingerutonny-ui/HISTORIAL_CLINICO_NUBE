@@ -18,13 +18,12 @@
         .active-doc { border-color: #1e40af; background-color: #eff6ff; color: #1e40af; }
         .active-enf { border-color: #059669; background-color: #ecfdf5; color: #065f46; }
         
-        /* Texto con más cuerpo (Engrosado sutil) */
         .input-ohs { 
             background-color: #edf2f7; 
             border-radius: 8px; 
             border: none; 
             padding: 16px; 
-            font-weight: 600; /* Texto con cuerpo */
+            font-weight: 600; 
             width: 100%; 
             font-size: 13px;
             color: #1a202c;
@@ -34,7 +33,7 @@
         
         label { 
             font-size: 10px; 
-            font-weight: 800; /* Etiquetas más visibles */
+            font-weight: 800; 
             color: #718096; 
             margin-bottom: 6px; 
             display: block; 
@@ -135,18 +134,47 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
+            
+            // Los nombres de campos coinciden con models.py y schemas.py de la RAIZ
             const data = tipo === 'doctor' ? 
-                { ci_doc: document.getElementById('ci_val').value, nombre_doc: document.getElementById('nombre_val').value, appaterno_doc: document.getElementById('paterno_val').value, apmaterno_doc: document.getElementById('materno_val').value, turno_doc: document.getElementById('turno_val').value, especialidad: document.getElementById('extra_val').value } :
-                { ci_enfe: document.getElementById('ci_val').value, nombre_enfe: document.getElementById('nombre_val').value, appaterno_enfe: document.getElementById('paterno_val').value, apmaterno_enfe: document.getElementById('materno_val').value, turno_enfe: document.getElementById('turno_val').value, edu_enfe: document.getElementById('extra_val').value };
+                { 
+                    ci_doc: document.getElementById('ci_val').value, 
+                    nombre_doc: document.getElementById('nombre_val').value, 
+                    appaterno_doc: document.getElementById('paterno_val').value, 
+                    apmaterno_doc: document.getElementById('materno_val').value, 
+                    turno_doc: document.getElementById('turno_val').value, 
+                    especialidad: document.getElementById('extra_val').value 
+                } :
+                { 
+                    ci_enfe: document.getElementById('ci_val').value, 
+                    nombre_enfe: document.getElementById('nombre_val').value, 
+                    appaterno_enfe: document.getElementById('paterno_val').value, 
+                    apmaterno_enfe: document.getElementById('materno_val').value, 
+                    turno_enfe: document.getElementById('turno_val').value, 
+                    edu_enfe: document.getElementById('extra_val').value 
+                };
 
             try {
-                const res = await fetch(`${API}${tipo === 'doctor' ? '/api/save-doctor' : '/api/save-enfermera'}`, {
+                // CORRECCIÓN DE RUTAS SEGÚN main.py de la RAIZ
+                const endpoint = tipo === 'doctor' ? '/doctor/' : '/enfermera/';
+                
+                const res = await fetch(`${API}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
-                if(res.ok) { alert("¡REGISTRO GUARDADO!"); e.target.reset(); setModo(tipo); }
-            } catch { alert("ERROR DE RED"); }
+
+                if(res.ok) { 
+                    alert("¡REGISTRO GUARDADO EN LA NUBE!"); 
+                    e.target.reset(); 
+                    setModo(tipo); 
+                } else {
+                    const errorData = await res.json();
+                    alert("ERROR AL GUARDAR: " + JSON.stringify(errorData.detail));
+                }
+            } catch (err) { 
+                alert("ERROR DE RED O SERVIDOR FUERA DE LÍNEA"); 
+            }
         });
     </script>
 </body>
