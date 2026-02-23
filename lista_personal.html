@@ -8,6 +8,9 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; text-transform: uppercase; }
+        .bg-ohs-blue { background-color: #1e40af; }
+        .text-ohs-blue { color: #1e40af; }
+        .text-ohs-green { color: #059669; }
     </style>
 </head>
 <body class="bg-slate-100 p-4 md:p-10">
@@ -16,23 +19,23 @@
         <div class="p-8 bg-white flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-100">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-24 mb-4 md:mb-0">
             <div class="text-right">
-                <h1 class="text-3xl font-black text-blue-900">PERSONAL MÉDICO</h1>
-                <p class="text-green-600 font-bold tracking-widest">SISTEMA OHS EN LA NUBE</p>
+                <h1 class="text-3xl font-black text-ohs-blue">PERSONAL MÉDICO</h1>
+                <p class="text-ohs-green font-bold tracking-widest">SISTEMA OHS EN LA NUBE</p>
             </div>
         </div>
 
         <div class="p-8">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-xl font-black text-slate-700">📋 DOCTORES REGISTRADOS</h2>
-                <a href="registro_personal.html" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full font-bold transition duration-300">
+                <a href="registro_personal.html" class="bg-ohs-blue hover:opacity-90 text-white px-6 py-2 rounded-full font-bold transition duration-300">
                     + NUEVO REGISTRO
                 </a>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto rounded-lg border border-gray-200">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-slate-800 text-white">
+                        <tr class="bg-ohs-blue text-white">
                             <th class="p-4 font-black">C.I.</th>
                             <th class="p-4 font-black">NOMBRE COMPLETO</th>
                             <th class="p-4 font-black">APELLIDOS</th>
@@ -42,7 +45,7 @@
                     </thead>
                     <tbody id="tabla-doctores" class="text-slate-700 font-bold">
                         <tr>
-                            <td colspan="5" class="p-10 text-center text-slate-400">CARGANDO PERSONAL DESDE RENDER...</td>
+                            <td colspan="5" class="p-10 text-center text-slate-400 animate-pulse">CARGANDO PERSONAL DESDE RENDER...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -56,37 +59,34 @@
         async function cargarDoctores() {
             try {
                 const response = await fetch(`${API_BASE}/doctores/`);
-                if (!response.ok) throw new Error("Error en la nube");
+                if (!response.ok) throw new Error("Error Servidor");
                 
                 const doctores = await response.json();
                 const tabla = document.getElementById('tabla-doctores');
                 tabla.innerHTML = '';
 
                 if (doctores.length === 0) {
-                    tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500">NO HAY MÉDICOS REGISTRADOS AÚN</td></tr>';
+                    tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500">NO HAY MÉDICOS REGISTRADOS</td></tr>';
                     return;
                 }
 
                 doctores.forEach(doc => {
                     const fila = `
-                        <tr class="border-b border-gray-200 hover:bg-blue-50 transition">
-                            <td class="p-4 text-blue-800">${doc.ci_doc}</td>
+                        <tr class="border-b border-gray-100 hover:bg-blue-50 transition">
+                            <td class="p-4 text-ohs-blue">${doc.ci_doc}</td>
                             <td class="p-4">${doc.nombre_doc}</td>
                             <td class="p-4">${doc.appaterno_doc} ${doc.apmaterno_doc || ''}</td>
-                            <td class="p-4"><span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs">${doc.especialidad}</span></td>
+                            <td class="p-4"><span class="bg-green-100 text-ohs-green px-3 py-1 rounded-full text-xs">${doc.especialidad}</span></td>
                             <td class="p-4 text-center">${doc.turno_doc}</td>
                         </tr>
                     `;
                     tabla.innerHTML += fila;
                 });
-
             } catch (error) {
-                console.error(error);
                 document.getElementById('tabla-doctores').innerHTML = 
                     '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR: EL SERVIDOR NO RESPONDE</td></tr>';
             }
         }
-
         cargarDoctores();
     </script>
 </body>
