@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTRO DE PERSONAL - OHS NANCY ELEGANTE</title>
+    <title>REGISTRO DE PERSONAL - OHS </title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         
@@ -31,7 +31,6 @@
             border-top: 8px solid var(--nancy-green);
         }
 
-        /* LOGO AGRANDADO UN 30% MÁS (TOTAL 130PX) */
         .header { 
             display: flex; 
             justify-content: space-between; 
@@ -41,7 +40,8 @@
             padding-bottom: 25px;
         }
 
-        .logo-grande { height: 130px; } /* EL LOGO AHORA ES IMPONENTE */
+        /* LOGO CON TAMAÑO EQUILIBRADO */
+        .logo-grande { height: 110px; } 
 
         .title-area h2 { 
             color: var(--nancy-blue); 
@@ -50,7 +50,6 @@
             text-align: right;
         }
 
-        /* BOTONES TAB CON ICONOS GIGANTES */
         .tab-buttons { 
             display: flex; 
             gap: 15px; 
@@ -59,7 +58,7 @@
 
         .tab { 
             flex: 1;
-            padding: 25px; 
+            padding: 20px; 
             text-align: center;
             cursor: pointer; 
             background: #e2e8f0;
@@ -67,23 +66,26 @@
             font-weight: 900; 
             transition: 0.3s;
             display: flex;
-            flex-direction: column;
+            flex-direction: row; /* ICONO AL LADO DEL TEXTO */
             align-items: center;
+            justify-content: center;
             gap: 15px;
             color: #64748b;
+            border: 3px solid transparent;
         }
 
-        /* ICONO MÁS GRANDE QUE LA LETRA */
+        /* ICONO AJUSTADO */
         .tab-icon {
-            font-size: 50px; /* ICONO GIGANTE */
+            font-size: 30px; 
             display: block;
         }
 
         .tab.active { 
             background: white; 
             color: var(--nancy-blue); 
-            border: 3px solid var(--nancy-blue);
+            border-color: var(--nancy-blue);
             transform: scale(1.02);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.05);
         }
 
         .tab.active[onclick*="enfermera"] {
@@ -91,7 +93,6 @@
             color: var(--nancy-green);
         }
 
-        /* FORMULARIO */
         .grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); 
@@ -128,14 +129,18 @@
             margin-top: 45px; 
             font-size: 18px; 
             letter-spacing: 2px;
+            transition: 0.3s;
         }
+
+        .btn-save:hover { opacity: 0.9; transform: translateY(-2px); }
 
         .bg-doctor { background: var(--nancy-blue); }
         .bg-enfermera { background: var(--nancy-green); }
 
         @media (max-width: 600px) {
-            .logo-grande { height: 90px; }
-            .tab-icon { font-size: 35px; }
+            .logo-grande { height: 80px; }
+            .tab-icon { font-size: 25px; }
+            .tab { padding: 15px; font-size: 12px; }
         }
     </style>
 </head>
@@ -150,11 +155,11 @@
     </div>
 
     <div class="tab-buttons">
-        <div class="tab active" onclick="switchTab('doctor')">
+        <div class="tab active" id="tab-doc" onclick="switchTab('doctor')">
             <span class="tab-icon">🩺</span>
             <span>SECCIÓN DOCTORES</span>
         </div>
-        <div class="tab" onclick="switchTab('enfermera')">
+        <div class="tab" id="tab-enfe" onclick="switchTab('enfermera')">
             <span class="tab-icon">💉</span>
             <span>SECCIÓN ENFERMERAS</span>
         </div>
@@ -214,24 +219,62 @@
 </div>
 
 <script>
+    // URL REAL DE RENDER DETECTADA
+    const API_URL = "https://historial-clinico-936s.onrender.com/api"; 
+
     function switchTab(tipo) {
-        const tabs = document.querySelectorAll('.tab');
+        const tabDoc = document.getElementById('tab-doc');
+        const tabEnfe = document.getElementById('tab-enfe');
         if(tipo === 'doctor') {
             document.getElementById('form-doctor').style.display = 'block';
             document.getElementById('form-enfermera').style.display = 'none';
-            tabs[0].classList.add('active');
-            tabs[1].classList.remove('active');
+            tabDoc.classList.add('active');
+            tabEnfe.classList.remove('active');
         } else {
             document.getElementById('form-doctor').style.display = 'none';
             document.getElementById('form-enfermera').style.display = 'block';
-            tabs[1].classList.add('active');
-            tabs[0].classList.remove('active');
+            tabEnfe.classList.add('active');
+            tabDoc.classList.remove('active');
         }
     }
 
     async function enviarDatos(tipo) {
-        // Lógica de fetch ya integrada para el CRUD
-        alert("¡DATOS DE " + tipo + " ENVIADOS CON ÉXITO A RENDER!");
+        const payload = tipo === 'doctor' ? {
+            ci_doc: document.getElementById('ci_doc').value,
+            nombre_doc: document.getElementById('nombre_doc').value,
+            appaterno_doc: document.getElementById('appaterno_doc').value,
+            apmaterno_doc: document.getElementById('apmaterno_doc').value,
+            turno_doc: document.getElementById('turno_doc').value,
+            especialidad: document.getElementById('especialidad').value
+        } : {
+            ci_enfe: document.getElementById('ci_enfe').value,
+            nombre_enfe: document.getElementById('nombre_enfe').value,
+            appaterno_enfe: document.getElementById('appaterno_enfe').value,
+            apmaterno_enfe: document.getElementById('apmaterno_enfe').value,
+            turno_enfe: document.getElementById('turno_enfe').value,
+            edu_enfe: document.getElementById('edu_enfe').value
+        };
+
+        if(!payload.nombre_doc && !payload.nombre_enfe) {
+            alert("POR FAVOR LLENE LOS CAMPOS REQUERIDOS");
+            return;
+        }
+
+        try {
+            const res = await fetch(`${API_URL}/save-${tipo}`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if(res.ok) {
+                alert(`¡${tipo.toUpperCase()} GUARDADO EN LA NUBE CON ÉXITO!`);
+                window.location.href = "lista_personal.html"; 
+            } else {
+                alert("ERROR AL GUARDAR EN EL SERVIDOR");
+            }
+        } catch (e) {
+            alert("NO SE PUDO CONECTAR CON RENDER");
+        }
     }
 </script>
 </body>
