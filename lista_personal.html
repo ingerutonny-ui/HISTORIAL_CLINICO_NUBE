@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PANEL DE CONTROL - LISTA DE PERSONAL OHS</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        :root { 
+            --nancy-blue: #0046ad; 
+            --nancy-green: #2ecc71; 
+            --text-dark: #1e293b;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f1f5f9; 
+            margin: 0; 
+            padding: 20px; 
+            text-transform: uppercase; 
+            color: var(--text-dark);
+        }
+
+        .container { 
+            max-width: 1200px; 
+            margin: 20px auto; 
+            background: white; 
+            padding: 30px; 
+            border-radius: 8px; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+            border-bottom: 4px solid var(--nancy-blue);
+            padding-bottom: 15px;
+        }
+
+        .logo-small { height: 60px; }
+
+        .title-area h2 { 
+            color: var(--nancy-blue); 
+            margin: 0; 
+            font-size: 22px; 
+            font-weight: 900; 
+        }
+
+        /* FILTROS / BOTONES SUPERIORES */
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .btn-new {
+            background: var(--nancy-green);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 900;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+
+        /* TABLA ELEGANTE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+        }
+
+        th {
+            background: #f8fafc;
+            color: var(--nancy-blue);
+            text-align: left;
+            padding: 15px;
+            font-size: 11px;
+            font-weight: 900;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 15px;
+            font-size: 13px;
+            border-bottom: 1px solid #f1f5f9;
+            font-weight: 700;
+        }
+
+        tr:hover { background: #fdfdfd; }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            color: white;
+        }
+        .bg-doc { background: var(--nancy-blue); }
+        .bg-enfe { background: var(--nancy-green); }
+
+        /* ICONOS DE ACCIÓN */
+        .btn-action {
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 5px;
+            font-size: 18px;
+            transition: 0.2s;
+        }
+        .btn-edit:hover { color: var(--nancy-blue); }
+        .btn-delete:hover { color: #e74c3c; }
+
+        @media (max-width: 768px) {
+            table { display: block; overflow-x: auto; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-small">
+        <div class="title-area">
+            <h2>PERSONAL REGISTRADO - SISTEMA OHS</h2>
+        </div>
+    </div>
+
+    <div class="actions-bar">
+        <a href="registro_personal.html" class="btn-new">+ NUEVO REGISTRO</a>
+        <div style="font-weight: 900; color: #64748b; font-size: 12px; align-self: center;">
+            TOTAL PERSONAL: <span id="total-count">0</span>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>TIPO</th>
+                <th>C.I. PROFESIONAL</th>
+                <th>NOMBRE COMPLETO</th>
+                <th>TURNO</th>
+                <th>ESPECIALIDAD / CARGO</th>
+                <th>ACCIONES</th>
+            </tr>
+        </thead>
+        <tbody id="lista-cuerpo">
+            <tr>
+                <td colspan="6" style="text-align:center; color: #94a3b8; padding: 40px;">CARGANDO PERSONAL DESDE LA NUBE...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const API_URL = "https://tu-servicio-en-render.com/api"; // USAR SU URL REAL
+
+    async function cargarPersonal() {
+        try {
+            // En un sistema real, haríamos un fetch a un endpoint que una ambas listas
+            // Por ahora simularemos la estructura del CRUD que implementamos
+            const cuerpo = document.getElementById('lista-cuerpo');
+            cuerpo.innerHTML = ""; // Limpiar
+
+            // EJEMPLO DE CÓMO SE VERÍA EL RENDERIZADO
+            // En el siguiente paso crearemos el endpoint /api/get-personal para alimentar esto
+            const personalSimulado = [
+                {tipo: 'DOCTOR', ci: '4634567', nombre: 'JUAN PÉREZ ACOSTA', turno: 'MAÑANA', detalle: 'MEDICINA DEL TRABAJO'},
+                {tipo: 'ENFERMERA', ci: '5566778', nombre: 'NANCY ELEGANTE', turno: 'TARDE', detalle: 'LIC. EN ENFERMERÍA'}
+            ];
+
+            personalSimulado.forEach(p => {
+                const badgeClass = p.tipo === 'DOCTOR' ? 'bg-doc' : 'bg-enfe';
+                cuerpo.innerHTML += `
+                    <tr>
+                        <td><span class="badge ${badgeClass}">${p.tipo}</span></td>
+                        <td>${p.ci}</td>
+                        <td>${p.nombre}</td>
+                        <td>${p.turno}</td>
+                        <td>${p.detalle}</td>
+                        <td>
+                            <button class="btn-action btn-edit" title="EDITAR">📝</button>
+                            <button class="btn-action btn-delete" title="ELIMINAR" onclick="eliminar('${p.ci}')">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            document.getElementById('total-count').innerText = personalSimulado.length;
+
+        } catch (error) {
+            console.error("ERROR AL CARGAR:", error);
+        }
+    }
+
+    function eliminar(ci) {
+        if(confirm("¿ESTÁ SEGURO DE ELIMINAR ESTE REGISTRO PROFESIONAL?")) {
+            alert("PROCEDIENDO A ELIMINAR C.I: " + ci);
+            // Aquí conectaremos con el crud.delete_personal
+        }
+    }
+
+    window.onload = cargarPersonal;
+</script>
+</body>
+</html>
