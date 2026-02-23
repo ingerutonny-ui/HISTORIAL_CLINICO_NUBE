@@ -3,80 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTRO DE PERSONAL - OHS</title>
+    <title>REGISTRO OHS - NUBE</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="max-w-4xl mx-auto bg-white p-8 mt-10 rounded-lg shadow-xl border-t-4 border-green-600">
-        <div class="flex justify-between items-center mb-8">
-            <img src="logo.png" alt="Logo OHS" class="h-20">
-            <h1 class="text-3xl font-bold text-blue-900 text-right">REGISTRO DE PERSONAL<br><span class="text-blue-700">MÉDICO OHS</span></h1>
+<body class="bg-gray-200 p-4 md:p-10 font-sans">
+    <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl border-t-8 border-green-500 overflow-hidden">
+        <div class="p-8 flex flex-col md:flex-row justify-between items-center bg-white border-b">
+            <img src="https://i.ibb.co/m0f8vS5/logo-ohs.png" alt="Logo OHS" class="h-20">
+            <h1 class="text-3xl font-black text-blue-900 text-right uppercase">Registro de Personal<br><span class="text-blue-600">Médico OHS</span></h1>
         </div>
 
-        <form id="formRegistro" class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-2 gap-4 p-6 bg-slate-50">
+            <button onclick="cambiarTipo('DOCTOR')" id="btnDoc" class="flex items-center justify-center gap-3 p-4 rounded-xl border-4 border-blue-900 bg-blue-50 text-blue-900 font-black transition">
+                🩺 SECCIÓN DOCTORES
+            </button>
+            <button onclick="cambiarTipo('ENFERMERA')" id="btnEnfe" class="flex items-center justify-center gap-3 p-4 rounded-xl border-4 border-gray-200 text-gray-400 font-black transition">
+                💉 SECCIÓN ENFERMERAS
+            </button>
+        </div>
+
+        <form id="formRegistro" class="p-8 space-y-6">
+            <input type="hidden" id="tipo_personal" value="DOCTOR">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                    <label class="block text-blue-900 font-bold mb-2">C.I. PROFESIONAL</label>
-                    <input type="text" id="ci_doc" name="ci_doc" required class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none uppercase">
+                    <label class="block text-blue-900 font-black mb-2 uppercase">C.I. PROFESIONAL</label>
+                    <input type="text" name="ci_doc" id="ci_input" required class="w-full p-4 bg-gray-50 border-2 border-gray-300 rounded-xl focus:border-blue-500 outline-none font-bold text-xl">
                 </div>
                 <div>
-                    <label class="block text-blue-900 font-bold mb-2">NOMBRE COMPLETO</label>
-                    <input type="text" id="nombre_doc" name="nombre_doc" required class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none uppercase">
+                    <label class="block text-blue-900 font-black mb-2 uppercase">Nombre Completo</label>
+                    <input type="text" name="nombre_doc" id="nombre_input" required class="w-full p-4 bg-gray-50 border-2 border-gray-300 rounded-xl focus:border-blue-500 outline-none font-bold uppercase">
                 </div>
                 <div>
-                    <label class="block text-blue-900 font-bold mb-2">APELLIDO PATERNO</label>
-                    <input type="text" id="appaterno_doc" name="appaterno_doc" required class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none uppercase">
+                    <label class="block text-blue-900 font-black mb-2 uppercase">Apellido Paterno</label>
+                    <input type="text" name="appaterno_doc" id="paterno_input" required class="w-full p-4 bg-gray-50 border-2 border-gray-300 rounded-xl focus:border-blue-500 outline-none font-bold uppercase">
                 </div>
                 <div>
-                    <label class="block text-blue-900 font-bold mb-2">APELLIDO MATERNO</label>
-                    <input type="text" id="apmaterno_doc" name="apmaterno_doc" required class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none uppercase">
+                    <label class="block text-blue-900 font-black mb-2 uppercase">Apellido Materno</label>
+                    <input type="text" name="apmaterno_doc" id="materno_input" class="w-full p-4 bg-gray-50 border-2 border-gray-300 rounded-xl focus:border-blue-500 outline-none font-bold uppercase">
                 </div>
                 <div>
-                    <label class="block text-blue-900 font-bold mb-2">TURNO ASIGNADO</label>
-                    <select id="turno_doc" name="turno_doc" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none">
+                    <label class="block text-blue-900 font-black mb-2 uppercase">Turno Asignado</label>
+                    <select name="turno_doc" id="turno_input" class="w-full p-4 bg-gray-50 border-2 border-gray-300 rounded-xl font-bold">
                         <option value="MAÑANA">☀️ MAÑANA</option>
                         <option value="TARDE">🌤️ TARDE</option>
                         <option value="NOCHE">🌙 NOCHE</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-blue-900 font-bold mb-2">ESPECIALIDAD</label>
-                    <select id="especialidad" name="especialidad" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none">
-                        <option value="MEDICINA DEL TRABAJO">MEDICINA DEL TRABAJO</option>
-                        <option value="MEDICINA GENERAL">MEDICINA GENERAL</option>
-                        <option value="ENFERMERÍA">ENFERMERÍA</option>
-                    </select>
+                    <label class="block text-blue-900 font-black mb-2 uppercase">Especialidad / Cargo</label>
+                    <input type="text" name="especialidad" id="especialidad_input" required class="w-full p-4 bg-gray-50 border-2 border-gray-300 rounded-xl font-bold uppercase" placeholder="Ej: Medicina del Trabajo">
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold py-4 rounded-lg shadow-lg transition duration-300 flex justify-center items-center gap-2">
-                💾 GUARDAR MÉDICO EN LA NUBE
+            <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-black py-6 rounded-2xl shadow-xl transition transform hover:scale-[1.02] flex justify-center items-center gap-4 text-2xl">
+                💾 GUARDAR EN LA NUBE
             </button>
         </form>
     </div>
 
     <script>
+        function cambiarTipo(tipo) {
+            document.getElementById('tipo_personal').value = tipo;
+            const btnDoc = document.getElementById('btnDoc');
+            const btnEnfe = document.getElementById('btnEnfe');
+            const ciIn = document.getElementById('ci_input');
+            const nomIn = document.getElementById('nombre_input');
+            const patIn = document.getElementById('paterno_input');
+            const matIn = document.getElementById('materno_input');
+            const turIn = document.getElementById('turno_input');
+
+            if(tipo === 'DOCTOR') {
+                btnDoc.className = "flex items-center justify-center gap-3 p-4 rounded-xl border-4 border-blue-900 bg-blue-50 text-blue-900 font-black transition";
+                btnEnfe.className = "flex items-center justify-center gap-3 p-4 rounded-xl border-4 border-gray-200 text-gray-400 font-black transition";
+                ciIn.name = "ci_doc"; nomIn.name = "nombre_doc"; patIn.name = "appaterno_doc"; matIn.name = "apmaterno_doc"; turIn.name = "turno_doc";
+            } else {
+                btnEnfe.className = "flex items-center justify-center gap-3 p-4 rounded-xl border-4 border-pink-600 bg-pink-50 text-pink-600 font-black transition";
+                btnDoc.className = "flex items-center justify-center gap-3 p-4 rounded-xl border-4 border-gray-200 text-gray-400 font-black transition";
+                ciIn.name = "ci_enfe"; nomIn.name = "nombre_enfe"; patIn.name = "appaterno_enfe"; matIn.name = "apmaterno_enfe"; turIn.name = "turno_enfe";
+            }
+        }
+
         document.getElementById('formRegistro').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const tipo = document.getElementById('tipo_personal').value;
             const formData = new FormData(e.target);
             const data = Object.fromEntries(formData.entries());
+            
+            // Ajuste para el endpoint correcto según tipo
+            const endpoint = tipo === 'DOCTOR' ? '/api/save-doctor' : '/api/save-enfermera';
 
             try {
-                const response = await fetch('https://historial-clinico-936s.onrender.com/api/save-doctor', {
+                const response = await fetch(`https://historial-clinico-936s.onrender.com${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
                 if (response.ok) {
-                    alert('¡DOCTOR REGISTRADO CON ÉXITO EN LA NUBE!');
-                    e.target.reset();
+                    alert(`¡${tipo} REGISTRADO EXITOSAMENTE EN LA NUBE!`);
+                    window.location.href = "lista_personal.html";
                 } else {
-                    const err = await response.json();
-                    alert('ERROR: ' + (err.detail || 'Verifique que el C.I. no esté repetido'));
+                    alert("Error al guardar. Verifique si el C.I. ya existe.");
                 }
             } catch (error) {
-                alert('ERROR DE CONEXIÓN CON EL SERVIDOR');
+                alert("Servidor no disponible. Intente en 1 minuto.");
             }
         });
     </script>
