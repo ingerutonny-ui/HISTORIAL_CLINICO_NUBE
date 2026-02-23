@@ -7,72 +7,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root { --primary: #2ecc71; --dark: #1e293b; --bg: #f0f2f5; --blue-info: #2563eb; --border: #e2e8f0; }
-        
         body { background-color: var(--bg); font-family: 'Segoe UI', sans-serif; }
-        
-        .top-bar { 
-            width: 100%; 
-            background: white; 
-            padding: 15px 30px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
+        .top-bar { width: 100%; background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; }
         .logo-img { height: 75px; width: auto; }
-        .top-bar a { 
-            background: var(--primary); 
-            color: white; 
-            text-decoration: none; 
-            padding: 10px 20px; 
-            border-radius: 8px; 
-            font-weight: 800; 
-            font-size: 0.8rem; 
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-        .top-bar a:hover { filter: brightness(1.1); transform: translateX(-5px); }
-
+        .top-bar a { background: var(--primary); color: white; text-decoration: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; font-size: 0.8rem; text-transform: uppercase; transition: 0.3s; }
         .container { max-width: 1100px; }
-        
         .card { border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
-        
-        .card-header { 
-            background: var(--primary); 
-            color: white; 
-            padding: 25px; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-            font-size: 1.2rem;
-            border: none;
-        }
-
-        .table thead { background-color: #f8fafc; }
+        .card-header { background: var(--primary); color: white; padding: 25px; font-weight: 800; text-transform: uppercase; font-size: 1.2rem; border: none; }
         .table th { font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; border-bottom: 2px solid var(--primary); padding: 15px; }
         .table td { vertical-align: middle; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--dark); padding: 15px; }
-        
-        .btn-action { 
-            padding: 8px 12px; border-radius: 10px; border: none; font-size: 1.2rem; 
-            transition: 0.3s; margin: 0 4px; cursor: pointer;
-        }
+        .btn-action { padding: 8px 12px; border-radius: 10px; border: none; font-size: 1.2rem; transition: 0.3s; margin: 0 4px; cursor: pointer; }
         .btn-reporte { background-color: var(--primary); color: white; }
         .btn-editar { background-color: #f59e0b; color: white; }
         .btn-borrar { background-color: #ef4444; color: white; }
-        
-        .btn-action:hover { transform: translateY(-3px) scale(1.05); filter: brightness(1.1); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-
         .contador-badge { background: white; color: var(--primary); padding: 6px 15px; border-radius: 20px; font-size: 0.9rem; margin-left: 15px; font-weight: 900; }
-        
-        .codigo-tag { 
-            background: #f1f5f9; 
-            color: var(--blue-info); 
-            padding: 5px 10px; 
-            border-radius: 6px; 
-            font-weight: 800;
-            border: 1px solid #e2e8f0;
-        }
+        .codigo-tag { background: #f1f5f9; color: var(--blue-info); padding: 5px 10px; border-radius: 6px; font-weight: 800; border: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
@@ -99,8 +48,7 @@
                             <th class="text-center">ACCIONES DISPONIBLES</th>
                         </tr>
                     </thead>
-                    <tbody id="listaPacientes">
-                    </tbody>
+                    <tbody id="listaPacientes"></tbody>
                 </table>
             </div>
         </div>
@@ -109,27 +57,23 @@
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
+    let pacientesGlobal = []; // Almacén local para evitar errores de sincronización
 
     async function cargarPacientes() {
         const tabla = document.getElementById('listaPacientes');
         const contador = document.getElementById('totalPacientes');
-        
         try {
             const resp = await fetch(`${API}/pacientes/`);
             if (!resp.ok) throw new Error("Error en servidor");
-            
-            const pacientes = await resp.json();
+            pacientesGlobal = await resp.json();
             tabla.innerHTML = "";
-            
-            if (!pacientes || pacientes.length === 0) {
+            if (!pacientesGlobal || pacientesGlobal.length === 0) {
                 contador.innerText = "TOTAL: 0";
-                tabla.innerHTML = `<tr><td colspan="4" class="text-center py-5">NO HAY REGISTROS DISPONIBLES</td></tr>`;
+                tabla.innerHTML = `<tr><td colspan="4" class="text-center py-5">NO HAY REGISTROS</td></tr>`;
                 return;
             }
-
-            contador.innerText = `TOTAL: ${pacientes.length}`;
-
-            pacientes.forEach(p => {
+            contador.innerText = `TOTAL: ${pacientesGlobal.length}`;
+            pacientesGlobal.forEach(p => {
                 tabla.innerHTML += `
                     <tr>
                         <td class="ps-4">${p.apellido || ''} ${p.nombre || ''}</td>
@@ -140,81 +84,58 @@
                             <button class="btn-action btn-editar" title="EDITAR" onclick="editarPaciente(${p.id})">✏️</button>
                             <button class="btn-action btn-borrar" title="BORRAR" onclick="eliminarPaciente(${p.id})">🗑️</button>
                         </td>
-                    </tr>
-                `;
+                    </tr>`;
             });
         } catch (e) { 
-            console.error("Error al cargar lista:", e); 
             contador.innerText = "ERROR DE CONEXIÓN";
             tabla.innerHTML = `<tr><td colspan="4" class="text-center py-5 text-danger">EL SERVIDOR NO RESPONDE</td></tr>`;
         }
     }
 
-    async function verReporte(id) {
-        try {
-            // 1. Descarga completa de datos del servidor
-            const resp = await fetch(`${API}/pacientes/${id}`);
-            if (!resp.ok) throw new Error("Error al obtener datos");
-            const p = await resp.json();
-
-            // 2. Mapeo total de campos para localStorage (P1, P2 y P3)
-            // Esto asegura que generar_reporte.html tenga toda la info lista
-            localStorage.setItem('p_id_reporte', id);
-            localStorage.setItem('p_nom', `${p.apellido || ''} ${p.nombre || ''}`);
-            localStorage.setItem('p_ci', p.ci || '---');
-            localStorage.setItem('p_cod', p.codigo_paciente || 'S/C');
-
-            localStorage.setItem('datos_p1', JSON.stringify({
-                nombre: `${p.apellido || ''} ${p.nombre || ''}`,
-                ci: p.ci,
-                edad: p.edad,
-                sexo: p.sexo,
-                f_nac: p.fecha_nacimiento,
-                lugar_nac: p.lugar_nacimiento,
-                profesion: p.profesion,
-                telefono: p.telefono,
-                domicilio: p.domicilio,
-                n_casa: p.n_casa,
-                zona: p.zona
-            }));
-
-            localStorage.setItem('datos_temporales_p2', JSON.stringify({
-                vista: p.vista || 'NEGATIVO', 
-                auditivo: p.auditivo || 'NEGATIVO', 
-                respiratorio: p.respiratorio || 'NEGATIVO',
-                cardiovascular: p.cardiovascular || 'NEGATIVO', 
-                digestivos: p.digestivos || 'NEGATIVO',
-                nervioso: p.sistema_nervioso || 'NEGATIVO', 
-                psiquiatricos: p.psiquiatricos || 'NEGATIVO',
-                osteomusculares: p.osteomusculares || 'NEGATIVO', 
-                alergias: p.alergias || 'NEGATIVO',
-                cirugias: p.cirugias || 'NEGATIVO',
-                infecciones: p.infecciones || 'NEGATIVO',
-                endocrino: p.endocrino || 'NEGATIVO'
-            }));
-
-            localStorage.setItem('datos_p3', JSON.stringify({
-                edad_inicio: p.edad_inicio || '---',
-                empresa: p.empresa || '---',
-                cargo: p.cargo || '---',
-                tiempo: p.tiempo || '---',
-                riesgos: p.riesgos || '---',
-                grupo_sanguineo: p.grupo_sanguineo || 'S/G',
-                fuma: p.fuma || 'NO',
-                alcohol: p.alcohol || 'NO',
-                drogas: p.drogas || 'NO',
-                coca: p.pijcha || p.coca || 'NO',
-                deporte: p.deporte || 'NO',
-                observaciones: p.observaciones || 'REGISTRO COMPLETADO'
-            }));
-
-            // 3. Redirección al reporte una vez los datos están cargados
-            window.location.href = "generar_reporte.html";
-
-        } catch (e) {
-            console.error("Error en reporte:", e);
-            alert("⚠️ ERROR: NO SE PUDO SINCRONIZAR LA BASE DE DATOS");
+    function verReporte(id) {
+        // Buscamos el paciente en nuestra lista local para no depender de otra petición al servidor
+        const p = pacientesGlobal.find(item => item.id === id);
+        if (!p) {
+            alert("⚠️ ERROR: NO SE ENCONTRARON DATOS LOCALES");
+            return;
         }
+
+        // Limpieza de memoria previa
+        localStorage.clear();
+
+        // Mapeo Directo a localStorage
+        localStorage.setItem('p_id_reporte', id);
+        localStorage.setItem('p_nom', `${p.apellido || ''} ${p.nombre || ''}`);
+        localStorage.setItem('p_ci', p.ci || '---');
+        localStorage.setItem('p_cod', p.codigo_paciente || 'S/C');
+
+        // Mapeo P1
+        localStorage.setItem('datos_p1', JSON.stringify({
+            nombre: `${p.apellido || ''} ${p.nombre || ''}`,
+            ci: p.ci, edad: p.edad, sexo: p.sexo,
+            f_nac: p.fecha_nacimiento, lugar_nac: p.lugar_nacimiento,
+            profesion: p.profesion, telefono: p.telefono,
+            domicilio: p.domicilio, n_casa: p.n_casa, zona: p.zona
+        }));
+
+        // Mapeo P2
+        localStorage.setItem('datos_temporales_p2', JSON.stringify({
+            vista: p.vista || 'NEGATIVO', auditivo: p.auditivo || 'NEGATIVO',
+            respiratorio: p.respiratorio || 'NEGATIVO', cardiovascular: p.cardiovascular || 'NEGATIVO',
+            digestivos: p.digestivos || 'NEGATIVO', nervioso: p.sistema_nervioso || 'NEGATIVO',
+            psiquiatricos: p.psiquiatricos || 'NEGATIVO', osteomusculares: p.osteomusculares || 'NEGATIVO',
+            alergias: p.alergias || 'NEGATIVO', cirugias: p.cirugias || 'NEGATIVO'
+        }));
+
+        // Mapeo P3
+        localStorage.setItem('datos_p3', JSON.stringify({
+            grupo_sanguineo: p.grupo_sanguineo || 'S/G',
+            fuma: p.fuma || 'NO', alcohol: p.alcohol || 'NO',
+            drogas: p.drogas || 'NO', coca: p.pijcha || p.coca || 'NO',
+            deporte: p.deporte || 'NO', observaciones: p.observaciones || 'REGISTRO COMPLETADO'
+        }));
+
+        window.location.href = "generar_reporte.html";
     }
 
     function editarPaciente(id) {
@@ -223,7 +144,7 @@
     }
 
     async function eliminarPaciente(id) {
-        if (confirm("⚠️ ¿ESTÁ SEGURO DE ELIMINAR ESTE REGISTRO PERMANENTEMENTE?")) {
+        if (confirm("⚠️ ¿ELIMINAR ESTE REGISTRO?")) {
             try {
                 const r = await fetch(`${API}/pacientes/${id}`, { method: 'DELETE' });
                 if (r.ok) cargarPacientes();
