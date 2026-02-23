@@ -11,11 +11,10 @@
         .bg-ohs-blue { background-color: #1e40af; }
         .text-ohs-blue { color: #1e40af; }
         .text-ohs-green { color: #059669; }
-        .border-ohs-blue { border-color: #1e40af; }
     </style>
 </head>
 <body class="bg-slate-100 p-4 md:p-10">
-    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden border-t-8 border-ohs-blue">
+    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden border-t-8 border-blue-900">
         
         <div class="p-8 bg-white flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-100">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-24 mb-4 md:mb-0">
@@ -46,7 +45,7 @@
                     </thead>
                     <tbody id="tabla-doctores" class="text-slate-700 font-bold">
                         <tr>
-                            <td colspan="5" class="p-10 text-center text-slate-400 animate-pulse">CARGANDO PERSONAL DESDE RENDER...</td>
+                            <td colspan="5" class="p-10 text-center text-slate-400">CARGANDO...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -60,37 +59,29 @@
         async function cargarDoctores() {
             const tabla = document.getElementById('tabla-doctores');
             try {
-                // Sincronización estricta con endpoint /doctores/ en main.py
                 const response = await fetch(`${API_BASE}/doctores/`);
-                
-                if (!response.ok) {
-                    throw new Error(`Error: ${response.status}`);
-                }
+                if (!response.ok) throw new Error("404");
                 
                 const doctores = await response.json();
                 tabla.innerHTML = '';
 
-                if (!doctores || doctores.length === 0) {
-                    tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500">NO HAY MÉDICOS REGISTRADOS</td></tr>';
+                if (doctores.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500">SIN REGISTROS</td></tr>';
                     return;
                 }
 
                 doctores.forEach(doc => {
-                    const fila = `
+                    tabla.innerHTML += `
                         <tr class="border-b border-gray-100 hover:bg-blue-50 transition">
                             <td class="p-4 text-ohs-blue">${doc.ci_doc}</td>
                             <td class="p-4">${doc.nombre_doc}</td>
                             <td class="p-4">${doc.appaterno_doc} ${doc.apmaterno_doc || ''}</td>
                             <td class="p-4"><span class="bg-green-100 text-ohs-green px-3 py-1 rounded-full text-xs">${doc.especialidad}</span></td>
                             <td class="p-4 text-center">${doc.turno_doc}</td>
-                        </tr>
-                    `;
-                    tabla.innerHTML += fila;
+                        </tr>`;
                 });
             } catch (error) {
-                console.error("Error al cargar:", error);
-                tabla.innerHTML = 
-                    '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR: EL SERVIDOR NO RESPONDE</td></tr>';
+                tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR DE CONEXIÓN</td></tr>';
             }
         }
         cargarDoctores();
