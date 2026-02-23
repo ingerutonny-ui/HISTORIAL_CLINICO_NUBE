@@ -5,45 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LISTA DE PERSONAL - OHS NANCY</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; text-transform: uppercase; background-color: #f8fafc; }
-        .bg-ohs-blue { background-color: #1e40af; }
-        .text-ohs-blue { color: #1e40af; }
-        .text-ohs-green { color: #059669; }
-    </style>
 </head>
-<body class="p-4 md:p-10">
-    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden border-t-8 border-blue-900">
+<body class="bg-slate-950 min-h-screen p-4 md:p-10">
+    <div class="max-w-6xl mx-auto bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-800">
         
-        <div class="p-8 bg-white flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-100">
-            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-24 mb-4 md:mb-0">
+        <div class="p-8 flex justify-between items-center border-b border-slate-800">
+            <button onclick="location.href='index.html'" class="text-slate-400 hover:text-white transition">← INICIO</button>
             <div class="text-right">
-                <h1 class="text-3xl font-black text-ohs-blue">PERSONAL MÉDICO</h1>
-                <p class="text-ohs-green font-bold tracking-widest">SISTEMA OHS EN LA NUBE</p>
+                <h1 class="text-2xl font-black text-white">PERSONAL MÉDICO</h1>
+                <p class="text-blue-500 font-bold text-[10px] tracking-[0.3em]">SISTEMA OHS EN LA NUBE</p>
             </div>
         </div>
 
         <div class="p-8">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-black text-slate-700 uppercase">📋 PERSONAL REGISTRADO EN SISTEMA</h2>
-                <a href="registro_personal.html" class="bg-ohs-blue text-white px-8 py-3 rounded-full font-black text-sm hover:scale-105 transition-transform shadow-lg">
-                    + REGISTRAR NUEVO
-                </a>
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-sm font-black text-slate-400 uppercase tracking-widest italic underline decoration-blue-500">Listado de Profesionales</h2>
+                <button onclick="location.href='registro_personal.html'" class="bg-blue-600 text-white px-6 py-2 rounded-full font-black text-[10px] hover:bg-blue-700 transition">
+                    + NUEVO REGISTRO
+                </button>
             </div>
 
-            <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+            <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/50">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-ohs-blue text-white text-xs tracking-tighter">
+                        <tr class="bg-slate-800/50 text-slate-400 text-[10px] uppercase tracking-widest">
                             <th class="p-5 font-black">C.I.</th>
-                            <th class="p-5 font-black">NOMBRE COMPLETO</th>
-                            <th class="p-5 font-black">ESPECIALIDAD / ROL</th>
-                            <th class="p-5 font-black text-center">TURNO</th>
-                            <th class="p-5 font-black text-center">ACCIONES</th>
+                            <th class="p-5 font-black">Nombre Completo</th>
+                            <th class="p-5 font-black">Especialidad</th>
+                            <th class="p-5 text-center font-black">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-doctores" class="text-slate-700 text-sm font-bold">
+                    <tbody id="tabla-doctores" class="text-slate-300 text-xs font-bold">
                         </tbody>
                 </table>
             </div>
@@ -51,32 +43,27 @@
     </div>
 
     <script>
-        const personal = [
-            { ci: "1234567", nombre: "JUAN CARLOS", apellidos: "GARCIA LOPEZ", especialidad: "CARDIOLOGÍA", turno: "MAÑANA", tipo: "DOCTOR" },
-            { ci: "8822334", nombre: "ANA BEATRIZ", apellidos: "SOSA MONTERO", especialidad: "PEDIATRÍA", turno: "TARDE", tipo: "DOCTORA" },
-            { ci: "7654321", nombre: "MARIA ELENA", apellidos: "MENDOZA RIVAS", especialidad: "ENFERMERÍA GENERAL", turno: "TARDE", tipo: "ENFERMERA" },
-            { ci: "4455667", nombre: "PEDRO LUIS", apellidos: "RODRIGUEZ PAZ", especialidad: "INSTRUMENTACIÓN", turno: "NOCHE", tipo: "ENFERMERO" }
+        const data = [
+            {ci: "1234567", nombre: "JUAN CARLOS GARCIA", rol: "DOCTOR", esp: "CARDIOLOGÍA"},
+            {ci: "8822334", nombre: "ANA BEATRIZ SOSA", rol: "DOCTORA", esp: "PEDIATRÍA"},
+            {ci: "7654321", nombre: "MARIA ELENA MENDOZA", rol: "ENFERMERA", esp: "GRAL."},
+            {ci: "4455667", nombre: "PEDRO LUIS RODRIGUEZ", rol: "ENFERMERO", esp: "INSTRUM."}
         ];
 
-        function cargarPersonal() {
-            const tabla = document.getElementById('tabla-doctores');
-            tabla.innerHTML = '';
-            personal.forEach(p => {
-                let color = p.tipo.includes("DOCTOR") ? "bg-green-100 text-ohs-green border-green-200" : "bg-blue-100 text-blue-700 border-blue-200";
-                tabla.innerHTML += `
-                    <tr class="border-b border-gray-50 hover:bg-slate-50 transition-all">
-                        <td class="p-5 text-ohs-blue font-black tracking-tighter">${p.ci}</td>
-                        <td class="p-5">${p.nombre} ${p.apellidos}</td>
-                        <td class="p-5"><span class="${color} px-4 py-1 rounded-full text-[10px] font-black italic border">${p.tipo}: ${p.especialidad}</span></td>
-                        <td class="p-5 text-center"><span class="bg-slate-100 text-slate-600 px-3 py-1 rounded text-[10px] font-black border border-gray-200">${p.turno}</span></td>
-                        <td class="p-5 text-center flex justify-center gap-2">
-                            <button onclick="alert('EDITANDO: ${p.nombre}')" class="bg-amber-500 text-white p-2 rounded-lg shadow hover:bg-amber-600 transition-all">✏️</button>
-                            <button onclick="alert('GENERANDO REPORTE PDF...')" class="bg-red-600 text-white p-2 rounded-lg shadow hover:bg-red-700 transition-all">📄</button>
-                        </td>
-                    </tr>`;
+        window.onload = () => {
+            const t = document.getElementById('tabla-doctores');
+            data.forEach(p => {
+                t.innerHTML += `
+                <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition">
+                    <td class="p-5 text-blue-400 font-black">${p.ci}</td>
+                    <td class="p-5 uppercase">${p.nombre}</td>
+                    <td class="p-5"><span class="bg-slate-800 px-3 py-1 rounded-full text-[9px] border border-slate-700">${p.rol}: ${p.esp}</span></td>
+                    <td class="p-5 text-center">
+                        <button onclick="alert('PDF GENERADO')" class="bg-red-900/20 text-red-500 p-2 rounded-lg border border-red-900/50 hover:bg-red-600 hover:text-white transition">📄</button>
+                    </td>
+                </tr>`;
             });
-        }
-        window.onload = cargarPersonal;
+        };
     </script>
 </body>
 </html>
