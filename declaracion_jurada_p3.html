@@ -32,7 +32,6 @@
             margin: 25px 0 15px; font-weight: 800; font-size: 13px; text-transform: uppercase; 
         }
 
-        /* Grilla Hábitos Responsiva */
         .grid-habitos { 
             display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; 
         }
@@ -47,7 +46,6 @@
         .select-yn { width: 70px; font-weight: 700; border: 2px solid var(--ohs-green); border-radius: 8px; font-size: 12px; }
         .input-det { flex: 1; font-size: 12px; border-radius: 8px; text-transform: uppercase; font-weight: 600; }
 
-        /* Tabla Laboral Responsiva */
         .table-responsive-custom { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
         .table-responsive-custom th { 
             background: white; color: var(--ohs-cyan); padding: 10px; font-size: 11px; 
@@ -58,7 +56,6 @@
             width: 100%; border: 1px solid #cbd5e1; padding: 8px; border-radius: 8px; font-size: 12px; text-transform: uppercase;
         }
 
-        /* Control para móviles: Convertir tabla en tarjetas */
         @media (max-width: 768px) {
             .table-responsive-custom thead { display: none; }
             .table-responsive-custom tr { 
@@ -69,7 +66,6 @@
             .table-responsive-custom td input, .table-responsive-custom td select { width: 60%; }
         }
 
-        /* Riesgos Grid */
         .risk-grid { 
             display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; 
             padding: 15px; background: #f8fafc; border-radius: 15px; border: 1px solid #e2e8f0;
@@ -141,7 +137,7 @@
             </div>
         </div>
 
-        <div class="section-title">II. HISTORIA LABORAL (ÚLTIMOS EMPLEOS)</div>
+        <div class="section-title">II. HISTORIA LABORAL (ÚLTIMO EMPLEO)</div>
         <div class="table-responsive">
             <table class="table-responsive-custom">
                 <thead>
@@ -154,7 +150,16 @@
                         <th>EPP</th>
                     </tr>
                 </thead>
-                <tbody id="tablaLaboral"></tbody>
+                <tbody id="tablaLaboral">
+                    <tr>
+                        <td data-label="EDAD"><input type="number" class="edad"></td>
+                        <td data-label="EMPRESA"><input type="text" class="empresa"></td>
+                        <td data-label="CARGO"><input type="text" class="cargo"></td>
+                        <td data-label="TIEMPO"><input type="text" class="tiempo"></td>
+                        <td data-label="RIESGOS"><input type="text" class="riesgos"></td>
+                        <td data-label="EPP"><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
+                    </tr>
+                </tbody>
             </table>
         </div>
 
@@ -178,21 +183,8 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const id_p = localStorage.getItem('p_id');
 
-    function addRow() {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td data-label="EDAD"><input type="number" class="edad"></td>
-            <td data-label="EMPRESA"><input type="text" class="empresa"></td>
-            <td data-label="CARGO"><input type="text" class="cargo"></td>
-            <td data-label="TIEMPO"><input type="text" class="tiempo"></td>
-            <td data-label="RIESGOS"><input type="text" class="riesgos"></td>
-            <td data-label="EPP"><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>`;
-        document.getElementById('tablaLaboral').appendChild(tr);
-    }
-
     window.onload = async () => {
         if(!id_p) return;
-        for(let i=0; i<3; i++) addRow();
         try {
             const r = await fetch(`${API}/api/paciente-completo/${id_p}`);
             const d = await r.json();
@@ -206,7 +198,7 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ PROCESANDO..."; btn.disabled = true;
+        btn.innerHTML = "⏳ GUARDANDO..."; btn.disabled = true;
 
         const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
         const laboral = [];
