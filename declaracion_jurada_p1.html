@@ -6,7 +6,7 @@
     <title>HC NUBE | FILIACIÓN (1/3)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --ohs-emerald: #22c55e; --dark: #1e293b; }
+        :root { --ohs-emerald: #10b981; --dark: #1e293b; }
         body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; padding: 10px; }
         .form-container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .header-ohs { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--ohs-emerald); padding-bottom: 15px; margin-bottom: 25px; }
@@ -16,7 +16,7 @@
         input, select { border-radius: 8px !important; font-weight: 600; text-transform: uppercase; font-size: 13px !important; }
         .nav-controls { margin-top: 25px; }
         .btn-next { background: var(--ohs-emerald); color: white; padding: 15px; border-radius: 12px; border: none; font-weight: 800; width: 100%; transition: 0.3s; font-size: 16px; }
-        .btn-next:hover { background: #16a34a; }
+        .btn-next:hover { background: #059669; }
     </style>
 </head>
 <body>
@@ -60,7 +60,6 @@
         <div class="grid-inputs">
             <div><label>Estado Civil</label>
                 <select id="estado_civil" class="form-select" required>
-                    <option value="">SELECCIONE...</option>
                     <option value="SOLTERO(A)">SOLTERO(A)</option>
                     <option value="CASADO(A)">CASADO(A)</option>
                     <option value="DIVORCIADO(A)">DIVORCIADO(A)</option>
@@ -104,7 +103,7 @@
                     document.getElementById('telefono').value = data.filiacion.telefono || '';
                     document.getElementById('profesion_oficio').value = data.filiacion.profesion_oficio || '';
                     
-                    const valEC = data.filiacion.estado_civil ? data.filiacion.estado_civil.toUpperCase() : "";
+                    const valEC = data.filiacion.estado_civil ? data.filiacion.estado_civil.toUpperCase() : "SOLTERO(A)";
                     const selectEC = document.getElementById('estado_civil');
                     for(let opt of selectEC.options) {
                         if(opt.value === valEC) opt.selected = true;
@@ -133,15 +132,19 @@
         };
 
         try {
-            // RUTA SIN BARRA AL FINAL PARA EVITAR EL 404
             const res = await fetch(`${API}/p1`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
-            if (res.ok) window.location.href = "declaracion_jurada_p2.html";
-            else alert("ERROR AL GUARDAR FILIACIÓN");
-        } catch (err) { alert("ERROR DE CONEXIÓN"); }
+            if (res.ok) {
+                window.location.href = "declaracion_jurada_p2.html";
+            } else {
+                alert("ERROR AL GUARDAR FILIACIÓN");
+            }
+        } catch (err) { 
+            alert("ERROR DE RED O SERVIDOR"); 
+        }
     };
 </script>
 </body>
