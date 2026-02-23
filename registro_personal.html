@@ -14,7 +14,6 @@
         .title-area h2 { color: var(--nancy-blue); font-size: 26px; font-weight: 900; text-align: right; }
         .tab-buttons { display: flex; gap: 15px; margin-bottom: 40px; }
         .tab { flex: 1; padding: 20px; text-align: center; cursor: pointer; background: #e2e8f0; border-radius: 12px; font-weight: 900; transition: 0.4s ease; display: flex; align-items: center; justify-content: center; gap: 15px; color: #64748b; border: 3px solid transparent; }
-        .tab-icon { font-size: 30px; }
         .tab.active-doc { background: white; color: var(--nancy-blue); border-color: var(--nancy-blue); transform: scale(1.02); }
         .tab.active-enfe { background: white; color: var(--nancy-green); border-color: var(--nancy-green); transform: scale(1.02); }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); gap: 30px; }
@@ -32,8 +31,8 @@
         <div class="title-area"><h2>REGISTRO DE PERSONAL<br>MÉDICO OHS</h2></div>
     </div>
     <div class="tab-buttons">
-        <div class="tab active-doc" id="tab-doc" onclick="switchTab('doctor')"><span class="tab-icon">🩺</span><span>SECCIÓN DOCTORES</span></div>
-        <div class="tab" id="tab-enfe" onclick="switchTab('enfermera')"><span class="tab-icon">💉</span><span>SECCIÓN ENFERMERAS</span></div>
+        <div class="tab active-doc" id="tab-doc" onclick="switchTab('doctor')">🩺 SECCIÓN DOCTORES</div>
+        <div class="tab" id="tab-enfe" onclick="switchTab('enfermera')">💉 SECCIÓN ENFERMERAS</div>
     </div>
 
     <form id="form-doctor">
@@ -90,15 +89,13 @@
 
     function switchTab(tipo) {
         document.getElementById('form-doctor').style.display = tipo === 'doctor' ? 'block' : 'none';
-        document.getElementById('form-enfermera').style.display = tipo === 'doctor' ? 'none' : 'block';
+        document.getElementById('form-enfermera').style.display = tipo === 'enfermera' ? 'block' : 'none';
         document.getElementById('tab-doc').className = tipo === 'doctor' ? 'tab active-doc' : 'tab';
         document.getElementById('tab-enfe').className = tipo === 'enfermera' ? 'tab active-enfe' : 'tab';
     }
 
     async function enviarDatos(tipo) {
         let payload = {};
-        
-        // MAPEADO EXACTO SEGÚN SU CRUD Y MODELOS
         if (tipo === 'doctor') {
             payload = {
                 ci_doc: document.getElementById('ci_doc').value.trim(),
@@ -120,7 +117,7 @@
         }
 
         try {
-            // USAMOS LA RUTA EXACTA DEFINIDA EN SU CAPTURA DE PYTHON
+            // Se fuerza la ruta tal cual está en el backend
             const response = await fetch(`${API_BASE}/api/save-${tipo}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -128,14 +125,14 @@
             });
 
             if (response.ok) {
-                alert(`¡${tipo.toUpperCase()} GUARDADO CORRECTAMENTE EN LA NUBE!`);
+                alert(`¡${tipo.toUpperCase()} REGISTRADO CON ÉXITO!`);
                 window.location.href = "lista_personal.html";
             } else {
-                const err = await response.json();
-                alert("ERROR " + response.status + ": " + (err.detail || "DATOS NO RECONOCIDOS"));
+                const errorData = await response.json();
+                alert("ERROR " + response.status + ": " + (errorData.detail || "Error en datos"));
             }
-        } catch (e) {
-            alert("NO SE PUDO CONECTAR AL SERVIDOR. VERIFIQUE QUE RENDER ESTÉ 'LIVE'.");
+        } catch (error) {
+            alert("EL SERVIDOR NO RESPONDE. VERIFIQUE QUE RENDER NO ESTÉ DORMIDO.");
         }
     }
 </script>
