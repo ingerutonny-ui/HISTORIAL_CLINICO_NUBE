@@ -86,8 +86,7 @@
 </div>
 
 <script>
-    // URL exacta de su servidor Render
-    const API_URL = "https://historial-clinico-936s.onrender.com/api"; 
+    const API_BASE = "https://historial-clinico-936s.onrender.com";
 
     function switchTab(tipo) {
         const tabDoc = document.getElementById('tab-doc');
@@ -111,7 +110,7 @@
     async function enviarDatos(tipo) {
         let payload = {};
         
-        // MAPEADO EXACTO SEGÚN MODELOS DE BASE DE DATOS
+        // Mapeo riguroso basado en su captura de base de datos
         if (tipo === 'doctor') {
             payload = {
                 ci_doc: document.getElementById('ci_doc').value.trim(),
@@ -133,23 +132,23 @@
         }
 
         try {
-            // Rutas en singular según su Backend
-            const endpoint = `${API_URL}/save-${tipo}`;
-            const res = await fetch(endpoint, {
+            // Se intenta la ruta con /api tal como muestra su código Python
+            const response = await fetch(`${API_BASE}/api/save-${tipo}`, {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            if(res.ok) {
-                alert(`¡${tipo.toUpperCase()} REGISTRADO CON ÉXITO!`);
-                window.location.href = "lista_personal.html"; 
+            if (response.ok) {
+                alert(`¡REGISTRO DE ${tipo.toUpperCase()} EXITOSO!`);
+                window.location.href = "lista_personal.html";
             } else {
-                const errorData = await res.json();
-                alert("ERROR " + res.status + ": " + (errorData.detail || "DATOS INVÁLIDOS O C.I. REPETIDO"));
+                const errorInfo = await response.json();
+                alert("ERROR " + response.status + ": " + (errorInfo.detail || "REVISE LOS DATOS O CI REPETIDO"));
             }
-        } catch (e) {
-            alert("SIN CONEXIÓN CON EL SERVIDOR RENDER");
+        } catch (error) {
+            console.error(error);
+            alert("ERROR CRÍTICO: NO SE PUDO CONECTAR CON EL SERVIDOR");
         }
     }
 </script>
