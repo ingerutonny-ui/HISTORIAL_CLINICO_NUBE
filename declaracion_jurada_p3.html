@@ -46,9 +46,9 @@
             <div class="field-card"><span class="label-text">¿FUMA?</span><div class="input-group-custom"><select id="fuma" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="fuma_det" class="form-control input-det" value="NO FUMA"></div></div>
             <div class="field-card"><span class="label-text">¿CONSUME ALCOHOL?</span><div class="input-group-custom"><select id="alcohol" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="alcohol_det" class="form-control input-det" value="NO CONSUME"></div></div>
             <div class="field-card"><span class="label-text">¿CONSUME DROGAS?</span><div class="input-group-custom"><select id="drogas" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="drogas_det" class="form-control input-det" value="NO CONSUME"></div></div>
-            <div class="field-card"><span class="label-text">PIJCHAR (COCA)</span><select id="coca" class="form-select select-yn w-100"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="field-card"><span class="label-text">PIJCHAR (COCA)</span><select id="pijchar" class="form-select select-yn w-100"><option value="NO">NO</option><option value="SI">SI</option></select></div>
             <div class="field-card"><span class="label-text">¿PRACTICA DEPORTES?</span><div class="input-group-custom"><select id="deportes" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="deportes_det" class="form-control input-det" value="NINGUNO"></div></div>
-            <div class="field-card"><span class="label-text">GRUPO SANGUÍNEO</span><input id="grupo_sangre" class="form-control input-det w-100" value="S/D"></div>
+            <div class="field-card"><span class="label-text">GRUPO SANGUÍNEO</span><input id="grupo_sanguineo" class="form-control input-det w-100" value="S/D"></div>
         </div>
         <div class="section-title">II. HISTORIA LABORAL (ÚLTIMO EMPLEO)</div>
         <div class="table-responsive">
@@ -56,12 +56,12 @@
                 <thead><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td data-label="EDAD"><input type="number" class="edad"></td>
-                        <td data-label="EMPRESA"><input type="text" class="empresa"></td>
-                        <td data-label="CARGO"><input type="text" class="cargo"></td>
-                        <td data-label="TIEMPO"><input type="text" class="tiempo"></td>
-                        <td data-label="RIESGOS"><input type="text" class="riesgos"></td>
-                        <td data-label="EPP"><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
+                        <td><input type="number" id="edad_inicio"></td>
+                        <td><input type="text" id="empresa"></td>
+                        <td><input type="text" id="cargo"></td>
+                        <td><input type="text" id="tiempo"></td>
+                        <td><input type="text" id="riesgos"></td>
+                        <td><select id="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
                     </tr>
                 </tbody>
             </table>
@@ -87,7 +87,7 @@
     window.onload = async () => {
         if(!id_p) return;
         try {
-            const r = await fetch(`${API}/api/paciente-completo/${id_p}`);
+            const r = await fetch(`${API}/api/paciente-completo/${id_p}/`);
             const d = await r.json();
             if(d.paciente) {
                 document.getElementById('b_paciente').innerText = `${d.paciente.apellido} ${d.paciente.nombre}`;
@@ -99,55 +99,54 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ PROCESANDO..."; btn.disabled = true;
+        btn.innerHTML = "⏳ GUARDANDO..."; btn.disabled = true;
 
         const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
-        const tr = document.querySelector('#tablaLaboral tr');
         const riesgos = [];
         document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
 
-        // 1. GUARDAR PARTE 2 EN /p2/
         try {
+            // PASO 1: Guardar P2 limpio (solo lo que le pertenece)
             const resP2 = await fetch(`${API}/p2/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ paciente_id: parseInt(id_p), ...dataP2 })
             });
 
-            if(resP2.ok) {
-                // 2. SI P2 OK, ENVIAR PARTE 3 A /p3/
-                const resP3 = await fetch(`${API}/p3/`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        paciente_id: parseInt(id_p),
-                        fuma: document.getElementById('fuma').value, 
-                        fuma_det: document.getElementById('fuma_det').value.toUpperCase(),
-                        alcohol: document.getElementById('alcohol').value, 
-                        alcohol_det: document.getElementById('alcohol_det').value.toUpperCase(),
-                        drogas: document.getElementById('drogas').value, 
-                        drogas_det: document.getElementById('drogas_det').value.toUpperCase(),
-                        pijchar: document.getElementById('coca').value,
-                        deportes: document.getElementById('deportes').value, 
-                        deportes_det: document.getElementById('deportes_det').value.toUpperCase(),
-                        grupo_sanguineo: document.getElementById('grupo_sangre').value.toUpperCase(),
-                        edad_inicio: tr.querySelector('.edad').value || "0",
-                        empresa: (tr.querySelector('.empresa').value || "S/D").toUpperCase(),
-                        cargo: (tr.querySelector('.cargo').value || "S/D").toUpperCase(),
-                        tiempo_laboral: tr.querySelector('.tiempo').value || "0",
-                        riesgos_laborales: (tr.querySelector('.riesgos').value || "NINGUNO").toUpperCase(),
-                        uso_epp: tr.querySelector('.epp').value,
-                        riesgos_expuestos: riesgos.join(', ') || "NINGUNO"
-                    })
-                });
+            if(!resP2.ok) throw new Error("Falla en P2");
 
-                if(resP3.ok) {
-                    alert("✅ EXPEDIENTE COMPLETO GUARDADO");
-                    localStorage.removeItem('temp_p2');
-                    window.location.href = "lista_historial.html";
-                } else { alert("❌ ERROR EN PARTE 3"); }
-            } else { alert("❌ ERROR EN PARTE 2"); }
-        } catch(err) { alert("❌ ERROR DE RED"); }
+            // PASO 2: Guardar P3 limpio (con nombres de campos exactos)
+            const resP3 = await fetch(`${API}/p3/`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    paciente_id: parseInt(id_p),
+                    fuma: document.getElementById('fuma').value,
+                    fuma_det: document.getElementById('fuma_det').value.toUpperCase(),
+                    alcohol: document.getElementById('alcohol').value,
+                    alcohol_det: document.getElementById('alcohol_det').value.toUpperCase(),
+                    drogas: document.getElementById('drogas').value,
+                    drogas_det: document.getElementById('drogas_det').value.toUpperCase(),
+                    pijchar: document.getElementById('pijchar').value,
+                    deportes: document.getElementById('deportes').value,
+                    deportes_det: document.getElementById('deportes_det').value.toUpperCase(),
+                    grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
+                    edad_inicio: document.getElementById('edad_inicio').value || "0",
+                    empresa: document.getElementById('empresa').value.toUpperCase() || "S/D",
+                    cargo: document.getElementById('cargo').value.toUpperCase() || "S/D",
+                    tiempo: document.getElementById('tiempo').value || "0",
+                    riesgos: document.getElementById('riesgos').value.toUpperCase() || "NINGUNO",
+                    epp: document.getElementById('epp').value,
+                    riesgos_expuestos: riesgos.join(', ') || "NINGUNO"
+                })
+            });
+
+            if(resP3.ok) {
+                alert("✅ EXPEDIENTE COMPLETO GUARDADO");
+                localStorage.removeItem('temp_p2');
+                window.location.href = "lista_historial.html";
+            } else { alert("❌ ERROR INTERNO EN P3. REVISE LOGS."); }
+        } catch(err) { alert("❌ ERROR DE CONEXIÓN O PROCESAMIENTO."); }
         finally { btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE"; btn.disabled = false; }
     };
 </script>
