@@ -32,11 +32,11 @@
         <div class="title-area"><h2>REGISTRO DE PERSONAL<br>MÉDICO OHS</h2></div>
     </div>
     <div class="tab-buttons">
-        <div class="tab active-doc" id="tab-doc" onclick="switchTab('doctor')"><span class="tab-icon">🩺</span><span>SECCIÓN DOCTORES</span></div>
-        <div class="tab" id="tab-enfe" onclick="switchTab('enfermera')"><span class="tab-icon">💉</span><span>SECCIÓN ENFERMERAS</span></div>
+        <div class="tab active-doc" id="tab-doc" onclick="switchTab('doctores')"><span class="tab-icon">🩺</span><span>SECCIÓN DOCTORES</span></div>
+        <div class="tab" id="tab-enfe" onclick="switchTab('enfermeras')"><span class="tab-icon">💉</span><span>SECCIÓN ENFERMERAS</span></div>
     </div>
 
-    <form id="form-doctor">
+    <form id="form-doctores">
         <div class="grid">
             <div class="form-group"><label>C.I. PROFESIONAL</label><input type="text" id="ci_doc" required></div>
             <div class="form-group"><label>NOMBRE COMPLETO</label><input type="text" id="nombre_doc" required></div>
@@ -45,10 +45,10 @@
             <div class="form-group"><label>TURNO</label><select id="turno_doc"><option value="MAÑANA">☀️ MAÑANA</option><option value="TARDE">🌤️ TARDE</option><option value="NOCHE">🌙 NOCHE</option></select></div>
             <div class="form-group"><label>ESPECIALIDAD</label><select id="especialidad"><option value="MEDICINA DEL TRABAJO">MEDICINA DEL TRABAJO</option><option value="MEDICINA GENERAL">MEDICINA GENERAL</option><option value="PSICOLOGÍA">PSICOLOGÍA</option><option value="OFTALMOLOGÍA">OFTALMOLOGÍA</option></select></div>
         </div>
-        <button type="button" class="btn-save bg-doctor" onclick="enviarDatos('doctor')">💾 GUARDAR MÉDICO EN LA NUBE</button>
+        <button type="button" class="btn-save bg-doctor" onclick="enviarDatos('doctores')">💾 GUARDAR MÉDICO EN LA NUBE</button>
     </form>
 
-    <form id="form-enfermera" style="display:none;">
+    <form id="form-enfermeras" style="display:none;">
         <div class="grid">
             <div class="form-group"><label>C.I. PROFESIONAL</label><input type="text" id="ci_enfe" required></div>
             <div class="form-group"><label>NOMBRE COMPLETO</label><input type="text" id="nombre_enfe" required></div>
@@ -57,7 +57,7 @@
             <div class="form-group"><label>TURNO</label><select id="turno_enfe"><option value="MAÑANA">☀️ MAÑANA</option><option value="TARDE">🌤️ TARDE</option><option value="NOCHE">🌙 NOCHE</option></select></div>
             <div class="form-group"><label>NIVEL ACADÉMICO / CARGO</label><select id="edu_enfe"><option value="LICENCIADA EN ENFERMERÍA">LICENCIADA EN ENFERMERÍA</option><option value="AUXILIAR DE ENFERMERÍA">AUXILIAR DE ENFERMERÍA</option></select></div>
         </div>
-        <button type="button" class="btn-save bg-enfermera" onclick="enviarDatos('enfermera')">💾 GUARDAR ENFERMERA EN LA NUBE</button>
+        <button type="button" class="btn-save bg-enfermera" onclick="enviarDatos('enfermeras')">💾 GUARDAR ENFERMERA EN LA NUBE</button>
     </form>
 </div>
 
@@ -67,10 +67,10 @@
     function switchTab(tipo) {
         const tabDoc = document.getElementById('tab-doc');
         const tabEnfe = document.getElementById('tab-enfe');
-        const formDoc = document.getElementById('form-doctor');
-        const formEnfe = document.getElementById('form-enfermera');
+        const formDoc = document.getElementById('form-doctores');
+        const formEnfe = document.getElementById('form-enfermeras');
         
-        if(tipo === 'doctor') {
+        if(tipo === 'doctores') {
             formDoc.style.display = 'block';
             formEnfe.style.display = 'none';
             tabDoc.className = 'tab active-doc';
@@ -84,37 +84,28 @@
     }
 
     async function enviarDatos(tipo) {
-        console.log("Iniciando guardado de:", tipo);
         let payload = {};
-        
+        if (tipo === 'doctores') {
+            payload = {
+                ci_doc: document.getElementById('ci_doc').value.trim(),
+                nombre_doc: document.getElementById('nombre_doc').value.trim(),
+                appaterno_doc: document.getElementById('appaterno_doc').value.trim(),
+                apmaterno_doc: document.getElementById('apmaterno_doc').value.trim(),
+                turno_doc: document.getElementById('turno_doc').value,
+                especialidad: document.getElementById('especialidad').value
+            };
+        } else {
+            payload = {
+                ci_enfe: document.getElementById('ci_enfe').value.trim(),
+                nombre_enfe: document.getElementById('nombre_enfe').value.trim(),
+                appaterno_enfe: document.getElementById('appaterno_enfe').value.trim(),
+                apmaterno_enfe: document.getElementById('apmaterno_enfe').value.trim(),
+                turno_enfe: document.getElementById('turno_enfe').value,
+                edu_enfe: document.getElementById('edu_enfe').value
+            };
+        }
+
         try {
-            if (tipo === 'doctor') {
-                payload = {
-                    ci_doc: document.getElementById('ci_doc').value.trim(),
-                    nombre_doc: document.getElementById('nombre_doc').value.trim(),
-                    appaterno_doc: document.getElementById('appaterno_doc').value.trim(),
-                    apmaterno_doc: document.getElementById('apmaterno_doc').value.trim(),
-                    turno_doc: document.getElementById('turno_doc').value,
-                    especialidad: document.getElementById('especialidad').value
-                };
-            } else {
-                payload = {
-                    ci_enfe: document.getElementById('ci_enfe').value.trim(),
-                    nombre_enfe: document.getElementById('nombre_enfe').value.trim(),
-                    appaterno_enfe: document.getElementById('appaterno_enfe').value.trim(),
-                    apmaterno_enfe: document.getElementById('apmaterno_enfe').value.trim(),
-                    turno_enfe: document.getElementById('turno_enfe').value,
-                    edu_enfe: document.getElementById('edu_enfe').value
-                };
-            }
-
-            // Validación simple para evitar envíos vacíos
-            const campoClave = tipo === 'doctor' ? payload.ci_doc : payload.ci_enfe;
-            if (!campoClave) {
-                alert("EL C.I. ES OBLIGATORIO");
-                return;
-            }
-
             const res = await fetch(`${API_URL}/save-${tipo}`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -122,15 +113,13 @@
             });
 
             if(res.ok) {
-                alert(`¡${tipo.toUpperCase()} REGISTRADO EXITOSAMENTE!`);
+                alert(`¡${tipo.toUpperCase()} REGISTRADO CON ÉXITO!`);
                 window.location.href = "lista_personal.html"; 
             } else {
-                const errorData = await res.json();
-                alert("ERROR DEL SERVIDOR: " + (errorData.error || "No se pudo guardar"));
+                alert("ERROR AL GUARDAR: VERIFIQUE LOS DATOS");
             }
         } catch (e) {
-            console.error(e);
-            alert("ERROR CRÍTICO: NO HAY CONEXIÓN CON EL SERVIDOR RENDER");
+            alert("SIN CONEXIÓN CON EL SERVIDOR");
         }
     }
 </script>
