@@ -24,7 +24,7 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
-# --- SECCIÓN PERSONAL (RUTAS SIN BARRA FINAL) ---
+# --- SECCIÓN PERSONAL: RUTAS EXACTAS SIN REDIRECCIÓN ---
 @app.post("/doctor")
 async def save_doctor(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -43,7 +43,7 @@ async def save_enfermera(request: Request, db: Session = Depends(get_db)):
 def list_enfermeras(db: Session = Depends(get_db)):
     return db.query(models.Enfermera).all()
 
-# --- SECCIÓN PACIENTES Y REPORTES ---
+# --- SECCIÓN PACIENTES Y OTROS (MANTENIENDO INTEGRIDAD) ---
 @app.get("/pacientes")
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
@@ -77,9 +77,3 @@ def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
     p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
     p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
     return {"paciente": paciente, "filiacion": filiacion or {}, "p2": p2 or {}, "p3": p3 or {}}
-
-@app.delete("/pacientes/{paciente_id}")
-def delete_paciente_route(paciente_id: int, db: Session = Depends(get_db)):
-    if crud.delete_paciente(db, paciente_id):
-        return {"status": "success"}
-    raise HTTPException(status_code=404, detail="Error")
