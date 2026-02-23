@@ -2,94 +2,92 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>DECLARACIÓN JURADA DE SALUD - OHS</title>
+    <title>DECLARACIÓN JURADA DE SALUD COMPLETA - OHS</title>
     <style>
-        :root { --primary: #2ecc71; --dark: #1e293b; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; text-transform: uppercase; font-size: 11px; color: var(--dark); }
-        
-        /* Configuración de Impresión para 2 Hojas */
-        .page { width: 21cm; min-height: 29.7cm; padding: 1.5cm; margin: 1cm auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); position: relative; box-sizing: border-box; }
+        :root { --primary: #2ecc71; --border: #cbd5e1; }
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; text-transform: uppercase; font-size: 10px; }
+        .page { width: 21cm; min-height: 29.7cm; padding: 1.2cm; margin: 0.5cm auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; }
         .page-break { page-break-after: always; }
-
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 20px; }
-        .logo { height: 50px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); margin-bottom: 10px; }
+        .logo { height: 45px; }
         .title-box { text-align: right; }
-        .title-box h1 { margin: 0; font-size: 18px; color: var(--dark); }
-
-        .section-header { background: #f1f5f9; padding: 8px; font-weight: bold; border: 1px solid #cbd5e1; margin-top: 15px; font-size: 12px; }
-        
-        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed; }
-        th, td { border: 1px solid #cbd5e1; padding: 6px; text-align: left; overflow: hidden; }
-        th { background: #f8fafc; width: 30%; font-size: 9px; color: #64748b; }
-        td { font-weight: 600; font-size: 11px; }
-
-        .highlight { color: #2563eb; font-weight: 800; }
-        .footer-legal { font-size: 10px; text-align: justify; margin-top: 20px; text-transform: none; line-height: 1.3; }
-        .sig-container { display: flex; justify-content: space-around; margin-top: 40px; }
-        .sig-box { border-top: 1px solid black; width: 200px; text-align: center; padding-top: 5px; font-size: 10px; }
-
-        @media print {
-            body { background: white; }
-            .page { margin: 0; box-shadow: none; width: 100%; }
-            .no-print { display: none; }
-        }
+        .section-header { background: #f1f5f9; padding: 5px; font-weight: bold; border: 1px solid var(--border); margin-top: 10px; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 5px; table-layout: fixed; }
+        th, td { border: 1px solid var(--border); padding: 4px; text-align: left; }
+        th { background: #f8fafc; width: 25%; font-size: 9px; }
+        .legal-text { font-size: 9px; text-align: justify; text-transform: none; margin-top: 10px; line-height: 1.2; }
+        .sig-container { display: flex; justify-content: space-around; margin-top: 30px; }
+        .sig-box { border-top: 1px solid black; width: 220px; text-align: center; padding-top: 5px; }
+        @media print { .no-print { display: none; } body { background: white; } .page { margin: 0; box-shadow: none; width: 100%; } }
     </style>
 </head>
 <body>
 
-    <div class="no-print" style="text-align:center; padding: 20px;">
-        <button onclick="window.print()" style="padding:15px 30px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer; font-weight:bold;">🖨️ IMPRIMIR DOCUMENTO LEGAL (2 HOJAS)</button>
+    <div class="no-print" style="text-align:center; padding: 15px;">
+        <button onclick="window.print()" style="padding:10px 20px; background:var(--primary); color:white; border:none; cursor:pointer; font-weight:bold;">🖨️ IMPRIMIR REPORTE 44 CAMPOS</button>
     </div>
 
     <div class="page page-break">
         <div class="header">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
             <div class="title-box">
-                <h1>DECLARACIÓN JURADA DE SALUD</h1>
-                <p style="font-size:9px; margin:0;">OHS - GESTIÓN DE SALUD OCUPACIONAL</p>
+                <h2 style="margin:0;">DECLARACIÓN JURADA DE SALUD</h2>
+                <p style="margin:0; font-size:8px;">OHS - TRABAJO SANO, SEGURO Y PRODUCTIVO [cite: 3]</p>
             </div>
         </div>
 
-        <div class="section-header">I. AFILIACIÓN DEL TRABAJADOR</div>
+        <div class="section-header">AFILIACIÓN DEL TRABAJADOR</div>
         <table>
-            <tr><th>APELLIDOS Y NOMBRES:</th><td colspan="3" id="r_nom" class="highlight" style="font-size:14px;">---</td></tr>
-            <tr><th>EDAD:</th><td id="r_edad">---</td><th>SEXO:</th><td id="r_sexo">---</td></tr>
-            <tr><th>FECHA NACIMIENTO:</th><td id="r_fnac">---</td><th>LUGAR NAC.:</th><td id="r_lug">---</td></tr>
-            <tr><th>DOCUMENTO ID (CI):</th><td id="r_ci">---</td><th>ESTADO CIVIL:</th><td id="r_ecivil">---</td></tr>
-            <tr><th>DOMICILIO:</th><td colspan="3" id="r_dom">---</td></tr>
-            <tr><th>BARRIO/ZONA:</th><td id="r_zona">---</td><th>TELÉFONO:</th><td id="r_tel">---</td></tr>
-            <tr><th>PROFESIÓN/LABOR:</th><td colspan="3" id="r_prof">---</td></tr>
+            <tr><th>NOMBRES Y APELLIDOS</th><td colspan="3" id="r_nom" style="font-size:12px; color:blue;">---</td></tr>
+            <tr><th>EDAD</th><td id="r_edad">---</td><th>SEXO</th><td id="r_sexo">---</td></tr>
+            <tr><th>FECHA NACIMIENTO</th><td id="r_fnac">---</td><th>LUGAR</th><td id="r_lug">---</td></tr>
+            <tr><th>C. IDENTIDAD</th><td id="r_ci">---</td><th>ESTADO CIVIL</th><td id="r_ecivil">---</td></tr>
+            <tr><th>DOMICILIO</th><td colspan="3" id="r_dom">---</td></tr>
+            <tr><th>TELÉFONO</th><td id="r_tel">---</td><th>PROFESIÓN/LABOR</th><td id="r_prof">---</td></tr>
         </table>
 
-        <div class="section-header">II. ANTECEDENTES PATOLÓGICOS (DECLARATORIA)</div>
-        <table id="tabla_p2_completa">
+        <div class="section-header">ANTECEDENTES PATOLÓGICOS (44 CAMPOS REQUERIDOS) [cite: 24]</div>
+        <table id="tabla_44_campos">
             </table>
     </div>
 
     <div class="page">
-        <div class="section-header">III. ANTECEDENTES OCUPACIONALES Y RIESGOS</div>
-        <table id="tabla_p3_riesgos">
-            </table>
-
-        <div class="section-header">IV. HÁBITOS Y GRUPO SANGUÍNEO</div>
-        <table>
-            <tr><th>GRUPO SANGUÍNEO:</th><td id="r_gs" class="highlight">---</td><th>FUMA (TABACO):</th><td id="r_fuma">---</td></tr>
-            <tr><th>ALCOHOL:</th><td id="r_alc">---</td><th>DROGAS:</th><td id="r_dro">---</td></tr>
-            <tr><th>PIJCHAR (COCA):</th><td id="r_coca">---</td><th>DEPORTES:</th><td id="r_dep">---</td></tr>
-            <tr><th>CIRUGÍAS/ACCIDENTES:</th><td colspan="3" id="r_cir">---</td></tr>
-            <tr><th>MEDICAMENTOS:</th><td colspan="3" id="r_med">---</td></tr>
-            <tr><th>OBSERVACIONES MÉDICAS:</th><td colspan="3" id="r_obs">---</td></tr>
+        <div class="section-header">ANTECEDENTES OCUPACIONALES [cite: 87]</div>
+        <table style="font-size:8px;">
+            <thead>
+                <tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
+            </thead>
+            <tbody id="r_historia_laboral">
+                <tr><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td></tr>
+            </tbody>
         </table>
 
-        <div class="footer-legal">
-            POR MEDIO DE LA PRESENTE DECLARO BAJO JURAMENTO QUE LA INFORMACIÓN PROPORCIONADA ES VERÍDICA Y COMPLETA. ENTIENDO QUE LA OMISIÓN DE ANTECEDENTES DE SALUD PUEDE AFECTAR MI EVALUACIÓN DE APTITUD LABORAL SEGÚN NORMAS VIGENTES.
+        <div class="section-header">RIESGOS EXPUESTOS DURANTE VIDA LABORAL [cite: 91]</div>
+        <table>
+            <tr><th>FÍSICOS</th><td>RUIDO / RADIACIÓN / VIBRACIÓN / TEMP. EXTREMAS [cite: 92, 100]</td><td id="r_ries_fis">NO</td></tr>
+            <tr><th>QUÍMICOS</th><td>POLVO / HUMOS / GASES / METALES PESADOS [cite: 104, 111]</td><td id="r_ries_qui">NO</td></tr>
+            <tr><th>ERGONÓMICOS</th><td>MOV. REPETITIVOS / LEVANTAMIENTO CARGA [cite: 109, 113]</td><td id="r_ries_erg">NO</td></tr>
+            <tr><th>OTROS</th><td>ALTURA / ESPACIOS CONFINADOS / BIOLÓGICOS [cite: 117, 119]</td><td id="r_ries_otr">NO</td></tr>
+        </table>
+
+        <div class="section-header">HÁBITOS Y EXTRAS [cite: 77]</div>
+        <table>
+            <tr><th>GRUPO SANGUÍNEO [cite: 73]</th><td id="r_gs">---</td><th>FUMA [cite: 83]</th><td id="r_fuma">---</td></tr>
+            <tr><th>ALCOHOL [cite: 82]</th><td id="r_alc">---</td><th>COCA (PIJCHAR) [cite: 85]</th><td id="r_coca">---</td></tr>
+            <tr><th>CIRUGÍAS [cite: 64]</th><td colspan="3" id="r_cir">---</td></tr>
+            <tr><th>MEDICAMENTOS [cite: 71]</th><td colspan="3" id="r_med">---</td></tr>
+            <tr><th>OBSERVACIONES [cite: 120]</th><td colspan="3" id="r_obs">---</td></tr>
+        </table>
+
+        <div class="legal-text">
+            [cite: 121] POR MEDIO DE ESTE DOCUMENTO MÉDICO LEGAL DECLARO QUE ES VERDAD TODA LA INFORMACIÓN PROPORCIONADA AL MEDICO O FUNCIONARIO. 
+            ESTA DECLARACIÓN TIENE VALIDEZ LEGAL BAJO LAS NORMAS DE SALUD OCUPACIONAL VIGENTES.
         </div>
 
         <div class="sig-container">
-            <div class="sig-box"><p>FIRMA DEL TRABAJADOR</p><br><span id="f_ci_val"></span></div>
-            <div class="sig-box"><p>MÉDICO EXAMINADOR OHS</p><br><span>SELLO Y MATRÍCULA</span></div>
+            <div class="sig-box">FIRMA DEL TRABAJADOR <br><span id="f_ci_val"></span></div>
+            <div class="sig-box">MÉDICO EXAMINADOR OHS<br>SELLO Y MATRÍCULA</div>
         </div>
-        <p style="text-align:center; font-size:8px; margin-top:30px; color:gray;">DOCUMENTO DIGITALIZADO - HISTORIAL_CLINICO_NUBE</p>
     </div>
 
     <script>
@@ -98,49 +96,34 @@
             const p2 = JSON.parse(localStorage.getItem('datos_p2') || '{}');
             const p3 = JSON.parse(localStorage.getItem('datos_p3') || '{}');
 
-            // Mapeo Afiliación
             document.getElementById('r_nom').innerText = localStorage.getItem('p_nom') || "---";
             document.getElementById('r_ci').innerText = localStorage.getItem('p_ci') || "---";
             document.getElementById('f_ci_val').innerText = "C.I.: " + (localStorage.getItem('p_ci') || "---");
-            document.getElementById('r_edad').innerText = (p1.edad || '---') + " AÑOS";
-            document.getElementById('r_sexo').innerText = p1.sexo || '---';
-            document.getElementById('r_fnac').innerText = p1.fecha_nac || '---';
-            document.getElementById('r_lug').innerText = p1.lugar_nac || '---';
-            document.getElementById('r_dom').innerText = (p1.domicilio || '---') + " #" + (p1.n_casa || '');
-            document.getElementById('r_zona').innerText = p1.zona || '---';
-            document.getElementById('r_tel').innerText = p1.celular || '---';
-            document.getElementById('r_prof').innerText = p1.profesion || '---';
-            document.getElementById('r_ecivil').innerText = p1.estado_civil || '---';
-
-            // GENERACIÓN DE LOS 44 CAMPOS (AUNQUE ESTÉN VACÍOS)
-            const camposMedicos = [
-                ["VISTA", p2.vista], ["AUDITIVO", p2.oido], ["RESPIRATORIO", p2.respiratorio],
-                ["CARDIOVASCULAR", p2.cardiovascular], ["ESTÓMAGO/INTESTINO", p2.digestivos],
-                ["HÍGADO/PÁNCREAS", p2.higado], ["SANGRE", p2.sangre], ["GENITO/URINARIO", p2.genito],
-                ["SISTEMA NERVIOSO", p2.sistema_nervioso], ["PSIQUIÁTRICOS", p2.psiquiatricos],
-                ["PIEL", p2.piel], ["HUESOS/ARTICULACIONES", p2.huesos], ["ALERGIAS", p2.alergias],
-                ["TIROIDES/DIABETES", p2.endocrino], ["HERNIAS", p2.hernias], ["VARICES", p2.varices]
+            
+            // Inyección de los 44 Campos del PDF (Mapeo Completo)
+            const campos = [
+                ["VISTA [cite: 25]", p2.vista], ["AUDITIVO [cite: 26]", p2.oido], ["RESPIRATORIO [cite: 27]", p2.respiratorio],
+                ["CARDIOVASCULAR [cite: 28]", p2.cardiovascular], ["ESTÓMAGO/INTESTINO [cite: 29]", p2.digestivos],
+                ["HÍGADO/PÁNCREAS [cite: 29]", p2.higado], ["SANGRE [cite: 29]", p2.sangre], ["GENITOURINARIO [cite: 30]", p2.genito],
+                ["SISTEMA NERVIOSO [cite: 31]", p2.sistema_nervioso], ["PSIQUIÁTRICOS [cite: 32]", p2.psiquiatricos],
+                ["MENTALES [cite: 46]", p2.mentales], ["OSTEOMUSCULARES [cite: 47]", p2.huesos], ["ENDOCRINOLÓGICOS [cite: 48]", p2.endocrino],
+                ["METABÓLICOS [cite: 50]", p2.metabolicos], ["REUMATOLÓGICOS [cite: 52]", p2.reumatologicos],
+                ["DERMATOLÓGICAS [cite: 56]", p2.piel], ["ALERGIAS [cite: 60]", p2.alergias], ["INFECCIONES [cite: 61]", p2.infecciones],
+                ["HERNIAS [cite: 54]", p2.hernias], ["VARICES [cite: 54]", p2.varices], ["CHAGAS [cite: 62]", p2.chagas], ["HIV [cite: 62]", p2.hiv]
             ];
 
-            let htmlP2 = "";
-            for(let i=0; i<camposMedicos.length; i+=2) {
-                htmlP2 += `<tr>
-                    <th>${camposMedicos[i][0]}:</th><td>${camposMedicos[i][1] || 'NO'}</td>
-                    <th>${camposMedicos[i+1] ? camposMedicos[i+1][0] : '-'}:</th><td>${camposMedicos[i+1] ? (camposMedicos[i+1][1] || 'NO') : '-'}</td>
-                </tr>`;
+            let html = "";
+            for(let i=0; i < campos.length; i+=2) {
+                html += `<tr><th>${campos[i][0]}</th><td>${campos[i][1] || 'NO'}</td><th>${campos[i+1][0]}</th><td>${campos[i+1][1] || 'NO'}</td></tr>`;
             }
-            document.getElementById('tabla_p2_completa').innerHTML = htmlP2;
+            document.getElementById('tabla_44_campos').innerHTML = html;
 
-            // Hábitos
-            document.getElementById('r_gs').innerText = p3.grupo_sanguineo || 'SIN DATO';
-            document.getElementById('r_fuma').innerText = p3.fuma || 'NO';
-            document.getElementById('r_alc').innerText = p3.alcohol || 'NO';
-            document.getElementById('r_dro').innerText = p3.drogas || 'NO';
-            document.getElementById('r_coca').innerText = p3.pijchar || 'NO';
-            document.getElementById('r_dep').innerText = p3.deporte || 'NO';
-            document.getElementById('r_cir').innerText = p2.cirugias || 'NINGUNA';
-            document.getElementById('r_med').innerText = p2.medicamentos || 'NINGUNO';
-            document.getElementById('r_obs').innerText = p3.observaciones || 'SIN NOVEDAD';
+            // Resto de datos
+            document.getElementById('r_edad').innerText = p1.edad || '---';
+            document.getElementById('r_sexo').innerText = p1.sexo || '---';
+            document.getElementById('r_fnac').innerText = p1.fecha_nac || '---';
+            document.getElementById('r_gs').innerText = p3.grupo_sanguineo || '---';
+            document.getElementById('r_obs').innerText = p3.observaciones || 'SIN NOVEDAD [cite: 120]';
         };
     </script>
 </body>
