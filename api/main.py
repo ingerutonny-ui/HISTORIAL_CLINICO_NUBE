@@ -24,7 +24,7 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
-# --- RUTAS DE PERSONAL (CORREGIDAS SIN BARRA FINAL) ---
+# --- SECCIÓN PERSONAL (RUTAS SIN BARRA FINAL) ---
 @app.post("/doctor")
 async def save_doctor(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -43,7 +43,7 @@ async def save_enfermera(request: Request, db: Session = Depends(get_db)):
 def list_enfermeras(db: Session = Depends(get_db)):
     return db.query(models.Enfermera).all()
 
-# --- RUTAS DE PACIENTES ---
+# --- SECCIÓN PACIENTES Y REPORTES ---
 @app.get("/pacientes")
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
