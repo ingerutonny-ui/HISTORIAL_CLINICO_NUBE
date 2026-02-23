@@ -5,29 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REPORTE MÉDICO OHS | FINAL</title>
     <style>
-        /* AJUSTES PARA HOJA Y MEDIA */
         body { font-family: 'Segoe UI', sans-serif; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
-        .sheet { 
-            width: 210mm; 
-            min-height: 297mm; 
-            background: white; 
-            padding: 20mm; 
-            box-shadow: 0 0 10px rgba(0,0,0,0.5); 
-            margin-bottom: 20px; 
-            box-sizing: border-box; 
-            position: relative;
-        }
+        .sheet { width: 210mm; min-height: 297mm; background: white; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 20px; box-sizing: border-box; position: relative; }
+        
+        /* Contenedor de botones para que no se muevan al imprimir */
+        .nav-buttons { display: flex; gap: 10px; margin-bottom: 15px; width: 210mm; justify-content: flex-end; }
         
         .header { display: flex; align-items: center; border-bottom: 3px solid #22c55e; padding-bottom: 15px; margin-bottom: 25px; }
         .logo { height: 60px; }
         .header-title { flex: 1; text-align: center; }
         .header-title h1 { margin: 0; font-size: 20px; color: #1e293b; text-transform: uppercase; font-weight: 900; }
         
-        .section-title { 
-            background: #f1f5f9; padding: 8px 12px; font-size: 12px; font-weight: 800; 
-            border-left: 6px solid #22c55e; margin: 25px 0 15px 0; text-transform: uppercase; 
-        }
-
+        .section-title { background: #f1f5f9; padding: 8px 12px; font-size: 12px; font-weight: 800; border-left: 6px solid #22c55e; margin: 25px 0 15px 0; text-transform: uppercase; }
         .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 11.5px; }
         .data-item { border-bottom: 1.5px solid #f1f5f9; padding: 6px 0; display: flex; align-items: baseline; }
         .label { font-weight: 800; color: #64748b; width: 170px; text-transform: uppercase; font-size: 9.5px; flex-shrink: 0; }
@@ -40,36 +29,37 @@
         .riesgos-box { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
         .riesgo-tag { border: 2px solid #22c55e; padding: 5px 12px; border-radius: 6px; font-size: 10.5px; font-weight: 800; background: #f0fdf4; color: #16a34a; }
 
-        /* SALTO DE PÁGINA PARA QUE LAS FIRMAS NO SE CORTEN */
-        .page-break { page-break-before: always; margin-top: 40px; }
-
-        .footer-sign { 
-            margin-top: 80px; 
-            display: flex; 
-            justify-content: space-around; 
-            text-align: center; 
-            font-size: 12px; 
-        }
+        .footer-sign { margin-top: 80px; display: flex; justify-content: space-around; text-align: center; font-size: 12px; }
         .sign-line { border-top: 2px solid #1e293b; width: 250px; margin-top: 60px; padding-top: 10px; font-weight: 800; text-transform: uppercase; }
+
+        /* Estilo Botones */
+        .btn-ohs { cursor:pointer; border:none; padding:12px 20px; border-radius:8px; font-weight:800; font-size:14px; transition: 0.3s; text-decoration: none; }
+        .btn-print { background:#22c55e; color:white; }
+        .btn-back { background:#1e293b; color:white; }
+        .btn-ohs:hover { opacity: 0.9; transform: scale(1.02); }
 
         @media print { 
             body { background: white; padding: 0; } 
             .sheet { box-shadow: none; width: 100%; margin: 0; padding: 15mm; } 
             .no-print { display: none; }
-            .section-title { -webkit-print-color-adjust: exact; }
         }
     </style>
 </head>
 <body>
+
+<div class="nav-buttons no-print">
+    <a href="lista_historial.html" class="btn-ohs btn-back">⬅ VOLVER AL LISTADO</a>
+    <button class="btn-ohs btn-print" onclick="window.print()">IMPRIMIR REPORTE 📄</button>
+</div>
+
 <div class="sheet">
     <div class="header">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
         <div class="header-title"><h1>Historial Clínico Ocupacional</h1><div style="font-size: 11px; font-weight: 700;">ESTADO PLURINACIONAL DE BOLIVIA</div></div>
-        <button class="no-print" onclick="window.print()" style="cursor:pointer; background:#22c55e; color:white; border:none; padding:12px 20px; border-radius:8px; font-weight:800; font-size:14px;">IMPRIMIR REPORTE 📄</button>
     </div>
 
     <div class="section-title">I. Afiliación del Trabajador (P1)</div>
-    <div class="data-grid" id="grid_p1">
+    <div class="data-grid">
         <div class="data-item"><span class="label">Paciente:</span> <span class="val" id="r_paciente">---</span></div>
         <div class="data-item"><span class="label">Cédula:</span> <span class="val" id="r_ci">---</span></div>
         <div class="data-item"><span class="label">Edad:</span> <span class="val" id="r_edad">---</span></div>
@@ -121,7 +111,6 @@
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
 
-            // Llenado de P1
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
             document.getElementById('r_ci').innerText = data.paciente.ci;
             document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
@@ -132,14 +121,10 @@
                 document.getElementById('r_tel').innerText = data.filiacion.telefono || '---';
                 document.getElementById('r_profesion').innerText = data.filiacion.profesion_oficio || '---';
             }
-
-            // Llenado de P2
             if (data.p2) {
                 document.getElementById('grid_p2').innerHTML = fields_p2.map(f => `
                     <div class="data-item"><span class="label">${f.replace(/_/g,' ').toUpperCase()}:</span> <span class="val">${data.p2[f] || 'SIN HALLAZGOS'}</span></div>`).join('');
             }
-
-            // Llenado de P3
             if (data.p3) {
                 document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
                 document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad})`;
@@ -148,14 +133,11 @@
                 document.getElementById('r_coca').innerText = data.p3.coca;
                 document.getElementById('r_obs').innerText = data.p3.observaciones || 'SIN OBSERVACIONES';
 
-                // Tabla Laboral - Desempaquetado
                 const hRaw = data.p3.historia_laboral || "";
                 if(hRaw.includes('|')) {
                     const p = hRaw.split('|').map(x => x.split(':')[1]?.trim() || '---');
                     document.getElementById('r_tabla_laboral').innerHTML = `<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3]}</td><td>${p[4]}</td><td>${p[5]}</td></tr>`;
                 }
-
-                // Riesgos
                 const rRaw = data.p3.riesgos_expuestos || "NINGUNO";
                 document.getElementById('r_riesgos_box').innerHTML = rRaw.split(',').map(r => `<span class="riesgo-tag">${r.trim()}</span>`).join('');
             }
