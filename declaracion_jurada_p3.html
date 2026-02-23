@@ -99,23 +99,26 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ GUARDANDO..."; btn.disabled = true;
+        btn.innerHTML = "⏳ PROCESANDO GUARDADO..."; btn.disabled = true;
 
         const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
         const riesgos = [];
         document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
 
         try {
-            // PASO 1: Guardar P2 limpio (solo lo que le pertenece)
+            // ENVÍO 1: ANTECEDENTES (P2)
             const resP2 = await fetch(`${API}/p2/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ paciente_id: parseInt(id_p), ...dataP2 })
+                body: JSON.stringify({
+                    paciente_id: parseInt(id_p),
+                    ...dataP2
+                })
             });
 
-            if(!resP2.ok) throw new Error("Falla en P2");
+            if(!resP2.ok) throw new Error("P2_FAIL");
 
-            // PASO 2: Guardar P3 limpio (con nombres de campos exactos)
+            // ENVÍO 2: HÁBITOS Y LABORAL (P3)
             const resP3 = await fetch(`${API}/p3/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -142,12 +145,18 @@
             });
 
             if(resP3.ok) {
-                alert("✅ EXPEDIENTE COMPLETO GUARDADO");
+                alert("✅ TRILLIZOS GUARDADOS CON ÉXITO");
                 localStorage.removeItem('temp_p2');
                 window.location.href = "lista_historial.html";
-            } else { alert("❌ ERROR INTERNO EN P3. REVISE LOGS."); }
-        } catch(err) { alert("❌ ERROR DE CONEXIÓN O PROCESAMIENTO."); }
-        finally { btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE"; btn.disabled = false; }
+            } else {
+                alert("❌ ERROR EN P3 (VERIFICAR CAMPOS)");
+            }
+        } catch(err) {
+            alert("❌ ERROR DE CONEXIÓN O SERVIDOR");
+        } finally {
+            btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE";
+            btn.disabled = false;
+        }
     };
 </script>
 </body>
