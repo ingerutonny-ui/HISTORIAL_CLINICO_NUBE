@@ -18,8 +18,6 @@
         .data-banner { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-around; font-size: 11px; font-weight: 800; border: 1px solid #cbd5e1; color: #1e293b; text-transform: uppercase; }
         .btn-next { background: #22c55e; color: white; border: none; padding: 15px; border-radius: 10px; width: 100%; font-weight: 800; text-transform: uppercase; margin-top: 20px; font-size: 13px; transition: 0.3s; }
         .btn-next:hover { background: #16a34a; transform: translateY(-2px); }
-        @media (max-width: 992px) { .grid-layout { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 600px) { .grid-layout { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -32,8 +30,8 @@
     </div>
 
     <div class="data-banner">
-        <div>PACIENTE: <span id="b_paciente">CARGANDO...</span></div>
-        <div>CÓDIGO: <span id="b_codigo">...</span></div>
+        <div>PACIENTE: <span id="b_paciente">---</span></div>
+        <div>CÓDIGO: <span id="b_codigo">---</span></div>
     </div>
 
     <form id="formP2">
@@ -81,8 +79,7 @@
         if (!id_paciente) return;
 
         try {
-            // RUTA SIN /API/ SI TU BACKEND ESTÁ EN LA RAÍZ
-            const resp = await fetch(`${API}/paciente-completo/${id_paciente}`);
+            const resp = await fetch(`${API}/api/paciente-completo/${id_paciente}`);
             const data = await resp.json();
             
             if (data.paciente) {
@@ -113,14 +110,14 @@
         });
 
         try {
-            const url = existeP2 ? `${API}/p2/${id_paciente}` : `${API}/p2/`;
-            const r = await fetch(url, {
-                method: existeP2 ? 'PUT' : 'POST',
+            const url = `${API}/api/p2/${id_paciente}`;
+            await fetch(url, {
+                method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
-            if(r.ok) window.location.href = "declaracion_jurada_p3.html";
-        } catch(e) { alert("ERROR"); }
+            window.location.href = "declaracion_jurada_p3.html";
+        } catch(e) { console.error(e); }
     };
 </script>
 </body>
