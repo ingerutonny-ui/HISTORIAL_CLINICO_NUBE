@@ -2,125 +2,137 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>REPORTE MÉDICO INTEGRAL OHS</title>
+    <title>HISTORIAL CLÍNICO - OHS BOLIVIA</title>
     <style>
-        :root { --primary: #2ecc71; --accent: #2563eb; --dark: #1e293b; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; text-transform: uppercase; }
-        .report-card { max-width: 1000px; margin: auto; padding: 15px; border: 1px solid #ddd; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        :root { --nancy-blue: #0046ad; --nancy-green: #2ecc71; --nancy-gray: #f8fafc; }
         
-        .dato { font-size: 14px; font-weight: 800; color: #000; }
-        .label-min { font-size: 9px; font-weight: 700; color: #475569; background: #f8fafc; padding: 4px; }
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 20px; color: #1e293b; text-transform: uppercase; background: #fff; }
+        .report-card { max-width: 950px; margin: auto; border: 1px solid #e2e8f0; padding: 40px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); position: relative; }
         
-        .header { display: flex; justify-content: space-between; border-bottom: 3px solid var(--primary); padding-bottom: 5px; }
-        .section-title { background: #f1f5f9; color: var(--accent); padding: 5px; font-size: 11px; font-weight: 900; margin-top: 10px; border-left: 5px solid var(--accent); }
+        /* ESTILO NANCY ELEGANTE: CABECERA LIMPIA */
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; border-bottom: 4px solid var(--nancy-green); padding-bottom: 15px; }
+        .logo { height: 70px; }
+        .header-title { text-align: right; }
+        .header-title h1 { margin: 0; font-size: 22px; font-weight: 900; color: var(--nancy-blue); }
+        .header-title p { margin: 0; font-size: 10px; letter-spacing: 2px; color: #64748b; }
+
+        .section-header { background: var(--nancy-gray); border-left: 6px solid var(--nancy-blue); padding: 10px 15px; margin: 20px 0 10px 0; font-weight: 900; font-size: 13px; color: var(--nancy-blue); }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        th, td { border: 1px solid #cbd5e1; padding: 5px; text-align: left; }
+        /* TABLAS ELEGANTES */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        th, td { border: 1px solid #e2e8f0; padding: 10px; text-align: left; }
+        th { background: #f1f5f9; font-size: 9px; color: #475569; width: 20%; font-weight: 700; }
         
-        .grid-compact { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid #cbd5e1; border-left: 1px solid #cbd5e1; }
-        .item-compact { display: grid; grid-template-columns: 160px 1fr; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; }
+        /* DATO NANCY: FUENTE 14PX PARA TODO */
+        .dato { font-size: 14px; font-weight: 700; color: #000; }
+
+        .grid-p2 { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 1px solid #e2e8f0; border-left: 1px solid #e2e8f0; }
+        .item-p2 { display: grid; grid-template-columns: 180px 1fr; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
         
-        .signatures { display: flex; justify-content: space-around; margin-top: 25px; text-align: center; font-size: 10px; }
-        .firma-line { width: 220px; border-top: 1px solid #000; padding-top: 5px; font-weight: 900; }
-        
-        @media print { .no-print { display: none; } body { padding: 0; } .report-card { border: none; } }
+        .footer-signatures { display: flex; justify-content: space-around; margin-top: 60px; }
+        .firma { width: 250px; border-top: 2px solid #334155; text-align: center; padding-top: 8px; font-size: 10px; font-weight: 900; }
+
+        .btn-float { position: fixed; top: 20px; left: 20px; background: var(--nancy-blue); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 900; cursor: pointer; z-index: 1000; transition: 0.3s; }
+        .btn-float:hover { background: var(--nancy-green); transform: scale(1.05); }
+
+        @media print { .btn-float { display: none; } body { padding: 0; } .report-card { border: none; box-shadow: none; width: 100%; } }
     </style>
 </head>
 <body>
 
-    <div class="no-print" style="text-align: center; padding: 10px;">
-        <button onclick="window.print()" style="padding: 10px 40px; background: #2ecc71; color: white; border: none; font-weight: 900; cursor: pointer; border-radius: 5px;">🖨️ IMPRIMIR REPORTE (44 CAMPOS)</button>
-    </div>
+    <button class="btn-float" onclick="window.print()">🖨️ IMPRIMIR REPORTE NANCY</button>
 
     <div class="report-card">
         <div class="header">
-            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="50">
-            <div style="text-align: right;">
-                <h2 style="margin:0; font-size: 14px;">HISTORIAL CLÍNICO - GESTIÓN DIGITAL</h2>
-                <span id="p_cod" class="dato" style="color: var(--primary);">CÓDIGO: ---</span>
+            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
+            <div class="header-title">
+                <h1>DECLARACIÓN JURADA DE SALUD</h1>
+                <p>OHS BOLIVIA - GESTIÓN CLÍNICA DIGITAL</p>
+                <div id="cod_top" style="font-size: 18px; color: var(--nancy-green); font-weight: 900; margin-top: 5px;">---</div>
             </div>
         </div>
 
-        <div class="section-title">I. AFILIACIÓN Y FILIACIÓN (P1)</div>
+        <div class="section-header">I. DATOS DE AFILIACIÓN (P1)</div>
         <table>
-            <tr><th class="label-min">PACIENTE:</th><td colspan="3" class="dato" id="r_nom">---</td></tr>
+            <tr><th>PACIENTE:</th><td colspan="3" class="dato" id="d_nom">---</td></tr>
             <tr>
-                <th class="label-min">C.I.:</th><td class="dato" id="r_ci">---</td>
-                <th class="label-min">EDAD:</th><td class="dato" id="r_edad">---</td>
+                <th>C.I.:</th><td class="dato" id="d_ci">---</td>
+                <th>ESTADO CIVIL:</th><td class="dato" id="d_eciv">---</td>
             </tr>
             <tr>
-                <th class="label-min">SEXO:</th><td class="dato" id="r_sexo">---</td>
-                <th class="label-min">ESTADO CIVIL:</th><td class="dato" id="r_eciv">---</td>
+                <th>EDAD:</th><td class="dato" id="d_edad">---</td>
+                <th>SEXO:</th><td class="dato" id="d_sexo">---</td>
             </tr>
             <tr>
-                <th class="label-min">FECHA NAC.:</th><td class="dato" id="r_fnac">---</td>
-                <th class="label-min">LUGAR NAC.:</th><td class="dato" id="r_lnac">---</td>
+                <th>FECHA NAC.:</th><td class="dato" id="d_fnac">---</td>
+                <th>LUGAR NAC.:</th><td class="dato" id="d_lnac">---</td>
             </tr>
             <tr>
-                <th class="label-min">DOMICILIO:</th><td class="dato" id="r_dom">---</td>
-                <th class="label-min">ZONA:</th><td class="dato" id="r_zona">---</td>
+                <th>DOMICILIO:</th><td class="dato" id="d_dom">---</td>
+                <th>ZONA:</th><td class="dato" id="d_zona">---</td>
             </tr>
             <tr>
-                <th class="label-min">TELÉFONO:</th><td class="dato" id="r_tel">---</td>
-                <th class="label-min">PROFESIÓN:</th><td class="dato" id="r_prof">---</td>
+                <th>TELÉFONO:</th><td class="dato" id="d_tel">---</td>
+                <th>PROFESIÓN:</th><td class="dato" id="d_prof">---</td>
             </tr>
         </table>
 
-        <div class="section-title">II. ANTECEDENTES PATOLÓGICOS PERSONALES Y FAMILIARES (P2)</div>
-        <div class="grid-compact" id="box_p2"></div>
+        <div class="section-header">II. ANTECEDENTES PATOLÓGICOS (22 CAMPOS P2)</div>
+        <div class="grid-p2" id="grid_p2"></div>
 
-        <div class="section-title">III. ANTECEDENTES OCUPACIONALES Y LABORALES</div>
+        <div class="section-header">III. ANTECEDENTES OCUPACIONALES Y RIESGOS</div>
         <table>
-            <tr><th class="label-min">HISTORIA LABORAL:</th><td colspan="3" class="dato" id="r_hist">---</td></tr>
+            <tr><th>HISTORIA LABORAL:</th><td class="dato" id="d_hist">---</td></tr>
+            <tr><th>RIESGOS EXPUESTOS:</th><td class="dato" id="d_ries">---</td></tr>
         </table>
 
-        <div class="section-title">IV. ANTECEDENTES DE RIESGOS EXPUESTOS</div>
+        <div class="section-header">IV. HÁBITOS Y GRUPO SANGUÍNEO (P3)</div>
         <table>
-            <tr><th class="label-min">RIESGOS DETECTADOS:</th><td colspan="3" class="dato" id="r_ries">---</td></tr>
+            <tr>
+                <th>G. SANGUÍNEO:</th><td class="dato" id="d_gs" style="color:red;">---</td>
+                <th>DEPORTE:</th><td class="dato" id="d_dep">---</td>
+            </tr>
+            <tr>
+                <th>TABACO:</th><td class="dato" id="d_fuma">---</td>
+                <th>ALCOHOL:</th><td class="dato" id="d_alc">---</td>
+            </tr>
+            <tr>
+                <th>DROGAS:</th><td class="dato" id="d_drog">---</td>
+                <th>COCA:</th><td class="dato" id="d_coca">---</td>
+            </tr>
+            <tr><th>OBSERVACIONES:</th><td colspan="3" class="dato" id="d_obs">---</td></tr>
         </table>
 
-        <div class="section-title">V. HÁBITOS, GRUPO SANGUÍNEO Y OBSERVACIONES (P3)</div>
-        <div class="grid-compact">
-            <div class="item-compact"><div class="label-min">G. SANGUÍNEO:</div><div class="dato" id="r_gs" style="color:red;">---</div></div>
-            <div class="item-compact"><div class="label-min">DEPORTE:</div><div class="dato" id="r_dep">---</div></div>
-            <div class="item-compact"><div class="label-min">FUMA:</div><div class="dato" id="r_fuma">---</div></div>
-            <div class="item-compact"><div class="label-min">ALCOHOL:</div><div class="dato" id="r_alc">---</div></div>
-            <div class="item-compact"><div class="label-min">DROGAS:</div><div class="dato" id="r_drog">---</div></div>
-            <div class="item-compact"><div class="label-min">COCA:</div><div class="dato" id="r_coca">---</div></div>
-        </div>
-        <table>
-            <tr><th class="label-min">OBSERVACIONES MÉDICAS:</th><td colspan="3" class="dato" id="r_obs">---</td></tr>
-        </table>
-
-        <div class="signatures">
-            <div class="firma-line">FIRMA DEL TRABAJADOR<br><span id="f_ci"></span></div>
-            <div class="firma-line">MÉDICO EXAMINADOR OHS<br>SELLO Y MATRÍCULA</div>
+        <div class="footer-signatures">
+            <div class="firma">FIRMA DEL TRABAJADOR<br><span id="f_ci"></span></div>
+            <div class="firma">MÉDICO EXAMINADOR<br>OHS BOLIVIA</div>
         </div>
     </div>
 
     <script>
-        function render() {
+        function barrearCampos() {
             const p1 = JSON.parse(localStorage.getItem('datos_p1') || '{}');
             const p2 = JSON.parse(localStorage.getItem('datos_temporales_p2') || '{}');
             const p3 = JSON.parse(localStorage.getItem('datos_p3') || '{}');
 
-            // P1 - 12 CAMPOS
-            document.getElementById('r_nom').innerText = localStorage.getItem('p_nom') || "---";
-            document.getElementById('r_ci').innerText = localStorage.getItem('p_ci') || "---";
-            document.getElementById('f_ci').innerText = "C.I. " + (localStorage.getItem('p_ci') || "");
-            document.getElementById('p_cod').innerText = "CÓDIGO: " + (localStorage.getItem('p_cod') || "");
-            document.getElementById('r_edad').innerText = (p1.edad || "---") + " AÑOS";
-            document.getElementById('r_sexo').innerText = p1.sexo || "---";
-            document.getElementById('r_eciv').innerText = p1.estado_civil || "---";
-            document.getElementById('r_fnac').innerText = p1.fecha_nacimiento || "---";
-            document.getElementById('r_lnac').innerText = p1.lugar_nacimiento || "---";
-            document.getElementById('r_dom').innerText = (p1.domicilio || "") + " #" + (p1.n_casa || "");
-            document.getElementById('r_zona').innerText = p1.zona_barrio || "---";
-            document.getElementById('r_tel').innerText = p1.telefono || "---";
-            document.getElementById('r_prof').innerText = p1.profesion_oficio || "---";
+            // Mapeo P1
+            document.getElementById('d_nom').innerText = localStorage.getItem('p_nom') || p1.nombre || "---";
+            document.getElementById('d_ci').innerText = localStorage.getItem('p_ci') || p1.ci || "---";
+            document.getElementById('f_ci').innerText = "C.I. " + (localStorage.getItem('p_ci') || p1.ci || "");
+            document.getElementById('cod_top').innerText = "CÓDIGO: " + (localStorage.getItem('p_cod') || "S/C");
+            document.getElementById('d_edad').innerText = (p1.edad || "---") + " AÑOS";
+            document.getElementById('d_sexo').innerText = p1.sexo || "---";
+            document.getElementById('d_eciv').innerText = p1.estado_civil || "---";
+            document.getElementById('d_fnac').innerText = p1.fecha_nacimiento || "---";
+            document.getElementById('d_lnac').innerText = p1.lugar_nacimiento || "---";
+            document.getElementById('d_dom').innerText = (p1.domicilio || "") + " #" + (p1.n_casa || "");
+            document.getElementById('d_zona').innerText = p1.zona_barrio || "---";
+            document.getElementById('d_tel').innerText = p1.telefono || "---";
+            document.getElementById('d_prof').innerText = p1.profesion_oficio || "---";
 
-            // P2 - 22 CAMPOS DE PATOLOGÍAS
-            const patologias = [
+            // Mapeo P2 - 22 Campos
+            const patos = [
                 ["VISTA", p2.vista], ["AUDITIVO", p2.auditivo], ["RESPIRATORIO", p2.respiratorio],
                 ["CARDIO", p2.cardio], ["DIGESTIVOS", p2.digestivos], ["SANGRE", p2.sangre],
                 ["GENITOURINARIO", p2.genitourinario], ["S. NERVIOSO", p2.sistema_nervioso],
@@ -130,22 +142,22 @@
                 ["ACC. PERSONAL", p2.acc_personales], ["ACC. TRABAJO", p2.acc_trabajo], ["MEDICAMENTOS", p2.medicamentos],
                 ["ENDOCRINO", p2.endocrino], ["FAMILIARES", p2.familiares], ["OTROS", p2.otros_especificos], ["GENERALES", p2.generales]
             ];
-            document.getElementById('box_p2').innerHTML = patologias.map(c => `
-                <div class="item-compact"><div class="label-min">${c[0]}</div><div class="dato">${c[1] || 'NEGATIVO'}</div></div>
+            document.getElementById('grid_p2').innerHTML = patos.map(c => `
+                <div class="item-p2"><div class="th" style="padding:10px; background:#f8fafc; font-size:9px; font-weight:700;">${c[0]}</div><div class="dato" style="padding:10px;">${c[1] || 'NEGATIVO'}</div></div>
             `).join('');
 
-            // P3 y SECCIONES III, IV, V - 10 CAMPOS RESTANTES
-            document.getElementById('r_hist').innerText = p3.historia_laboral || "SIN ANTECEDENTES";
-            document.getElementById('r_ries').innerText = p3.riesgos_expuestos || "NINGUNO DETECTADO";
-            document.getElementById('r_gs').innerText = p3.grupo_sanguineo || "S/G";
-            document.getElementById('r_dep').innerText = (p3.deporte || "NO") + " (" + (p3.deporte_detalle || "N/A") + ")";
-            document.getElementById('r_fuma').innerText = (p3.fuma || "NO") + " (" + (p3.fuma_cantidad || "0") + ")";
-            document.getElementById('r_alc').innerText = (p3.alcohol || "NO") + " (" + (p3.alcohol_frecuencia || "N/A") + ")";
-            document.getElementById('r_drog').innerText = p3.drogas || "NO";
-            document.getElementById('r_coca').innerText = p3.coca || "NO";
-            document.getElementById('r_obs').innerText = p3.observaciones || "PACIENTE APTO";
+            // Mapeo P3 y Extras
+            document.getElementById('d_hist').innerText = p3.historia_laboral || "SIN ANTECEDENTES";
+            document.getElementById('d_ries').innerText = p3.riesgos_expuestos || "NINGUNO";
+            document.getElementById('d_gs').innerText = p3.grupo_sanguineo || "---";
+            document.getElementById('d_dep').innerText = (p3.deporte || "NO") + " (" + (p3.deporte_detalle || "N/A") + ")";
+            document.getElementById('d_fuma').innerText = (p3.fuma || "NO") + " (" + (p3.fuma_cantidad || "0") + ")";
+            document.getElementById('d_alc').innerText = (p3.alcohol || "NO") + " (" + (p3.alcohol_frecuencia || "N/A") + ")";
+            document.getElementById('d_drog').innerText = p3.drogas || "NO";
+            document.getElementById('d_coca').innerText = p3.coca || "NO";
+            document.getElementById('d_obs').innerText = p3.observaciones || "REGISTRO COMPLETADO";
         }
-        window.onload = render;
+        window.onload = barrearCampos;
     </script>
 </body>
 </html>
