@@ -24,7 +24,15 @@
         input, select, textarea { border: 1px solid #cbd5e1 !important; font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; padding: 2px 4px !important; border-radius: 0 !important; }
         .input-auto { background-color: #f8fafc !important; border: none !important; }
         
-        @media print { .no-print { display: none; } body { padding: 0; } .form-container { width: 100%; max-width: 100%; box-shadow: none; border: none; } }
+        /* Sección de Firmas */
+        .signature-section { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 30px; text-align: center; }
+        .signature-line { border-top: 1px solid #000; margin-top: 40px; padding-top: 5px; font-weight: 800; text-transform: uppercase; font-size: 9px; }
+
+        @media print { 
+            .no-print { display: none !important; } 
+            body { background: white; padding: 0; } 
+            .form-container { width: 100%; max-width: 100%; box-shadow: none; border: none; } 
+        }
     </style>
 </head>
 <body>
@@ -103,37 +111,49 @@
             <div class="col-6">
                 <div class="section-title">IV. AGUDEZA VISUAL DE CERCA</div>
                 <table class="table-legal">
-                    <tr class="bg-grey text-center"><td>SIN CORRECCIÓN</td><td>20/</td><td>CON CORRECCIÓN</td><td>/</td></tr>
-                </table>
-                <table class="table-legal bg-green-soft">
-                    <tr class="bg-grey text-center"><td style="width:20%">CAMPO VISUAL</td><td style="width:10%">NORMAL</td><td style="width:10%">ALTERADO</td><td>OBSERVACIONES</td></tr>
-                    <tr><td>OJO DERECHO</td><td class="text-center"><input type="radio" name="cv_od" value="N"></td><td class="text-center"><input type="radio" name="cv_od" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
-                    <tr><td>OJO IZQUIERDO</td><td class="text-center"><input type="radio" name="cv_oi" value="N"></td><td class="text-center"><input type="radio" name="cv_oi" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+                    <tr class="bg-grey text-center"><td>OJO</td><td>SIN CORRECCIÓN</td><td>CON CORRECCIÓN</td><td>DIOPTRIAS</td></tr>
+                    <tr><td>OD</td><td><input id="od_c_sc" class="form-control"></td><td><input id="od_c_cc" class="form-control"></td><td><input id="od_c_dio" class="form-control"></td></tr>
+                    <tr><td>OI</td><td><input id="oi_c_sc" class="form-control"></td><td><input id="oi_c_cc" class="form-control"></td><td><input id="oi_c_dio" class="form-control"></td></tr>
                 </table>
             </div>
         </div>
 
+        <div class="section-title">V. EXAMENES COMPLEMENTARIOS</div>
         <table class="table-legal bg-green-soft">
-            <tr class="bg-grey text-center"><td style="width:20%">FONDO DE OJO</td><td style="width:10%">NORMAL</td><td style="width:10%">ALTERADO</td><td>OBSERVACIONES</td></tr>
-            <tr><td>OJO DERECHO</td><td class="text-center"><input type="radio" name="fo_od" value="N"></td><td class="text-center"><input type="radio" name="fo_od" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
-            <tr><td>OJO IZQUIERDO</td><td class="text-center"><input type="radio" name="fo_oi" value="N"></td><td class="text-center"><input type="radio" name="fo_oi" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr class="bg-grey text-center"><td style="width:20%">CAMPO VISUAL</td><td style="width:10%">NORMAL</td><td style="width:10%">ALTERADO</td><td>OBSERVACIONES</td></tr>
+            <tr><td>OJO DERECHO</td><td class="text-center"><input type="radio" name="cv_od" value="N"></td><td class="text-center"><input type="radio" name="cv_od" value="A"></td><td><input id="cv_od_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td>OJO IZQUIERDO</td><td class="text-center"><input type="radio" name="cv_oi" value="N"></td><td class="text-center"><input type="radio" name="cv_oi" value="A"></td><td><input id="cv_oi_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            
+            <tr class="bg-grey text-center"><td>FONDO DE OJO</td><td>NORMAL</td><td>ALTERADO</td><td>OBSERVACIONES</td></tr>
+            <tr><td>RESULTADO</td><td class="text-center"><input type="radio" name="fo" value="N"></td><td class="text-center"><input type="radio" name="fo" value="A"></td><td><input id="fo_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
             
             <tr class="bg-grey text-center"><td>TEST DE ISHIHARA</td><td>NORMAL</td><td>ALTERADO</td><td>OBSERVACIONES</td></tr>
-            <tr><td>RESULTADO</td><td class="text-center"><input type="radio" name="ish" value="N"></td><td class="text-center"><input type="radio" name="ish" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td>RESULTADO</td><td class="text-center"><input type="radio" name="ish" value="N"></td><td class="text-center"><input type="radio" name="ish" value="A"></td><td><input id="ish_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
             
-            <tr class="bg-grey text-center"><td>VISION ESTEREOSCOPICA:</td><td>NORMAL</td><td>ALTERADO</td><td>OBSERVACIONES</td></tr>
-            <tr><td>RESULTADO</td><td class="text-center"><input type="radio" name="est" value="N"></td><td class="text-center"><input type="radio" name="est" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr class="bg-grey text-center"><td>VISION ESTEREOSCOPICA</td><td>NORMAL</td><td>ALTERADO</td><td>OBSERVACIONES</td></tr>
+            <tr><td>RESULTADO</td><td class="text-center"><input type="radio" name="est" value="N"></td><td class="text-center"><input type="radio" name="est" value="A"></td><td><input id="est_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
         </table>
 
         <table class="table-legal bg-green-soft">
-            <tr class="bg-grey text-center"><td style="width:20%">PRESION INTRAOCULAR</td><td>OJO DERECHO</td><td>mmHg</td><td>OJO IZQUIERDO</td><td>mmHg</td></tr>
-            <tr><td class="text-center">RESULTADO</td><td><input class="form-control w-100"></td><td class="text-center">mmHg</td><td><input class="form-control w-100"></td><td class="text-center">mmHg</td></tr>
+            <tr class="bg-grey text-center"><td style="width:20%">PRESION INTRAOCULAR (PIO)</td><td>OJO DERECHO</td><td>mmHg</td><td>OJO IZQUIERDO</td><td>mmHg</td></tr>
+            <tr><td class="text-center">RESULTADO</td><td><input id="pio_od" class="form-control w-100"></td><td class="text-center">mmHg</td><td><input id="pio_oi" class="form-control w-100"></td><td class="text-center">mmHg</td></tr>
         </table>
 
-        <div class="section-title">V. DIAGNOSTICO Y RECOMENDACIONES</div>
-        <textarea id="diag" class="form-control w-100 mb-3" rows="3" style="border: 1.5px solid #000 !important;"></textarea>
+        <div class="section-title">VI. DIAGNOSTICO Y RECOMENDACIONES</div>
+        <textarea id="diag" class="form-control w-100" rows="3" style="border: 1.5px solid #000 !important;"></textarea>
 
-        <button type="submit" class="btn btn-success w-100 p-2 no-print" style="background: var(--emerald); border:none; font-weight: 900;">💾 GUARDAR REGISTRO Y PREPARAR IMPRESIÓN</button>
+        <div class="signature-section">
+            <div>
+                <div class="signature-line">Firma del Paciente</div>
+            </div>
+            <div>
+                <div class="signature-line">Firma y Sello Médico</div>
+            </div>
+        </div>
+
+        <div class="no-print mt-4">
+            <button type="submit" class="btn btn-success w-100 p-3" style="background: var(--emerald); border:none; font-weight: 900; font-size: 14px;">💾 GUARDAR REGISTRO Y MANDAR A IMPRIMIR</button>
+        </div>
     </form>
 </div>
 
@@ -162,7 +182,8 @@
 
     document.getElementById('oftalmoForm').onsubmit = (e) => {
         e.preventDefault();
-        if(!window.p_id) { alert("ERROR: SELECCIONE PACIENTE"); return; }
+        if(!window.p_id) { alert("ERROR: SELECCIONE PACIENTE ANTES DE GUARDAR"); return; }
+        // Aquí iría el fetch POST si deseas guardar los datos antes de imprimir
         window.print();
     };
 </script>
