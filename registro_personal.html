@@ -6,158 +6,34 @@
     <title>REGISTRO DE PERSONAL - OHS NANCY ELEGANTE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        
-        :root { 
-            --nancy-blue: #0046ad; 
-            --nancy-green: #2ecc71; 
-            --nancy-gray: #f8fafc; 
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f1f5f9; 
-            margin: 0; 
-            padding: 20px; 
-            text-transform: uppercase; 
-        }
-
-        .container { 
-            max-width: 1000px; 
-            margin: 40px auto; 
-            background: white; 
-            padding: 50px; 
-            border-radius: 8px; 
-            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
-            border-top: 8px solid var(--nancy-green);
-        }
-
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 40px; 
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 25px;
-        }
-
+        :root { --nancy-blue: #0046ad; --nancy-green: #2ecc71; }
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; margin: 0; padding: 20px; text-transform: uppercase; }
+        .container { max-width: 1000px; margin: 40px auto; background: white; padding: 50px; border-radius: 8px; box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1); border-top: 8px solid var(--nancy-green); }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; border-bottom: 2px solid #e2e8f0; padding-bottom: 25px; }
         .logo-grande { height: 110px; } 
-
-        .title-area h2 { 
-            color: var(--nancy-blue); 
-            font-size: 26px; 
-            font-weight: 900; 
-            text-align: right;
-        }
-
-        .tab-buttons { 
-            display: flex; 
-            gap: 15px; 
-            margin-bottom: 40px; 
-        }
-
-        .tab { 
-            flex: 1;
-            padding: 20px; 
-            text-align: center;
-            cursor: pointer; 
-            background: #e2e8f0;
-            border-radius: 12px; 
-            font-weight: 900; 
-            transition: 0.4s ease; /* Transición suave */
-            display: flex;
-            flex-direction: row; 
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            color: #64748b;
-            border: 3px solid transparent;
-        }
-
+        .title-area h2 { color: var(--nancy-blue); font-size: 26px; font-weight: 900; text-align: right; }
+        .tab-buttons { display: flex; gap: 15px; margin-bottom: 40px; }
+        .tab { flex: 1; padding: 20px; text-align: center; cursor: pointer; background: #e2e8f0; border-radius: 12px; font-weight: 900; transition: 0.4s ease; display: flex; align-items: center; justify-content: center; gap: 15px; color: #64748b; border: 3px solid transparent; }
         .tab-icon { font-size: 30px; }
-
-        /* Estilo activo para Doctores */
-        .tab.active-doc { 
-            background: white; 
-            color: var(--nancy-blue); 
-            border-color: var(--nancy-blue);
-            transform: scale(1.02);
-        }
-
-        /* Estilo activo para Enfermeras */
-        .tab.active-enfe { 
-            background: white; 
-            color: var(--nancy-green); 
-            border-color: var(--nancy-green);
-            transform: scale(1.02);
-        }
-
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); 
-            gap: 30px; 
-        }
-
-        label { 
-            font-size: 11px; 
-            font-weight: 900; 
-            color: var(--nancy-blue); 
-            margin-bottom: 10px; 
-            display: block;
-        }
-
-        input, select { 
-            width: 100%;
-            padding: 15px; 
-            border: 2px solid #cbd5e1; 
-            border-radius: 6px; 
-            font-size: 15px; 
-            font-weight: 700; 
-            text-transform: uppercase;
-            box-sizing: border-box;
-        }
-
-        .btn-save { 
-            width: 100%; 
-            padding: 22px; 
-            color: white; 
-            border: none; 
-            font-weight: 900; 
-            cursor: pointer; 
-            border-radius: 6px; 
-            margin-top: 45px; 
-            font-size: 18px; 
-            letter-spacing: 2px;
-            transition: 0.3s;
-        }
-
+        .tab.active-doc { background: white; color: var(--nancy-blue); border-color: var(--nancy-blue); transform: scale(1.02); }
+        .tab.active-enfe { background: white; color: var(--nancy-green); border-color: var(--nancy-green); transform: scale(1.02); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); gap: 30px; }
+        label { font-size: 11px; font-weight: 900; color: var(--nancy-blue); margin-bottom: 10px; display: block; }
+        input, select { width: 100%; padding: 15px; border: 2px solid #cbd5e1; border-radius: 6px; font-size: 15px; font-weight: 700; text-transform: uppercase; box-sizing: border-box; }
+        .btn-save { width: 100%; padding: 22px; color: white; border: none; font-weight: 900; cursor: pointer; border-radius: 6px; margin-top: 45px; font-size: 18px; letter-spacing: 2px; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .bg-doctor { background: var(--nancy-blue); }
         .bg-enfermera { background: var(--nancy-green); }
-
-        @media (max-width: 600px) {
-            .logo-grande { height: 80px; }
-            .tab { padding: 15px; font-size: 12px; }
-        }
     </style>
 </head>
 <body>
-
 <div class="container">
     <div class="header">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-grande">
-        <div class="title-area">
-            <h2>REGISTRO DE PERSONAL<br>MÉDICO OHS</h2>
-        </div>
+        <div class="title-area"><h2>REGISTRO DE PERSONAL<br>MÉDICO OHS</h2></div>
     </div>
-
     <div class="tab-buttons">
-        <div class="tab active-doc" id="tab-doc" onclick="switchTab('doctor')">
-            <span class="tab-icon">🩺</span>
-            <span>SECCIÓN DOCTORES</span>
-        </div>
-        <div class="tab" id="tab-enfe" onclick="switchTab('enfermera')">
-            <span class="tab-icon">💉</span>
-            <span>SECCIÓN ENFERMERAS</span>
-        </div>
+        <div class="tab active-doc" id="tab-doc" onclick="switchTab('doctor')"><span class="tab-icon">🩺</span><span>SECCIÓN DOCTORES</span></div>
+        <div class="tab" id="tab-enfe" onclick="switchTab('enfermera')"><span class="tab-icon">💉</span><span>SECCIÓN ENFERMERAS</span></div>
     </div>
 
     <form id="form-doctor">
@@ -166,23 +42,8 @@
             <div class="form-group"><label>NOMBRE COMPLETO</label><input type="text" id="nombre_doc" required></div>
             <div class="form-group"><label>APELLIDO PATERNO</label><input type="text" id="appaterno_doc" required></div>
             <div class="form-group"><label>APELLIDO MATERNO</label><input type="text" id="apmaterno_doc"></div>
-            <div class="form-group">
-                <label>TURNO</label>
-                <select id="turno_doc">
-                    <option value="MAÑANA">☀️ MAÑANA</option>
-                    <option value="TARDE">🌤️ TARDE</option>
-                    <option value="NOCHE">🌙 NOCHE</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>ESPECIALIDAD</label>
-                <select id="especialidad">
-                    <option value="MEDICINA DEL TRABAJO">MEDICINA DEL TRABAJO</option>
-                    <option value="MEDICINA GENERAL">MEDICINA GENERAL</option>
-                    <option value="PSICOLOGÍA">PSICOLOGÍA</option>
-                    <option value="OFTALMOLOGÍA">OFTALMOLOGÍA</option>
-                </select>
-            </div>
+            <div class="form-group"><label>TURNO</label><select id="turno_doc"><option value="MAÑANA">☀️ MAÑANA</option><option value="TARDE">🌤️ TARDE</option><option value="NOCHE">🌙 NOCHE</option></select></div>
+            <div class="form-group"><label>ESPECIALIDAD</label><select id="especialidad"><option value="MEDICINA DEL TRABAJO">MEDICINA DEL TRABAJO</option><option value="MEDICINA GENERAL">MEDICINA GENERAL</option><option value="PSICOLOGÍA">PSICOLOGÍA</option><option value="OFTALMOLOGÍA">OFTALMOLOGÍA</option></select></div>
         </div>
         <button type="button" class="btn-save bg-doctor" onclick="enviarDatos('doctor')">💾 GUARDAR MÉDICO EN LA NUBE</button>
     </form>
@@ -193,21 +54,8 @@
             <div class="form-group"><label>NOMBRE COMPLETO</label><input type="text" id="nombre_enfe" required></div>
             <div class="form-group"><label>APELLIDO PATERNO</label><input type="text" id="appaterno_enfe" required></div>
             <div class="form-group"><label>APELLIDO MATERNO</label><input type="text" id="apmaterno_enfe"></div>
-            <div class="form-group">
-                <label>TURNO</label>
-                <select id="turno_enfe">
-                    <option value="MAÑANA">☀️ MAÑANA</option>
-                    <option value="TARDE">🌤️ TARDE</option>
-                    <option value="NOCHE">🌙 NOCHE</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>NIVEL ACADÉMICO / CARGO</label>
-                <select id="edu_enfe">
-                    <option value="LICENCIADA EN ENFERMERÍA">LICENCIADA EN ENFERMERÍA</option>
-                    <option value="AUXILIAR DE ENFERMERÍA">AUXILIAR DE ENFERMERÍA</option>
-                </select>
-            </div>
+            <div class="form-group"><label>TURNO</label><select id="turno_enfe"><option value="MAÑANA">☀️ MAÑANA</option><option value="TARDE">🌤️ TARDE</option><option value="NOCHE">🌙 NOCHE</option></select></div>
+            <div class="form-group"><label>NIVEL ACADÉMICO / CARGO</label><select id="edu_enfe"><option value="LICENCIADA EN ENFERMERÍA">LICENCIADA EN ENFERMERÍA</option><option value="AUXILIAR DE ENFERMERÍA">AUXILIAR DE ENFERMERÍA</option></select></div>
         </div>
         <button type="button" class="btn-save bg-enfermera" onclick="enviarDatos('enfermera')">💾 GUARDAR ENFERMERA EN LA NUBE</button>
     </form>
@@ -219,47 +67,71 @@
     function switchTab(tipo) {
         const tabDoc = document.getElementById('tab-doc');
         const tabEnfe = document.getElementById('tab-enfe');
+        const formDoc = document.getElementById('form-doctor');
+        const formEnfe = document.getElementById('form-enfermera');
+        
         if(tipo === 'doctor') {
-            document.getElementById('form-doctor').style.display = 'block';
-            document.getElementById('form-enfermera').style.display = 'none';
+            formDoc.style.display = 'block';
+            formEnfe.style.display = 'none';
             tabDoc.className = 'tab active-doc';
             tabEnfe.className = 'tab';
         } else {
-            document.getElementById('form-doctor').style.display = 'none';
-            document.getElementById('form-enfermera').style.display = 'block';
+            formDoc.style.display = 'none';
+            formEnfe.style.display = 'block';
             tabEnfe.className = 'tab active-enfe';
             tabDoc.className = 'tab';
         }
     }
 
     async function enviarDatos(tipo) {
-        const payload = tipo === 'doctor' ? {
-            ci_doc: document.getElementById('ci_doc').value,
-            nombre_doc: document.getElementById('nombre_doc').value,
-            appaterno_doc: document.getElementById('appaterno_doc').value,
-            apmaterno_doc: document.getElementById('apmaterno_doc').value,
-            turno_doc: document.getElementById('turno_doc').value,
-            especialidad: document.getElementById('especialidad').value
-        } : {
-            ci_enfe: document.getElementById('ci_enfe').value,
-            nombre_enfe: document.getElementById('nombre_enfe').value,
-            appaterno_enfe: document.getElementById('appaterno_enfe').value,
-            apmaterno_enfe: document.getElementById('apmaterno_enfe').value,
-            turno_enfe: document.getElementById('turno_enfe').value,
-            edu_enfe: document.getElementById('edu_enfe').value
-        };
-
+        console.log("Iniciando guardado de:", tipo);
+        let payload = {};
+        
         try {
+            if (tipo === 'doctor') {
+                payload = {
+                    ci_doc: document.getElementById('ci_doc').value.trim(),
+                    nombre_doc: document.getElementById('nombre_doc').value.trim(),
+                    appaterno_doc: document.getElementById('appaterno_doc').value.trim(),
+                    apmaterno_doc: document.getElementById('apmaterno_doc').value.trim(),
+                    turno_doc: document.getElementById('turno_doc').value,
+                    especialidad: document.getElementById('especialidad').value
+                };
+            } else {
+                payload = {
+                    ci_enfe: document.getElementById('ci_enfe').value.trim(),
+                    nombre_enfe: document.getElementById('nombre_enfe').value.trim(),
+                    appaterno_enfe: document.getElementById('appaterno_enfe').value.trim(),
+                    apmaterno_enfe: document.getElementById('apmaterno_enfe').value.trim(),
+                    turno_enfe: document.getElementById('turno_enfe').value,
+                    edu_enfe: document.getElementById('edu_enfe').value
+                };
+            }
+
+            // Validación simple para evitar envíos vacíos
+            const campoClave = tipo === 'doctor' ? payload.ci_doc : payload.ci_enfe;
+            if (!campoClave) {
+                alert("EL C.I. ES OBLIGATORIO");
+                return;
+            }
+
             const res = await fetch(`${API_URL}/save-${tipo}`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
+
             if(res.ok) {
-                alert(`¡${tipo.toUpperCase()} REGISTRADO EN LA NUBE!`);
+                alert(`¡${tipo.toUpperCase()} REGISTRADO EXITOSAMENTE!`);
                 window.location.href = "lista_personal.html"; 
+            } else {
+                const errorData = await res.json();
+                alert("ERROR DEL SERVIDOR: " + (errorData.error || "No se pudo guardar"));
             }
-        } catch (e) { alert("ERROR DE CONEXIÓN"); }
+        } catch (e) {
+            console.error(e);
+            alert("ERROR CRÍTICO: NO HAY CONEXIÓN CON EL SERVIDOR RENDER");
+        }
     }
 </script>
 </body>
