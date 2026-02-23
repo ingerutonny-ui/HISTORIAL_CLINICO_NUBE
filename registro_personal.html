@@ -3,130 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTRO MÉDICO OHS</title>
+    <title>Nuevo Registro - OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
         
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #0a0e1a; 
-            display: flex;
-            flex-direction: column; /* Para alinear el botón arriba de la hoja */
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .hoja-flotante {
+        .hoja-sistema {
             background-color: white;
             width: 100%;
-            max-width: 800px;
-            border-radius: 15px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            max-width: 1200px; /* Tamaño igualado a la lista */
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             overflow: hidden;
-            text-transform: uppercase;
         }
 
         .input-ohs { 
-            background-color: #f8fafc; 
-            border-radius: 8px; 
-            border: 2px solid #e2e8f0; 
-            padding: 12px; 
-            color: #1e293b; 
-            width: 100%; 
-            font-size: 11px; 
-            font-weight: 700;
+            background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; 
+            padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700;
             transition: all 0.3s;
         }
-        
-        .input-ohs:focus {
-            border-color: #2563eb;
-            outline: none;
-            background-color: white;
-        }
+        .input-ohs:focus { border-color: #2563eb; outline: none; background-color: white; }
 
-        .active-doc { border: 2px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
-        .active-enf { border: 2px solid #10b981; background-color: #ecfdf5; color: #065f46; }
-        .inactive-btn { border: 2px solid rgba(255,255,255,0.05); background-color: #f8fafc; color: #94a3b8; }
+        .active-doc { border: 3px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
+        .active-enf { border: 3px solid #10b981; background-color: #ecfdf5; color: #065f46; }
+        .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; }
 
-        /* Botón Volver fuera de la hoja */
-        .btn-volver-afuera {
-            align-self: flex-start;
-            max-width: 800px;
-            width: 100%;
-            margin: 0 auto 15px auto;
-        }
+        .btn-volver-top { max-width: 1200px; margin: 0 auto 15px auto; width: 100%; }
     </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen">
 
-    <div class="btn-volver-afuera">
-        <button onclick="location.href='lista_personal.html'" class="bg-slate-800/50 hover:bg-slate-800 text-white px-5 py-2 rounded-lg transition text-[10px] font-black flex items-center gap-2 border border-slate-700 shadow-xl">
+    <div class="btn-volver-top">
+        <button onclick="location.href='lista_personal.html'" class="bg-slate-800/80 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition text-[10px] font-black flex items-center gap-2 border border-slate-700 shadow-2xl">
             <i class="fa-solid fa-arrow-left"></i> VOLVER AL LISTADO
         </button>
     </div>
 
-    <div class="hoja-flotante">
-        <div class="p-6 md:p-8 flex flex-col md:flex-row justify-between items-center border-b border-gray-100 gap-4">
-            <div class="flex items-center gap-4">
-                <img src="logo.png" alt="Logo OHS" class="h-12 md:h-14">
-            </div>
+    <div class="hoja-sistema">
+        <div class="p-8 md:p-10 flex flex-col md:flex-row justify-between items-center border-b border-gray-100 gap-6">
+            <img src="logo.png" alt="Logo OHS" class="h-16 md:h-20">
             <div class="text-center md:text-right">
-                <h1 class="text-xl md:text-2xl font-black text-blue-900 tracking-tighter">NUEVO REGISTRO</h1>
-                <p class="text-[9px] font-bold text-emerald-600 tracking-[0.2em]">OHS NANCY CLOUD</p>
+                <h1 class="text-3xl md:text-4xl font-black text-blue-900 tracking-tighter">NUEVO REGISTRO</h1>
+                <p class="text-[10px] md:text-[12px] font-bold text-emerald-600 tracking-[0.3em]">OHS NANCY CLOUD</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 px-6 md:px-12 mt-8">
-            <button onclick="setModo('doctor')" id="btn-doc" class="active-doc p-4 md:p-6 rounded-2xl flex flex-col items-center gap-2 transition-all group">
-                <i class="fa-solid fa-user-doctor text-2xl md:text-3xl"></i>
-                <span class="text-[10px] font-black">DOCTORES</span>
-            </button>
-            <button onclick="setModo('enfermera')" id="btn-enf" class="inactive-btn p-4 md:p-6 rounded-2xl flex flex-col items-center gap-2 transition-all group">
-                <i class="fa-solid fa-user-nurse text-2xl md:text-3xl"></i>
-                <span class="text-[10px] font-black">ENFERMERAS</span>
-            </button>
-        </div>
-
-        <form id="form-registro" class="px-6 md:px-12 py-8 space-y-5">
-            <input type="hidden" id="tipo_empleado" value="doctor">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                    <label class="text-[10px] text-gray-400 font-black block mb-2 tracking-widest">C.I. (DOCUMENTO)</label>
-                    <input type="text" id="ci_val" class="input-ohs" placeholder="EJ: 1234567" required>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-400 font-black block mb-2 tracking-widest">NOMBRE COMPLETO</label>
-                    <input type="text" id="nombre_val" class="input-ohs" placeholder="EJ: JUAN CARLOS" required>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-400 font-black block mb-2 tracking-widest">APELLIDOS</label>
-                    <input type="text" id="paterno_val" class="input-ohs" placeholder="EJ: GARCIA LOPEZ" required>
-                </div>
-                <div>
-                    <label class="text-[10px] text-gray-400 font-black block mb-2 tracking-widest">TURNO ASIGNADO</label>
-                    <select id="turno_val" class="input-ohs">
-                        <option>MAÑANA</option>
-                        <option>TARDE</option>
-                        <option>NOCHE</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="pt-4">
-                <button type="submit" class="w-full bg-blue-700 text-white py-4 rounded-xl font-black text-xs tracking-[0.2em] hover:bg-blue-800 transition shadow-lg shadow-blue-200">
-                    <i class="fa-solid fa-cloud-arrow-up mr-2"></i> GUARDAR EN LA NUBE
+        <div class="p-8 md:p-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <button onclick="setModo('doctor')" id="btn-doc" class="active-doc p-8 rounded-3xl flex flex-col items-center gap-3 transition-all transform hover:scale-[1.02]">
+                    <i class="fa-solid fa-user-doctor text-4xl"></i>
+                    <span class="text-[12px] font-black tracking-widest">PERSONAL MÉDICO / DOCTORES</span>
+                </button>
+                <button onclick="setModo('enfermera')" id="btn-enf" class="inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all transform hover:scale-[1.02]">
+                    <i class="fa-solid fa-user-nurse text-4xl"></i>
+                    <span class="text-[12px] font-black tracking-widest">PERSONAL DE ENFERMERÍA</span>
                 </button>
             </div>
-        </form>
 
-        <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
-            <p class="text-[8px] text-gray-400 font-black tracking-widest">SISTEMA PROTEGIDO - OHS 2026</p>
+            <form id="form-registro" class="space-y-8">
+                <input type="hidden" id="tipo_empleado" value="doctor">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">NÚMERO DE C.I.</label>
+                        <input type="text" id="ci_val" class="input-ohs" placeholder="INGRESE DOCUMENTO" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">NOMBRE COMPLETO</label>
+                        <input type="text" id="nombre_val" class="input-ohs" placeholder="INGRESE NOMBRES" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">APELLIDO PATERNO Y MATERNO</label>
+                        <input type="text" id="paterno_val" class="input-ohs" placeholder="INGRESE APELLIDOS" required>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">TURNO DE TRABAJO</label>
+                        <select id="turno_val" class="input-ohs">
+                            <option>MAÑANA</option>
+                            <option>TARDE</option>
+                            <option>NOCHE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-2xl font-black text-sm tracking-[0.3em] hover:bg-blue-800 transition shadow-2xl shadow-blue-200 transform hover:-translate-y-1">
+                        <i class="fa-solid fa-cloud-arrow-up mr-3"></i> GUARDAR REGISTRO EN LA NUBE
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-gray-50 p-6 text-center border-t border-gray-100">
+            <p class="text-[9px] text-gray-400 font-black tracking-widest">SISTEMA PROTEGIDO BAJO PROTOCOLO OHS 2026</p>
         </div>
     </div>
 
@@ -134,29 +106,21 @@
         function setModo(t) {
             const btnDoc = document.getElementById('btn-doc');
             const btnEnf = document.getElementById('btn-enf');
-            const inputTipo = document.getElementById('tipo_empleado');
-
-            inputTipo.value = t;
+            document.getElementById('tipo_empleado').value = t;
 
             if (t === 'doctor') {
-                btnDoc.className = 'active-doc p-4 md:p-6 rounded-2xl flex flex-col items-center gap-2 transition-all';
-                btnEnf.className = 'inactive-btn p-4 md:p-6 rounded-2xl flex flex-col items-center gap-2 transition-all';
+                btnDoc.className = 'active-doc p-8 rounded-3xl flex flex-col items-center gap-3 transition-all transform hover:scale-[1.02]';
+                btnEnf.className = 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all transform hover:scale-[1.02]';
             } else {
-                btnDoc.className = 'inactive-btn p-4 md:p-6 rounded-2xl flex flex-col items-center gap-2 transition-all';
-                btnEnf.className = 'active-enf p-4 md:p-6 rounded-2xl flex flex-col items-center gap-2 transition-all';
+                btnDoc.className = 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all transform hover:scale-[1.02]';
+                btnEnf.className = 'active-enf p-8 rounded-3xl flex flex-col items-center gap-3 transition-all transform hover:scale-[1.02]';
             }
         }
 
         document.getElementById('form-registro').addEventListener('submit', (e) => {
             e.preventDefault();
-            const btn = e.target.querySelector('button[type="submit"]');
-            btn.innerHTML = "PROCESANDO...";
-            btn.disabled = true;
-
-            setTimeout(() => {
-                alert("✅ ÉXITO: PERSONAL REGISTRADO CORRECTAMENTE");
-                location.href = 'lista_personal.html';
-            }, 1000);
+            alert("✅ PERSONAL REGISTRADO EXITOSAMENTE");
+            location.href = 'lista_personal.html';
         });
     </script>
 </body>
