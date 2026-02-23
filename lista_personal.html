@@ -11,10 +11,12 @@
         .bg-ohs-blue { background-color: #1e40af; }
         .text-ohs-blue { color: #1e40af; }
         .text-ohs-green { color: #059669; }
+        .border-ohs-blue { border-color: #1e40af; }
     </style>
 </head>
 <body class="bg-slate-100 p-4 md:p-10">
-    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden border-t-8 border-blue-900">
+    <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden border-t-8 border-ohs-blue">
+        
         <div class="p-8 bg-white flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-100">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-24 mb-4 md:mb-0">
             <div class="text-right">
@@ -44,7 +46,7 @@
                     </thead>
                     <tbody id="tabla-doctores" class="text-slate-700 font-bold">
                         <tr>
-                            <td colspan="5" class="p-10 text-center text-slate-400">SINCRONIZANDO CON POSTGRESQL...</td>
+                            <td colspan="5" class="p-10 text-center text-slate-400 animate-pulse">CARGANDO PERSONAL DESDE POSTGRESQL...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -58,32 +60,41 @@
         async function cargarDoctores() {
             const tabla = document.getElementById('tabla-doctores');
             try {
-                // URL corregida sin barra final para evitar el error 404
+                // LLAMADA SIN BARRA FINAL PARA EVITAR ERROR 404
                 const response = await fetch(`${API_BASE}/doctores`);
-                if (!response.ok) throw new Error("404");
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
                 
                 const doctores = await response.json();
                 tabla.innerHTML = '';
 
-                if (doctores.length === 0) {
-                    tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500">NO HAY MÉDICOS EN LA BASE DE DATOS</td></tr>';
+                if (!doctores || doctores.length === 0) {
+                    tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500 font-black">NO HAY MÉDICOS REGISTRADOS EN LA BASE DE DATOS</td></tr>';
                     return;
                 }
 
                 doctores.forEach(doc => {
-                    tabla.innerHTML += `
+                    const fila = `
                         <tr class="border-b border-gray-100 hover:bg-blue-50 transition">
                             <td class="p-4 text-ohs-blue">${doc.ci_doc}</td>
                             <td class="p-4">${doc.nombre_doc}</td>
                             <td class="p-4">${doc.appaterno_doc} ${doc.apmaterno_doc || ''}</td>
                             <td class="p-4"><span class="bg-green-100 text-ohs-green px-3 py-1 rounded-full text-xs">${doc.especialidad}</span></td>
                             <td class="p-4 text-center">${doc.turno_doc}</td>
-                        </tr>`;
+                        </tr>
+                    `;
+                    tabla.innerHTML += fila;
                 });
             } catch (error) {
-                tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR: FALLO DE CONEXIÓN CON EL SERVIDOR</td></tr>';
+                console.error("Error al cargar:", error);
+                tabla.innerHTML = 
+                    '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR: NO SE PUDO CONECTAR CON EL SERVIDOR (REVISAR RAIZ)</td></tr>';
             }
         }
+
+        // EJECUTAR CARGA
         cargarDoctores();
     </script>
 </body>
