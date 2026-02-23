@@ -2,91 +2,123 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>DECLARACIÓN JURADA DE SALUD COMPLETA - OHS</title>
+    <title>DECLARACIÓN JURADA DE SALUD OHS - COMPLETA</title>
     <style>
-        :root { --primary: #2ecc71; --border: #cbd5e1; }
-        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; text-transform: uppercase; font-size: 10px; }
-        .page { width: 21cm; min-height: 29.7cm; padding: 1.2cm; margin: 0.5cm auto; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; }
-        .page-break { page-break-after: always; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); margin-bottom: 10px; }
-        .logo { height: 45px; }
-        .title-box { text-align: right; }
-        .section-header { background: #f1f5f9; padding: 5px; font-weight: bold; border: 1px solid var(--border); margin-top: 10px; font-size: 11px; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 5px; table-layout: fixed; }
-        th, td { border: 1px solid var(--border); padding: 4px; text-align: left; }
-        th { background: #f8fafc; width: 25%; font-size: 9px; }
-        .legal-text { font-size: 9px; text-align: justify; text-transform: none; margin-top: 10px; line-height: 1.2; }
-        .sig-container { display: flex; justify-content: space-around; margin-top: 30px; }
-        .sig-box { border-top: 1px solid black; width: 220px; text-align: center; padding-top: 5px; }
-        @media print { .no-print { display: none; } body { background: white; } .page { margin: 0; box-shadow: none; width: 100%; } }
+        :root { --primary: #2ecc71; --dark: #1e293b; --border: #000; }
+        body { font-family: 'Arial Narrow', Arial, sans-serif; margin: 0; padding: 10px; text-transform: uppercase; font-size: 9px; background: #525659; }
+        
+        .report-container { width: 21cm; margin: auto; background: white; padding: 1cm; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        
+        .header-table { width: 100%; border: 2px solid var(--border); margin-bottom: 10px; }
+        .logo { height: 50px; padding: 5px; }
+        .title-header { text-align: center; font-size: 14px; font-weight: bold; border-left: 2px solid var(--border); }
+
+        .section-title { background: #e2e8f0; border: 1px solid var(--border); padding: 4px; font-weight: bold; margin-top: 8px; font-size: 10px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 2px; }
+        th, td { border: 1px solid var(--border); padding: 3px; text-align: left; }
+        th { background: #f1f5f9; width: 20%; font-size: 8.5px; }
+        td { font-weight: bold; color: #000; }
+
+        .check-box { width: 12px; height: 12px; border: 1px solid #000; display: inline-block; vertical-align: middle; text-align: center; line-height: 12px; font-size: 10px; }
+        .highlight { color: #2563eb; }
+
+        .legal-footer { font-size: 8.5px; text-align: justify; text-transform: none; margin-top: 10px; border: 1px solid #000; padding: 5px; }
+        .signature-section { display: flex; justify-content: space-around; margin-top: 25px; }
+        .sig-box { border-top: 1px solid #000; width: 220px; text-align: center; padding-top: 5px; font-weight: bold; }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .report-container { box-shadow: none; margin: 0; width: 100%; padding: 0.5cm; }
+            .no-print { display: none; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="no-print" style="text-align:center; padding: 15px;">
-        <button onclick="window.print()" style="padding:10px 20px; background:var(--primary); color:white; border:none; cursor:pointer; font-weight:bold;">🖨️ IMPRIMIR REPORTE 44 CAMPOS</button>
+    <div class="no-print" style="position: fixed; top: 10px; right: 10px;">
+        <button onclick="window.print()" style="background:var(--primary); color:white; border:none; padding:15px; border-radius:8px; cursor:pointer; font-weight:bold;">🖨️ IMPRIMIR REPORTE OHS</button>
     </div>
 
-    <div class="page page-break">
-        <div class="header">
-            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
-            <div class="title-box">
-                <h2 style="margin:0;">DECLARACIÓN JURADA DE SALUD</h2>
-                <p style="margin:0; font-size:8px;">OHS - TRABAJO SANO, SEGURO Y PRODUCTIVO [cite: 3]</p>
-            </div>
-        </div>
-
-        <div class="section-header">AFILIACIÓN DEL TRABAJADOR</div>
-        <table>
-            <tr><th>NOMBRES Y APELLIDOS</th><td colspan="3" id="r_nom" style="font-size:12px; color:blue;">---</td></tr>
-            <tr><th>EDAD</th><td id="r_edad">---</td><th>SEXO</th><td id="r_sexo">---</td></tr>
-            <tr><th>FECHA NACIMIENTO</th><td id="r_fnac">---</td><th>LUGAR</th><td id="r_lug">---</td></tr>
-            <tr><th>C. IDENTIDAD</th><td id="r_ci">---</td><th>ESTADO CIVIL</th><td id="r_ecivil">---</td></tr>
-            <tr><th>DOMICILIO</th><td colspan="3" id="r_dom">---</td></tr>
-            <tr><th>TELÉFONO</th><td id="r_tel">---</td><th>PROFESIÓN/LABOR</th><td id="r_prof">---</td></tr>
+    <div class="report-container">
+        <table class="header-table">
+            <tr>
+                <td style="width: 20%; text-align: center;"><img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo"></td>
+                <td class="title-header">DECLARACIÓN JURADA DE SALUD<br><span style="font-size: 10px;">TRABAJO SANO, SEGURO Y PRODUCTIVO</span></td>
+            </tr>
         </table>
 
-        <div class="section-header">ANTECEDENTES PATOLÓGICOS (44 CAMPOS REQUERIDOS) [cite: 24]</div>
+        <div class="section-header" style="font-weight: bold; border: 1px solid #000; padding: 3px; background: #eee;">AFILIACIÓN DEL TRABAJADOR [cite: 5]</div>
+        <table>
+            <tr><th>APELLIDOS Y NOMBRES [cite: 6]</th><td colspan="5" id="r_nom" class="highlight" style="font-size: 12px;">---</td></tr>
+            <tr>
+                <th>EDAD [cite: 6]</th><td id="r_edad">---</td>
+                <th>SEXO [cite: 7]</th><td id="r_sexo">---</td>
+                <th>FECHA NAC. [cite: 10]</th><td id="r_fnac">---</td>
+            </tr>
+            <tr>
+                <th>LUGAR NAC. [cite: 14]</th><td id="r_lug">---</td>
+                <th>C. IDENTIDAD [cite: 15]</th><td id="r_ci">---</td>
+                <th>ESTADO CIVIL [cite: 23]</th><td id="r_ecivil">---</td>
+            </tr>
+            <tr>
+                <th>DOMICILIO [cite: 15]</th><td colspan="3" id="r_dom">---</td>
+                <th>TELÉFONO [cite: 22]</th><td id="r_tel">---</td>
+            </tr>
+            <tr><th>PROFESIÓN/LABOR [cite: 20]</th><td colspan="5" id="r_prof">---</td></tr>
+        </table>
+
+        <div class="section-title">ANTECEDENTES PATOLÓGICOS (MARQUE SI/NO) [cite: 24]</div>
         <table id="tabla_44_campos">
             </table>
-    </div>
 
-    <div class="page">
-        <div class="section-header">ANTECEDENTES OCUPACIONALES [cite: 87]</div>
-        <table style="font-size:8px;">
-            <thead>
-                <tr><th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr>
-            </thead>
-            <tbody id="r_historia_laboral">
+        <div class="section-title">ANTECEDENTES OCUPACIONALES (HISTORIA LABORAL) </div>
+        <table style="text-align: center;">
+            <tr style="background: #f1f5f9; font-size: 7px;">
+                <th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th>
+            </tr>
+            <tbody id="r_hist_lab">
+                <tr><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td></tr>
                 <tr><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td></tr>
             </tbody>
         </table>
 
-        <div class="section-header">RIESGOS EXPUESTOS DURANTE VIDA LABORAL [cite: 91]</div>
+        <div class="section-title">ANTECEDENTES DE RIESGOS EXPUESTOS DURANTE VIDA LABORAL </div>
         <table>
-            <tr><th>FÍSICOS</th><td>RUIDO / RADIACIÓN / VIBRACIÓN / TEMP. EXTREMAS [cite: 92, 100]</td><td id="r_ries_fis">NO</td></tr>
-            <tr><th>QUÍMICOS</th><td>POLVO / HUMOS / GASES / METALES PESADOS [cite: 104, 111]</td><td id="r_ries_qui">NO</td></tr>
-            <tr><th>ERGONÓMICOS</th><td>MOV. REPETITIVOS / LEVANTAMIENTO CARGA [cite: 109, 113]</td><td id="r_ries_erg">NO</td></tr>
-            <tr><th>OTROS</th><td>ALTURA / ESPACIOS CONFINADOS / BIOLÓGICOS [cite: 117, 119]</td><td id="r_ries_otr">NO</td></tr>
+            <tr>
+                <th>FÍSICOS [cite: 92]</th><td>RUIDO/RADIACIÓN/VIBRACIÓN/TEMP. EXTREMAS [cite: 92, 94, 96, 100]</td><td id="r_fisi">NO</td>
+                <th>QUÍMICOS [cite: 103]</th><td>POLVO/HUMOS/GASES/METALES [cite: 104, 106, 107, 111]</td><td id="r_quim">NO</td>
+            </tr>
+            <tr>
+                <th>ERGONÓMICOS [cite: 108]</th><td>MOV. REPETITIVOS/LEVANTAMIENTO CARGA [cite: 109, 113]</td><td id="r_ergo">NO</td>
+                <th>OTROS [cite: 115]</th><td>ALTURA/CONFINADOS/BIOLÓGICOS [cite: 117, 118, 119]</td><td id="r_otro">NO</td>
+            </tr>
         </table>
 
-        <div class="section-header">HÁBITOS Y EXTRAS [cite: 77]</div>
+        <div class="section-title">HÁBITOS Y EXTRAS [cite: 77]</div>
         <table>
-            <tr><th>GRUPO SANGUÍNEO [cite: 73]</th><td id="r_gs">---</td><th>FUMA [cite: 83]</th><td id="r_fuma">---</td></tr>
-            <tr><th>ALCOHOL [cite: 82]</th><td id="r_alc">---</td><th>COCA (PIJCHAR) [cite: 85]</th><td id="r_coca">---</td></tr>
-            <tr><th>CIRUGÍAS [cite: 64]</th><td colspan="3" id="r_cir">---</td></tr>
-            <tr><th>MEDICAMENTOS [cite: 71]</th><td colspan="3" id="r_med">---</td></tr>
-            <tr><th>OBSERVACIONES [cite: 120]</th><td colspan="3" id="r_obs">---</td></tr>
+            <tr>
+                <th>GRUPO SANGUÍNEO [cite: 73]</th><td id="r_gs">---</td>
+                <th>FUMA (TABACO) [cite: 83]</th><td id="r_tab">NO</td>
+                <th>ALCOHOL [cite: 82]</th><td id="r_alc">NO</td>
+            </tr>
+            <tr>
+                <th>DROGAS [cite: 84]</th><td id="r_dro">NO</td>
+                <th>COCA (PIJCHAR) [cite: 85]</th><td id="r_coca">NO</td>
+                <th>DEPORTES [cite: 76]</th><td id="r_dep">NO</td>
+            </tr>
+            <tr><th>CIRUGÍAS/ACCIDENTES [cite: 64, 67]</th><td colspan="5" id="r_cir">---</td></tr>
+            <tr><th>MEDICAMENTOS [cite: 71]</th><td colspan="5" id="r_med">---</td></tr>
+            <tr><th>OBSERVACIONES [cite: 120]</th><td colspan="5" id="r_obs">REGISTRO COMPLETADO</td></tr>
         </table>
 
-        <div class="legal-text">
-            [cite: 121] POR MEDIO DE ESTE DOCUMENTO MÉDICO LEGAL DECLARO QUE ES VERDAD TODA LA INFORMACIÓN PROPORCIONADA AL MEDICO O FUNCIONARIO. 
-            ESTA DECLARACIÓN TIENE VALIDEZ LEGAL BAJO LAS NORMAS DE SALUD OCUPACIONAL VIGENTES.
+        <div class="legal-footer">
+            POR MEDIO DE ESTE DOCUMENTO MÉDICO LEGAL DECLARO QUE ES VERDAD TODA LA INFORMACIÓN PROPORCIONADA AL MEDICO O FUNCIONARIO, EN FECHA <span id="r_fecha_hoy"></span>[cite: 121, 122].
         </div>
 
-        <div class="sig-container">
-            <div class="sig-box">FIRMA DEL TRABAJADOR <br><span id="f_ci_val"></span></div>
-            <div class="sig-box">MÉDICO EXAMINADOR OHS<br>SELLO Y MATRÍCULA</div>
+        <div class="signature-section">
+            <div class="sig-box">FIRMA DEL TRABAJADOR [cite: 124]<br><br><span id="f_ci_final"></span></div>
+            <div class="sig-box">MÉDICO EXAMINADOR OHS<br><br>SELLO Y MATRÍCULA</div>
         </div>
     </div>
 
@@ -98,32 +130,52 @@
 
             document.getElementById('r_nom').innerText = localStorage.getItem('p_nom') || "---";
             document.getElementById('r_ci').innerText = localStorage.getItem('p_ci') || "---";
-            document.getElementById('f_ci_val').innerText = "C.I.: " + (localStorage.getItem('p_ci') || "---");
-            
-            // Inyección de los 44 Campos del PDF (Mapeo Completo)
-            const campos = [
-                ["VISTA [cite: 25]", p2.vista], ["AUDITIVO [cite: 26]", p2.oido], ["RESPIRATORIO [cite: 27]", p2.respiratorio],
-                ["CARDIOVASCULAR [cite: 28]", p2.cardiovascular], ["ESTÓMAGO/INTESTINO [cite: 29]", p2.digestivos],
-                ["HÍGADO/PÁNCREAS [cite: 29]", p2.higado], ["SANGRE [cite: 29]", p2.sangre], ["GENITOURINARIO [cite: 30]", p2.genito],
-                ["SISTEMA NERVIOSO [cite: 31]", p2.sistema_nervioso], ["PSIQUIÁTRICOS [cite: 32]", p2.psiquiatricos],
-                ["MENTALES [cite: 46]", p2.mentales], ["OSTEOMUSCULARES [cite: 47]", p2.huesos], ["ENDOCRINOLÓGICOS [cite: 48]", p2.endocrino],
-                ["METABÓLICOS [cite: 50]", p2.metabolicos], ["REUMATOLÓGICOS [cite: 52]", p2.reumatologicos],
-                ["DERMATOLÓGICAS [cite: 56]", p2.piel], ["ALERGIAS [cite: 60]", p2.alergias], ["INFECCIONES [cite: 61]", p2.infecciones],
-                ["HERNIAS [cite: 54]", p2.hernias], ["VARICES [cite: 54]", p2.varices], ["CHAGAS [cite: 62]", p2.chagas], ["HIV [cite: 62]", p2.hiv]
+            document.getElementById('f_ci_final').innerText = "C.I.: " + (localStorage.getItem('p_ci') || "---");
+            document.getElementById('r_fecha_hoy').innerText = new Date().toLocaleDateString();
+
+            // Mapeo exhaustivo de los 44 puntos de salud del PDF
+            const puntos = [
+                ["VISTA", p2.vista, "AUDITIVO", p2.oido], [cite: 25, 26]
+                ["RESPIRATORIOS", p2.respiratorio, "CARDIO-VASCULARES", p2.cardiovascular], [cite: 27, 28]
+                ["ESTÓMAGO/INTESTINO", p2.digestivos, "HÍGADO/PÁNCREAS", p2.higado], [cite: 29]
+                ["SANGRE", p2.sangre, "GENITO/URINARIO", p2.genito], [cite: 29, 30]
+                ["SISTEMA NERVIOSO", p2.sistema_nervioso, "PSIQUIÁTRICOS", p2.psiquiatricos], [cite: 31, 32]
+                ["MENTALES", p2.mentales, "OSTEOMUSCULARES", p2.huesos], [cite: 46, 47]
+                ["ENDOCRINOLÓGICOS", p2.endocrino, "METABÓLICOS", p2.metabolicos], [cite: 48, 50]
+                ["REUMATOLÓGICOS", p2.reumatologicos, "DERMATOLÓGICAS", p2.piel], [cite: 52, 56]
+                ["ALERGIAS", p2.alergias, "INFECCIONES", p2.infecciones], [cite: 60, 61]
+                ["HERNIAS", p2.hernias, "VARICES", p2.varices], [cite: 54]
+                ["CHAGAS", p2.chagas, "HIV", p2.hiv] [cite: 62]
             ];
 
-            let html = "";
-            for(let i=0; i < campos.length; i+=2) {
-                html += `<tr><th>${campos[i][0]}</th><td>${campos[i][1] || 'NO'}</td><th>${campos[i+1][0]}</th><td>${campos[i+1][1] || 'NO'}</td></tr>`;
-            }
-            document.getElementById('tabla_44_campos').innerHTML = html;
+            let htmlPuntos = "";
+            puntos.forEach(p => {
+                htmlPuntos += `<tr>
+                    <th>${p[0]}:</th><td>${p[1] || 'NO'}</td>
+                    <th>${p[2] || '-'}:</th><td>${p[3] || 'NO'}</td>
+                </tr>`;
+            });
+            document.getElementById('tabla_44_campos').innerHTML = htmlPuntos;
 
-            // Resto de datos
-            document.getElementById('r_edad').innerText = p1.edad || '---';
+            // Datos Filiación P1
+            document.getElementById('r_edad').innerText = (p1.edad || '---') + " AÑOS";
             document.getElementById('r_sexo').innerText = p1.sexo || '---';
             document.getElementById('r_fnac').innerText = p1.fecha_nac || '---';
-            document.getElementById('r_gs').innerText = p3.grupo_sanguineo || '---';
-            document.getElementById('r_obs').innerText = p3.observaciones || 'SIN NOVEDAD [cite: 120]';
+            document.getElementById('r_lug').innerText = p1.lugar_nac || '---';
+            document.getElementById('r_dom').innerText = `${p1.domicilio || ''} #${p1.n_casa || ''} (${p1.zona || ''})`;
+            document.getElementById('r_tel').innerText = p1.celular || '---';
+            document.getElementById('r_prof').innerText = p1.profesion || '---';
+            document.getElementById('r_ecivil').innerText = p1.estado_civil || '---';
+
+            // Hábitos P3
+            document.getElementById('r_gs').innerText = p3.grupo_sanguineo || 'S/G';
+            document.getElementById('r_tab').innerText = p3.fuma || 'NO';
+            document.getElementById('r_alc').innerText = p3.alcohol || 'NO';
+            document.getElementById('r_dro').innerText = p3.drogas || 'NO';
+            document.getElementById('r_coca').innerText = p3.pijchar || 'NO';
+            document.getElementById('r_dep').innerText = p3.deporte || 'NO';
+            document.getElementById('r_cir').innerText = p2.cirugias || 'NINGUNA';
+            document.getElementById('r_med').innerText = p2.medicamentos || 'NINGUNO';
         };
     </script>
 </body>
