@@ -134,8 +134,6 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
-            
-            // Los nombres de campos coinciden con models.py y schemas.py de la RAIZ
             const data = tipo === 'doctor' ? 
                 { 
                     ci_doc: document.getElementById('ci_val').value, 
@@ -155,9 +153,7 @@
                 };
 
             try {
-                // CORRECCIÓN DE RUTAS SEGÚN main.py de la RAIZ
                 const endpoint = tipo === 'doctor' ? '/doctor/' : '/enfermera/';
-                
                 const res = await fetch(`${API}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -169,11 +165,11 @@
                     e.target.reset(); 
                     setModo(tipo); 
                 } else {
-                    const errorData = await res.json();
-                    alert("ERROR AL GUARDAR: " + JSON.stringify(errorData.detail));
+                    const error = await res.json();
+                    alert("ERROR: " + JSON.stringify(error.detail));
                 }
             } catch (err) { 
-                alert("ERROR DE RED O SERVIDOR FUERA DE LÍNEA"); 
+                alert("ERROR DE CONEXIÓN"); 
             }
         });
     </script>
