@@ -46,7 +46,7 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     let existeP2 = false;
     
-    // Lista de campos mapeada exactamente al models.py (asegúrate que cardio sea cardiovasculares si así está en el backend)
+    // LOS 22 CAMPOS EXACTOS
     const fields = [
         {id:"vista", n:"1. VISTA"}, {id:"auditivo", n:"2. AUDITIVO"}, {id:"respiratorio", n:"3. RESPIRATORIO"},
         {id:"cardio", n:"4. CARDIOVASCULARES"}, {id:"digestivos", n:"5. DIGESTIVOS"}, {id:"sangre", n:"6. SANGRE"},
@@ -67,28 +67,22 @@
                 <option value="NO">NO</option>
                 <option value="SI">SI</option>
             </select>
-            <input type="text" class="input-det" id="d_${f.id}" value="NORMAL" placeholder="DESCRIBA..." oninput="this.value=this.value.toUpperCase()">
+            <input type="text" class="input-det" id="d_${f.id}" value="NORMAL" oninput="this.value=this.value.toUpperCase()">
         </div>`).join('');
 
     function cambioInput(id) {
         const sel = document.getElementById(`s_${id}`);
         const inp = document.getElementById(`d_${id}`);
-        if(sel.value === 'NO') {
-            inp.value = 'NORMAL';
-            inp.style.color = "#94a3b8";
-        } else {
-            if(inp.value === 'NORMAL') inp.value = '';
-            inp.style.color = "#1e293b";
-            inp.focus();
-        }
+        if(sel.value === 'NO') { inp.value = 'NORMAL'; inp.style.color = "#94a3b8"; }
+        else { if(inp.value === 'NORMAL') inp.value = ''; inp.style.color = "#1e293b"; inp.focus(); }
     }
 
     window.onload = async () => {
-        const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
-        if (!id_trabajo) return;
+        const id_paciente = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+        if (!id_paciente) return;
 
         try {
-            const resp = await fetch(`${API}/paciente-completo/${id_trabajo}`);
+            const resp = await fetch(`${API}/paciente-completo/${id_paciente}`);
             const data = await resp.json();
             
             document.getElementById('b_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
@@ -98,63 +92,41 @@
                 existeP2 = true;
                 document.getElementById('modo-indicador').innerText = "MODO EDICIÓN (P2)";
                 document.getElementById('modo-indicador').style.color = "#f59e0b";
-                
                 fields.forEach(f => {
                     const valor = data.p2[f.id];
                     const sel = document.getElementById(`s_${f.id}`);
                     const inp = document.getElementById(`d_${f.id}`);
-                    
-                    if (valor && valor !== "NORMAL") {
-                        sel.value = "SI";
-                        inp.value = valor;
-                        inp.style.color = "#1e293b";
-                    } else {
-                        sel.value = "NO";
-                        inp.value = "NORMAL";
-                        inp.style.color = "#94a3b8";
-                    }
+                    if (valor && valor !== "NORMAL") { sel.value = "SI"; inp.value = valor; inp.style.color = "#1e293b"; }
+                    else { sel.value = "NO"; inp.value = "NORMAL"; inp.style.color = "#94a3b8"; }
                 });
             }
-        } catch (err) { console.error("Error:", err); }
+        } catch (err) { console.error(err); }
     };
 
     document.getElementById('formP2').onsubmit = async (e) => {
         e.preventDefault();
-        const id_trabajo = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
+        const id_paciente = localStorage.getItem('p_id_edicion') || localStorage.getItem('p_id');
         const btn = document.getElementById('btnS');
         btn.innerText = "⏳ GUARDANDO..."; btn.disabled = true;
 
-        const data = { paciente_id: parseInt(id_trabajo) };
+        const data = { paciente_id: parseInt(id_paciente) };
         fields.forEach(f => {
             const isSi = document.getElementById(`s_${f.id}`).value === "SI";
             data[f.id] = isSi ? document.getElementById(`d_${f.id}`).value.toUpperCase() : "NORMAL";
         });
 
         try {
-            // URLS CORREGIDAS SEGÚN TU BACKEND (Sin el prefijo duplicado /api/ si no es necesario)
-            const url = existeP2 ? `${API}/p2/${id_trabajo}` : `${API}/p2/`;
-            const metodo = existeP2 ? 'PUT' : 'POST';
-
+            const url = existeP2 ? `${API}/p2/${id_paciente}` : `${API}/p2/`;
             const r = await fetch(url, {
-                method: metodo,
+                method: existeP2 ? 'PUT' : 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(data)
             });
 
-            if(r.ok) {
-                window.location.href = "declaracion_jurada_p3.html";
-            } else {
-                const errData = await r.json();
-                console.log(errData);
-                alert("❌ ERROR AL GUARDAR P2.");
-            }
-        } catch(e) { 
-            console.error(e);
-            alert("❌ ERROR DE RED."); 
-        } finally { 
-            btn.disabled = false; 
-            btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3"; 
-        }
+            if(r.ok) window.location.href = "declaracion_jurada_p3.html";
+            else alert("❌ ERROR AL GUARDAR P2.");
+        } catch(e) { alert("❌ ERROR DE RED."); }
+        finally { btn.disabled = false; btn.innerText = "💾 GUARDAR Y CONTINUAR A PARTE 3"; }
     };
 </script>
 </body>
