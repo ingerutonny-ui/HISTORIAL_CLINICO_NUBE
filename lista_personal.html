@@ -11,7 +11,7 @@
         
         body { 
             font-family: 'Inter', sans-serif; 
-            background-color: #0a0e1a; /* Fondo oscuro profundo */
+            background-color: #0a0e1a; /* Fondo oscuro de la captura */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -25,52 +25,47 @@
             width: 100%;
             max-width: 1100px;
             border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             overflow: hidden;
             text-transform: uppercase;
         }
 
-        .btn-accion {
-            transition: all 0.2s;
-        }
-        .btn-accion:hover {
-            transform: scale(1.1);
-        }
-
-        /* Colores exactos del logo para coherencia */
-        .text-ohs-blue { color: #0056b3; }
-        .bg-ohs-blue { background-color: #0056b3; }
-        .border-ohs-green { border-color: #28a745; }
+        /* Colores del Logo OHS */
+        .text-ohs-blue { color: #1e40af; }
+        .bg-ohs-blue { background-color: #1e40af; }
+        .text-ohs-green { color: #10b981; }
     </style>
 </head>
 <body>
 
     <div class="hoja-flotante">
         <div class="p-8 flex justify-between items-center border-b border-gray-100">
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-6">
                 <img src="logo.png" alt="Logo OHS" class="h-16">
-                <button onclick="location.href='index.html'" class="text-gray-400 hover:text-black transition text-xs font-bold">
-                    <i class="fa-solid fa-chevron-left mr-1"></i> INICIO
+                <button onclick="location.href='index.html'" class="text-gray-400 hover:text-blue-800 transition text-[10px] font-black flex items-center gap-1">
+                    <i class="fa-solid fa-chevron-left"></i> INICIO
                 </button>
             </div>
             <div class="text-right">
-                <h1 class="text-2xl font-black text-blue-900 tracking-tighter">PERSONAL MÉDICO</h1>
+                <h1 class="text-3xl font-black text-blue-900 tracking-tighter">PERSONAL MÉDICO</h1>
                 <p class="text-[10px] font-bold text-emerald-600 tracking-[0.2em]">SISTEMA OHS EN LA NUBE</p>
             </div>
         </div>
 
         <div class="p-8">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-sm font-bold text-gray-500">📋 Personal Registrado en Sistema</h2>
-                <a href="registro_personal.html" class="bg-ohs-blue text-white px-6 py-2 rounded-full font-bold text-xs shadow-lg hover:bg-blue-800 transition">
+                <h2 class="text-[11px] font-black text-gray-500 tracking-widest">
+                    <i class="fa-solid fa-clipboard-list text-orange-400 mr-2"></i> PERSONAL REGISTRADO EN SISTEMA
+                </h2>
+                <a href="registro_personal.html" class="bg-blue-700 text-white px-6 py-2 rounded-full font-black text-[10px] shadow-lg hover:bg-blue-800 transition transform hover:scale-105">
                     + REGISTRAR NUEVO
                 </a>
             </div>
 
-            <div class="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+            <div class="overflow-hidden rounded-xl border border-gray-200">
                 <table class="w-full text-left">
                     <thead>
-                        <tr class="bg-blue-700 text-white text-[11px] font-black uppercase tracking-wider">
+                        <tr class="bg-blue-700 text-white text-[10px] font-black tracking-wider">
                             <th class="p-4">C.I.</th>
                             <th class="p-4">Nombre Completo</th>
                             <th class="p-4">Especialidad / Rol</th>
@@ -78,38 +73,72 @@
                             <th class="p-4 text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-700 text-[11px] font-bold">
-                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                            <td class="p-4 text-blue-700">1234567</td>
+                    <tbody class="text-gray-700 text-[10px] font-bold">
+                        <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition">
+                            <td class="p-4 text-blue-700 font-black">1234567</td>
                             <td class="p-4">JUAN CARLOS GARCIA LOPEZ</td>
                             <td class="p-4">
                                 <span class="bg-green-50 text-green-600 border border-green-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
                                     <i class="fa-solid fa-user-doctor"></i> DOCTOR: CARDIOLOGÍA
                                 </span>
                             </td>
-                            <td class="p-4"><span class="bg-gray-100 px-2 py-1 rounded">MAÑANA</span></td>
+                            <td class="p-4 text-gray-400">MAÑANA</td>
                             <td class="p-4">
                                 <div class="flex justify-center gap-2">
-                                    <button class="btn-accion bg-amber-500 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="btn-accion bg-red-600 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="btn-accion bg-slate-700 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                    <button class="bg-orange-500 text-white p-2 rounded shadow-sm hover:bg-orange-600"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="bg-red-600 text-white p-2 rounded shadow-sm hover:bg-red-700"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="bg-slate-700 text-white p-2 rounded shadow-sm hover:bg-blue-900"><i class="fa-solid fa-file-pdf"></i></button>
                                 </div>
                             </td>
                         </tr>
-                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition">
-                            <td class="p-4 text-blue-700">7654321</td>
+                        <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition">
+                            <td class="p-4 text-blue-700 font-black">8822334</td>
+                            <td class="p-4">ANA BEATRIZ SOSA MONTERO</td>
+                            <td class="p-4">
+                                <span class="bg-green-50 text-green-600 border border-green-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
+                                    <i class="fa-solid fa-user-doctor"></i> DOCTORA: PEDIATRÍA
+                                </span>
+                            </td>
+                            <td class="p-4 text-gray-400">TARDE</td>
+                            <td class="p-4">
+                                <div class="flex justify-center gap-2">
+                                    <button class="bg-orange-500 text-white p-2 rounded shadow-sm hover:bg-orange-600"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="bg-red-600 text-white p-2 rounded shadow-sm hover:bg-red-700"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="bg-slate-700 text-white p-2 rounded shadow-sm hover:bg-blue-900"><i class="fa-solid fa-file-pdf"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition">
+                            <td class="p-4 text-blue-700 font-black">7654321</td>
                             <td class="p-4">MARIA ELENA MENDOZA RIVAS</td>
                             <td class="p-4">
                                 <span class="bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
                                     <i class="fa-solid fa-user-nurse"></i> ENFERMERA: GENERAL
                                 </span>
                             </td>
-                            <td class="p-4"><span class="bg-gray-100 px-2 py-1 rounded">TARDE</span></td>
+                            <td class="p-4 text-gray-400">TARDE</td>
                             <td class="p-4">
                                 <div class="flex justify-center gap-2">
-                                    <button class="btn-accion bg-amber-500 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-pen"></i></button>
-                                    <button class="btn-accion bg-red-600 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="btn-accion bg-slate-700 text-white p-2 rounded-md shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                    <button class="bg-orange-500 text-white p-2 rounded shadow-sm hover:bg-orange-600"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="bg-red-600 text-white p-2 rounded shadow-sm hover:bg-red-700"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="bg-slate-700 text-white p-2 rounded shadow-sm hover:bg-blue-900"><i class="fa-solid fa-file-pdf"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition">
+                            <td class="p-4 text-blue-700 font-black">4455667</td>
+                            <td class="p-4">PEDRO LUIS RODRIGUEZ PAZ</td>
+                            <td class="p-4">
+                                <span class="bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
+                                    <i class="fa-solid fa-user-nurse"></i> ENFERMERO: INSTRUMENTACIÓN
+                                </span>
+                            </td>
+                            <td class="p-4 text-gray-400">NOCHE</td>
+                            <td class="p-4">
+                                <div class="flex justify-center gap-2">
+                                    <button class="bg-orange-500 text-white p-2 rounded shadow-sm hover:bg-orange-600"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="bg-red-600 text-white p-2 rounded shadow-sm hover:bg-red-700"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="bg-slate-700 text-white p-2 rounded shadow-sm hover:bg-blue-900"><i class="fa-solid fa-file-pdf"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -117,9 +146,9 @@
                 </table>
             </div>
         </div>
-        
+
         <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
-            <p class="text-[9px] text-gray-400 font-bold tracking-widest">SISTEMA DE GESTIÓN HOSPITALARIA V1.0</p>
+            <p class="text-[9px] text-gray-400 font-black tracking-widest uppercase">SISTEMA DE GESTIÓN HOSPITALARIA V1.0 - OHS NANCY</p>
         </div>
     </div>
 
