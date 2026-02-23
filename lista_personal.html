@@ -15,7 +15,6 @@
 </head>
 <body class="bg-slate-100 p-4 md:p-10">
     <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden border-t-8 border-blue-900">
-        
         <div class="p-8 bg-white flex flex-col md:flex-row justify-between items-center border-b-2 border-gray-100">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-24 mb-4 md:mb-0">
             <div class="text-right">
@@ -45,7 +44,7 @@
                     </thead>
                     <tbody id="tabla-doctores" class="text-slate-700 font-bold">
                         <tr>
-                            <td colspan="5" class="p-10 text-center text-slate-400">CARGANDO...</td>
+                            <td colspan="5" class="p-10 text-center text-slate-400">CONECTANDO A LA NUBE...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -59,14 +58,15 @@
         async function cargarDoctores() {
             const tabla = document.getElementById('tabla-doctores');
             try {
-                const response = await fetch(`${API_BASE}/doctores/`);
-                if (!response.ok) throw new Error("404");
+                // URL exacta sin barra final para evitar 404 de redirección
+                const response = await fetch(`${API_BASE}/doctores`);
+                if (!response.ok) throw new Error("Error en ruta");
                 
                 const doctores = await response.json();
                 tabla.innerHTML = '';
 
                 if (doctores.length === 0) {
-                    tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500">SIN REGISTROS</td></tr>';
+                    tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-500">LISTA VACÍA</td></tr>';
                     return;
                 }
 
@@ -81,7 +81,7 @@
                         </tr>`;
                 });
             } catch (error) {
-                tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR DE CONEXIÓN</td></tr>';
+                tabla.innerHTML = '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR: VERIFIQUE DESPLIEGUE EN RENDER</td></tr>';
             }
         }
         cargarDoctores();
