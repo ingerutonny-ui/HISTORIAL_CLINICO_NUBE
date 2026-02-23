@@ -24,6 +24,7 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
+# --- SECCIÓN DOCTORES ---
 @app.post("/doctor/")
 async def save_doctor(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -36,6 +37,7 @@ def list_doctores(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# --- SECCIÓN ENFERMERAS ---
 @app.post("/enfermera/")
 async def save_enfermera(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
@@ -48,6 +50,7 @@ def list_enfermeras(db: Session = Depends(get_db)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# --- SECCIÓN PACIENTES ---
 @app.get("/pacientes/")
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
