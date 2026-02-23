@@ -24,47 +24,46 @@ def get_db():
 def health_check():
     return {"status": "online", "project": "HISTORIAL_CLINICO_NUBE"}
 
-# --- ENDPOINTS DOCTORES ---
-@app.post("/doctor/")
+# --- RUTAS DE PERSONAL (CORREGIDAS SIN BARRA FINAL) ---
+@app.post("/doctor")
 async def save_doctor(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_doctor(db, data)
 
-@app.get("/doctores/")
+@app.get("/doctores")
 def list_doctores(db: Session = Depends(get_db)):
     return db.query(models.Doctor).all()
 
-# --- ENDPOINTS ENFERMERAS ---
-@app.post("/enfermera/")
+@app.post("/enfermera")
 async def save_enfermera(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_enfermera(db, data)
 
-@app.get("/enfermeras/")
+@app.get("/enfermeras")
 def list_enfermeras(db: Session = Depends(get_db)):
     return db.query(models.Enfermera).all()
 
-# --- ENDPOINTS PACIENTES Y REPORTES ---
-@app.get("/pacientes/")
+# --- RUTAS DE PACIENTES ---
+@app.get("/pacientes")
 def list_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
-@app.post("/pacientes/")
+@app.post("/pacientes")
 async def save_paciente(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_paciente(db, data)
 
-@app.post("/filiacion/")
+@app.post("/filiacion")
 async def save_filiacion(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.upsert_filiacion(db, data)
 
-@app.post("/p2/")
+@app.post("/p2")
 async def save_p2(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.upsert_p2(db, data)
 
-@app.post("/p3/")
+@app.post("/p3")
 async def save_p3(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.upsert_p3(db, data)
