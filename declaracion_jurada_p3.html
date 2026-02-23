@@ -84,7 +84,7 @@
             <label class="risk-item"><input type="checkbox" value="ERGONÓMICOS"> ERGONÓMICOS</label>
             <label class="risk-item"><input type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         </div>
-        <button type="submit" id="btnG" class="btn-save">💾 FINALIZAR Y GUARDAR EXPEDIENTE COMPLETO</button>
+        <button type="submit" id="btnG" class="btn-save">💾 GUARDAR EXPEDIENTE COMPLETO (P2+P3)</button>
     </form>
 </div>
 <script>
@@ -106,22 +106,14 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ GUARDANDO EN LA NUBE..."; btn.disabled = true;
+        btn.innerHTML = "⏳ GUARDANDO TODO EN /P2..."; btn.disabled = true;
 
         const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
         const tr = document.querySelector('#tablaLaboral tr');
-        const laboral = [{
-            edad_inicio: tr.querySelector('.edad').value || "0",
-            empresa: (tr.querySelector('.empresa').value || "S/D").toUpperCase(),
-            cargo: (tr.querySelector('.cargo').value || "S/D").toUpperCase(),
-            tiempo: tr.querySelector('.tiempo').value || "0",
-            riesgos: (tr.querySelector('.riesgos').value || "NINGUNO").toUpperCase(),
-            epp: tr.querySelector('.epp').value
-        }];
-
         const riesgos = [];
         document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
 
+        // PAQUETE UNIFICADO: P2 + P3
         const payload = {
             paciente_id: parseInt(id_p),
             ...dataP2,
@@ -135,23 +127,31 @@
             deportes: document.getElementById('deportes').value, 
             deportes_det: document.getElementById('deportes_det').value.toUpperCase(),
             grupo_sanguineo: document.getElementById('grupo_sangre').value.toUpperCase(),
-            historia_laboral: JSON.stringify(laboral),
+            edad_inicio: tr.querySelector('.edad').value || "0",
+            empresa: (tr.querySelector('.empresa').value || "S/D").toUpperCase(),
+            cargo: (tr.querySelector('.cargo').value || "S/D").toUpperCase(),
+            tiempo_laboral: tr.querySelector('.tiempo').value || "0",
+            riesgos_laborales: (tr.querySelector('.riesgos').value || "NINGUNO").toUpperCase(),
+            uso_epp: tr.querySelector('.epp').value,
             riesgos_expuestos: riesgos.join(', ') || "NINGUNO"
         };
 
         try {
-            const res = await fetch(`${API}/api/save-p2`, {
+            // ENVIAMOS TODO AL ENDPOINT /p2 PARA UNIFICAR
+            const res = await fetch(`${API}/p2`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
             if(res.ok) {
-                alert("✅ EXPEDIENTE GUARDADO CON ÉXITO");
+                alert("✅ EXPEDIENTE UNIFICADO GUARDADO CON ÉXITO");
                 localStorage.removeItem('temp_p2');
                 window.location.href = "lista_historial.html";
-            } else { alert("❌ ERROR AL GUARDAR. VERIFIQUE ENDPOINT."); }
+            } else { 
+                alert("❌ ERROR: Verifique que el Backend en /p2 acepte todos los campos."); 
+            }
         } catch(err) { alert("❌ ERROR DE RED."); }
-        finally { btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE COMPLETO"; btn.disabled = false; }
+        finally { btn.innerHTML = "💾 GUARDAR EXPEDIENTE COMPLETO (P2+P3)"; btn.disabled = false; }
     };
 </script>
 </body>
