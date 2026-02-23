@@ -6,28 +6,24 @@
     <title>HC NUBE | FICHA OFTALMOLÓGICA LEGAL</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --emerald: #10b981; --dark: #0f172a; --soft: #f8fafc; }
-        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; padding: 10px; color: var(--dark); font-size: 11px; }
+        :root { --emerald: #10b981; --dark: #0f172a; }
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; padding: 10px; color: var(--dark); font-size: 10px; }
         .form-container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
         
-        .header-nancy { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--emerald); padding-bottom: 10px; margin-bottom: 10px; }
-        .header-nancy img { height: 40px; }
+        .header-nancy { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--emerald); padding-bottom: 8px; margin-bottom: 10px; }
+        .header-nancy img { height: 35px; }
         
-        .section-title { background: #000; color: #fff; padding: 4px 10px; margin: 8px 0; font-weight: 800; font-size: 11px; text-transform: uppercase; }
+        .section-title { background: #000; color: #fff; padding: 3px 10px; margin: 6px 0; font-weight: 800; font-size: 10px; text-transform: uppercase; }
         
-        /* Tabla Legal Idéntica a imagen_f34cbc.png */
-        .table-legal { width: 100%; border-collapse: collapse; margin-bottom: 10px; border: 2px solid #000; }
-        .table-legal th, .table-legal td { border: 1px solid #000; padding: 3px 6px; text-align: left; vertical-align: middle; }
-        .table-legal .text-center { text-align: center; }
-        .bg-grey { background: #f8fafc; font-weight: 800; font-size: 10px; }
+        .table-legal { width: 100%; border-collapse: collapse; margin-bottom: 8px; border: 1.5px solid #000; }
+        .table-legal th, .table-legal td { border: 1px solid #000; padding: 2px 5px; text-align: left; vertical-align: middle; }
+        .text-center { text-align: center; }
+        .bg-grey { background: #f1f5f9; font-weight: 800; }
         .bg-green-soft { background: #eefdf5; }
 
-        label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 2px; }
-        input, select, textarea { border: 1px solid #cbd5e1 !important; font-size: 11px !important; font-weight: 600 !important; text-transform: uppercase; padding: 3px 6px !important; border-radius: 0 !important; }
-        .input-auto { background-color: #f1f5f9 !important; border: none !important; }
+        input, select, textarea { border: 1px solid #cbd5e1 !important; font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; padding: 2px 4px !important; border-radius: 0 !important; }
+        .input-auto { background-color: #f8fafc !important; border: none !important; }
         
-        .row-obs { height: 40px; }
-
         @media print { .no-print { display: none; } body { padding: 0; } .form-container { width: 100%; max-width: 100%; box-shadow: none; border: none; } }
     </style>
 </head>
@@ -37,91 +33,69 @@
     <div class="header-nancy">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo">
         <div class="text-end">
-            <h5 class="m-0" style="font-weight: 900;">FICHA DE EVALUACIÓN OFTALMOLÓGICA</h5>
+            <h6 class="m-0" style="font-weight: 900;">FICHA DE EVALUACIÓN OFTALMOLÓGICA</h6>
             <small style="color: var(--emerald); font-weight: 800;">SALUD OCUPACIONAL - DOCUMENTO LEGAL</small>
         </div>
     </div>
 
     <form id="oftalmoForm">
-        <div class="no-print mb-3 p-2" style="background: #ecfdf5; border: 1px dashed var(--emerald); border-radius: 8px;">
-            <label style="color: var(--emerald);">BUSCADOR POR CÓDIGO DE PACIENTE:</label>
-            <input type="text" id="codigo_search" class="form-control form-control-sm" placeholder="ESCRIBA EL CÓDIGO Y PRESIONE ENTER...">
+        <div class="no-print mb-2 p-2" style="background: #ecfdf5; border: 1px dashed var(--emerald);">
+            <label style="font-weight: 800; color: var(--emerald);">CÓDIGO PACIENTE:</label>
+            <input type="text" id="codigo_search" class="form-control form-control-sm d-inline-block w-25" placeholder="BUSCAR...">
         </div>
 
         <div class="section-title">I. FILIACION DEL PACIENTE</div>
-        <div class="row g-2 mb-3">
+        <div class="row g-2 mb-2">
             <div class="col-5"><label>NOMBRE COMPLETO</label><input id="nombre_completo" class="form-control input-auto" readonly></div>
-            <div class="col-2"><label>CÉDULA DE IDENTIDAD</label><input id="ci" class="form-control input-auto" readonly></div>
+            <div class="col-2"><label>C.I.</label><input id="ci" class="form-control input-auto" readonly></div>
             <div class="col-1"><label>EDAD</label><input id="edad" class="form-control input-auto" readonly></div>
             <div class="col-1"><label>SEXO</label><input id="sexo" class="form-control input-auto" readonly></div>
-            <div class="col-3"><label>OCUPACIÓN / PROFESIÓN</label><input id="ocupacion" class="form-control input-auto" readonly></div>
+            <div class="col-3"><label>OCUPACIÓN</label><input id="ocupacion" class="form-control input-auto" readonly></div>
         </div>
 
         <div class="section-title">II. ANTECEDENTES (PATOLOGICAS Y NO PATOLOGICAS)</div>
         <table class="table-legal">
-            <tr class="bg-grey">
-                <td style="width: 20%;"></td><td style="width: 5%;" class="text-center">SI</td><td style="width: 5%;" class="text-center">NO</td>
-                <td style="width: 20%;"></td><td style="width: 5%;" class="text-center">SI</td><td style="width: 5%;" class="text-center">NO</td>
-                <td style="width: 20%;"></td><td style="width: 5%;" class="text-center">SI</td><td style="width: 5%;" class="text-center">NO</td>
+            <tr class="bg-grey text-center">
+                <td style="width:18%"></td><td style="width:4%">SI</td><td style="width:4%">NO</td>
+                <td style="width:18%"></td><td style="width:4%">SI</td><td style="width:4%">NO</td>
+                <td style="width:18%"></td><td style="width:4%">SI</td><td style="width:4%">NO</td>
             </tr>
             <tr>
-                <td>USA LENTES</td>
-                <td class="text-center"><input type="radio" name="usa_lentes" value="SI"></td>
-                <td class="text-center"><input type="radio" name="usa_lentes" value="NO"></td>
-                <td>DALTONISMO</td>
-                <td class="text-center"><input type="radio" name="daltonismo" value="SI"></td>
-                <td class="text-center"><input type="radio" name="daltonismo" value="NO"></td>
-                <td>DIABETES</td>
-                <td class="text-center"><input type="radio" name="diabetes" value="SI"></td>
-                <td class="text-center"><input type="radio" name="diabetes" value="NO"></td>
+                <td>USA LENTES</td><td class="text-center"><input type="radio" name="lentes" value="SI"></td><td class="text-center"><input type="radio" name="lentes" value="NO"></td>
+                <td>DALTONISMO</td><td class="text-center"><input type="radio" name="dalto" value="SI"></td><td class="text-center"><input type="radio" name="dalto" value="NO"></td>
+                <td>DIABETES</td><td class="text-center"><input type="radio" name="diab" value="SI"></td><td class="text-center"><input type="radio" name="diab" value="NO"></td>
             </tr>
             <tr>
-                <td>ESTRABISMO</td>
-                <td class="text-center"><input type="radio" name="estrabismo" value="SI"></td>
-                <td class="text-center"><input type="radio" name="estrabismo" value="NO"></td>
-                <td>INFECCIONES</td>
-                <td class="text-center"><input type="radio" name="infecciones" value="SI"></td>
-                <td class="text-center"><input type="radio" name="infecciones" value="NO"></td>
-                <td>PRESION ALTA</td>
-                <td class="text-center"><input type="radio" name="presion_alta" value="SI"></td>
-                <td class="text-center"><input type="radio" name="presion_alta" value="NO"></td>
+                <td>ESTRABISMO</td><td class="text-center"><input type="radio" name="estra" value="SI"></td><td class="text-center"><input type="radio" name="estra" value="NO"></td>
+                <td>INFECCIONES</td><td class="text-center"><input type="radio" name="infec" value="SI"></td><td class="text-center"><input type="radio" name="infec" value="NO"></td>
+                <td>PRESION ALTA</td><td class="text-center"><input type="radio" name="hta" value="SI"></td><td class="text-center"><input type="radio" name="hta" value="NO"></td>
             </tr>
             <tr>
-                <td class="bg-grey" style="text-decoration: underline;">OBSERVACIONES</td>
-                <td colspan="8"><input id="obs_antecedentes" class="form-control w-100" style="border:none !important;"></td>
+                <td class="bg-grey">OBSERVACIONES</td><td colspan="8"><input id="obs_ant" class="form-control w-100" style="border:none !important;"></td>
             </tr>
         </table>
 
         <table class="table-legal bg-green-soft">
+            <tr class="bg-grey text-center"><td>DESCRIPCIÓN</td><td style="width:10%">NORMAL</td><td style="width:10%">ALTERADO</td><td>OBSERVACIONES</td></tr>
             <tr>
-                <td rowspan="2" class="text-center" style="width: 20%; font-weight: 800;">ANAMNESIS:</td>
-                <td class="text-center bg-grey" style="width: 10%;">NORMAL</td>
-                <td class="text-center bg-grey" style="width: 10%;">ALTERADO</td>
-                <td class="bg-grey">OBSERVACIONES</td>
-            </tr>
-            <tr>
-                <td class="text-center"><input type="radio" name="ana_status" value="NORMAL"></td>
-                <td class="text-center"><input type="radio" name="ana_status" value="ALTERADO"></td>
+                <td class="text-center"><strong>ANAMNESIS:</strong></td>
+                <td class="text-center"><input type="radio" name="ana" value="NORMAL"></td>
+                <td class="text-center"><input type="radio" name="ana" value="ALTERADO"></td>
                 <td><input id="ana_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td>
             </tr>
             <tr>
-                <td rowspan="2" class="text-center" style="width: 20%; font-weight: 800;">EXAMEN CLINICO EXTERNO:</td>
-                <td class="text-center bg-grey">NORMAL</td>
-                <td class="text-center bg-grey">ALTERADO</td>
-                <td class="bg-grey">OBSERVACIONES</td>
-            </tr>
-            <tr>
-                <td class="text-center"><input type="radio" name="exe_status" value="NORMAL"></td>
-                <td class="text-center"><input type="radio" name="exe_status" value="ALTERADO"></td>
+                <td class="text-center"><strong>EXAMEN CLINICO EXTERNO:</strong></td>
+                <td class="text-center"><input type="radio" name="exe" value="NORMAL"></td>
+                <td class="text-center"><input type="radio" name="exe" value="ALTERADO"></td>
                 <td><input id="exe_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td>
             </tr>
         </table>
 
-        <div class="row mt-2">
+        <div class="row g-2">
             <div class="col-6">
                 <div class="section-title">III. AGUDEZA VISUAL DE LEJOS</div>
                 <table class="table-legal">
-                    <tr class="bg-grey text-center"><td>OJO</td><td>SC (SIN LENTES)</td><td>CC (CON LENTES)</td><td>DIOPTRIAS</td></tr>
+                    <tr class="bg-grey text-center"><td>OJO</td><td>SIN CORRECCIÓN</td><td>CON CORRECCIÓN</td><td>DIOPTRIAS</td></tr>
                     <tr><td>OD</td><td><input id="od_l_sc" class="form-control"></td><td><input id="od_l_cc" class="form-control"></td><td><input id="od_l_dio" class="form-control"></td></tr>
                     <tr><td>OI</td><td><input id="oi_l_sc" class="form-control"></td><td><input id="oi_l_cc" class="form-control"></td><td><input id="oi_l_dio" class="form-control"></td></tr>
                 </table>
@@ -129,25 +103,42 @@
             <div class="col-6">
                 <div class="section-title">IV. AGUDEZA VISUAL DE CERCA</div>
                 <table class="table-legal">
-                    <tr class="bg-grey text-center"><td>OJO</td><td>SC (SIN LENTES)</td><td>CC (CON LENTES)</td><td>DIOPTRIAS</td></tr>
-                    <tr><td>OD</td><td><input id="od_c_sc" class="form-control"></td><td><input id="od_c_cc" class="form-control"></td><td><input id="od_c_dio" class="form-control"></td></tr>
-                    <tr><td>OI</td><td><input id="oi_c_sc" class="form-control"></td><td><input id="oi_c_cc" class="form-control"></td><td><input id="oi_c_dio" class="form-control"></td></tr>
+                    <tr class="bg-grey text-center"><td>SIN CORRECCIÓN</td><td>20/</td><td>CON CORRECCIÓN</td><td>/</td></tr>
+                </table>
+                <table class="table-legal bg-green-soft">
+                    <tr class="bg-grey text-center"><td style="width:20%">CAMPO VISUAL</td><td style="width:10%">NORMAL</td><td style="width:10%">ALTERADO</td><td>OBSERVACIONES</td></tr>
+                    <tr><td>OJO DERECHO</td><td class="text-center"><input type="radio" name="cv_od" value="N"></td><td class="text-center"><input type="radio" name="cv_od" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+                    <tr><td>OJO IZQUIERDO</td><td class="text-center"><input type="radio" name="cv_oi" value="N"></td><td class="text-center"><input type="radio" name="cv_oi" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
                 </table>
             </div>
         </div>
 
-        <div class="section-title">V. DIAGNOSTICO Y RECOMENDACIONES</div>
-        <textarea id="diag_recom" class="form-control w-100 mb-3" rows="3" style="border: 2px solid #000 !important;"></textarea>
+        <table class="table-legal bg-green-soft">
+            <tr class="bg-grey text-center"><td style="width:20%">FONDO DE OJO</td><td style="width:10%">NORMAL</td><td style="width:10%">ALTERADO</td><td>OBSERVACIONES</td></tr>
+            <tr><td>OJO DERECHO</td><td class="text-center"><input type="radio" name="fo_od" value="N"></td><td class="text-center"><input type="radio" name="fo_od" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td>OJO IZQUIERDO</td><td class="text-center"><input type="radio" name="fo_oi" value="N"></td><td class="text-center"><input type="radio" name="fo_oi" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            
+            <tr class="bg-grey text-center"><td>TEST DE ISHIHARA</td><td>NORMAL</td><td>ALTERADO</td><td>OBSERVACIONES</td></tr>
+            <tr><td>RESULTADO</td><td class="text-center"><input type="radio" name="ish" value="N"></td><td class="text-center"><input type="radio" name="ish" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            
+            <tr class="bg-grey text-center"><td>VISION ESTEREOSCOPICA:</td><td>NORMAL</td><td>ALTERADO</td><td>OBSERVACIONES</td></tr>
+            <tr><td>RESULTADO</td><td class="text-center"><input type="radio" name="est" value="N"></td><td class="text-center"><input type="radio" name="est" value="A"></td><td><input class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+        </table>
 
-        <div class="no-print">
-            <button type="submit" class="btn btn-success w-100 p-3" style="background: var(--emerald); border:none; font-weight: 900;">💾 GUARDAR Y REGISTRAR FICHA OFTALMOLÓGICA</button>
-        </div>
+        <table class="table-legal bg-green-soft">
+            <tr class="bg-grey text-center"><td style="width:20%">PRESION INTRAOCULAR</td><td>OJO DERECHO</td><td>mmHg</td><td>OJO IZQUIERDO</td><td>mmHg</td></tr>
+            <tr><td class="text-center">RESULTADO</td><td><input class="form-control w-100"></td><td class="text-center">mmHg</td><td><input class="form-control w-100"></td><td class="text-center">mmHg</td></tr>
+        </table>
+
+        <div class="section-title">V. DIAGNOSTICO Y RECOMENDACIONES</div>
+        <textarea id="diag" class="form-control w-100 mb-3" rows="3" style="border: 1.5px solid #000 !important;"></textarea>
+
+        <button type="submit" class="btn btn-success w-100 p-2 no-print" style="background: var(--emerald); border:none; font-weight: 900;">💾 GUARDAR REGISTRO Y PREPARAR IMPRESIÓN</button>
     </form>
 </div>
 
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
-
     document.getElementById('codigo_search').addEventListener('change', async (e) => {
         const cod = e.target.value.trim();
         if(!cod) return;
@@ -157,25 +148,21 @@
             if(data) {
                 document.getElementById('nombre_completo').value = `${data.nombre} ${data.apellido}`;
                 document.getElementById('ci').value = data.ci;
-                window.current_p_id = data.id;
-                
-                const respFil = await fetch(`${API}/api/paciente-completo/${data.id}`);
-                const dataComp = await respFil.json();
-                if(dataComp.filiacion) {
-                    document.getElementById('edad').value = dataComp.filiacion.edad;
-                    document.getElementById('sexo').value = dataComp.filiacion.sexo;
-                    document.getElementById('ocupacion').value = dataComp.filiacion.profesion_oficio;
+                window.p_id = data.id;
+                const respF = await fetch(`${API}/api/paciente-completo/${data.id}`);
+                const dF = await respF.json();
+                if(dF.filiacion) {
+                    document.getElementById('edad').value = dF.filiacion.edad;
+                    document.getElementById('sexo').value = dF.filiacion.sexo;
+                    document.getElementById('ocupacion').value = dF.filiacion.profesion_oficio;
                 }
-            } else { alert("CÓDIGO NO ENCONTRADO"); }
+            }
         } catch (err) { console.error(err); }
     });
 
-    document.getElementById('oftalmoForm').onsubmit = async (e) => {
+    document.getElementById('oftalmoForm').onsubmit = (e) => {
         e.preventDefault();
-        if(!window.current_p_id) { alert("SELECCIONE PACIENTE POR CÓDIGO"); return; }
-        
-        // Aquí se construye el payload con toda la información legal
-        alert("GUARDANDO EN BASE DE DATOS Y PREPARANDO IMPRESIÓN...");
+        if(!window.p_id) { alert("ERROR: SELECCIONE PACIENTE"); return; }
         window.print();
     };
 </script>
