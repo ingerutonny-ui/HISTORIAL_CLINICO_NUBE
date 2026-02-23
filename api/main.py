@@ -29,7 +29,6 @@ def list_pacientes(db: Session = Depends(get_db)):
     try:
         return db.query(models.Paciente).all()
     except Exception as e:
-        print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="Error de base de datos")
 
 @app.post("/pacientes/")
@@ -57,10 +56,24 @@ async def save_enfermera(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_enfermera(db, data)
 
+@app.get("/enfermeras/")
+def list_enfermeras(db: Session = Depends(get_db)):
+    try:
+        return db.query(models.Enfermera).all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/doctor/")
 async def save_doctor(request: Request, db: Session = Depends(get_db)):
     data = await request.json()
     return crud.create_doctor(db, data)
+
+@app.get("/doctores/")
+def list_doctores(db: Session = Depends(get_db)):
+    try:
+        return db.query(models.Doctor).all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/paciente-completo/{paciente_id}")
 def get_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
