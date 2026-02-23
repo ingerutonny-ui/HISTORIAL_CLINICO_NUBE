@@ -15,7 +15,7 @@
         label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
         input, select { border-radius: 8px !important; font-weight: 600; text-transform: uppercase; font-size: 13px !important; }
         .nav-controls { display: flex; gap: 15px; margin-top: 25px; }
-        .btn-volver { background: #64748b; color: white; padding: 15px; border-radius: 12px; font-weight: 800; text-decoration: none; text-align: center; flex: 1; border: none; }
+        .btn-volver { background: #64748b; color: white; padding: 15px; border-radius: 12px; text-decoration: none; text-align: center; flex: 1; border: none; font-weight: 800; }
         .btn-next { background: var(--ohs-cyan); color: white; padding: 15px; border-radius: 12px; border: none; font-weight: 800; flex: 2; transition: 0.3s; }
     </style>
 </head>
@@ -36,7 +36,7 @@
             <div><label>Apellidos</label><input id="apellido" class="form-control" readonly></div>
             <div><label>Nombres</label><input id="nombre" class="form-control" readonly></div>
             <div><label>Cédula Identidad</label><input id="ci" class="form-control" readonly></div>
-            <div><label>Código Paciente</label><input id="codigo_paciente" class="form-control" readonly></div>
+            <div><label>Código Paciente</label><input id="codigo_paciente" class="form-control" readonly style="background:#f8fafc;"></div>
         </div>
 
         <div class="grid-inputs mt-3">
@@ -48,12 +48,12 @@
 
         <div class="section-title">II. Ubicación y Contacto</div>
         <div class="grid-inputs">
-            <div><label>Domicilio</label><input id="domicilio" class="form-control"></div>
+            <div><label>Domicilio (Calle/Av)</label><input id="domicilio" class="form-control"></div>
             <div><label>N° Casa</label><input id="n_casa" class="form-control"></div>
             <div><label>Zona / Barrio</label><input id="zona_barrio" class="form-control"></div>
             <div><label>Ciudad</label><input id="ciudad" class="form-control"></div>
             <div><label>País</label><input id="pais" class="form-control" value="BOLIVIA"></div>
-            <div><label>Teléfono</label><input id="telefono" class="form-control"></div>
+            <div><label>Teléfono/Celular</label><input id="telefono" class="form-control"></div>
         </div>
 
         <div class="section-title">III. Datos Complementarios</div>
@@ -90,6 +90,7 @@
                 document.getElementById('nombre').value = data.paciente.nombre || '';
                 document.getElementById('ci').value = data.paciente.ci || '';
                 document.getElementById('codigo_paciente').value = data.paciente.codigo_paciente || '';
+                
                 if (data.filiacion) {
                     document.getElementById('edad').value = data.filiacion.edad || '';
                     document.getElementById('sexo').value = data.filiacion.sexo || 'MASCULINO';
@@ -103,14 +104,18 @@
                     document.getElementById('telefono').value = data.filiacion.telefono || '';
                     document.getElementById('profesion_oficio').value = data.filiacion.profesion_oficio || '';
                     
+                    // CORRECCIÓN RADICAL: Comparación de strings limpia para Estado Civil
+                    const valEC = String(data.filiacion.estado_civil).trim().toUpperCase();
                     const selectEC = document.getElementById('estado_civil');
-                    const valDB = data.filiacion.estado_civil ? data.filiacion.estado_civil.toUpperCase() : "";
-                    for(let opt of selectEC.options) {
-                        if(opt.value === valDB) opt.selected = true;
+                    for (let i = 0; i < selectEC.options.length; i++) {
+                        if (selectEC.options[i].value === valEC) {
+                            selectEC.selectedIndex = i;
+                            break;
+                        }
                     }
                 }
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Error al cargar:", e); }
     };
 
     document.getElementById('formP1').onsubmit = async (e) => {
@@ -132,25 +137,19 @@
         };
 
         try {
-            // INTENTO 1: PUT (Sin barra final)
-            let res = await fetch(`${API}/p1/${p_id}`, {
-                method: 'PUT',
+            // CORRECCIÓN DE RUTA: Se envía a /p1 sin el ID al final para evitar el 404
+            const res = await fetch(`${API}/p1`, {
+                method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
 
-            if (!res.ok) {
-                // INTENTO 2: POST (Sin barra final)
-                res = await fetch(`${API}/p1`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
+            if (res.ok) {
+                window.location.href = "declaracion_jurada_p2.html";
+            } else {
+                alert("ERROR DE SERVIDOR: No se pudo procesar la solicitud.");
             }
-
-            if (res.ok) window.location.href = "declaracion_jurada_p2.html";
-            else alert("ERROR FINAL DE GUARDADO");
-        } catch (err) { alert("ERROR DE RED"); }
+        } catch (err) { alert("ERROR DE CONEXIÓN: Revise su internet."); }
     };
 </script>
 </body>
