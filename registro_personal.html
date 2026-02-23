@@ -50,7 +50,7 @@
                 </select>
             </div>
             <div class="form-group"><label>ESPECIALIDAD</label>
-                <select id="especialidad_doc">
+                <select id="especialidad">
                     <option value="MEDICINA DEL TRABAJO">MEDICINA DEL TRABAJO</option>
                     <option value="MEDICINA GENERAL">MEDICINA GENERAL</option>
                     <option value="PSICOLOGÍA">PSICOLOGÍA</option>
@@ -89,28 +89,16 @@
     const API_BASE = "https://historial-clinico-936s.onrender.com";
 
     function switchTab(tipo) {
-        const tabDoc = document.getElementById('tab-doc');
-        const tabEnfe = document.getElementById('tab-enfe');
-        const formDoc = document.getElementById('form-doctor');
-        const formEnfe = document.getElementById('form-enfermera');
-        
-        if(tipo === 'doctor') {
-            formDoc.style.display = 'block';
-            formEnfe.style.display = 'none';
-            tabDoc.className = 'tab active-doc';
-            tabEnfe.className = 'tab';
-        } else {
-            formDoc.style.display = 'none';
-            formEnfe.style.display = 'block';
-            tabEnfe.className = 'tab active-enfe';
-            tabDoc.className = 'tab';
-        }
+        document.getElementById('form-doctor').style.display = tipo === 'doctor' ? 'block' : 'none';
+        document.getElementById('form-enfermera').style.display = tipo === 'doctor' ? 'none' : 'block';
+        document.getElementById('tab-doc').className = tipo === 'doctor' ? 'tab active-doc' : 'tab';
+        document.getElementById('tab-enfe').className = tipo === 'enfermera' ? 'tab active-enfe' : 'tab';
     }
 
     async function enviarDatos(tipo) {
         let payload = {};
         
-        // Mapeo riguroso basado en su captura de base de datos
+        // MAPEADO EXACTO SEGÚN SU CRUD Y MODELOS
         if (tipo === 'doctor') {
             payload = {
                 ci_doc: document.getElementById('ci_doc').value.trim(),
@@ -118,7 +106,7 @@
                 apmaterno_doc: document.getElementById('apmaterno_doc').value.trim(),
                 nombre_doc: document.getElementById('nombre_doc').value.trim(),
                 turno_doc: document.getElementById('turno_doc').value,
-                especialidad: document.getElementById('especialidad_doc').value
+                especialidad: document.getElementById('especialidad').value
             };
         } else {
             payload = {
@@ -132,7 +120,7 @@
         }
 
         try {
-            // Se intenta la ruta con /api tal como muestra su código Python
+            // USAMOS LA RUTA EXACTA DEFINIDA EN SU CAPTURA DE PYTHON
             const response = await fetch(`${API_BASE}/api/save-${tipo}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -140,15 +128,14 @@
             });
 
             if (response.ok) {
-                alert(`¡REGISTRO DE ${tipo.toUpperCase()} EXITOSO!`);
+                alert(`¡${tipo.toUpperCase()} GUARDADO CORRECTAMENTE EN LA NUBE!`);
                 window.location.href = "lista_personal.html";
             } else {
-                const errorInfo = await response.json();
-                alert("ERROR " + response.status + ": " + (errorInfo.detail || "REVISE LOS DATOS O CI REPETIDO"));
+                const err = await response.json();
+                alert("ERROR " + response.status + ": " + (err.detail || "DATOS NO RECONOCIDOS"));
             }
-        } catch (error) {
-            console.error(error);
-            alert("ERROR CRÍTICO: NO SE PUDO CONECTAR CON EL SERVIDOR");
+        } catch (e) {
+            alert("NO SE PUDO CONECTAR AL SERVIDOR. VERIFIQUE QUE RENDER ESTÉ 'LIVE'.");
         }
     }
 </script>
