@@ -8,155 +8,141 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
         
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #0a0e1a; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 10px; /* Menos padding en móvil */
-        }
-
-        .hoja-flotante {
+        /* Contenedor principal igualado al tamaño grande */
+        .hoja-sistema {
             background-color: white;
             width: 100%;
-            max-width: 1100px;
-            border-radius: 15px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            max-width: 1200px; /* Tamaño máximo igualado */
+            margin: 0 auto;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
             overflow: hidden;
-            text-transform: uppercase;
         }
 
-        /* Ajuste para que los textos largos no rompan el diseño en móvil */
-        .truncate-mobile {
-            max-width: 120px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        @media (min-width: 768px) {
-            .truncate-mobile { max-width: none; white-space: normal; }
+        .btn-volver-top {
+            max-width: 1200px;
+            margin: 0 auto 15px auto;
+            width: 100%;
         }
     </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen">
 
-    <div class="hoja-flotante">
-        <div class="p-6 md:p-8 flex flex-col md:flex-row justify-between items-center border-b border-gray-100 gap-4">
-            <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-start">
-                <img src="logo.png" alt="Logo OHS" class="h-12 md:h-16">
-                <button onclick="location.href='index.html'" class="text-gray-400 hover:text-blue-800 transition text-[9px] md:text-[10px] font-black flex items-center gap-1 border border-gray-200 px-2 py-1 rounded">
-                    <i class="fa-solid fa-chevron-left"></i> INICIO
-                </button>
-            </div>
+    <div class="btn-volver-top">
+        <button onclick="location.href='index.html'" class="bg-slate-800/80 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition text-[10px] font-black flex items-center gap-2 border border-slate-700 shadow-2xl">
+            <i class="fa-solid fa-house"></i> IR AL INICIO
+        </button>
+    </div>
+
+    <div class="hoja-sistema">
+        <div class="p-8 md:p-10 flex flex-col md:flex-row justify-between items-center border-b border-gray-100 gap-6">
+            <img src="logo.png" alt="Logo OHS" class="h-16 md:h-20">
             <div class="text-center md:text-right">
-                <h1 class="text-xl md:text-3xl font-black text-blue-900 tracking-tighter">PERSONAL MÉDICO</h1>
-                <p class="text-[8px] md:text-[10px] font-bold text-emerald-600 tracking-[0.2em]">SISTEMA OHS EN LA NUBE</p>
+                <h1 class="text-3xl md:text-4xl font-black text-blue-900 tracking-tighter">PERSONAL MÉDICO</h1>
+                <p class="text-[10px] md:text-[12px] font-bold text-emerald-600 tracking-[0.3em]">SISTEMA OHS EN LA NUBE</p>
             </div>
         </div>
 
-        <div class="p-4 md:p-8">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                <h2 class="text-[10px] md:text-[11px] font-black text-gray-500 tracking-widest text-center md:text-left">
-                    <i class="fa-solid fa-clipboard-list text-orange-400 mr-2"></i> PERSONAL REGISTRADO
+        <div class="p-6 md:p-10">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <h2 class="text-[11px] font-black text-gray-400 tracking-widest">
+                    <i class="fa-solid fa-users-gear text-orange-500 mr-2"></i> PROFESIONALES ACTIVOS EN SISTEMA
                 </h2>
-                <a href="registro_personal.html" class="w-full md:w-auto bg-blue-700 text-white px-6 py-3 md:py-2 rounded-full font-black text-[10px] shadow-lg text-center hover:bg-blue-800 transition">
-                    + REGISTRAR NUEVO
+                <a href="registro_personal.html" class="w-full md:w-auto bg-blue-700 text-white px-8 py-3 rounded-full font-black text-[11px] shadow-xl hover:bg-blue-800 transition transform hover:scale-105 text-center">
+                    + REGISTRAR NUEVO PROFESIONAL
                 </a>
             </div>
 
-            <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
-                <table class="w-full text-left min-w-[600px]"> <thead>
-                        <tr class="bg-blue-700 text-white text-[10px] font-black tracking-wider uppercase">
-                            <th class="p-4">C.I.</th>
-                            <th class="p-4">Nombre Completo</th>
-                            <th class="p-4">Especialidad / Rol</th>
-                            <th class="p-4">Turno</th>
-                            <th class="p-4 text-center">Acciones</th>
+            <div class="overflow-x-auto rounded-2xl border border-gray-200 shadow-sm">
+                <table class="w-full text-left min-w-[800px]">
+                    <thead>
+                        <tr class="bg-blue-700 text-white text-[11px] font-black tracking-widest">
+                            <th class="p-5">C.I.</th>
+                            <th class="p-5">Nombre Completo</th>
+                            <th class="p-5">Especialidad / Cargo</th>
+                            <th class="p-5">Turno</th>
+                            <th class="p-5 text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-700 text-[10px] font-bold">
+                    <tbody class="text-[11px] font-bold text-gray-700">
                         <tr class="border-b border-gray-50 hover:bg-blue-50/50 transition">
-                            <td class="p-4 text-blue-700">1234567</td>
-                            <td class="p-4">JUAN CARLOS GARCIA LOPEZ</td>
-                            <td class="p-4">
-                                <span class="bg-green-50 text-green-600 border border-green-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
+                            <td class="p-5 text-blue-700 font-black">1234567</td>
+                            <td class="p-5">JUAN CARLOS GARCIA LOPEZ</td>
+                            <td class="p-5">
+                                <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-green-200">
                                     <i class="fa-solid fa-user-doctor"></i> DOCTOR: CARDIOLOGÍA
                                 </span>
                             </td>
-                            <td class="p-4 text-gray-400 uppercase">Mañana</td>
-                            <td class="p-4">
+                            <td class="p-5 text-gray-400">MAÑANA</td>
+                            <td class="p-5">
                                 <div class="flex justify-center gap-2">
-                                    <button class="bg-orange-500 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="bg-red-600 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="bg-slate-700 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                    <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
                                 </div>
                             </td>
                         </tr>
                         <tr class="border-b border-gray-50 hover:bg-blue-50/50 transition">
-                            <td class="p-4 text-blue-700">8822334</td>
-                            <td class="p-4">ANA BEATRIZ SOSA MONTERO</td>
-                            <td class="p-4">
-                                <span class="bg-green-50 text-green-600 border border-green-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
+                            <td class="p-5 text-blue-700 font-black">8822334</td>
+                            <td class="p-5">ANA BEATRIZ SOSA MONTERO</td>
+                            <td class="p-5">
+                                <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-green-200">
                                     <i class="fa-solid fa-user-doctor"></i> DOCTORA: PEDIATRÍA
                                 </span>
                             </td>
-                            <td class="p-4 text-gray-400 uppercase">Tarde</td>
-                            <td class="p-4">
+                            <td class="p-5 text-gray-400">TARDE</td>
+                            <td class="p-5">
                                 <div class="flex justify-center gap-2">
-                                    <button class="bg-orange-500 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="bg-red-600 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="bg-slate-700 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                    <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
                                 </div>
                             </td>
                         </tr>
                         <tr class="border-b border-gray-50 hover:bg-blue-50/50 transition">
-                            <td class="p-4 text-blue-700">7654321</td>
-                            <td class="p-4">MARIA ELENA MENDOZA RIVAS</td>
-                            <td class="p-4">
-                                <span class="bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
+                            <td class="p-5 text-blue-700 font-black">7654321</td>
+                            <td class="p-5">MARIA ELENA MENDOZA RIVAS</td>
+                            <td class="p-5">
+                                <span class="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-blue-200">
                                     <i class="fa-solid fa-user-nurse"></i> ENFERMERA: GENERAL
                                 </span>
                             </td>
-                            <td class="p-4 text-gray-400 uppercase">Tarde</td>
-                            <td class="p-4">
+                            <td class="p-5 text-gray-400">TARDE</td>
+                            <td class="p-5">
                                 <div class="flex justify-center gap-2">
-                                    <button class="bg-orange-500 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="bg-red-600 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="bg-slate-700 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                    <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
                                 </div>
                             </td>
                         </tr>
                         <tr class="border-b border-gray-50 hover:bg-blue-50/50 transition">
-                            <td class="p-4 text-blue-700">4455667</td>
-                            <td class="p-4">PEDRO LUIS RODRIGUEZ PAZ</td>
-                            <td class="p-4">
-                                <span class="bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-2 w-fit">
-                                    <i class="fa-solid fa-user-nurse"></i> ENFERMERO: INSTRUM.
+                            <td class="p-5 text-blue-700 font-black">4455667</td>
+                            <td class="p-5">PEDRO LUIS RODRIGUEZ PAZ</td>
+                            <td class="p-5">
+                                <span class="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-blue-200">
+                                    <i class="fa-solid fa-user-nurse"></i> ENFERMERO: INSTRUMENTACIÓN
                                 </span>
                             </td>
-                            <td class="p-4 text-gray-400 uppercase">Noche</td>
-                            <td class="p-4">
+                            <td class="p-5 text-gray-400">NOCHE</td>
+                            <td class="p-5">
                                 <div class="flex justify-center gap-2">
-                                    <button class="bg-orange-500 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="bg-red-600 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="bg-slate-700 text-white p-2 rounded shadow-sm"><i class="fa-solid fa-file-pdf"></i></button>
+                                    <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
+                                    <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
                                 </div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <p class="md:hidden text-[8px] text-gray-400 mt-2 text-center italic">← Desliza la tabla para ver más →</p>
         </div>
 
-        <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
-            <p class="text-[8px] md:text-[9px] text-gray-400 font-black tracking-widest uppercase">SISTEMA OHS V1.0</p>
+        <div class="bg-gray-50 p-6 text-center border-t border-gray-100">
+            <p class="text-[9px] text-gray-400 font-black tracking-widest">SISTEMA OHS NANCY V1.0 - GESTIÓN DE PERSONAL</p>
         </div>
     </div>
-
 </body>
 </html>
