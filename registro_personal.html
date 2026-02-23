@@ -8,25 +8,27 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; text-transform: uppercase; }
-        .tab-active { border-bottom: 6px solid #1e3a8a; color: #1e3a8a; background: #f0f4ff; }
+        /* Clases dinámicas para los estados de botones */
+        .tab-doctor-active { border-bottom: 6px solid #1e3a8a; color: #1e3a8a; background: #f0f4ff; }
+        .tab-enfermera-active { border-bottom: 6px solid #10b981; color: #064e3b; background: #ecfdf5; }
     </style>
 </head>
 <body class="bg-slate-200 p-4 md:p-8">
     <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border-t-8 border-green-600">
         
         <div class="p-8 flex justify-between items-center border-b">
-            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-20">
+            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-20" onerror="this.src='https://via.placeholder.com/80?text=OHS'">
             <div class="text-right">
                 <h1 class="text-3xl font-black text-blue-900">REGISTRO DE PERSONAL</h1>
                 <p class="text-blue-600 font-bold tracking-tighter">SISTEMA MÉDICO OHS - NUBE</p>
             </div>
         </div>
 
-        <div class="flex w-full bg-slate-50">
-            <button onclick="activarSeccion('doctor')" id="btn-doctor" class="flex-1 py-6 text-xl font-black transition all tab-active">
+        <div class="flex w-full bg-slate-50 border-b">
+            <button onclick="activarSeccion('doctor')" id="btn-doctor" class="flex-1 py-6 text-xl font-black transition-all tab-doctor-active">
                 🩺 SECCIÓN DOCTORES
             </button>
-            <button onclick="activarSeccion('enfermera')" id="btn-enfermera" class="flex-1 py-6 text-xl font-black text-slate-400 transition all">
+            <button onclick="activarSeccion('enfermera')" id="btn-enfermera" class="flex-1 py-6 text-xl font-black text-slate-400 transition-all">
                 💉 SECCIÓN ENFERMERAS
             </button>
         </div>
@@ -59,68 +61,86 @@
                         <option value="NOCHE">🌙 NOCHE</option>
                     </select>
                 </div>
-                <div id="div-especialidad">
+                
+                <div id="contenedor-extra">
                     <label id="lbl-extra" class="block text-blue-900 font-black mb-2">ESPECIALIDAD</label>
-                    <input type="text" id="extra_val" class="w-full p-4 bg-slate-50 border-2 border-slate-300 rounded-xl font-bold uppercase" placeholder="Ej: MEDICINA DEL TRABAJO">
+                    <select id="extra_val" class="w-full p-4 bg-slate-50 border-2 border-slate-300 rounded-xl font-black uppercase">
+                        </select>
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-black py-6 rounded-2xl shadow-2xl transition transform hover:scale-[1.01] flex justify-center items-center gap-4 text-2xl">
-                💾 GUARDAR EN LA NUBE
+            <button id="btn-submit" type="submit" class="w-full bg-blue-900 hover:bg-blue-800 text-white font-black py-6 rounded-2xl shadow-2xl transition transform hover:scale-[1.01] flex justify-center items-center gap-4 text-2xl">
+                💾 GUARDAR MÉDICO EN LA NUBE
             </button>
         </form>
     </div>
 
     <script>
         const API_BASE = "https://historial-clinico-936s.onrender.com";
+        
+        // Especialidades desde su captura image_aa7a7b.png
+        const especialidadesDoc = ["HISTORIA CLINICA", "PSICOLOGO", "APTITUDES FISICAS", "APTITUDES LABORALES", "ESPIROMETRIA", "TRABAJO EN ALTURAS", "ELECTROENCEFALOGRAMA", "CARDIOLOGIA", "OSTEOMUSCULAR", "OFTALMOLOGIA"];
+        const cargosEnf = ["AUXILIAR DE ENFERMERIA", "LICENCIADA EN ENFERMERIA", "INSTRUMENTISTA", "ENFERMERA DE PLANTA"];
 
         function activarSeccion(tipo) {
             document.getElementById('tipo_empleado').value = tipo;
             const btnDoc = document.getElementById('btn-doctor');
             const btnEnfe = document.getElementById('btn-enfermera');
+            const btnSubmit = document.getElementById('btn-submit');
             const lblCi = document.getElementById('lbl-ci');
             const lblExtra = document.getElementById('lbl-extra');
-            const inputExtra = document.getElementById('extra_val');
+            const selectExtra = document.getElementById('extra_val');
+
+            // Limpiar opciones
+            selectExtra.innerHTML = "";
 
             if(tipo === 'doctor') {
-                btnDoc.classList.add('tab-active'); btnDoc.classList.remove('text-slate-400');
-                btnEnfe.classList.remove('tab-active'); btnEnfe.classList.add('text-slate-400');
+                btnDoc.className = "flex-1 py-6 text-xl font-black transition-all tab-doctor-active";
+                btnEnfe.className = "flex-1 py-6 text-xl font-black text-slate-400 transition-all";
+                btnSubmit.className = "w-full bg-blue-900 hover:bg-blue-800 text-white font-black py-6 rounded-2xl shadow-2xl transition transform hover:scale-[1.01] flex justify-center items-center gap-4 text-2xl";
+                btnSubmit.innerText = "💾 GUARDAR MÉDICO EN LA NUBE";
                 lblCi.innerText = "C.I. PROFESIONAL MÉDICO";
-                lblExtra.innerText = "ESPECIALIDAD";
-                inputExtra.placeholder = "Ej: MEDICINA DEL TRABAJO";
+                lblExtra.innerText = "ESPECIALIDAD MÉDICA";
+                especialidadesDoc.forEach(esp => {
+                    let opt = document.createElement('option'); opt.value = esp; opt.innerText = esp;
+                    selectExtra.appendChild(opt);
+                });
             } else {
-                btnEnfe.classList.add('tab-active'); btnEnfe.classList.remove('text-slate-400');
-                btnDoc.classList.remove('tab-active'); btnDoc.classList.add('text-slate-400');
+                // CAMBIO A VERDE ESMERALDA (Emerald 500/600)
+                btnEnfe.className = "flex-1 py-6 text-xl font-black transition-all tab-enfermera-active";
+                btnDoc.className = "flex-1 py-6 text-xl font-black text-slate-400 transition-all";
+                btnSubmit.className = "w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-6 rounded-2xl shadow-2xl transition transform hover:scale-[1.01] flex justify-center items-center gap-4 text-2xl";
+                btnSubmit.innerText = "💾 GUARDAR ENFERMERA EN LA NUBE";
                 lblCi.innerText = "C.I. PERSONAL ENFERMERÍA";
-                lblExtra.innerText = "NIVEL ACADÉMICO / CARGO";
-                inputExtra.placeholder = "Ej: LICENCIADA EN ENFERMERÍA";
+                lblExtra.innerText = "CARGO / NIVEL";
+                cargosEnf.forEach(cargo => {
+                    let opt = document.createElement('option'); opt.value = cargo; opt.innerText = cargo;
+                    selectExtra.appendChild(opt);
+                });
             }
         }
+
+        // Inicializar con doctores
+        activarSeccion('doctor');
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
             
-            // Construimos el JSON dinámicamente según lo que pide su Backend
-            let payload = {};
+            let payload = {
+                nombre: document.getElementById('nombre_val').value.trim(),
+                appaterno: document.getElementById('paterno_val').value.trim(),
+                apmaterno: document.getElementById('materno_val').value.trim(),
+                turno: document.getElementById('turno_val').value,
+                extra: document.getElementById('extra_val').value
+            };
+
+            // Mapeo exacto para modelos P1, P2, P3 [cite: 2026-02-11]
+            let finalData = {};
             if(tipo === 'doctor') {
-                payload = {
-                    ci_doc: document.getElementById('ci_val').value.trim(),
-                    nombre_doc: document.getElementById('nombre_val').value.trim(),
-                    appaterno_doc: document.getElementById('paterno_val').value.trim(),
-                    apmaterno_doc: document.getElementById('materno_val').value.trim(),
-                    turno_doc: document.getElementById('turno_val').value,
-                    especialidad: document.getElementById('extra_val').value.trim()
-                };
+                finalData = { ci_doc: document.getElementById('ci_val').value.trim(), nombre_doc: payload.nombre, appaterno_doc: payload.appaterno, apmaterno_doc: payload.apmaterno, turno_doc: payload.turno, especialidad: payload.extra };
             } else {
-                payload = {
-                    ci_enfe: document.getElementById('ci_val').value.trim(),
-                    nombre_enfe: document.getElementById('nombre_val').value.trim(),
-                    appaterno_enfe: document.getElementById('paterno_val').value.trim(),
-                    apmaterno_enfe: document.getElementById('materno_val').value.trim(),
-                    turno_enfe: document.getElementById('turno_val').value,
-                    edu_enfe: document.getElementById('extra_val').value.trim()
-                };
+                finalData = { ci_enfe: document.getElementById('ci_val').value.trim(), nombre_enfe: payload.nombre, appaterno_enfe: payload.appaterno, apmaterno_enfe: payload.apmaterno, turno_enfe: payload.turno, edu_enfe: payload.extra };
             }
 
             const endpoint = tipo === 'doctor' ? '/api/save-doctor' : '/api/save-enfermera';
@@ -129,18 +149,18 @@
                 const response = await fetch(`${API_BASE}${endpoint}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify(finalData)
                 });
 
                 if (response.ok) {
-                    alert(`¡${tipo.toUpperCase()} GUARDADO EN LA NUBE EXITOSAMENTE!`);
+                    alert(`¡${tipo.toUpperCase()} GUARDADO CON ÉXITO!`);
                     e.target.reset();
+                    activarSeccion(tipo);
                 } else {
-                    const error = await response.json();
-                    alert("ERROR: " + (error.detail || "DATOS NO VÁLIDOS"));
+                    alert("ERROR AL GUARDAR. REVISE EL C.I.");
                 }
             } catch (err) {
-                alert("EL SERVIDOR NO RESPONDE. REVISE SI RENDER ESTÁ ACTIVO.");
+                alert("ERROR DE CONEXIÓN CON RENDER.");
             }
         });
     </script>
