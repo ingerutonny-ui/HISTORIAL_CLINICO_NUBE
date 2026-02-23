@@ -3,88 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA OHS - REGISTRO</title>
+    <title>REGISTRO MÉDICO OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,700&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #f3f4f6; text-transform: uppercase; }
-        .font-header { font-family: 'Playfair Display', serif; letter-spacing: 1px; }
-        .gold-line { height: 3px; background: linear-gradient(90deg, #d4af37, #f1e5ac, #d4af37); }
-        
-        /* Inputs compactos estilo captura */
-        .input-compact {
-            border: none; border-bottom: 1px solid #e2e8f0;
-            padding: 6px 0; font-size: 11px; font-weight: 700;
-            letter-spacing: 0.5px; transition: all 0.3s; border-radius: 0;
-            background: transparent; width: 100%; color: #1e293b;
-        }
-        .input-compact:focus { outline: none; border-bottom: 2px solid #1e3a8a; }
-        
-        /* Selectores de sección */
-        .tab-doc { border-bottom: 3px solid #1e3a8a; color: #1e3a8a; font-weight: 800; }
-        .tab-enf { border-bottom: 3px solid #10b981; color: #10b981; font-weight: 800; }
-        .label-nancy { font-size: 9px; font-weight: 800; color: #1e3a8a; letter-spacing: 0.5px; }
+        body { font-family: 'Montserrat', sans-serif; text-transform: uppercase; background-color: #f3f4f6; }
+        .btn-seccion { transition: all 0.3s ease; border-radius: 15px; border: 2px solid #e5e7eb; }
+        .active-doc { border-color: #2563eb; background-color: #eff6ff; color: #1e40af; }
+        .active-enf { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
+        .input-ohs { background-color: #e5e7eb; border-radius: 8px; border: none; padding: 12px; font-weight: 700; width: 100%; font-size: 14px; }
+        label { font-size: 10px; font-weight: 900; color: #334155; margin-bottom: 4px; display: block; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-2 md:p-6">
-    <div class="w-full max-w-3xl bg-white shadow-2xl overflow-hidden rounded-sm">
-        <div class="gold-line"></div>
+<body class="p-4 md:p-10">
+    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-green-500">
         
-        <div class="p-6 flex flex-col md:flex-row justify-between items-center bg-white">
-            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-10 mb-4 md:mb-0">
-            <div class="text-center md:text-right">
-                <h1 class="text-xl md:text-2xl font-header italic text-slate-800">REGISTRO DE PERSONAL</h1>
-                <p class="text-[8px] tracking-[0.3em] text-blue-900 font-bold">SISTEMA MÉDICO OHS NANCY</p>
+        <div class="p-6 flex justify-between items-center">
+            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-16">
+            <div class="text-right">
+                <h1 class="text-xl font-black text-slate-700">REGISTRO DE PERSONAL</h1>
+                <h2 class="text-lg font-black text-blue-900 mt-[-5px]">MÉDICO OHS</h2>
             </div>
         </div>
 
-        <div class="flex border-b border-gray-100">
-            <button onclick="updateMode('doctor')" id="t-doc" class="flex-1 py-3 text-[10px] tracking-widest tab-doc">🩺 SECCIÓN DOCTORES</button>
-            <button onclick="updateMode('enfermera')" id="t-enf" class="flex-1 py-3 text-[10px] tracking-widest text-gray-300">💉 SECCIÓN ENFERMERAS</button>
+        <div class="grid grid-cols-2 gap-4 px-6 mb-8">
+            <button onclick="setModo('doctor')" id="btn-doc" class="btn-seccion active-doc p-6 flex flex-col items-center justify-center gap-2">
+                <i class="fa-solid fa-stethoscope text-4xl"></i>
+                <span class="text-[10px] font-black tracking-widest">SECCIÓN DOCTORES</span>
+            </button>
+            <button onclick="setModo('enfermera')" id="btn-enf" class="btn-seccion p-6 flex flex-col items-center justify-center gap-2 text-slate-400">
+                <i class="fa-solid fa-syringe text-4xl"></i>
+                <span class="text-[10px] font-black tracking-widest">SECCIÓN ENFERMERAS</span>
+            </button>
         </div>
 
-        <form id="form-registro" class="p-8 md:px-16 space-y-8">
+        <form id="form-registro" class="px-8 pb-10 space-y-6">
             <input type="hidden" id="tipo_empleado" value="doctor">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-                <div class="flex flex-col">
-                    <label id="lbl-ci" class="label-nancy">C.I. PROFESIONAL MÉDICO</label>
-                    <input type="text" id="ci_val" required class="input-compact">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label id="lbl-ci">C.I. PROFESIONAL</label>
+                    <input type="text" id="ci_val" required class="input-ohs" placeholder="4532454">
                 </div>
-                <div class="flex flex-col">
-                    <label class="label-nancy">NOMBRE COMPLETO</label>
-                    <input type="text" id="nombre_val" required class="input-compact">
+                <div>
+                    <label>NOMBRE COMPLETO</label>
+                    <input type="text" id="nombre_val" required class="input-ohs" placeholder="TONNY">
                 </div>
-                <div class="flex flex-col">
-                    <label class="label-nancy">APELLIDO PATERNO</label>
-                    <input type="text" id="paterno_val" required class="input-compact">
+                <div>
+                    <label>APELLIDO PATERNO</label>
+                    <input type="text" id="paterno_val" required class="input-ohs" placeholder="ALMENDRAS">
                 </div>
-                <div class="flex flex-col">
-                    <label class="label-nancy">APELLIDO MATERNO</label>
-                    <input type="text" id="materno_val" class="input-compact">
+                <div>
+                    <label>APELLIDO MATERNO</label>
+                    <input type="text" id="materno_val" class="input-ohs" placeholder="CONDE">
                 </div>
-                <div class="flex flex-col">
-                    <label class="label-nancy">TURNO ASIGNADO</label>
-                    <select id="turno_val" class="input-compact cursor-pointer">
+                <div>
+                    <label>TURNO</label>
+                    <select id="turno_val" class="input-ohs cursor-pointer">
                         <option value="MAÑANA">☀️ MAÑANA</option>
                         <option value="TARDE">🌤️ TARDE</option>
                         <option value="NOCHE">🌙 NOCHE</option>
                     </select>
                 </div>
-                <div class="flex flex-col">
-                    <label id="lbl-ext" class="label-nancy text-blue-800">ESPECIALIDAD MÉDICA</label>
-                    <select id="extra_val" class="input-compact cursor-pointer"></select>
+                <div>
+                    <label id="lbl-ext">ESPECIALIDAD</label>
+                    <select id="extra_val" class="input-ohs cursor-pointer"></select>
                 </div>
             </div>
 
-            <button type="submit" id="btn-save" class="w-full bg-[#1e293b] text-white py-4 text-[10px] font-bold tracking-[0.4em] hover:opacity-90 transition-all">
-                GUARDAR REGISTRO EN LA NUBE
+            <button type="submit" id="btn-save" class="w-full bg-[#1e40af] hover:bg-blue-800 text-white py-4 rounded-lg font-black tracking-widest flex items-center justify-center gap-3 mt-4">
+                <i class="fa-solid fa-floppy-disk"></i> GUARDAR MÉDICO EN LA NUBE
             </button>
         </form>
-
-        <div class="pb-6 text-center">
-            <p class="text-[7px] text-gray-300 tracking-[0.5em]">CALIDAD Y PRECISIÓN EN HISTORIALES CLÍNICOS © 2026</p>
-        </div>
     </div>
 
     <script>
@@ -92,64 +83,49 @@
         const docs = ["HISTORIA CLINICA", "PSICOLOGO", "APTITUDES FISICAS", "APTITUDES LABORALES", "ESPIROMETRIA", "TRABAJO EN ALTURAS", "ELECTROENCEFALOGRAMA", "CARDIOLOGIA", "OSTEOMUSCULAR", "OFTALMOLOGIA"];
         const enfs = ["AUXILIAR DE ENFERMERIA", "LICENCIADA EN ENFERMERIA", "INSTRUMENTISTA", "ENFERMERA DE PLANTA"];
 
-        function updateMode(tipo) {
+        function setModo(tipo) {
             document.getElementById('tipo_empleado').value = tipo;
-            const tD = document.getElementById('t-doc');
-            const tE = document.getElementById('t-enf');
-            const btn = document.getElementById('btn-save');
+            const bD = document.getElementById('btn-doc');
+            const bE = document.getElementById('btn-enf');
+            const btnS = document.getElementById('btn-save');
             const sel = document.getElementById('extra_val');
-            const lCi = document.getElementById('lbl-ci');
-            const lEx = document.getElementById('lbl-ext');
-
+            
             sel.innerHTML = "";
             if(tipo === 'doctor') {
-                tD.className = "flex-1 py-3 text-[10px] tracking-widest tab-doc";
-                tE.className = "flex-1 py-3 text-[10px] tracking-widest text-gray-300";
-                btn.style.backgroundColor = "#1e293b";
-                lCi.innerText = "C.I. PROFESIONAL MÉDICO";
-                lCi.style.color = "#1e3a8a";
-                lEx.innerText = "ESPECIALIDAD MÉDICA";
-                lEx.style.color = "#1e3a8a";
+                bD.className = "btn-seccion active-doc p-6 flex flex-col items-center justify-center gap-2";
+                bE.className = "btn-seccion p-6 flex flex-col items-center justify-center gap-2 text-slate-400";
+                btnS.className = "w-full bg-[#1e40af] text-white py-4 rounded-lg font-black tracking-widest flex items-center justify-center gap-3";
+                btnS.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> GUARDAR MÉDICO EN LA NUBE';
+                document.getElementById('lbl-ext').innerText = "ESPECIALIDAD";
                 docs.forEach(d => sel.add(new Option(d, d)));
             } else {
-                tE.className = "flex-1 py-3 text-[10px] tracking-widest tab-enf";
-                tD.className = "flex-1 py-3 text-[10px] tracking-widest text-gray-300";
-                btn.style.backgroundColor = "#065f46";
-                lCi.innerText = "C.I. PERSONAL ENFERMERÍA";
-                lCi.style.color = "#10b981";
-                lEx.innerText = "CARGO / NIVEL";
-                lEx.style.color = "#10b981";
+                bE.className = "btn-seccion active-enf p-6 flex flex-col items-center justify-center gap-2";
+                bD.className = "btn-seccion p-6 flex flex-col items-center justify-center gap-2 text-slate-400";
+                btnS.className = "w-full bg-[#065f46] text-white py-4 rounded-lg font-black tracking-widest flex items-center justify-center gap-3";
+                btnS.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> GUARDAR ENFERMERA EN LA NUBE';
+                document.getElementById('lbl-ext').innerText = "CARGO / NIVEL";
                 enfs.forEach(e => sel.add(new Option(e, e)));
             }
         }
 
-        updateMode('doctor');
+        setModo('doctor');
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
-            const p = {
-                ci: document.getElementById('ci_val').value.trim(),
-                n: document.getElementById('nombre_val').value.trim(),
-                pa: document.getElementById('paterno_val').value.trim(),
-                ma: document.getElementById('materno_val').value.trim(),
-                tu: document.getElementById('turno_val').value,
-                ex: document.getElementById('extra_val').value
-            };
-
-            const data = tipo === 'doctor' ? 
-                { ci_doc: p.ci, nombre_doc: p.n, appaterno_doc: p.pa, apmaterno_doc: p.ma, turno_doc: p.tu, especialidad: p.ex } :
-                { ci_enfe: p.ci, nombre_enfe: p.n, appaterno_enfe: p.pa, apmaterno_enfe: p.ma, turno_enfe: p.tu, edu_enfe: p.ex };
+            const payload = tipo === 'doctor' ? 
+                { ci_doc: document.getElementById('ci_val').value, nombre_doc: document.getElementById('nombre_val').value, appaterno_doc: document.getElementById('paterno_val').value, apmaterno_doc: document.getElementById('materno_val').value, turno_doc: document.getElementById('turno_val').value, especialidad: document.getElementById('extra_val').value } :
+                { ci_enfe: document.getElementById('ci_val').value, nombre_enfe: document.getElementById('nombre_val').value, appaterno_enfe: document.getElementById('paterno_val').value, apmaterno_enfe: document.getElementById('materno_val').value, turno_enfe: document.getElementById('turno_val').value, edu_enfe: document.getElementById('extra_val').value };
 
             try {
                 const res = await fetch(`${API}${tipo === 'doctor' ? '/api/save-doctor' : '/api/save-enfermera'}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(payload)
                 });
-                if(res.ok) { alert("REGISTRO GUARDADO EXITOSAMENTE"); e.target.reset(); updateMode(tipo); }
+                if(res.ok) { alert("REGISTRO EXITOSO"); e.target.reset(); setModo(tipo); }
                 else { alert("ERROR AL GUARDAR"); }
-            } catch { alert("ERROR DE CONEXIÓN CON EL SERVIDOR"); }
+            } catch { alert("ERROR DE CONEXIÓN"); }
         });
     </script>
 </body>
