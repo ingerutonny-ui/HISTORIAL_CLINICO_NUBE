@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC NUBE | FICHA OFTALMOLÓGICA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root { --emerald: #10b981; --dark: #0f172a; --soft-bg: #f8fafc; }
+        body { background-color: #f1f5f9; font-family: 'Inter', 'Segoe UI', sans-serif; padding: 20px; color: var(--dark); }
+        .form-container { max-width: 950px; margin: auto; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); border-top: 6px solid var(--emerald); }
+        
+        /* Header Nancy Elegante */
+        .header-nancy { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e2e8f0; }
+        .header-nancy img { height: 50px; }
+        .header-nancy h4 { font-weight: 800; text-transform: uppercase; margin: 0; letter-spacing: -0.5px; color: var(--dark); }
+
+        .section-card { background: var(--soft-bg); padding: 15px; border-radius: 10px; margin-bottom: 15px; border: 1px solid #e2e8f0; }
+        .section-title { font-size: 12px; font-weight: 800; color: var(--emerald); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        
+        label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px; }
+        input, select, textarea { border-radius: 6px !important; font-size: 13px !important; font-weight: 600 !important; border: 1px solid #cbd5e1 !important; text-transform: uppercase; }
+        input:focus { border-color: var(--emerald) !important; box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important; }
+        
+        /* Grid de Especialidad */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        
+        .btn-save { background: var(--emerald); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 800; width: 100%; transition: 0.3s; margin-top: 10px; text-transform: uppercase; }
+        .btn-save:hover { background: #059669; transform: translateY(-1px); }
+
+        .input-auto { background-color: #edf2f7 !important; color: #475569; }
+        .search-box { background: #ecfdf5; border: 1px dashed var(--emerald); padding: 10px; border-radius: 8px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="header-nancy">
+        <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo">
+        <div class="text-end">
+            <h4>Ficha Oftalmológica</h4>
+            <small style="color: var(--emerald); font-weight: 700;">SALUD OCUPACIONAL - DOCUMENTO LEGAL</small>
+        </div>
+    </div>
+
+    <form id="oftalmoForm">
+        <div class="search-box">
+            <label style="color: var(--emerald);">Buscador por Código de Paciente</label>
+            <div class="input-group">
+                <input type="text" id="codigo_search" class="form-control" placeholder="ESCRIBA EL CÓDIGO Y PRESIONE ENTER..." list="codigosList">
+                <datalist id="codigosList"></datalist>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">I. Filiación del Paciente</div>
+            <div class="grid-3">
+                <div class="col-span-2"><label>Nombre Completo</label><input id="nombre_completo" class="form-control input-auto" readonly></div>
+                <div><label>Cédula de Identidad</label><input id="ci" class="form-control input-auto" readonly></div>
+            </div>
+            <div class="grid-3 mt-2">
+                <div><label>Edad</label><input id="edad" class="form-control input-auto" readonly></div>
+                <div><label>Sexo</label><input id="sexo" class="form-control input-auto" readonly></div>
+                <div><label>Ocupación / Profesión</label><input id="ocupacion" class="form-control input-auto" readonly></div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">II. Agudeza Visual</div>
+            <div class="grid-2">
+                <div>
+                    <label>Ojo Derecho (OD)</label>
+                    <div class="input-group input-group-sm mb-1">
+                        <span class="input-group-text">SC</span><input id="od_sc" class="form-control" placeholder="Sin Corrección">
+                        <span class="input-group-text">CC</span><input id="od_cc" class="form-control" placeholder="Con Corrección">
+                    </div>
+                </div>
+                <div>
+                    <label>Ojo Izquierdo (OI)</label>
+                    <div class="input-group input-group-sm mb-1">
+                        <span class="input-group-text">SC</span><input id="oi_sc" class="form-control" placeholder="Sin Corrección">
+                        <span class="input-group-text">CC</span><input id="oi_cc" class="form-control" placeholder="Con Corrección">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="section-card">
+                <div class="section-title">III. Visión de Colores & Estereo</div>
+                <label>Test de Ishihara</label>
+                <select id="ishihara" class="form-select mb-2">
+                    <option value="NORMAL">NORMAL</option>
+                    <option value="DEFICIENTE">DEFICIENTE</option>
+                </select>
+                <label>Test de Estereopsis</label>
+                <input id="estereopsis" class="form-control" placeholder="SEG/ARCO">
+            </div>
+            <div class="section-card">
+                <div class="section-title">IV. Presión Intraocular (PIO)</div>
+                <div class="grid-2">
+                    <div><label>OD (mmHg)</label><input id="pio_od" type="number" class="form-control"></div>
+                    <div><label>OI (mmHg)</label><input id="pio_oi" type="number" class="form-control"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">V. Conclusión y Diagnóstico</div>
+            <textarea id="diagnostico" class="form-control" rows="2" placeholder="INDIQUE HALLAZGOS Y RECOMENDACIONES..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-save">💾 Guardar Registro Oftalmológico</button>
+    </form>
+</div>
+
+<script>
+    const API = 'https://historial-clinico-936s.onrender.com';
+
+    // BUSCADOR AUTOMÁTICO
+    document.getElementById('codigo_search').addEventListener('change', async (e) => {
+        const cod = e.target.value.trim();
+        if(!cod) return;
+
+        try {
+            // Buscamos al paciente por código en la base de datos
+            const resp = await fetch(`${API}/pacientes/codigo/${cod}`);
+            const data = await resp.json();
+
+            if(data) {
+                document.getElementById('nombre_completo').value = `${data.nombre} ${data.apellido}`;
+                document.getElementById('ci').value = data.ci;
+                // Guardamos el ID real para el envío del formulario
+                window.paciente_id_actual = data.id;
+                
+                // Jalar datos complementarios de Filiación
+                const respFil = await fetch(`${API}/api/paciente-completo/${data.id}`);
+                const dataComp = await respFil.json();
+                
+                if(dataComp.filiacion) {
+                    document.getElementById('edad').value = dataComp.filiacion.edad;
+                    document.getElementById('sexo').value = dataComp.filiacion.sexo;
+                    document.getElementById('ocupacion').value = dataComp.filiacion.profesion_oficio;
+                }
+            } else {
+                alert("CÓDIGO NO ENCONTRADO");
+            }
+        } catch (err) { console.error("Error al buscar:", err); }
+    });
+
+    // GUARDAR FORMULARIO
+    document.getElementById('oftalmoForm').onsubmit = async (e) => {
+        e.preventDefault();
+        if(!window.paciente_id_actual) { alert("PRIMERO SELECCIONE UN PACIENTE POR CÓDIGO"); return; }
+
+        const payload = {
+            paciente_id: window.paciente_id_actual,
+            od_sc: document.getElementById('od_sc').value,
+            od_cc: document.getElementById('od_cc').value,
+            oi_sc: document.getElementById('oi_sc').value,
+            oi_cc: document.getElementById('oi_cc').value,
+            ishihara: document.getElementById('ishihara').value,
+            estereopsis: document.getElementById('estereopsis').value,
+            pio_od: document.getElementById('pio_od').value,
+            pio_oi: document.getElementById('pio_oi').value,
+            diagnostico: document.getElementById('diagnostico').value.toUpperCase()
+        };
+
+        try {
+            const res = await fetch(`${API}/oftalmologia`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            if(res.ok) {
+                alert("REGISTRO GUARDADO CON ÉXITO");
+                location.reload();
+            } else {
+                alert("ERROR AL GUARDAR EN BASE DE DATOS");
+            }
+        } catch (err) { alert("ERROR DE CONEXIÓN"); }
+    };
+</script>
+</body>
+</html>
