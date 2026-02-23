@@ -16,7 +16,7 @@
         input, select { border-radius: 8px !important; font-weight: 600; text-transform: uppercase; font-size: 13px !important; }
         .nav-controls { margin-top: 25px; }
         .btn-next { background: var(--ohs-emerald); color: white; padding: 15px; border-radius: 12px; border: none; font-weight: 800; width: 100%; transition: 0.3s; font-size: 16px; }
-        .btn-next:hover { background: #16a34a; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(34, 197, 94, 0.3); }
+        .btn-next:hover { background: #16a34a; }
     </style>
 </head>
 <body>
@@ -102,11 +102,16 @@
                     document.getElementById('ciudad').value = data.filiacion.ciudad || '';
                     document.getElementById('pais').value = data.filiacion.pais || 'BOLIVIA';
                     document.getElementById('telefono').value = data.filiacion.telefono || '';
-                    document.getElementById('estado_civil').value = data.filiacion.estado_civil || '';
                     document.getElementById('profesion_oficio').value = data.filiacion.profesion_oficio || '';
+                    
+                    const valEC = data.filiacion.estado_civil ? data.filiacion.estado_civil.toUpperCase() : "";
+                    const selectEC = document.getElementById('estado_civil');
+                    for(let opt of selectEC.options) {
+                        if(opt.value === valEC) opt.selected = true;
+                    }
                 }
             }
-        } catch (e) { console.error("Error al cargar:", e); }
+        } catch (e) { console.error(e); }
     };
 
     document.getElementById('formP1').onsubmit = async (e) => {
@@ -128,19 +133,15 @@
         };
 
         try {
-            const res = await fetch(`${API}/p1/`, {
+            // RUTA SIN BARRA AL FINAL PARA EVITAR EL 404
+            const res = await fetch(`${API}/p1`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
-            if (res.ok) {
-                window.location.href = "declaracion_jurada_p2.html";
-            } else {
-                alert("ERROR AL GUARDAR FILIACIÓN");
-            }
-        } catch (err) { 
-            alert("ERROR DE CONEXIÓN CON EL SERVIDOR"); 
-        }
+            if (res.ok) window.location.href = "declaracion_jurada_p2.html";
+            else alert("ERROR AL GUARDAR FILIACIÓN");
+        } catch (err) { alert("ERROR DE CONEXIÓN"); }
     };
 </script>
 </body>
