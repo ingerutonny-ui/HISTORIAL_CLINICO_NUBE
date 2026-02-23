@@ -53,14 +53,14 @@
         <div class="section-title">II. HISTORIA LABORAL (ÚLTIMO EMPLEO)</div>
         <div class="table-responsive">
             <table class="table-responsive-custom">
-                <thead><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
+                <thead><tr><th>EDAD INICIO</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td><input type="number" id="edad_inicio"></td>
-                        <td><input type="text" id="empresa"></td>
-                        <td><input type="text" id="cargo"></td>
-                        <td><input type="text" id="tiempo"></td>
-                        <td><input type="text" id="riesgos"></td>
+                        <td><input type="number" id="edad_inicio" value="20"></td>
+                        <td><input type="text" id="empresa" placeholder="EMPRESA"></td>
+                        <td><input type="text" id="cargo" placeholder="CARGO"></td>
+                        <td><input type="number" id="tiempo" value="1"></td>
+                        <td><input type="text" id="riesgos" placeholder="RIESGOS"></td>
                         <td><select id="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
                     </tr>
                 </tbody>
@@ -93,17 +93,17 @@
                 document.getElementById('b_paciente').innerText = `${d.paciente.apellido} ${d.paciente.nombre}`;
                 document.getElementById('b_codigo').innerText = d.paciente.codigo_paciente;
             }
-        } catch(e) { console.error("Error banner"); }
+        } catch(e) { console.error("Error cargando banner"); }
     };
 
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ PROCESANDO GUARDADO..."; btn.disabled = true;
+        btn.innerHTML = "⏳ GUARDANDO TRABAJO..."; btn.disabled = true;
 
         const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
-        const riesgos = [];
-        document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
+        const riesgosArr = [];
+        document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgosArr.push(i.value));
 
         try {
             // ENVÍO 1: ANTECEDENTES (P2)
@@ -116,9 +116,10 @@
                 })
             });
 
-            if(!resP2.ok) throw new Error("P2_FAIL");
+            if(!resP2.ok) throw new Error("Falla en guardado de Antecedentes P2");
 
             // ENVÍO 2: HÁBITOS Y LABORAL (P3)
+            // Aseguramos que los números sean Integers para evitar Error 500
             const resP3 = await fetch(`${API}/p3/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -134,25 +135,28 @@
                     deportes: document.getElementById('deportes').value,
                     deportes_det: document.getElementById('deportes_det').value.toUpperCase(),
                     grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-                    edad_inicio: document.getElementById('edad_inicio').value || "0",
+                    edad_inicio: parseInt(document.getElementById('edad_inicio').value) || 0,
                     empresa: document.getElementById('empresa').value.toUpperCase() || "S/D",
                     cargo: document.getElementById('cargo').value.toUpperCase() || "S/D",
-                    tiempo: document.getElementById('tiempo').value || "0",
+                    tiempo: parseInt(document.getElementById('tiempo').value) || 0,
                     riesgos: document.getElementById('riesgos').value.toUpperCase() || "NINGUNO",
                     epp: document.getElementById('epp').value,
-                    riesgos_expuestos: riesgos.join(', ') || "NINGUNO"
+                    riesgos_expuestos: riesgosArr.join(', ') || "NINGUNO"
                 })
             });
 
             if(resP3.ok) {
-                alert("✅ TRILLIZOS GUARDADOS CON ÉXITO");
+                alert("✅ EXPEDIENTE COMPLETO GUARDADO CON ÉXITO");
                 localStorage.removeItem('temp_p2');
                 window.location.href = "lista_historial.html";
             } else {
-                alert("❌ ERROR EN P3 (VERIFICAR CAMPOS)");
+                const errData = await resP3.json();
+                console.error("Detalle Error P3:", errData);
+                alert("❌ ERROR EN PARTE 3: Verifique datos numéricos.");
             }
         } catch(err) {
-            alert("❌ ERROR DE CONEXIÓN O SERVIDOR");
+            console.error("Error conexión:", err);
+            alert("❌ ERROR DE CONEXIÓN O SERVIDOR (500).");
         } finally {
             btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE";
             btn.disabled = false;
