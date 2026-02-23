@@ -43,30 +43,15 @@
     <form id="formP3">
         <div class="section-title">I. HÁBITOS PERSONALES</div>
         <div class="grid-habitos">
-            <div class="field-card"><span class="label-text">¿FUMA?</span><div class="input-group-custom"><select id="fuma" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="fuma_det" class="form-control input-det" value="NO FUMA"></div></div>
-            <div class="field-card"><span class="label-text">¿CONSUME ALCOHOL?</span><div class="input-group-custom"><select id="alcohol" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="alcohol_det" class="form-control input-det" value="NO CONSUME"></div></div>
-            <div class="field-card"><span class="label-text">¿CONSUME DROGAS?</span><div class="input-group-custom"><select id="drogas" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="drogas_det" class="form-control input-det" value="NO CONSUME"></div></div>
-            <div class="field-card"><span class="label-text">PIJCHAR (COCA)</span><select id="pijchar" class="form-select select-yn w-100"><option value="NO">NO</option><option value="SI">SI</option></select></div>
-            <div class="field-card"><span class="label-text">¿PRACTICA DEPORTES?</span><div class="input-group-custom"><select id="deportes" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="deportes_det" class="form-control input-det" value="NINGUNO"></div></div>
+            <div class="field-card"><span class="label-text">¿FUMA?</span><div class="input-group-custom"><select id="fuma" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="fuma_cantidad" class="form-control input-det" value="NO FUMA"></div></div>
+            <div class="field-card"><span class="label-text">¿CONSUME ALCOHOL?</span><div class="input-group-custom"><select id="alcohol" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="alcohol_frecuencia" class="form-control input-det" value="NO CONSUME"></div></div>
+            <div class="field-card"><span class="label-text">¿CONSUME DROGAS?</span><div class="input-group-custom"><select id="drogas" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="drogas_tipo" class="form-control input-det" value="NO CONSUME"></div></div>
+            <div class="field-card"><span class="label-text">PIJCHAR (COCA)</span><select id="coca" class="form-select select-yn w-100"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="field-card"><span class="label-text">¿PRACTICA DEPORTES?</span><div class="input-group-custom"><select id="deporte" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="deporte_detalle" class="form-control input-det" value="NINGUNO"></div></div>
             <div class="field-card"><span class="label-text">GRUPO SANGUÍNEO</span><input id="grupo_sanguineo" class="form-control input-det w-100" value="S/D"></div>
         </div>
-        <div class="section-title">II. HISTORIA LABORAL (ÚLTIMO EMPLEO)</div>
-        <div class="table-responsive">
-            <table class="table-responsive-custom">
-                <thead><tr><th>EDAD INICIO</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO (AÑOS)</th><th>RIESGOS</th><th>EPP</th></tr></thead>
-                <tbody id="tablaLaboral">
-                    <tr>
-                        <td><input type="number" id="edad_inicio" value="18"></td>
-                        <td><input type="text" id="empresa_lab" value="PARTICULAR"></td>
-                        <td><input type="text" id="cargo_lab" value="OPERARIO"></td>
-                        <td><input type="number" id="tiempo_lab" value="1"></td>
-                        <td><input type="text" id="riesgos_lab" value="NINGUNO"></td>
-                        <td><select id="epp_lab"><option value="NO">NO</option><option value="SI">SI</option></select></td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="section-title">III. RIESGOS ESPECÍFICOS EN VIDA LABORAL</div>
+        <div class="section-title">II. HISTORIA LABORAL Y RIESGOS</div>
+        <div class="field-card mb-3"><span class="label-text">RESUMEN HISTORIA LABORAL</span><textarea id="historia_laboral" class="form-control input-det" rows="2">PARTICULAR / OPERARIO / 1 AÑO / NINGUNO</textarea></div>
         <div class="risk-grid" id="riesgosCheck">
             <label class="risk-item"><input type="checkbox" value="RUIDO"> RUIDO</label>
             <label class="risk-item"><input type="checkbox" value="VIBRACIÓN"> VIBRACIÓN</label>
@@ -77,6 +62,8 @@
             <label class="risk-item"><input type="checkbox" value="ERGONÓMICOS"> ERGONÓMICOS</label>
             <label class="risk-item"><input type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         </div>
+        <div class="section-title">III. OBSERVACIONES GENERALES</div>
+        <div class="field-card"><textarea id="observaciones" class="form-control input-det" rows="2">SIN OBSERVACIONES ADICIONALES</textarea></div>
         <button type="submit" id="btnG" class="btn-save">💾 FINALIZAR Y GUARDAR EXPEDIENTE</button>
     </form>
 </div>
@@ -99,61 +86,80 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ GUARDANDO..."; btn.disabled = true;
+        btn.innerHTML = "⏳ GUARDANDO EXPEDIENTE..."; btn.disabled = true;
 
-        const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
+        const dataP2Raw = JSON.parse(localStorage.getItem('temp_p2') || '{}');
         const riesgos = [];
         document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
 
+        // MAPEAMOS P2 SEGÚN SCHEMAS.PY
+        const dataP2Limpia = {
+            paciente_id: parseInt(id_p),
+            vista: dataP2Raw.vista,
+            auditivo: dataP2Raw.auditivo,
+            respiratorio: dataP2Raw.respiratorio,
+            cardio: dataP2Raw.cardio,
+            digestivos: dataP2Raw.digestivos,
+            sangre: dataP2Raw.sangre,
+            genitourinario: dataP2Raw.genitourinario,
+            sistema_nervioso: dataP2Raw.sistema_nervioso,
+            psiquiatricos: dataP2Raw.psiquiatricos,
+            osteomusculares: dataP2Raw.osteomusculares,
+            reumatologicos: dataP2Raw.reumatologicos,
+            dermatologicas: dataP2Raw.dermatologicas,
+            alergias: dataP2Raw.alergias,
+            cirugias: dataP2Raw.cirugias,
+            infecciones: dataP2Raw.infecciones,
+            acc_personales: dataP2Raw.acc_personales,
+            acc_trabajo: dataP2Raw.acc_trabajo,
+            medicamentos: dataP2Raw.medicamentos,
+            endocrino: dataP2Raw.endocrino,
+            familiares: dataP2Raw.familiares,
+            otros_especificos: dataP2Raw.otros_especificos,
+            generales: dataP2Raw.generales
+        };
+
         try {
-            // ENVÍO 1: PARTE 2 (Antecedentes)
+            // ENVÍO P2
             const resP2 = await fetch(`${API}/p2/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ paciente_id: parseInt(id_p), ...dataP2 })
+                body: JSON.stringify(dataP2Limpia)
             });
 
-            if(!resP2.ok) throw new Error("ERROR_P2");
+            if(!resP2.ok) throw new Error("Error en Antecedentes P2");
 
-            // ENVÍO 2: PARTE 3 (Hábitos y Laboral)
-            // IMPORTANTE: Mapeo exacto de campos para evitar Error 500
+            // ENVÍO P3 MAPEADO SEGÚN SCHEMAS.PY
             const resP3 = await fetch(`${API}/p3/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     paciente_id: parseInt(id_p),
                     fuma: document.getElementById('fuma').value,
-                    fuma_det: document.getElementById('fuma_det').value.toUpperCase(),
+                    fuma_cantidad: document.getElementById('fuma_cantidad').value.toUpperCase(),
                     alcohol: document.getElementById('alcohol').value,
-                    alcohol_det: document.getElementById('alcohol_det').value.toUpperCase(),
+                    alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value.toUpperCase(),
                     drogas: document.getElementById('drogas').value,
-                    drogas_det: document.getElementById('drogas_det').value.toUpperCase(),
-                    pijchar: document.getElementById('pijchar').value,
-                    deportes: document.getElementById('deportes').value,
-                    deportes_det: document.getElementById('deportes_det').value.toUpperCase(),
+                    drogas_tipo: document.getElementById('drogas_tipo').value.toUpperCase(),
+                    coca: document.getElementById('coca').value,
+                    deporte: document.getElementById('deporte').value,
+                    deporte_detalle: document.getElementById('deporte_detalle').value.toUpperCase(),
                     grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-                    edad_inicio: parseInt(document.getElementById('edad_inicio').value) || 0,
-                    empresa: document.getElementById('empresa_lab').value.toUpperCase(),
-                    cargo: document.getElementById('cargo_lab').value.toUpperCase(),
-                    tiempo: parseInt(document.getElementById('tiempo_lab').value) || 0,
-                    riesgos: document.getElementById('riesgos_lab').value.toUpperCase(),
-                    epp: document.getElementById('epp_lab').value,
-                    riesgos_expuestos: riesgos.join(', ') || "NINGUNO"
+                    historia_laboral: document.getElementById('historia_laboral').value.toUpperCase(),
+                    riesgos_expuestos: riesgos.join(', ') || "NINGUNO",
+                    observaciones: document.getElementById('observaciones').value.toUpperCase()
                 })
             });
 
             if(resP3.ok) {
-                alert("✅ HISTORIAL COMPLETO GUARDADO");
+                alert("✅ EXPEDIENTE COMPLETO GUARDADO");
                 localStorage.removeItem('temp_p2');
                 window.location.href = "lista_historial.html";
-            } else {
-                alert("❌ ERROR 500 EN PARTE 3. REVISANDO SERVIDOR.");
-            }
+            } else { alert("❌ ERROR 500 EN PARTE 3. REVISE DATOS."); }
         } catch(err) {
-            alert("❌ ERROR DE RED O PROCESAMIENTO.");
+            alert("❌ ERROR DE COMUNICACIÓN CON EL SERVIDOR.");
         } finally {
-            btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE";
-            btn.disabled = false;
+            btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE"; btn.disabled = false;
         }
     };
 </script>
