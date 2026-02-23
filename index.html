@@ -3,73 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HISTORIAL CLÍNICO NUBE - Acceso</title>
+    <title>HISTORIAL CLÍNICO NUBE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root {
-            --bg-dark: #020617;
-            --card-bg: #0f172a;
-            --text-white: #ffffff;
-            --text-dim: #64748b;
-            --accent-blue: #0ea5e9;
-        }
-
         body {
             margin: 0;
             padding: 0;
+            background-color: #050a18; /* El tono oscuro profundo de la captura */
+            color: white;
             font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-white);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            text-transform: uppercase;
         }
 
-        /* Logo Circular */
-        .logo-main {
-            width: 130px;
-            height: 130px;
+        /* Logo circular limpio sin bordes */
+        .logo-circulo {
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
-            border: 2px solid var(--accent-blue);
             overflow: hidden;
-            margin-bottom: 30px;
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+            margin-bottom: 40px;
         }
-
-        .logo-main img {
+        .logo-circulo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        /* Títulos */
+        /* Títulos con negrilla exacta */
         h1 {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
+            font-weight: 900; /* Negrilla extrema como la captura */
             margin: 0;
-            letter-spacing: 2px;
-            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .subtitle {
-            font-size: 0.75rem;
-            color: var(--text-dim);
-            letter-spacing: 4px;
-            margin-top: 8px;
-            margin-bottom: 50px;
-        }
-
-        /* Contenedor de Módulos */
-        .modules-grid {
-            display: flex;
-            gap: 25px;
+            font-size: 0.7rem;
+            color: #64748b;
+            letter-spacing: 3px;
+            margin-top: 5px;
             margin-bottom: 60px;
+            text-transform: uppercase;
         }
 
-        .card {
-            background-color: var(--card-bg);
+        /* Grid de Módulos */
+        .grid-acceso {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 70px;
+        }
+
+        .card-modulo {
+            background-color: #0f172a;
             width: 170px;
             height: 170px;
             border-radius: 35px;
@@ -78,112 +68,111 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.2s ease;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            background-color: #1e293b;
+        .card-modulo:hover {
+            transform: scale(1.03);
         }
 
-        /* Iconos específicos de la captura */
-        .card i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-
-        .icon-medico { color: #94a3b8; } /* Grisáceo como la captura */
-        .icon-enfermera { color: #0ea5e9; } /* Azul brillante */
-
-        .card span {
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-white);
-            letter-spacing: 1px;
-        }
-
-        /* Tags de estado inferiores */
-        .status-container {
-            margin-top: 15px;
-            text-align: center;
-        }
-
-        .status-text {
-            font-size: 0.55rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .status-active { color: #10b981; } /* Verde para Módulo Activo */
-
-        /* Botón Visor */
-        .visor-btn {
-            background-color: rgba(15, 23, 42, 0.8);
-            border: 1px solid #1e293b;
-            color: var(--text-dim);
-            padding: 12px 35px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: 700;
+        /* Iconos Idénticos */
+        .icon-container {
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: 0.3s;
+            margin-bottom: 12px;
         }
+        
+        .card-modulo i { font-size: 2.4rem; }
+        
+        /* Gris para los dos doctores */
+        .icon-medico { color: #475569; }
+        /* Azul para la serpiente */
+        .icon-enfermera { color: #0ea5e9; }
 
-        .visor-btn:hover {
+        .card-modulo span {
             color: white;
-            border-color: var(--accent-blue);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        /* Footer */
-        .footer-info {
+        /* Textos de Estado */
+        .status-label {
+            margin-top: 15px;
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .active-text { color: #10b981; } /* Verde exacto */
+
+        /* Botón Visor Inferior */
+        .visor-container {
+            border: 1px solid #1e293b;
+            border-radius: 50px;
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #475569;
+            text-decoration: none;
+            font-size: 0.7rem;
+            font-weight: 700;
+            background-color: rgba(15, 23, 42, 0.5);
+            text-transform: uppercase;
+        }
+
+        .visor-container i { color: #0ea5e9; }
+
+        .footer-txt {
             position: fixed;
             bottom: 30px;
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: #334155;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo-main">
-        <img src="puerta.jpeg" alt="OHS LOGO">
+    <div class="logo-circulo">
+        <img src="puerta.jpeg" alt="OHS">
     </div>
 
     <h1>HISTORIAL CLÍNICO NUBE</h1>
     <div class="subtitle">PANEL DE CONTROL DE ACCESO</div>
 
-    <div class="modules-grid">
-        <div class="flex flex-col items-center">
-            <a href="lista_personal.html" class="card">
-                <i class="fas fa-user-md icon-medico"></i>
+    <div class="grid-acceso">
+        <div class="flex-col items-center">
+            <a href="lista_personal.html" class="card-modulo">
+                <div class="icon-container">
+                    <i class="fas fa-user-md icon-medico"></i>
+                    <span style="color: #475569; font-size: 1.5rem;">/</span>
+                    <i class="fas fa-user-nurse icon-medico"></i>
+                </div>
                 <span>MÉDICO</span>
             </a>
-            <div class="status-container">
-                <div class="status-text status-active">MÓDULO ACTIVO</div>
-            </div>
+            <div class="status-label active-text">MÓDULO ACTIVO</div>
         </div>
 
-        <div class="flex flex-col items-center">
-            <a href="registro_paciente.html" class="card">
-                <i class="fas fa-notes-medical icon-enfermera"></i>
-                <span>ENFERMERA</span>
+        <div class="flex-col items-center">
+            <a href="registro_paciente.html" class="card-modulo">
+                <i class="fas fa-caduceus icon-enfermera" style="font-size: 2.8rem;"></i>
+                <span style="margin-top: 8px;">ENFERMERA</span>
             </a>
-            <div class="status-container">
-                <div class="status-text status-active">MÓDULO ACTIVO</div>
-            </div>
+            <div class="status-label active-text">MÓDULO ACTIVO</div>
         </div>
     </div>
 
-    <a href="menu_visor.html" class="visor-btn">
+    <a href="menu_visor.html" class="visor-container">
         <i class="fas fa-search"></i> VISOR DE HISTORIAL
     </a>
 
-    <div class="footer-info">SISTEMA DE GESTIÓN HOSPITALARIA V1.0</div>
+    <div class="footer-txt">SISTEMA DE GESTIÓN HOSPITALARIA V1.0</div>
 
 </body>
 </html>
