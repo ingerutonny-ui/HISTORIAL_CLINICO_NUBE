@@ -108,4 +108,61 @@
         const enfs = ["AUXILIAR DE ENFERMERIA", "LICENCIADA EN ENFERMERIA", "INSTRUMENTISTA", "ENFERMERA DE PLANTA"];
 
         function setModo(tipo) {
-            document.getElementById
+            document.getElementById('tipo_empleado').value = tipo;
+            const bD = document.getElementById('btn-doc'), bE = document.getElementById('btn-enf'), btnS = document.getElementById('btn-save'), sel = document.getElementById('extra_val');
+            sel.innerHTML = "";
+            if(tipo === 'doctor') {
+                bD.className = "btn-seccion active-doc p-8 flex flex-col items-center justify-center gap-3";
+                bE.className = "btn-seccion p-8 flex flex-col items-center justify-center gap-3 text-gray-300";
+                btnS.style.backgroundColor = "#1e40af";
+                document.getElementById('lbl-ci').innerText = "C.I. PROFESIONAL MÉDICO";
+                document.getElementById('lbl-ext').innerText = "ESPECIALIDAD MÉDICA";
+                docs.forEach(d => sel.add(new Option(d, d)));
+            } else {
+                bE.className = "btn-seccion active-enf p-8 flex flex-col items-center justify-center gap-3";
+                bD.className = "btn-seccion p-8 flex flex-col items-center justify-center gap-3 text-gray-300";
+                btnS.style.backgroundColor = "#059669";
+                document.getElementById('lbl-ci').innerText = "C.I. PERSONAL ENFERMERÍA";
+                document.getElementById('lbl-ext').innerText = "CARGO / NIVEL";
+                enfs.forEach(e => sel.add(new Option(e, e)));
+            }
+        }
+        setModo('doctor');
+
+        document.getElementById('form-registro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSave = document.getElementById('btn-save');
+            const tipo = document.getElementById('tipo_empleado').value;
+            
+            btnSave.innerText = "VERIFICANDO CONEXIÓN...";
+            btnSave.disabled = true;
+
+            const data = tipo === 'doctor' ? 
+                { ci_doc: document.getElementById('ci_val').value, nombre_doc: document.getElementById('nombre_val').value, appaterno_doc: document.getElementById('paterno_val').value, apmaterno_doc: document.getElementById('materno_val').value, turno_doc: document.getElementById('turno_val').value, especialidad: document.getElementById('extra_val').value } :
+                { ci_enfe: document.getElementById('ci_val').value, nombre_enfe: document.getElementById('nombre_val').value, appaterno_enfe: document.getElementById('paterno_val').value, apmaterno_enfe: document.getElementById('materno_val').value, turno_enfe: document.getElementById('turno_val').value, edu_enfe: document.getElementById('extra_val').value };
+
+            try {
+                const endpoint = tipo === 'doctor' ? '/doctor' : '/enfermera';
+                const res = await fetch(`${API}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (res.status === 201 || res.ok) { 
+                    alert("✅ ÉXITO: REGISTRO GUARDADO EN POSTGRESQL"); 
+                    e.target.reset(); 
+                    setModo(tipo);
+                } else {
+                    alert(`❌ ERROR DEL SERVIDOR: ${res.status} - NO SE GUARDÓ NADA`);
+                }
+            } catch (err) { 
+                alert("❌ ERROR CRÍTICO: NO HAY RESPUESTA DEL BACKEND. REVISA EL DEPLOY."); 
+            } finally {
+                btnSave.innerText = "GUARDAR EN LA NUBE";
+                btnSave.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
