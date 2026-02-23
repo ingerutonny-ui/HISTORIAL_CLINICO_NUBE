@@ -3,60 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTRO MÉDICO OHS</title>
+    <title>REGISTRO MÉDICO OHS - NANCY</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { font-family: 'Montserrat', sans-serif; text-transform: uppercase; background-color: #f3f4f6; }
-        .btn-seccion { transition: all 0.3s ease; border-radius: 15px; border: 2px solid #e5e7eb; }
-        .active-doc { border-color: #2563eb; background-color: #eff6ff; color: #1e40af; }
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            text-transform: uppercase; 
+            background-color: #f9fafb;
+            zoom: 1.2; /* Aumento del 20% solicitado */
+        }
+        .btn-seccion { transition: all 0.3s ease; border-radius: 12px; border: 1px solid #f3f4f6; }
+        .active-doc { border-color: #3b82f6; background-color: #eff6ff; color: #1e40af; }
         .active-enf { border-color: #10b981; background-color: #ecfdf5; color: #065f46; }
-        .input-ohs { background-color: #e5e7eb; border-radius: 8px; border: none; padding: 12px; font-weight: 700; width: 100%; font-size: 14px; }
-        label { font-size: 10px; font-weight: 900; color: #334155; margin-bottom: 4px; display: block; }
+        
+        /* Estilo Plomo Claro y Texto Fantasma */
+        .input-ohs { 
+            background-color: #f3f4f6; /* Plomo muy claro */
+            border-radius: 6px; 
+            border: none; 
+            padding: 14px; 
+            font-weight: 400; /* Letra fina sin negrillas */
+            width: 100%; 
+            font-size: 13px;
+            color: #4b5563;
+        }
+        .input-ohs::placeholder { color: #9ca3af; opacity: 0.6; } /* Texto fantasma */
+        
+        label { 
+            font-size: 9px; 
+            font-weight: 500; /* Etiqueta fina */
+            color: #9ca3af; /* Color fantasma para etiquetas */
+            margin-bottom: 5px; 
+            display: block; 
+            letter-spacing: 1px;
+        }
+        .font-light-title { font-weight: 300; letter-spacing: 2px; }
     </style>
 </head>
-<body class="p-4 md:p-10">
-    <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-green-500">
+<body class="p-6 md:p-12">
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
         
-        <div class="p-6 flex justify-between items-center">
-            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-16">
+        <div class="p-8 flex justify-between items-center border-b border-gray-50">
+            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-14">
             <div class="text-right">
-                <h1 class="text-xl font-black text-slate-700">REGISTRO DE PERSONAL</h1>
-                <h2 class="text-lg font-black text-blue-900 mt-[-5px]">MÉDICO OHS</h2>
+                <h1 class="text-lg font-light-title text-slate-500">REGISTRO DE PERSONAL</h1>
+                <h2 class="text-md font-bold text-blue-900 mt-[-4px]">MÉDICO OHS</h2>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 px-6 mb-8">
-            <button onclick="setModo('doctor')" id="btn-doc" class="btn-seccion active-doc p-6 flex flex-col items-center justify-center gap-2">
-                <i class="fa-solid fa-stethoscope text-4xl"></i>
-                <span class="text-[10px] font-black tracking-widest">SECCIÓN DOCTORES</span>
+        <div class="grid grid-cols-2 gap-6 px-10 my-8">
+            <button onclick="setModo('doctor')" id="btn-doc" class="btn-seccion active-doc p-8 flex flex-col items-center justify-center gap-3">
+                <i class="fa-solid fa-stethoscope text-5xl"></i>
+                <span class="text-[9px] tracking-widest font-medium">SECCIÓN DOCTORES</span>
             </button>
-            <button onclick="setModo('enfermera')" id="btn-enf" class="btn-seccion p-6 flex flex-col items-center justify-center gap-2 text-slate-400">
-                <i class="fa-solid fa-syringe text-4xl"></i>
-                <span class="text-[10px] font-black tracking-widest">SECCIÓN ENFERMERAS</span>
+            <button onclick="setModo('enfermera')" id="btn-enf" class="btn-seccion p-8 flex flex-col items-center justify-center gap-3 text-slate-300">
+                <i class="fa-solid fa-syringe text-5xl"></i>
+                <span class="text-[9px] tracking-widest font-medium">SECCIÓN ENFERMERAS</span>
             </button>
         </div>
 
-        <form id="form-registro" class="px-8 pb-10 space-y-6">
+        <form id="form-registro" class="px-10 pb-12 space-y-8">
             <input type="hidden" id="tipo_empleado" value="doctor">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                 <div>
                     <label id="lbl-ci">C.I. PROFESIONAL</label>
-                    <input type="text" id="ci_val" required class="input-ohs" placeholder="4532454">
+                    <input type="text" id="ci_val" required class="input-ohs" placeholder="INGRESE DOCUMENTO">
                 </div>
                 <div>
                     <label>NOMBRE COMPLETO</label>
-                    <input type="text" id="nombre_val" required class="input-ohs" placeholder="TONNY">
+                    <input type="text" id="nombre_val" required class="input-ohs" placeholder="EJ: TONNY">
                 </div>
                 <div>
                     <label>APELLIDO PATERNO</label>
-                    <input type="text" id="paterno_val" required class="input-ohs" placeholder="ALMENDRAS">
+                    <input type="text" id="paterno_val" required class="input-ohs" placeholder="EJ: ALMENDRAS">
                 </div>
                 <div>
                     <label>APELLIDO MATERNO</label>
-                    <input type="text" id="materno_val" class="input-ohs" placeholder="CONDE">
+                    <input type="text" id="materno_val" class="input-ohs" placeholder="EJ: CONDE">
                 </div>
                 <div>
                     <label>TURNO</label>
@@ -72,8 +98,8 @@
                 </div>
             </div>
 
-            <button type="submit" id="btn-save" class="w-full bg-[#1e40af] hover:bg-blue-800 text-white py-4 rounded-lg font-black tracking-widest flex items-center justify-center gap-3 mt-4">
-                <i class="fa-solid fa-floppy-disk"></i> GUARDAR MÉDICO EN LA NUBE
+            <button type="submit" id="btn-save" class="w-full bg-[#1e40af] hover:bg-blue-800 text-white py-5 rounded-md font-medium tracking-[0.3em] flex items-center justify-center gap-3 mt-6 transition-all">
+                <i class="fa-solid fa-cloud-arrow-up"></i> GUARDAR MÉDICO EN LA NUBE
             </button>
         </form>
     </div>
@@ -92,17 +118,17 @@
             
             sel.innerHTML = "";
             if(tipo === 'doctor') {
-                bD.className = "btn-seccion active-doc p-6 flex flex-col items-center justify-center gap-2";
-                bE.className = "btn-seccion p-6 flex flex-col items-center justify-center gap-2 text-slate-400";
-                btnS.className = "w-full bg-[#1e40af] text-white py-4 rounded-lg font-black tracking-widest flex items-center justify-center gap-3";
-                btnS.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> GUARDAR MÉDICO EN LA NUBE';
+                bD.className = "btn-seccion active-doc p-8 flex flex-col items-center justify-center gap-3";
+                bE.className = "btn-seccion p-8 flex flex-col items-center justify-center gap-3 text-slate-300";
+                btnS.className = "w-full bg-[#1e40af] text-white py-5 rounded-md font-medium tracking-[0.3em] flex items-center justify-center gap-3";
+                btnS.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> GUARDAR MÉDICO EN LA NUBE';
                 document.getElementById('lbl-ext').innerText = "ESPECIALIDAD";
                 docs.forEach(d => sel.add(new Option(d, d)));
             } else {
-                bE.className = "btn-seccion active-enf p-6 flex flex-col items-center justify-center gap-2";
-                bD.className = "btn-seccion p-6 flex flex-col items-center justify-center gap-2 text-slate-400";
-                btnS.className = "w-full bg-[#065f46] text-white py-4 rounded-lg font-black tracking-widest flex items-center justify-center gap-3";
-                btnS.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> GUARDAR ENFERMERA EN LA NUBE';
+                bE.className = "btn-seccion active-enf p-8 flex flex-col items-center justify-center gap-3";
+                bD.className = "btn-seccion p-8 flex flex-col items-center justify-center gap-3 text-slate-300";
+                btnS.className = "w-full bg-[#065f46] text-white py-5 rounded-md font-medium tracking-[0.3em] flex items-center justify-center gap-3";
+                btnS.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> GUARDAR ENFERMERA EN LA NUBE';
                 document.getElementById('lbl-ext').innerText = "CARGO / NIVEL";
                 enfs.forEach(e => sel.add(new Option(e, e)));
             }
@@ -123,7 +149,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if(res.ok) { alert("REGISTRO EXITOSO"); e.target.reset(); setModo(tipo); }
+                if(res.ok) { alert("¡REGISTRADO EN LA NUBE!"); e.target.reset(); setModo(tipo); }
                 else { alert("ERROR AL GUARDAR"); }
             } catch { alert("ERROR DE CONEXIÓN"); }
         });
