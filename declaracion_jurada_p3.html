@@ -19,14 +19,10 @@
         .input-group-custom { display: flex; gap: 8px; }
         .select-yn { width: 70px; font-weight: 700; border: 2px solid var(--ohs-green); border-radius: 8px; font-size: 12px; }
         .input-det { flex: 1; font-size: 12px; border-radius: 8px; text-transform: uppercase; font-weight: 600; }
-        .table-responsive-custom { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        .table-responsive-custom th { background: white; color: var(--ohs-cyan); padding: 10px; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid var(--ohs-cyan); }
-        .table-responsive-custom td { padding: 5px; }
-        .table-responsive-custom input, .table-responsive-custom select { width: 100%; border: 1px solid #cbd5e1; padding: 8px; border-radius: 8px; font-size: 12px; text-transform: uppercase; }
-        .risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 15px; background: #f8fafc; border-radius: 15px; border: 1px solid #e2e8f0; }
-        .risk-item { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .btn-save { background: var(--ohs-green); color: white; width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 800; font-size: 15px; margin-top: 30px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2); }
         .btn-save:hover { background: #16a34a; transform: translateY(-3px); }
+        .risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 15px; background: #f8fafc; border-radius: 15px; border: 1px solid #e2e8f0; }
+        .risk-item { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -50,8 +46,8 @@
             <div class="field-card"><span class="label-text">¿PRACTICA DEPORTES?</span><div class="input-group-custom"><select id="deporte" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="deporte_detalle" class="form-control input-det" value="NINGUNO"></div></div>
             <div class="field-card"><span class="label-text">GRUPO SANGUÍNEO</span><input id="grupo_sanguineo" class="form-control input-det w-100" value="S/D"></div>
         </div>
-        <div class="section-title">II. HISTORIA LABORAL Y RIESGOS</div>
-        <div class="field-card mb-3"><span class="label-text">RESUMEN HISTORIA LABORAL</span><textarea id="historia_laboral" class="form-control input-det" rows="2">PARTICULAR / OPERARIO / 1 AÑO / NINGUNO</textarea></div>
+        <div class="section-title">II. HISTORIA LABORAL (RESUMEN)</div>
+        <div class="field-card mb-3"><span class="label-text">RESUMEN HISTORIA LABORAL (EMPRESA / CARGO / TIEMPO / RIESGOS)</span><textarea id="historia_laboral" class="form-control input-det" rows="2">PARTICULAR / OPERARIO / 1 AÑO / NINGUNO</textarea></div>
         <div class="risk-grid" id="riesgosCheck">
             <label class="risk-item"><input type="checkbox" value="RUIDO"> RUIDO</label>
             <label class="risk-item"><input type="checkbox" value="VIBRACIÓN"> VIBRACIÓN</label>
@@ -62,8 +58,8 @@
             <label class="risk-item"><input type="checkbox" value="ERGONÓMICOS"> ERGONÓMICOS</label>
             <label class="risk-item"><input type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         </div>
-        <div class="section-title">III. OBSERVACIONES GENERALES</div>
-        <div class="field-card"><textarea id="observaciones" class="form-control input-det" rows="2">SIN OBSERVACIONES ADICIONALES</textarea></div>
+        <div class="section-title">III. OBSERVACIONES</div>
+        <div class="field-card"><textarea id="observaciones" class="form-control input-det" rows="2">SIN OBSERVACIONES</textarea></div>
         <button type="submit" id="btnG" class="btn-save">💾 FINALIZAR Y GUARDAR EXPEDIENTE</button>
     </form>
 </div>
@@ -86,19 +82,19 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ GUARDANDO EXPEDIENTE..."; btn.disabled = true;
+        btn.innerHTML = "⏳ GUARDANDO..."; btn.disabled = true;
 
         const dataP2Raw = JSON.parse(localStorage.getItem('temp_p2') || '{}');
-        const riesgos = [];
-        document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
+        const riesgosArr = [];
+        document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgosArr.push(i.value));
 
-        // MAPEAMOS P2 SEGÚN SCHEMAS.PY
-        const dataP2Limpia = {
+        // MAPEAMOS P2 PARA QUE COINCIDA CON SCHEMAS.PY Y MODELS.PY
+        const payloadP2 = {
             paciente_id: parseInt(id_p),
             vista: dataP2Raw.vista,
             auditivo: dataP2Raw.auditivo,
             respiratorio: dataP2Raw.respiratorio,
-            cardio: dataP2Raw.cardio,
+            cardio: dataP2Raw.cardio, // Según schema
             digestivos: dataP2Raw.digestivos,
             sangre: dataP2Raw.sangre,
             genitourinario: dataP2Raw.genitourinario,
@@ -106,17 +102,35 @@
             psiquiatricos: dataP2Raw.psiquiatricos,
             osteomusculares: dataP2Raw.osteomusculares,
             reumatologicos: dataP2Raw.reumatologicos,
-            dermatologicas: dataP2Raw.dermatologicas,
+            dermatologicas: dataP2Raw.dermatologicas, // Según schema
             alergias: dataP2Raw.alergias,
             cirugias: dataP2Raw.cirugias,
             infecciones: dataP2Raw.infecciones,
-            acc_personales: dataP2Raw.acc_personales,
-            acc_trabajo: dataP2Raw.acc_trabajo,
+            acc_personales: dataP2Raw.acc_personales, // Según schema
+            acc_trabajo: dataP2Raw.acc_trabajo, // Según schema
             medicamentos: dataP2Raw.medicamentos,
             endocrino: dataP2Raw.endocrino,
-            familiares: dataP2Raw.familiares,
+            familiares: dataP2Raw.familiares, // Según schema
             otros_especificos: dataP2Raw.otros_especificos,
             generales: dataP2Raw.generales
+        };
+
+        // MAPEAMOS P3 SEGÚN MODELS.PY
+        const payloadP3 = {
+            paciente_id: parseInt(id_p),
+            fuma: document.getElementById('fuma').value,
+            fuma_cantidad: document.getElementById('fuma_cantidad').value.toUpperCase(),
+            alcohol: document.getElementById('alcohol').value,
+            alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value.toUpperCase(),
+            drogas: document.getElementById('drogas').value,
+            drogas_tipo: document.getElementById('drogas_tipo').value.toUpperCase(),
+            coca: document.getElementById('coca').value,
+            deporte: document.getElementById('deporte').value,
+            deporte_detalle: document.getElementById('deporte_detalle').value.toUpperCase(),
+            grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
+            historia_laboral: document.getElementById('historia_laboral').value.toUpperCase(),
+            riesgos_expuestos: riesgosArr.join(', ') || "NINGUNO",
+            observaciones: document.getElementById('observaciones').value.toUpperCase()
         };
 
         try {
@@ -124,40 +138,24 @@
             const resP2 = await fetch(`${API}/p2/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(dataP2Limpia)
+                body: JSON.stringify(payloadP2)
             });
+            if(!resP2.ok) throw new Error("Falla P2");
 
-            if(!resP2.ok) throw new Error("Error en Antecedentes P2");
-
-            // ENVÍO P3 MAPEADO SEGÚN SCHEMAS.PY
+            // ENVÍO P3
             const resP3 = await fetch(`${API}/p3/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    paciente_id: parseInt(id_p),
-                    fuma: document.getElementById('fuma').value,
-                    fuma_cantidad: document.getElementById('fuma_cantidad').value.toUpperCase(),
-                    alcohol: document.getElementById('alcohol').value,
-                    alcohol_frecuencia: document.getElementById('alcohol_frecuencia').value.toUpperCase(),
-                    drogas: document.getElementById('drogas').value,
-                    drogas_tipo: document.getElementById('drogas_tipo').value.toUpperCase(),
-                    coca: document.getElementById('coca').value,
-                    deporte: document.getElementById('deporte').value,
-                    deporte_detalle: document.getElementById('deporte_detalle').value.toUpperCase(),
-                    grupo_sanguineo: document.getElementById('grupo_sanguineo').value.toUpperCase(),
-                    historia_laboral: document.getElementById('historia_laboral').value.toUpperCase(),
-                    riesgos_expuestos: riesgos.join(', ') || "NINGUNO",
-                    observaciones: document.getElementById('observaciones').value.toUpperCase()
-                })
+                body: JSON.stringify(payloadP3)
             });
 
             if(resP3.ok) {
-                alert("✅ EXPEDIENTE COMPLETO GUARDADO");
+                alert("✅ HISTORIAL COMPLETO GUARDADO CON ÉXITO");
                 localStorage.removeItem('temp_p2');
                 window.location.href = "lista_historial.html";
-            } else { alert("❌ ERROR 500 EN PARTE 3. REVISE DATOS."); }
+            } else { alert("❌ ERROR 500: Verifique mapeo de campos en P3."); }
         } catch(err) {
-            alert("❌ ERROR DE COMUNICACIÓN CON EL SERVIDOR.");
+            alert("❌ ERROR DE RED O PROCESAMIENTO.");
         } finally {
             btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE"; btn.disabled = false;
         }
