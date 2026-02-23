@@ -3,83 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REPORTE MÉDICO OHS | HISTORIAL CLÍNICO NUBE</title>
+    <title>REPORTE MÉDICO LEGAL OHS</title>
     <style>
-        :root { --primary: #2ecc71; --accent: #2563eb; --dark: #1e293b; --bg: #f8fafc; }
-        
-        body { 
-            font-family: 'Segoe UI', sans-serif; 
-            background: var(--bg); margin: 0; padding: 20px; color: var(--dark); 
-            text-transform: uppercase; 
-        }
+        :root { --primary: #2ecc71; --accent: #2563eb; --dark: #1e293b; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; text-transform: uppercase; background: #f1f5f9; }
         
         .report-card { 
-            max-width: 1100px; margin: auto; background: white; 
-            padding: 30px; border-radius: 8px; 
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            max-width: 1050px; margin: auto; background: white; padding: 30px; 
+            border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1);
             border-top: 10px solid var(--primary);
         }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-        .logo { height: 65px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .logo { height: 60px; }
         .header-text { text-align: right; }
-        .header-text h1 { margin: 0; font-size: 20px; font-weight: 900; color: var(--dark); }
+        .header-text h1 { margin: 0; font-size: 18px; font-weight: 900; }
 
         .section-title { 
-            background: #e2e8f0; color: var(--accent); 
-            padding: 8px 15px; font-weight: 900; font-size: 14px; 
-            margin: 20px 0 10px 0; border-radius: 4px;
-            display: flex; justify-content: space-between;
+            background: #f1f5f9; color: var(--accent); padding: 8px; 
+            font-weight: 900; font-size: 13px; margin: 15px 0 5px 0; border-radius: 3px;
         }
 
-        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; table-layout: fixed; }
-        th, td { 
-            padding: 10px; border: 1px solid #cbd5e1; 
-            text-align: left; word-wrap: break-word;
-        }
-
-        th { background: #f1f5f9; color: #475569; font-size: 10px; width: 25%; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 8px; table-layout: fixed; }
+        th, td { padding: 8px; border: 1px solid #cbd5e1; text-align: left; }
+        th { background: #f8fafc; color: #475569; font-size: 9px; width: 25%; }
         
-        /* TAMAÑO DE LETRA ÚNICO Y GRANDE PARA LOS DATOS */
+        /* LETRA GRANDE PARA DATOS - GARANTIZA VISIBILIDAD EN PDF */
         .dato { 
-            font-size: 15px; 
+            font-size: 16px; 
             font-weight: 800; 
             color: #000; 
+            background: #fff;
         }
 
-        .grid-p2 { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 0; 
-            border-left: 1px solid #cbd5e1;
-            border-top: 1px solid #cbd5e1;
-        }
-        .cell-p2 { 
-            display: grid; 
-            grid-template-columns: 160px 1fr; 
-            border-right: 1px solid #cbd5e1;
-            border-bottom: 1px solid #cbd5e1;
-        }
-        .label-p2 { background: #f8fafc; padding: 8px; font-size: 9px; font-weight: 700; border-right: 1px solid #cbd5e1; }
-        .val-p2 { padding: 8px; font-size: 14px; font-weight: 800; color: var(--accent); }
+        .grid-p2 { display: grid; grid-template-columns: 1fr 1fr; border-left: 1px solid #cbd5e1; border-top: 1px solid #cbd5e1; }
+        .cell-p2 { display: grid; grid-template-columns: 160px 1fr; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; }
+        .label-p2 { background: #f8fafc; padding: 6px; font-size: 8px; font-weight: 700; border-right: 1px solid #cbd5e1; }
+        .val-p2 { padding: 6px; font-size: 14px; font-weight: 800; color: var(--accent); }
 
-        .footer { margin-top: 40px; display: flex; justify-content: space-around; text-align: center; }
-        .firma { width: 250px; border-top: 2px solid var(--dark); padding-top: 5px; font-size: 11px; font-weight: 900; }
+        .signatures { display: flex; justify-content: space-around; margin-top: 50px; text-align: center; }
+        .firma { width: 240px; border-top: 2px solid #000; padding-top: 5px; font-size: 10px; font-weight: 900; }
 
-        .btn-print { 
-            position: fixed; top: 20px; right: 20px; 
-            background: var(--primary); color: white; border: none; 
-            padding: 12px 25px; border-radius: 5px; font-weight: 900; cursor: pointer;
-        }
+        .btn-box { position: fixed; top: 10px; left: 10px; z-index: 100; display: flex; gap: 10px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; color: white; font-weight: 900; cursor: pointer; }
+        .btn-p { background: var(--primary); }
+        .btn-s { background: var(--accent); }
 
-        @media print { .btn-print { display: none; } body { padding: 0; } .report-card { box-shadow: none; border: none; } }
+        @media print { .btn-box { display: none; } body { padding: 0; background: white; } .report-card { box-shadow: none; border: none; width: 100%; } }
     </style>
 </head>
 <body>
 
-    <button class="btn-print" onclick="window.print()">IMPRIMIR REPORTE</button>
+    <div class="btn-box">
+        <button class="btn btn-p" onclick="window.print()">🖨️ IMPRIMIR PDF</button>
+        <button class="btn btn-s" onclick="location.reload()">🔄 RECARGAR DATOS</button>
+    </div>
 
-    <div class="report-card">
+    <div class="report-card" id="contenidoReporte">
         <div class="header">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
             <div class="header-text">
@@ -92,7 +72,7 @@
         <table>
             <tr>
                 <th>APELLIDOS Y NOMBRES:</th>
-                <td colspan="3" class="dato" id="p1_nombre" style="font-size: 18px; color: var(--accent);">---</td>
+                <td colspan="3" class="dato" id="p1_nombre" style="color: var(--accent); font-size: 18px;">---</td>
             </tr>
             <tr>
                 <th>C.I. / DOCUMENTO:</th><td class="dato" id="p1_ci">---</td>
@@ -101,10 +81,6 @@
             <tr>
                 <th>EDAD:</th><td class="dato" id="p1_edad">---</td>
                 <th>SEXO:</th><td class="dato" id="p1_sexo">---</td>
-            </tr>
-            <tr>
-                <th>FECHA NAC.:</th><td class="dato" id="p1_fnac">---</td>
-                <th>LUGAR NAC.:</th><td class="dato" id="p1_lnac">---</td>
             </tr>
             <tr>
                 <th>DOMICILIO:</th><td colspan="3" class="dato" id="p1_dom">---</td>
@@ -116,8 +92,7 @@
         </table>
 
         <div class="section-title">II. ANTECEDENTES PATOLÓGICOS (P2)</div>
-        <div class="grid-p2" id="contenedor_p2">
-            </div>
+        <div class="grid-p2" id="contenedor_p2"></div>
 
         <div class="section-title">III. HÁBITOS Y GRUPO SANGUÍNEO (P3)</div>
         <table>
@@ -126,7 +101,7 @@
                 <th>DEPORTE:</th><td class="dato" id="p3_dep">---</td>
             </tr>
             <tr>
-                <th>FUMA:</th><td class="dato" id="p3_fuma">---</td>
+                <th>FUMA TABACO:</th><td class="dato" id="p3_fuma">---</td>
                 <th>ALCOHOL:</th><td class="dato" id="p3_alc">---</td>
             </tr>
             <tr>
@@ -135,40 +110,40 @@
             </tr>
         </table>
 
-        <div class="footer">
-            <div class="firma">FIRMA DEL TRABAJADOR<br><span id="f_ci" style="font-weight: normal;"></span></div>
-            <div class="firma">MÉDICO EXAMINADOR<br><span style="font-weight: normal;">SELLO Y MATRÍCULA</span></div>
+        <div class="signatures">
+            <div class="firma">FIRMA DEL TRABAJADOR<br><span id="f_ci"></span></div>
+            <div class="firma">MÉDICO EXAMINADOR<br><span>SELLO Y MATRÍCULA</span></div>
         </div>
     </div>
 
     <script>
-        window.onload = () => {
-            // Mapeo basado en tus clases PacienteBase, DeclaracionJuradaBase, AntecedentesP2Base y HabitosRiesgosP3Base
+        function renderizarDatos() {
+            console.log("Iniciando forzado de datos...");
+            
+            // 1. Recuperar datos con respaldo (si no hay objeto, buscar valores sueltos)
             const p1 = JSON.parse(localStorage.getItem('datos_p1') || '{}');
             const p2 = JSON.parse(localStorage.getItem('datos_temporales_p2') || '{}');
             const p3 = JSON.parse(localStorage.getItem('datos_p3') || '{}');
 
-            // P1 - Filiación
-            document.getElementById('p1_nombre').innerText = (localStorage.getItem('p_nom') || '---');
-            document.getElementById('p1_ci').innerText = (localStorage.getItem('p_ci') || '---');
-            document.getElementById('f_ci').innerText = "C.I. " + (localStorage.getItem('p_ci') || '---');
-            document.getElementById('top_cod').innerText = "CÓDIGO: " + (localStorage.getItem('p_cod') || '---');
+            // 2. Llenado P1 con prioridad a los datos maestros
+            document.getElementById('p1_nombre').innerText = localStorage.getItem('p_nom') || p1.nombre || "SIN REGISTRO";
+            document.getElementById('p1_ci').innerText = localStorage.getItem('p_ci') || p1.ci || "---";
+            document.getElementById('f_ci').innerText = "C.I. " + (localStorage.getItem('p_ci') || p1.ci || "---");
+            document.getElementById('top_cod').innerText = "CÓDIGO: " + (localStorage.getItem('p_cod') || "---");
             
             document.getElementById('p1_edad').innerText = (p1.edad || '---') + " AÑOS";
             document.getElementById('p1_sexo').innerText = p1.sexo || '---';
-            document.getElementById('p1_fnac').innerText = p1.f_nac || '---';
-            document.getElementById('p1_lnac').innerText = p1.lugar_nac || '---';
-            document.getElementById('p1_dom').innerText = `${p1.domicilio || ''} #${p1.n_casa || ''}`;
-            document.getElementById('p1_zona').innerText = p1.zona || '---';
+            document.getElementById('p1_dom').innerText = `${p1.domicilio || ''} ${p1.n_casa || ''}`;
+            document.getElementById('p1_zona').innerText = p1.zona_barrio || p1.zona || '---';
             document.getElementById('p1_tel').innerText = p1.telefono || '---';
             document.getElementById('p1_eciv').innerText = p1.estado_civil || '---';
 
-            // P2 - Antecedentes (Mapeo exacto a AntecedentesP2Base)
+            // 3. Llenado P2 (Antecedentes)
             const camposP2 = [
                 ["VISTA", p2.vista], ["AUDITIVO", p2.auditivo],
-                ["RESPIRATORIO", p2.respiratorio], ["CARDIO", p2.cardiovascular || p2.cardio],
+                ["RESPIRATORIO", p2.respiratorio], ["CARDIO", p2.cardio || p2.cardiovascular],
                 ["DIGESTIVOS", p2.digestivos], ["SANGRE", p2.sangre],
-                ["GENITOURINARIO", p2.genitourinario], ["SIST. NERVIOSO", p2.nervioso || p2.sistema_nervioso],
+                ["GENITOURINARIO", p2.genitourinario], ["SIST. NERVIOSO", p2.sistema_nervioso],
                 ["PSIQUIÁTRICOS", p2.psiquiatricos], ["OSTEOMUSCULAR", p2.osteomusculares],
                 ["ALERGIAS", p2.alergias], ["CIRUGÍAS", p2.cirugias],
                 ["ENDOCRINO", p2.endocrino], ["INFECCIONES", p2.infecciones]
@@ -180,14 +155,18 @@
             });
             document.getElementById('contenedor_p2').innerHTML = htmlP2;
 
-            // P3 - Hábitos (Mapeo exacto a HabitosRiesgosP3Base)
+            // 4. Llenado P3
             document.getElementById('p3_gs').innerText = p3.grupo_sanguineo || 'S/G';
             document.getElementById('p3_fuma').innerText = `${p3.fuma || 'NO'} (${p3.fuma_cantidad || '0'})`;
             document.getElementById('p3_alc').innerText = `${p3.alcohol || 'NO'} (${p3.alcohol_frecuencia || 'N/A'})`;
             document.getElementById('p3_drog').innerText = `TIPO: ${p3.drogas || 'NO'} / COCA: ${p3.coca || 'NO'}`;
             document.getElementById('p3_dep').innerText = `${p3.deporte || 'NO'} (${p3.deporte_detalle || 'N/A'})`;
-            document.getElementById('p3_obs').innerText = p3.observaciones || 'SIN NOVEDAD';
-        };
+            document.getElementById('p3_obs').innerText = p3.observaciones || 'REGISTRO COMPLETADO';
+        }
+
+        // Ejecutar inmediatamente y también al cargar la ventana
+        renderizarDatos();
+        window.onload = renderizarDatos;
     </script>
 </body>
 </html>
