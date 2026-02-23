@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HISTORIAL CLÍNICO NUBE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
         body {
             margin: 0;
             padding: 0;
-            background-color: #050a18; /* El tono oscuro profundo de la captura */
+            background-color: #050a18;
             color: white;
             font-family: 'Segoe UI', sans-serif;
             display: flex;
@@ -17,162 +20,156 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
+            text-transform: uppercase;
         }
 
-        /* Logo circular limpio sin bordes */
-        .logo-circulo {
+        /* Logo Circular Idéntico */
+        .logo-main {
             width: 140px;
             height: 140px;
             border-radius: 50%;
             overflow: hidden;
-            margin-bottom: 40px;
+            margin-bottom: 35px;
         }
-        .logo-circulo img {
+        .logo-main img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        /* Títulos con negrilla exacta */
+        /* Títulos en Negrilla Extrema */
         h1 {
-            font-size: 2.2rem;
-            font-weight: 900; /* Negrilla extrema como la captura */
+            font-size: 2rem;
+            font-weight: 900; /* Black weight */
+            letter-spacing: 1px;
             margin: 0;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
         }
 
         .subtitle {
             font-size: 0.7rem;
-            color: #64748b;
-            letter-spacing: 3px;
+            color: #475569;
+            letter-spacing: 4px;
             margin-top: 5px;
-            margin-bottom: 60px;
-            text-transform: uppercase;
+            margin-bottom: 50px;
         }
 
         /* Grid de Módulos */
-        .grid-acceso {
+        .modules-grid {
             display: flex;
             gap: 20px;
-            margin-bottom: 70px;
+            margin-bottom: 60px;
         }
 
-        .card-modulo {
+        .card-acceso {
             background-color: #0f172a;
-            width: 170px;
-            height: 170px;
-            border-radius: 35px;
+            width: 175px;
+            height: 175px;
+            border-radius: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            transition: transform 0.2s ease;
+            transition: transform 0.2s;
         }
 
-        .card-modulo:hover {
-            transform: scale(1.03);
+        .card-acceso:hover {
+            transform: translateY(-5px);
         }
 
-        /* Iconos Idénticos */
-        .icon-container {
+        /* Iconos de la Captura */
+        .icon-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            color: #475569; /* Gris de la captura */
+            font-size: 2.2rem;
             margin-bottom: 12px;
         }
-        
-        .card-modulo i { font-size: 2.4rem; }
-        
-        /* Gris para los dos doctores */
-        .icon-medico { color: #475569; }
-        /* Azul para la serpiente */
-        .icon-enfermera { color: #0ea5e9; }
 
-        .card-modulo span {
-            color: white;
-            font-size: 0.75rem;
+        .icon-caduceus {
+            color: #0ea5e9; /* Azul de la captura */
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .card-acceso span {
+            font-size: 0.8rem;
             font-weight: 800;
             letter-spacing: 1px;
-            text-transform: uppercase;
         }
 
-        /* Textos de Estado */
-        .status-label {
+        /* Estados */
+        .status-tag {
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #22c55e; /* Verde Módulo Activo */
             margin-top: 15px;
-            font-size: 0.55rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            text-align: center;
+            letter-spacing: 1px;
         }
-
-        .active-text { color: #10b981; } /* Verde exacto */
 
         /* Botón Visor Inferior */
-        .visor-container {
+        .btn-visor {
+            background-color: rgba(15, 23, 42, 0.6);
             border: 1px solid #1e293b;
+            color: #475569;
+            padding: 10px 35px;
             border-radius: 50px;
-            padding: 10px 30px;
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: #475569;
-            text-decoration: none;
-            font-size: 0.7rem;
-            font-weight: 700;
-            background-color: rgba(15, 23, 42, 0.5);
-            text-transform: uppercase;
+            gap: 12px;
         }
 
-        .visor-container i { color: #0ea5e9; }
+        .btn-visor i { color: #0ea5e9; }
 
-        .footer-txt {
+        .footer-system {
             position: fixed;
             bottom: 30px;
-            font-size: 0.5rem;
-            color: #334155;
-            letter-spacing: 1px;
+            font-size: 0.55rem;
+            color: #1e293b;
+            letter-spacing: 2px;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo-circulo">
-        <img src="puerta.jpeg" alt="OHS">
+    <div class="logo-main">
+        <img src="puerta.jpeg" alt="Logo">
     </div>
 
     <h1>HISTORIAL CLÍNICO NUBE</h1>
     <div class="subtitle">PANEL DE CONTROL DE ACCESO</div>
 
-    <div class="grid-acceso">
-        <div class="flex-col items-center">
-            <a href="lista_personal.html" class="card-modulo">
-                <div class="icon-container">
-                    <i class="fas fa-user-md icon-medico"></i>
-                    <span style="color: #475569; font-size: 1.5rem;">/</span>
-                    <i class="fas fa-user-nurse icon-medico"></i>
+    <div class="modules-grid">
+        <div class="flex flex-col items-center">
+            <a href="lista_personal.html" class="card-acceso">
+                <div class="icon-group">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span class="text-slate-600 text-2xl">/</span>
+                    <i class="fa-solid fa-user-nurse"></i>
                 </div>
                 <span>MÉDICO</span>
             </a>
-            <div class="status-label active-text">MÓDULO ACTIVO</div>
+            <div class="status-tag">MÓDULO ACTIVO</div>
         </div>
 
-        <div class="flex-col items-center">
-            <a href="registro_paciente.html" class="card-modulo">
-                <i class="fas fa-caduceus icon-enfermera" style="font-size: 2.8rem;"></i>
-                <span style="margin-top: 8px;">ENFERMERA</span>
+        <div class="flex flex-col items-center">
+            <a href="registro_paciente.html" class="card-acceso">
+                <i class="fa-solid fa-staff-snake icon-caduceus"></i>
+                <span>ENFERMERA</span>
             </a>
-            <div class="status-label active-text">MÓDULO ACTIVO</div>
+            <div class="status-tag">MÓDULO ACTIVO</div>
         </div>
     </div>
 
-    <a href="menu_visor.html" class="visor-container">
-        <i class="fas fa-search"></i> VISOR DE HISTORIAL
+    <a href="menu_visor.html" class="btn-visor">
+        <i class="fa-solid fa-magnifying-glass"></i> VISOR DE HISTORIAL
     </a>
 
-    <div class="footer-txt">SISTEMA DE GESTIÓN HOSPITALARIA V1.0</div>
+    <div class="footer-system">SISTEMA DE GESTIÓN HOSPITALARIA V1.0</div>
 
 </body>
 </html>
