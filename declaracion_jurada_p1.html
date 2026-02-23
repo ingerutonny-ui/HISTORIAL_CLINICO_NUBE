@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<div id="loading" class="loading-overlay">⏳ SINCRONIZANDO EXPEDIENTE...</div>
+<div id="loading" class="loading-overlay">⏳ SINCRONIZANDO DATOS...</div>
 
 <div class="form-container">
     <div class="header-ohs">
@@ -63,7 +63,6 @@
         <div class="grid-inputs">
             <div><label>Estado Civil</label>
                 <select id="estado_civil" class="form-select" required>
-                    <option value="">SELECCIONE...</option>
                     <option value="SOLTERO(A)">SOLTERO(A)</option>
                     <option value="CASADO(A)">CASADO(A)</option>
                     <option value="DIVORCIADO(A)">DIVORCIADO(A)</option>
@@ -110,17 +109,13 @@
                     document.getElementById('telefono').value = data.filiacion.telefono || '';
                     document.getElementById('profesion_oficio').value = data.filiacion.profesion_oficio || '';
                     
-                    // CARGA FORZADA DE ESTADO CIVIL
+                    // CARGA DE ESTADO CIVIL: SELECCIÓN POR TEXTO O VALOR
                     const selectEC = document.getElementById('estado_civil');
-                    const valEC = data.filiacion.estado_civil;
-                    if (valEC) {
-                        for(let i=0; i<selectEC.options.length; i++){
-                            if(selectEC.options[i].value === valEC.toUpperCase()){
-                                selectEC.selectedIndex = i;
-                                break;
-                            }
-                        }
-                    }
+                    const dbValue = data.filiacion.estado_civil ? data.filiacion.estado_civil.toUpperCase() : "";
+                    
+                    Array.from(selectEC.options).forEach(option => {
+                        if (option.value === dbValue) option.selected = true;
+                    });
                 }
             }
         } catch (e) { console.error("Error al cargar:", e); }
@@ -146,24 +141,18 @@
         };
 
         try {
-            // USAMOS PUT PARA ACTUALIZAR SI YA EXISTE
-            const res = await fetch(`${API}/p1/${p_id}`, {
-                method: 'PUT',
+            // RUTA ÚNICA POST PARA GUARDAR O ACTUALIZAR
+            const res = await fetch(`${API}/p1/`, {
+                method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
 
-            // Si el PUT falla con 404, intentamos POST por si es la primera vez
-            if (res.status === 404 || !res.ok) {
-                const resPost = await fetch(`${API}/p1/`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
-                });
-                if (resPost.ok) window.location.href = "declaracion_jurada_p2.html";
-                else alert("ERROR AL GUARDAR");
-            } else {
+            if (res.ok) {
                 window.location.href = "declaracion_jurada_p2.html";
+            } else {
+                const err = await res.json();
+                alert("ERROR: " + (err.detail || "No se pudo guardar"));
             }
         } catch (err) { alert("ERROR DE CONEXIÓN"); }
     };
