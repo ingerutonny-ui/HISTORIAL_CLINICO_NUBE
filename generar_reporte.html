@@ -10,58 +10,58 @@
         
         .report-card { 
             max-width: 1000px; margin: auto; background: white; 
-            padding: 45px; border-radius: 20px; 
+            padding: 40px; border-radius: 20px; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
             border-top: 15px solid var(--primary);
         }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; }
-        .logo { height: 70px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
+        .logo { height: 65px; }
         .header-text { text-align: right; }
-        .header-text h1 { margin: 0; font-size: 22px; color: var(--dark); }
+        .header-text h1 { margin: 0; font-size: 20px; color: var(--dark); }
 
         .section-tag { 
             background: #f1f5f9; color: var(--accent); 
             padding: 8px 15px; border-radius: 8px; 
-            font-weight: 800; display: inline-block; margin: 25px 0 12px 0;
+            font-weight: 800; display: inline-block; margin: 20px 0 10px 0;
             border-left: 4px solid var(--accent);
         }
 
         table { width: 100%; border-collapse: separate; border-spacing: 0; margin-bottom: 15px; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; }
-        th, td { padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        th, td { padding: 9px; border-bottom: 1px solid #e2e8f0; text-align: left; }
         th { background: #f8fafc; color: #64748b; font-size: 9px; width: 25%; }
         td { font-weight: 700; color: var(--dark); }
 
         .med-row { display: grid; grid-template-columns: 280px 1fr; border-bottom: 1px solid #f1f5f9; }
-        .med-label { padding: 10px; font-weight: 800; color: #475569; background: #f8fafc; border-right: 1px solid #f1f5f9; font-size: 10px; }
-        .med-value { padding: 10px; color: var(--accent); font-weight: 700; text-transform: none; }
+        .med-label { padding: 9px; font-weight: 800; color: #475569; background: #f8fafc; border-right: 1px solid #f1f5f9; font-size: 10px; }
+        .med-value { padding: 9px; color: var(--accent); font-weight: 700; text-transform: none; }
 
-        .footer-legal { margin-top: 30px; padding: 20px; background: #f1f5f9; border-radius: 12px; font-size: 10px; text-transform: none; text-align: justify; }
-        .signatures { display: flex; justify-content: space-around; margin-top: 50px; }
+        .footer-legal { margin-top: 25px; padding: 15px; background: #f1f5f9; border-radius: 12px; font-size: 9px; text-transform: none; text-align: justify; }
+        .signatures { display: flex; justify-content: space-around; margin-top: 45px; }
         .sig-item { text-align: center; width: 250px; border-top: 2px solid var(--dark); padding-top: 10px; font-weight: 800; }
 
         .btn-float { position: fixed; bottom: 30px; right: 30px; background: var(--primary); color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 100; }
 
-        @media print { .btn-float { display: none; } body { padding: 0; } .report-card { box-shadow: none; border: none; width: 100%; padding: 20px; } }
+        @media print { .btn-float { display: none; } body { padding: 0; } .report-card { box-shadow: none; border: none; width: 100%; padding: 10px; } }
     </style>
 </head>
 <body>
 
-    <button class="btn-float" onclick="window.print()">🖨️ IMPRIMIR REPORTE FINAL</button>
+    <button class="btn-float" onclick="window.print()">🖨️ IMPRIMIR REPORTE MAESTRO</button>
 
     <div class="report-card">
         <div class="header">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo">
             <div class="header-text">
                 <h1>DECLARACIÓN JURADA DE SALUD</h1>
-                <p>OHS BOLIVIA - GESTIÓN MÉDICA EN LA NUBE</p>
+                <p>OHS BOLIVIA - GESTIÓN MÉDICA DIGITAL</p>
             </div>
         </div>
 
-        <div class="section-tag">I. AFILIACIÓN DEL TRABAJADOR (P1)</div>
+        <div class="section-tag">I. DATOS DE FILIACIÓN (P1)</div>
         <table>
             <tr>
-                <th>APELLIDOS Y NOMBRES:</th><td colspan="3" id="r_nom" style="color:var(--accent); font-size:14px;">---</td>
+                <th>APELLIDOS Y NOMBRES:</th><td colspan="3" id="r_nom" style="color:var(--accent); font-size:13px;">---</td>
             </tr>
             <tr>
                 <th>CÉDULA IDENTIDAD:</th><td id="r_ci">---</td>
@@ -80,7 +80,7 @@
             </tr>
             <tr>
                 <th>TELÉFONO:</th><td id="r_tel">---</td>
-                <th>PROFESIÓN / LABOR:</th><td id="r_prof">---</td>
+                <th>PROFESIÓN:</th><td id="r_prof">---</td>
             </tr>
         </table>
 
@@ -88,10 +88,10 @@
         <div id="cont_p2" style="border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;">
             </div>
 
-        <div class="section-tag">III. ANTECEDENTES OCUPACIONALES (P3)</div>
+        <div class="section-tag">III. HISTORIA LABORAL Y RIESGOS (P3)</div>
         <table>
             <tr style="background:#f8fafc; font-size:8px;">
-                <th>EDAD INICIO</th><th>EMPRESA</th><th>OCUPACIÓN / CARGO</th><th>TIEMPO</th><th>RIESGOS EXPUESTOS</th>
+                <th>EDAD INICIO</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th>
             </tr>
             <tr>
                 <td id="l_edad">---</td><td id="l_emp">---</td><td id="l_car">---</td><td id="l_tie">---</td><td id="l_rie">---</td>
@@ -102,20 +102,20 @@
         <table>
             <tr>
                 <th>GRUPO SANGUÍNEO:</th><td id="h_gs" style="color:red;">---</td>
-                <th>FUMA TABACO:</th><td id="h_fuma">---</td>
+                <th>FUMA:</th><td id="h_fuma">---</td>
+                <th>ALCOHOL:</th><td id="h_alc">---</td>
             </tr>
             <tr>
-                <th>CONSUMO ALCOHOL:</th><td id="h_alc">---</td>
-                <th>DROGAS / COCA:</th><td id="h_dro_coc">---</td>
+                <th>DROGAS / COCA:</th><td id="h_dro" colspan="2">---</td>
+                <th>DEPORTE:</th><td id="h_dep">---</td>
             </tr>
             <tr>
-                <th>ACTIVIDAD FÍSICA:</th><td id="h_dep">---</td>
-                <th>OBSERVACIONES:</th><td id="h_obs">---</td>
+                <th>OBSERVACIONES:</th><td id="h_obs" colspan="5">---</td>
             </tr>
         </table>
 
         <div class="footer-legal">
-            POR MEDIO DE ESTE DOCUMENTO MÉDICO LEGAL, YO <span id="f_nom" style="font-weight: 800;"></span>, DECLARO QUE ES VERDAD TODA LA INFORMACIÓN PROPORCIONADA AL MÉDICO O FUNCIONARIO. ENTIENDO QUE LA OMISIÓN DE ANTECEDENTES PUEDE AFECTAR MI EVALUACIÓN DE APTITUD LABORAL.
+            POR MEDIO DE ESTE DOCUMENTO MÉDICO LEGAL, YO <span id="f_nom"></span>, DECLARO BAJO JURAMENTO QUE LOS DATOS EXPUESTOS SON FIDEDIGNOS. ENTIENDO QUE LA OMISIÓN DE ANTECEDENTES PUEDE AFECTAR MI EVALUACIÓN DE APTITUD LABORAL [CITE: 121].
         </div>
 
         <div class="signatures">
@@ -126,16 +126,16 @@
 
     <script>
         window.onload = () => {
-            // 1. Recuperar todos los bloques de datos de la nube local
+            // Recuperación robusta de datos
             const p1 = JSON.parse(localStorage.getItem('datos_p1') || '{}');
             const p2 = JSON.parse(localStorage.getItem('datos_temporales_p2') || '{}');
             const p3 = JSON.parse(localStorage.getItem('datos_p3') || '{}');
             
-            const nombre = localStorage.getItem('p_nom') || "---";
-            const ci = localStorage.getItem('p_ci') || "---";
-            const cod = localStorage.getItem('p_cod') || "---";
+            const nombre = localStorage.getItem('p_nom') || p1.nombre || "---";
+            const ci = localStorage.getItem('p_ci') || p1.ci || "---";
+            const cod = localStorage.getItem('p_cod') || "S/C";
 
-            // 2. Llenar Sección I: Filiación
+            // Llenado P1
             document.getElementById('r_nom').innerText = nombre;
             document.getElementById('f_nom').innerText = nombre;
             document.getElementById('r_ci').innerText = ci;
@@ -150,15 +150,14 @@
             document.getElementById('r_tel').innerText = p1.telefono || '---';
             document.getElementById('r_dom').innerText = `${p1.domicilio || ''} #${p1.n_casa || ''} (ZONA: ${p1.zona || '---'})`;
 
-            // 3. Llenar Sección II: Patológicos (Dinámico)
+            // Llenado P2
             const sistemas = [
                 ["VISTA / OJOS", p2.vista], ["OÍDO / AUDICIÓN", p2.auditivo], 
                 ["RESPIRATORIO", p2.respiratorio], ["CARDIOVASCULAR", p2.cardiovascular], 
-                ["DIGESTIVOS", p2.digestivos], ["ESTÓMAGO / HÍGADO", p2.estomago],
-                ["SANGRE / LINFA", p2.sangre], ["GENITOURINARIO", p2.genitourinario],
-                ["SISTEMA NERVIOSO", p2.nervioso], ["PSIQUIÁTRICOS", p2.psiquiatricos], 
-                ["PIEL / DERMATOLÓGICO", p2.piel], ["OSTEOMUSCULARES", p2.osteomusculares],
-                ["ENDOCRINO / DIABETES", p2.endocrino], ["CIRUGÍAS", p2.cirugias], 
+                ["DIGESTIVOS", p2.digestivos], ["SANGRE / LINFA", p2.sangre], 
+                ["GENITOURINARIO", p2.genitourinario], ["SISTEMA NERVIOSO", p2.nervioso], 
+                ["PSIQUIÁTRICOS", p2.psiquiatricos], ["OSTEOMUSCULARES", p2.osteomusculares],
+                ["ENDOCRINO", p2.endocrino], ["CIRUGÍAS / ACCID.", p2.cirugias || p2.accidentes], 
                 ["ALERGIAS", p2.alergias], ["INFECCIONES", p2.infecciones]
             ];
 
@@ -166,23 +165,22 @@
             sistemas.forEach(s => {
                 htmlP2 += `<div class="med-row">
                     <div class="med-label">${s[0]}</div>
-                    <div class="med-value">${s[1] || 'NEGATIVO / SIN HALLAZGOS'}</div>
+                    <div class="med-value">${s[1] || 'SIN PARTICULAR / NEGATIVO'}</div>
                 </div>`;
             });
             document.getElementById('cont_p2').innerHTML = htmlP2;
 
-            // 4. Llenar Sección III: Antecedentes Laborales (P3)
+            // Llenado P3
             document.getElementById('l_edad').innerText = p3.edad_inicio || '---';
             document.getElementById('l_emp').innerText = p3.empresa || '---';
             document.getElementById('l_car').innerText = p3.cargo || '---';
             document.getElementById('l_tie').innerText = p3.tiempo || '---';
             document.getElementById('l_rie').innerText = p3.riesgos || '---';
 
-            // 5. Llenar Sección IV: Hábitos y Grupo Sanguíneo (P3)
             document.getElementById('h_gs').innerText = p3.grupo_sanguineo || '---';
             document.getElementById('h_fuma').innerText = p3.fuma || 'NO';
             document.getElementById('h_alc').innerText = p3.alcohol || 'NO';
-            document.getElementById('h_dro_coc').innerText = `DROGAS: ${p3.drogas || 'NO'} / COCA: ${p3.coca || 'NO'}`;
+            document.getElementById('h_dro').innerText = `DROGAS: ${p3.drogas || 'NO'} / COCA: ${p3.coca || 'NO'}`;
             document.getElementById('h_dep').innerText = p3.deporte || 'NO';
             document.getElementById('h_obs').innerText = p3.observaciones || 'REGISTRO COMPLETADO';
         };
