@@ -40,9 +40,9 @@
         <div class="grid">
             <div class="form-group"><label>C.I. PROFESIONAL</label><input type="text" id="ci_doc" required></div>
             <div class="form-group"><label>NOMBRE COMPLETO</label><input type="text" id="nombre_doc" required></div>
-            <div class="form-group"><label>APELLIDO PATERNO</label><input type="text" id="paterno_doc" required></div>
-            <div class="form-group"><label>APELLIDO MATERNO</label><input type="text" id="materno_doc"></div>
-            <div class="form-group"><label>TURNO</label>
+            <div class="form-group"><label>APELLIDO PATERNO</label><input type="text" id="appaterno_doc" required></div>
+            <div class="form-group"><label>APELLIDO MATERNO</label><input type="text" id="apmaterno_doc"></div>
+            <div class="form-group"><label>TURNO ASIGNADO</label>
                 <select id="turno_doc">
                     <option value="MAÑANA">☀️ MAÑANA</option>
                     <option value="TARDE">🌤️ TARDE</option>
@@ -50,7 +50,7 @@
                 </select>
             </div>
             <div class="form-group"><label>ESPECIALIDAD</label>
-                <select id="especialidad">
+                <select id="especialidad_doc">
                     <option value="MEDICINA DEL TRABAJO">MEDICINA DEL TRABAJO</option>
                     <option value="MEDICINA GENERAL">MEDICINA GENERAL</option>
                     <option value="PSICOLOGÍA">PSICOLOGÍA</option>
@@ -65,9 +65,9 @@
         <div class="grid">
             <div class="form-group"><label>C.I. PROFESIONAL</label><input type="text" id="ci_enfe" required></div>
             <div class="form-group"><label>NOMBRE COMPLETO</label><input type="text" id="nombre_enfe" required></div>
-            <div class="form-group"><label>APELLIDO PATERNO</label><input type="text" id="paterno_enfe" required></div>
-            <div class="form-group"><label>APELLIDO MATERNO</label><input type="text" id="materno_enfe"></div>
-            <div class="form-group"><label>TURNO</label>
+            <div class="form-group"><label>APELLIDO PATERNO</label><input type="text" id="appaterno_enfe" required></div>
+            <div class="form-group"><label>APELLIDO MATERNO</label><input type="text" id="apmaterno_enfe"></div>
+            <div class="form-group"><label>TURNO ASIGNADO</label>
                 <select id="turno_enfe">
                     <option value="MAÑANA">☀️ MAÑANA</option>
                     <option value="TARDE">🌤️ TARDE</option>
@@ -75,7 +75,7 @@
                 </select>
             </div>
             <div class="form-group"><label>NIVEL ACADÉMICO / CARGO</label>
-                <select id="cargo_enfe">
+                <select id="edu_enfe">
                     <option value="LICENCIADA EN ENFERMERÍA">LICENCIADA EN ENFERMERÍA</option>
                     <option value="AUXILIAR DE ENFERMERÍA">AUXILIAR DE ENFERMERÍA</option>
                 </select>
@@ -86,6 +86,7 @@
 </div>
 
 <script>
+    // URL exacta de su servidor Render
     const API_URL = "https://historial-clinico-936s.onrender.com/api"; 
 
     function switchTab(tipo) {
@@ -110,28 +111,29 @@
     async function enviarDatos(tipo) {
         let payload = {};
         
-        // Mapeo exacto según DoctorBase y EnfermeraBase del Backend [image_9e3f76.png]
+        // MAPEADO EXACTO SEGÚN MODELOS DE BASE DE DATOS
         if (tipo === 'doctor') {
             payload = {
-                ci: document.getElementById('ci_doc').value.trim(),
-                nombre: document.getElementById('nombre_doc').value.trim(),
-                paterno: document.getElementById('paterno_doc').value.trim(),
-                materno: document.getElementById('materno_doc').value.trim(),
-                turno: document.getElementById('turno_doc').value,
-                especialidad: document.getElementById('especialidad').value
+                ci_doc: document.getElementById('ci_doc').value.trim(),
+                appaterno_doc: document.getElementById('appaterno_doc').value.trim(),
+                apmaterno_doc: document.getElementById('apmaterno_doc').value.trim(),
+                nombre_doc: document.getElementById('nombre_doc').value.trim(),
+                turno_doc: document.getElementById('turno_doc').value,
+                especialidad: document.getElementById('especialidad_doc').value
             };
         } else {
             payload = {
-                ci: document.getElementById('ci_enfe').value.trim(),
-                nombre: document.getElementById('nombre_enfe').value.trim(),
-                paterno: document.getElementById('paterno_enfe').value.trim(),
-                materno: document.getElementById('materno_enfe').value.trim(),
-                turno: document.getElementById('turno_enfe').value,
-                cargo: document.getElementById('cargo_enfe').value
+                ci_enfe: document.getElementById('ci_enfe').value.trim(),
+                appaterno_enfe: document.getElementById('appaterno_enfe').value.trim(),
+                apmaterno_enfe: document.getElementById('apmaterno_enfe').value.trim(),
+                nombre_enfe: document.getElementById('nombre_enfe').value.trim(),
+                turno_enfe: document.getElementById('turno_enfe').value,
+                edu_enfe: document.getElementById('edu_enfe').value
             };
         }
 
         try {
+            // Rutas en singular según su Backend
             const endpoint = `${API_URL}/save-${tipo}`;
             const res = await fetch(endpoint, {
                 method: 'POST',
@@ -140,12 +142,11 @@
             });
 
             if(res.ok) {
-                alert(`¡${tipo.toUpperCase()} GUARDADO CON ÉXITO!`);
+                alert(`¡${tipo.toUpperCase()} REGISTRADO CON ÉXITO!`);
                 window.location.href = "lista_personal.html"; 
             } else {
                 const errorData = await res.json();
-                // Si el error es 404, el problema es la ruta en Render
-                alert("ERROR " + res.status + ": " + (errorData.detail || "Ruta no encontrada o CI repetido"));
+                alert("ERROR " + res.status + ": " + (errorData.detail || "DATOS INVÁLIDOS O C.I. REPETIDO"));
             }
         } catch (e) {
             alert("SIN CONEXIÓN CON EL SERVIDOR RENDER");
