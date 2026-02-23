@@ -6,163 +6,66 @@
     <title>HC NUBE | HÁBITOS Y LABORAL (3/3)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root { --ohs-cyan: #00a0a5; --ohs-green: #22c55e; --dark: #1e293b; --light-bg: #f8fafc; }
+        :root { --ohs-cyan: #00a0a5; --ohs-green: #22c55e; --dark: #1e293b; }
         body { background-color: #f0f4f8; font-family: 'Segoe UI', sans-serif; padding: 10px; color: var(--dark); }
-        
-        .form-container { 
-            max-width: 1100px; margin: 10px auto; background: white; padding: 25px; 
-            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
-        }
-
-        .header-ohs { 
-            display: flex; align-items: center; justify-content: space-between; 
-            border-bottom: 3px solid var(--ohs-cyan); padding-bottom: 15px; margin-bottom: 20px; 
-            flex-wrap: wrap; gap: 10px;
-        }
+        .form-container { max-width: 1100px; margin: 10px auto; background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        .header-ohs { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--ohs-cyan); padding-bottom: 15px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .title-center h2 { font-size: 1.3rem; font-weight: 800; text-transform: uppercase; margin: 0; }
-
-        .data-banner { 
-            background: #f8fafc; padding: 12px; border-radius: 12px; margin-bottom: 20px; 
-            display: flex; justify-content: space-around; font-size: 12px; font-weight: 800; 
-            border: 1px solid #e2e8f0; text-transform: uppercase; flex-wrap: wrap; gap: 10px;
-        }
-
-        .section-title { 
-            background: #f1f5f9; padding: 8px 15px; border-left: 5px solid var(--ohs-cyan); 
-            margin: 25px 0 15px; font-weight: 800; font-size: 13px; text-transform: uppercase; 
-        }
-
-        .grid-habitos { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; 
-        }
-
-        .field-card { 
-            background: white; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; 
-        }
-        .field-card:hover { border-color: var(--ohs-cyan); }
+        .data-banner { background: #f8fafc; padding: 12px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-around; font-size: 12px; font-weight: 800; border: 1px solid #e2e8f0; text-transform: uppercase; flex-wrap: wrap; gap: 10px; }
+        .section-title { background: #f1f5f9; padding: 8px 15px; border-left: 5px solid var(--ohs-cyan); margin: 25px 0 15px; font-weight: 800; font-size: 13px; text-transform: uppercase; }
+        .grid-habitos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
+        .field-card { background: white; padding: 12px; border-radius: 12px; border: 1px solid #cbd5e1; }
         .label-text { font-size: 10px; font-weight: 800; color: #64748b; display: block; margin-bottom: 5px; }
-
         .input-group-custom { display: flex; gap: 8px; }
         .select-yn { width: 70px; font-weight: 700; border: 2px solid var(--ohs-green); border-radius: 8px; font-size: 12px; }
         .input-det { flex: 1; font-size: 12px; border-radius: 8px; text-transform: uppercase; font-weight: 600; }
-
         .table-responsive-custom { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
-        .table-responsive-custom th { 
-            background: white; color: var(--ohs-cyan); padding: 10px; font-size: 11px; 
-            text-transform: uppercase; border-bottom: 2px solid var(--ohs-cyan);
-        }
+        .table-responsive-custom th { background: white; color: var(--ohs-cyan); padding: 10px; font-size: 11px; text-transform: uppercase; border-bottom: 2px solid var(--ohs-cyan); }
         .table-responsive-custom td { padding: 5px; }
-        .table-responsive-custom input, .table-responsive-custom select { 
-            width: 100%; border: 1px solid #cbd5e1; padding: 8px; border-radius: 8px; font-size: 12px; text-transform: uppercase;
-        }
-
-        @media (max-width: 768px) {
-            .table-responsive-custom thead { display: none; }
-            .table-responsive-custom tr { 
-                display: block; background: #f8fafc; margin-bottom: 15px; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0;
-            }
-            .table-responsive-custom td { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border: none; }
-            .table-responsive-custom td::before { content: attr(data-label); font-size: 10px; font-weight: 800; color: #64748b; }
-            .table-responsive-custom td input, .table-responsive-custom td select { width: 60%; }
-        }
-
-        .risk-grid { 
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; 
-            padding: 15px; background: #f8fafc; border-radius: 15px; border: 1px solid #e2e8f0;
-        }
+        .table-responsive-custom input, .table-responsive-custom select { width: 100%; border: 1px solid #cbd5e1; padding: 8px; border-radius: 8px; font-size: 12px; text-transform: uppercase; }
+        .risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; padding: 15px; background: #f8fafc; border-radius: 15px; border: 1px solid #e2e8f0; }
         .risk-item { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .risk-item input { width: 18px; height: 18px; accent-color: var(--ohs-cyan); }
-
-        .btn-save { 
-            background: var(--ohs-green); color: white; width: 100%; padding: 18px; 
-            border-radius: 15px; border: none; font-weight: 800; font-size: 15px; 
-            margin-top: 30px; text-transform: uppercase; transition: 0.3s;
-            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2);
-        }
+        .btn-save { background: var(--ohs-green); color: white; width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 800; font-size: 15px; margin-top: 30px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2); }
         .btn-save:hover { background: #16a34a; transform: translateY(-3px); }
     </style>
 </head>
 <body>
-
 <div class="form-container">
     <div class="header-ohs">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" height="45">
         <div class="title-center"><h2>3. HÁBITOS Y ANTECEDENTES LABORALES</h2></div>
         <div style="font-size: 10px; font-weight: 800; color: #94a3b8;">PARTE 3 / 3</div>
     </div>
-
     <div class="data-banner">
         <div>PACIENTE: <span id="b_paciente">CARGANDO...</span></div>
         <div>CÓDIGO: <span id="b_codigo">---</span></div>
     </div>
-
     <form id="formP3">
         <div class="section-title">I. HÁBITOS PERSONALES</div>
         <div class="grid-habitos">
-            <div class="field-card">
-                <span class="label-text">¿FUMA?</span>
-                <div class="input-group-custom">
-                    <select id="fuma" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input id="fuma_det" class="form-control input-det" placeholder="CANTIDAD/DÍA" value="NO FUMA">
-                </div>
-            </div>
-            <div class="field-card">
-                <span class="label-text">¿CONSUME ALCOHOL?</span>
-                <div class="input-group-custom">
-                    <select id="alcohol" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input id="alcohol_det" class="form-control input-det" placeholder="FRECUENCIA" value="NO CONSUME">
-                </div>
-            </div>
-            <div class="field-card">
-                <span class="label-text">¿CONSUME DROGAS?</span>
-                <div class="input-group-custom">
-                    <select id="drogas" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input id="drogas_det" class="form-control input-det" placeholder="TIPO" value="NO CONSUME">
-                </div>
-            </div>
-            <div class="field-card">
-                <span class="label-text">PIJCHAR (COCA)</span>
-                <select id="coca" class="form-select select-yn w-100"><option value="NO">NO</option><option value="SI">SI</option></select>
-            </div>
-            <div class="field-card">
-                <span class="label-text">¿PRACTICA DEPORTES?</span>
-                <div class="input-group-custom">
-                    <select id="deportes" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select>
-                    <input id="deportes_det" class="form-control input-det" placeholder="ACTIVIDAD" value="NINGUNO">
-                </div>
-            </div>
-            <div class="field-card">
-                <span class="label-text">GRUPO SANGUÍNEO</span>
-                <input id="grupo_sangre" class="form-control input-det w-100" placeholder="EJ: ORH+" value="S/D">
-            </div>
+            <div class="field-card"><span class="label-text">¿FUMA?</span><div class="input-group-custom"><select id="fuma" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="fuma_det" class="form-control input-det" value="NO FUMA"></div></div>
+            <div class="field-card"><span class="label-text">¿CONSUME ALCOHOL?</span><div class="input-group-custom"><select id="alcohol" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="alcohol_det" class="form-control input-det" value="NO CONSUME"></div></div>
+            <div class="field-card"><span class="label-text">¿CONSUME DROGAS?</span><div class="input-group-custom"><select id="drogas" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="drogas_det" class="form-control input-det" value="NO CONSUME"></div></div>
+            <div class="field-card"><span class="label-text">PIJCHAR (COCA)</span><select id="coca" class="form-select select-yn w-100"><option value="NO">NO</option><option value="SI">SI</option></select></div>
+            <div class="field-card"><span class="label-text">¿PRACTICA DEPORTES?</span><div class="input-group-custom"><select id="deportes" class="form-select select-yn"><option value="NO">NO</option><option value="SI">SI</option></select><input id="deportes_det" class="form-control input-det" value="NINGUNO"></div></div>
+            <div class="field-card"><span class="label-text">GRUPO SANGUÍNEO</span><input id="grupo_sangre" class="form-control input-det w-100" value="S/D"></div>
         </div>
-
         <div class="section-title">II. HISTORIA LABORAL (ÚLTIMO EMPLEO)</div>
         <div class="table-responsive">
             <table class="table-responsive-custom">
-                <thead>
-                    <tr>
-                        <th>EDAD</th>
-                        <th>EMPRESA</th>
-                        <th>CARGO</th>
-                        <th>TIEMPO</th>
-                        <th>RIESGOS</th>
-                        <th>EPP</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td data-label="EDAD"><input type="number" class="edad"></td>
-                        <td data-label="EMPRESA"><input type="text" class="empresa"></td>
-                        <td data-label="CARGO"><input type="text" class="cargo"></td>
-                        <td data-label="TIEMPO"><input type="text" class="tiempo"></td>
-                        <td data-label="RIESGOS"><input type="text" class="riesgos"></td>
-                        <td data-label="EPP"><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
+                        <td><input type="number" class="edad"></td>
+                        <td><input type="text" class="empresa"></td>
+                        <td><input type="text" class="cargo"></td>
+                        <td><input type="text" class="tiempo"></td>
+                        <td><input type="text" class="riesgos"></td>
+                        <td><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-
         <div class="section-title">III. RIESGOS ESPECÍFICOS EN VIDA LABORAL</div>
         <div class="risk-grid" id="riesgosCheck">
             <label class="risk-item"><input type="checkbox" value="RUIDO"> RUIDO</label>
@@ -174,11 +77,9 @@
             <label class="risk-item"><input type="checkbox" value="ERGONÓMICOS"> ERGONÓMICOS</label>
             <label class="risk-item"><input type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         </div>
-
-        <button type="submit" id="btnG" class="btn-save">💾 GUARDAR Y FINALIZAR EXPEDIENTE MÉDICO</button>
+        <button type="submit" id="btnG" class="btn-save">💾 GUARDAR DECLARACIÓN COMPLETA (P2+P3)</button>
     </form>
 </div>
-
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
     const id_p = localStorage.getItem('p_id');
@@ -198,30 +99,29 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ GUARDANDO..."; btn.disabled = true;
+        btn.innerHTML = "⏳ PROCESANDO GUARDADO..."; btn.disabled = true;
 
         const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
         const laboral = [];
-        document.querySelectorAll('#tablaLaboral tr').forEach(tr => {
-            const emp = tr.querySelector('.empresa').value;
-            if(emp) {
-                laboral.push({
-                    edad_inicio: tr.querySelector('.edad').value || "0",
-                    empresa: emp.toUpperCase(),
-                    cargo: tr.querySelector('.cargo').value.toUpperCase() || "S/D",
-                    tiempo: tr.querySelector('.tiempo').value || "0",
-                    riesgos: tr.querySelector('.riesgos').value.toUpperCase() || "NINGUNO",
-                    epp: tr.querySelector('.epp').value
-                });
-            }
-        });
+        const tr = document.querySelector('#tablaLaboral tr');
+        const emp = tr.querySelector('.empresa').value;
+        if(emp) {
+            laboral.push({
+                edad_inicio: tr.querySelector('.edad').value || "0",
+                empresa: emp.toUpperCase(),
+                cargo: tr.querySelector('.cargo').value.toUpperCase() || "S/D",
+                tiempo: tr.querySelector('.tiempo').value || "0",
+                riesgos: tr.querySelector('.riesgos').value.toUpperCase() || "NINGUNO",
+                epp: tr.querySelector('.epp').value
+            });
+        }
 
         const riesgos = [];
         document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
 
         const payload = {
-            ...dataP2,
             paciente_id: parseInt(id_p),
+            ...dataP2,
             fuma: document.getElementById('fuma').value, 
             fuma_det: document.getElementById('fuma_det').value.toUpperCase(),
             alcohol: document.getElementById('alcohol').value, 
@@ -237,7 +137,7 @@
         };
 
         try {
-            const res = await fetch(`${API}/api/p3/`, {
+            const res = await fetch(`${API}/api/antecedentes/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
@@ -246,9 +146,9 @@
                 alert("✅ EXPEDIENTE GUARDADO CON ÉXITO");
                 localStorage.removeItem('temp_p2');
                 window.location.href = "lista_historial.html";
-            } else { alert("❌ ERROR AL GUARDAR. REVISE EL SERVIDOR."); }
+            } else { alert("❌ ERROR AL GUARDAR. VERIFIQUE EL SERVIDOR."); }
         } catch(err) { alert("❌ ERROR DE RED."); }
-        finally { btn.innerHTML = "💾 GUARDAR Y FINALIZAR EXPEDIENTE MÉDICO"; btn.disabled = false; }
+        finally { btn.innerHTML = "💾 GUARDAR DECLARACIÓN COMPLETA (P2+P3)"; btn.disabled = false; }
     };
 </script>
 </body>
