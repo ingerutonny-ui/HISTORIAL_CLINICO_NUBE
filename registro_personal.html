@@ -3,43 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTRO DE PERSONAL - OHS</title>
+    <title>REGISTRO DE PERSONAL - OHS </title>
     <style>
-        :root { --blue: #0046ad; --green: #2ecc71; --light: #f8fafc; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #e2e8f0; margin: 0; padding: 20px; text-transform: uppercase; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         
-        /* FORMULARIO GRANDE Y CENTRADO */
-        .container { max-width: 1100px; margin: auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border-top: 8px solid var(--green); }
-        
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px; }
-        .logo-grande { height: 100px; } /* LOGO AGRANDADO */
-        
-        .title-area { text-align: right; }
-        .title-area h2 { color: var(--blue); margin: 0; font-size: 28px; font-weight: 900; }
-        
-        /* BOTONES DE CAMBIO CON ICONOS */
-        .tab-buttons { display: flex; gap: 15px; margin-bottom: 30px; justify-content: center; }
-        .tab { padding: 15px 35px; cursor: pointer; background: #cbd5e1; border-radius: 8px; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-size: 18px; }
-        .tab.active { background: var(--blue); color: white; transform: scale(1.05); }
+        :root { 
+            --nancy-blue: #0046ad; 
+            --nancy-green: #2ecc71; 
+            --nancy-gray: #f8fafc; 
+            --text-dark: #1e293b;
+        }
 
-        /* GRID RESPONSIVO */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
-        .form-group { display: flex; flex-direction: column; }
-        label { font-size: 12px; font-weight: 900; color: #475569; margin-bottom: 8px; }
-        input, select { padding: 14px; border: 2px solid #e2e8f0; border-radius: 6px; font-size: 16px; font-weight: bold; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--blue); box-shadow: 0 0 8px rgba(0,70,173,0.2); }
+        /* ESTILO NANCY ELEGANTE: LIMPIO Y MAYÚSCULAS */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f1f5f9; 
+            margin: 0; 
+            padding: 20px; 
+            text-transform: uppercase; /* TODO EN MAYÚSCULAS */
+            color: var(--text-dark);
+        }
 
-        .btn-save { width: 100%; padding: 20px; color: white; border: none; font-weight: 900; cursor: pointer; border-radius: 8px; margin-top: 30px; font-size: 20px; letter-spacing: 1px; transition: 0.3s; }
-        .bg-doctor { background: var(--blue); }
-        .bg-enfermera { background: var(--green); }
-        .btn-save:hover { opacity: 0.9; transform: translateY(-2px); }
+        .container { 
+            max-width: 1000px; 
+            margin: 40px auto; 
+            background: white; 
+            padding: 50px; 
+            border-radius: 4px; 
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-top: 6px solid var(--nancy-green);
+        }
 
-        /* RESPONSIVO PARA MÓVILES */
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 40px; 
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 20px;
+        }
+
+        .logo-grande { height: 90px; }
+
+        .title-area h2 { 
+            color: var(--nancy-blue); 
+            margin: 0; 
+            font-size: 24px; 
+            font-weight: 900; 
+            letter-spacing: 1px;
+        }
+
+        /* BOTONES TAB CON ESTILO REFINADO */
+        .tab-buttons { 
+            display: flex; 
+            gap: 2px; 
+            margin-bottom: 35px; 
+            background: #e2e8f0;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .tab { 
+            flex: 1;
+            padding: 15px; 
+            text-align: center;
+            cursor: pointer; 
+            background: transparent; 
+            border-radius: 6px; 
+            font-weight: 900; 
+            font-size: 14px;
+            transition: 0.3s;
+            color: #64748b;
+        }
+
+        .tab.active { 
+            background: white; 
+            color: var(--nancy-blue); 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        /* FORMULARIO Y CAMPOS */
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); 
+            gap: 25px; 
+        }
+
+        .form-group { margin-bottom: 5px; }
+
+        label { 
+            font-size: 10px; 
+            font-weight: 900; 
+            color: var(--nancy-blue); 
+            margin-bottom: 8px; 
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        input, select { 
+            width: 100%;
+            padding: 12px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 4px; 
+            font-size: 14px; 
+            font-weight: 700; 
+            background: var(--nancy-gray);
+            text-transform: uppercase;
+            box-sizing: border-box;
+        }
+
+        input:focus { 
+            outline: none; 
+            border-color: var(--nancy-blue);
+            background: white;
+        }
+
+        .btn-save { 
+            width: 100%; 
+            padding: 18px; 
+            color: white; 
+            border: none; 
+            font-weight: 900; 
+            cursor: pointer; 
+            border-radius: 4px; 
+            margin-top: 40px; 
+            font-size: 16px; 
+            letter-spacing: 2px;
+            transition: 0.4s;
+        }
+
+        .bg-doctor { background: var(--nancy-blue); }
+        .bg-enfermera { background: var(--nancy-green); }
+
+        .btn-save:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
         @media (max-width: 600px) {
             .container { padding: 20px; }
-            .header { flex-direction: column; text-align: center; }
-            .title-area { text-align: center; margin-top: 15px; }
-            .tab { padding: 10px; font-size: 14px; }
+            .grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -49,32 +149,28 @@
     <div class="header">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-grande">
         <div class="title-area">
-            <h2>SISTEMA DE GESTIÓN OHS</h2>
-            <p style="margin:0; color:#64748b;">REGISTRO DE PERSONAL AUTORIZADO</p>
+            <h2>REGISTRO PROFESIONAL OHS</h2>
+            <p style="margin:0; font-size: 10px; font-weight: 700; color: #94a3b8;">PERSONAL MÉDICO Y ASISTENCIAL</p>
         </div>
     </div>
 
     <div class="tab-buttons">
-        <div class="tab active" onclick="switchTab('doctor')">
-            👨‍⚕️ DOCTORES
-        </div>
-        <div class="tab" onclick="switchTab('enfermera')">
-            👩‍⚕️ ENFERMERAS
-        </div>
+        <div class="tab active" onclick="switchTab('doctor')">👨‍⚕️ SECCIÓN DOCTORES</div>
+        <div class="tab" onclick="switchTab('enfermera')">👩‍⚕️ SECCIÓN ENFERMERAS</div>
     </div>
 
     <form id="form-doctor">
         <div class="grid">
-            <div class="form-group"><label>CÉDULA DE IDENTIDAD</label><input type="text" id="ci_doc" placeholder="EJ. 4634567" required></div>
-            <div class="form-group"><label>NOMBRE(S)</label><input type="text" id="nombre_doc" required></div>
+            <div class="form-group"><label>C.I. PROFESIONAL</label><input type="text" id="ci_doc" required></div>
+            <div class="form-group"><label>NOMBRE COMPLETO</label><input type="text" id="nombre_doc" required></div>
             <div class="form-group"><label>APELLIDO PATERNO</label><input type="text" id="appaterno_doc" required></div>
             <div class="form-group"><label>APELLIDO MATERNO</label><input type="text" id="apmaterno_doc"></div>
             <div class="form-group">
-                <label>TURNO DE TRABAJO</label>
+                <label>TURNO ASIGNADO</label>
                 <select id="turno_doc">
-                    <option value="MAÑANA">☀️ MAÑANA</option>
-                    <option value="TARDE">🌤️ TARDE</option>
-                    <option value="NOCHE">🌙 NOCHE</option>
+                    <option value="MAÑANA">MAÑANA</option>
+                    <option value="TARDE">TARDE</option>
+                    <option value="NOCHE">NOCHE</option>
                 </select>
             </div>
             <div class="form-group">
@@ -85,41 +181,42 @@
                     <option value="PSICOLOGÍA">PSICOLOGÍA</option>
                     <option value="OFTALMOLOGÍA">OFTALMOLOGÍA</option>
                     <option value="AUDIOLOGÍA">AUDIOLOGÍA</option>
-                    <option value="TRAUMATOLOGÍA">TRAUMATOLOGÍA</option>
                 </select>
             </div>
         </div>
-        <button type="button" class="btn-save bg-doctor" onclick="guardarPersonal('doctor')">💾 REGISTRAR MÉDICO EN LA NUBE</button>
+        <button type="button" class="btn-save bg-doctor" onclick="enviarDatos('doctor')">GUARDAR REGISTRO MÉDICO</button>
     </form>
 
     <form id="form-enfermera" style="display:none;">
         <div class="grid">
-            <div class="form-group"><label>CÉDULA DE IDENTIDAD</label><input type="text" id="ci_enfe" required></div>
-            <div class="form-group"><label>NOMBRE(S)</label><input type="text" id="nombre_enfe" required></div>
+            <div class="form-group"><label>C.I. PROFESIONAL</label><input type="text" id="ci_enfe" required></div>
+            <div class="form-group"><label>NOMBRE COMPLETO</label><input type="text" id="nombre_enfe" required></div>
             <div class="form-group"><label>APELLIDO PATERNO</label><input type="text" id="appaterno_enfe" required></div>
             <div class="form-group"><label>APELLIDO MATERNO</label><input type="text" id="apmaterno_enfe"></div>
             <div class="form-group">
-                <label>TURNO DE TRABAJO</label>
+                <label>TURNO ASIGNADO</label>
                 <select id="turno_enfe">
-                    <option value="MAÑANA">☀️ MAÑANA</option>
-                    <option value="TARDE">🌤️ TARDE</option>
-                    <option value="NOCHE">🌙 NOCHE</option>
+                    <option value="MAÑANA">MAÑANA</option>
+                    <option value="TARDE">TARDE</option>
+                    <option value="NOCHE">NOCHE</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>NIVEL DE FORMACIÓN / CARGO</label>
+                <label>NIVEL ACADÉMICO / CARGO</label>
                 <select id="edu_enfe">
                     <option value="LICENCIADA EN ENFERMERÍA">LICENCIADA EN ENFERMERÍA</option>
                     <option value="AUXILIAR DE ENFERMERÍA">AUXILIAR DE ENFERMERÍA</option>
-                    <option value="TÉCNICO EN SALUD">TÉCNICO EN SALUD</option>
+                    <option value="TÉCNICO DE SALUD">TÉCNICO DE SALUD</option>
                 </select>
             </div>
         </div>
-        <button type="button" class="btn-save bg-enfermera" onclick="guardarPersonal('enfermera')">💾 REGISTRAR ENFERMERA EN LA NUBE</button>
+        <button type="button" class="btn-save bg-enfermera" onclick="enviarDatos('enfermera')">GUARDAR REGISTRO ENFERMERÍA</button>
     </form>
 </div>
 
 <script>
+    const API_URL = "https://tu-servicio-en-render.com/api"; // CAMBIAR POR TU URL REAL DE RENDER
+
     function switchTab(tipo) {
         const tabs = document.querySelectorAll('.tab');
         if(tipo === 'doctor') {
@@ -135,8 +232,33 @@
         }
     }
 
-    function guardarPersonal(tipo) {
-        alert("Paso 2 completado: Formulario listo. ¿Inge, pasamos al Backend para conectar esto?");
+    async function enviarDatos(tipo) {
+        const endpoint = tipo === 'doctor' ? '/save-doctor' : '/save-enfermera';
+        const data = {};
+        
+        const campos = tipo === 'doctor' 
+            ? ['ci_doc', 'nombre_doc', 'appaterno_doc', 'apmaterno_doc', 'turno_doc', 'especialidad']
+            : ['ci_enfe', 'nombre_enfe', 'appaterno_enfe', 'apmaterno_enfe', 'turno_enfe', 'edu_enfe'];
+
+        campos.forEach(c => data[c] = document.getElementById(c).value);
+
+        try {
+            const response = await fetch(API_URL + endpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if(response.ok) {
+                alert("¡ÉXITO! PERSONAL REGISTRADO CORRECTAMENTE EN LA NUBE.");
+                location.reload(); // Recarga para limpiar
+            } else {
+                alert("ERROR AL GUARDAR. VERIFIQUE LA CONEXIÓN.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("NO SE PUDO CONECTAR CON EL SERVIDOR.");
+        }
     }
 </script>
 </body>
