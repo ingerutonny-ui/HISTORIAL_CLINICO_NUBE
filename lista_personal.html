@@ -5,24 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LISTA DE PERSONAL - OHS NANCY</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; text-transform: uppercase; background-color: #0f172a; }
+        .bg-ohs-dark { background-color: #1e293b; }
+        .text-ohs-blue { color: #3b82f6; }
+        .text-ohs-green { color: #10b981; }
+        .table-container { background-color: #1e293b; border: 1px solid #334155; }
+    </style>
 </head>
-<body class="bg-slate-950 min-h-screen p-4 md:p-10">
-    <div class="max-w-6xl mx-auto bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-800">
+<body class="p-4 md:p-10">
+    <div class="max-w-6xl mx-auto bg-slate-900 shadow-2xl rounded-3xl overflow-hidden border border-slate-800">
         
-        <div class="p-8 flex justify-between items-center border-b border-slate-800">
-            <button onclick="location.href='index.html'" class="text-slate-400 hover:text-white transition">← INICIO</button>
-            <div class="text-right">
-                <h1 class="text-2xl font-black text-white">PERSONAL MÉDICO</h1>
-                <p class="text-blue-500 font-bold text-[10px] tracking-[0.3em]">SISTEMA OHS EN LA NUBE</p>
+        <div class="p-8 flex flex-col md:flex-row justify-between items-center border-b border-slate-800">
+            <div class="flex items-center gap-6">
+                <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-20">
+                <button onclick="location.href='index.html'" class="bg-slate-800 text-slate-400 px-4 py-2 rounded-lg hover:text-white transition text-xs font-bold">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>INICIO
+                </button>
+            </div>
+            <div class="text-right mt-4 md:mt-0">
+                <h1 class="text-3xl font-black text-white tracking-tighter">PERSONAL MÉDICO</h1>
+                <p class="text-ohs-blue font-bold tracking-[0.3em] text-[10px]">SISTEMA OHS EN LA NUBE</p>
             </div>
         </div>
 
         <div class="p-8">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-sm font-black text-slate-400 uppercase tracking-widest italic underline decoration-blue-500">Listado de Profesionales</h2>
-                <button onclick="location.href='registro_personal.html'" class="bg-blue-600 text-white px-6 py-2 rounded-full font-black text-[10px] hover:bg-blue-700 transition">
+                <h2 class="text-sm font-black text-slate-400 tracking-widest uppercase italic">📋 Listado de Profesionales</h2>
+                <a href="registro_personal.html" class="bg-blue-600 text-white px-8 py-3 rounded-full font-black text-xs hover:scale-105 transition-transform shadow-lg shadow-blue-900/20">
                     + NUEVO REGISTRO
-                </button>
+                </a>
             </div>
 
             <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/50">
@@ -31,7 +45,7 @@
                         <tr class="bg-slate-800/50 text-slate-400 text-[10px] uppercase tracking-widest">
                             <th class="p-5 font-black">C.I.</th>
                             <th class="p-5 font-black">Nombre Completo</th>
-                            <th class="p-5 font-black">Especialidad</th>
+                            <th class="p-5 font-black">Especialidad / Cargo</th>
                             <th class="p-5 text-center font-black">Acciones</th>
                         </tr>
                     </thead>
@@ -43,27 +57,50 @@
     </div>
 
     <script>
-        const data = [
-            {ci: "1234567", nombre: "JUAN CARLOS GARCIA", rol: "DOCTOR", esp: "CARDIOLOGÍA"},
-            {ci: "8822334", nombre: "ANA BEATRIZ SOSA", rol: "DOCTORA", esp: "PEDIATRÍA"},
-            {ci: "7654321", nombre: "MARIA ELENA MENDOZA", rol: "ENFERMERA", esp: "GRAL."},
-            {ci: "4455667", nombre: "PEDRO LUIS RODRIGUEZ", rol: "ENFERMERO", esp: "INSTRUM."}
+        const personal = [
+            { ci: "1234567", nombre: "JUAN CARLOS", apellidos: "GARCIA LOPEZ", especialidad: "CARDIOLOGÍA", tipo: "DOCTOR" },
+            { ci: "8822334", nombre: "ANA BEATRIZ", apellidos: "SOSA MONTERO", especialidad: "PEDIATRÍA", tipo: "DOCTORA" },
+            { ci: "7654321", nombre: "MARIA ELENA", apellidos: "MENDOZA RIVAS", especialidad: "ENFERMERÍA GENERAL", tipo: "ENFERMERA" },
+            { ci: "4455667", nombre: "PEDRO LUIS", apellidos: "RODRIGUEZ PAZ", especialidad: "INSTRUMENTACIÓN", tipo: "ENFERMERO" }
         ];
 
-        window.onload = () => {
-            const t = document.getElementById('tabla-doctores');
-            data.forEach(p => {
-                t.innerHTML += `
-                <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition">
-                    <td class="p-5 text-blue-400 font-black">${p.ci}</td>
-                    <td class="p-5 uppercase">${p.nombre}</td>
-                    <td class="p-5"><span class="bg-slate-800 px-3 py-1 rounded-full text-[9px] border border-slate-700">${p.rol}: ${p.esp}</span></td>
-                    <td class="p-5 text-center">
-                        <button onclick="alert('PDF GENERADO')" class="bg-red-900/20 text-red-500 p-2 rounded-lg border border-red-900/50 hover:bg-red-600 hover:text-white transition">📄</button>
-                    </td>
-                </tr>`;
+        function cargarPersonal() {
+            const tabla = document.getElementById('tabla-doctores');
+            tabla.innerHTML = '';
+
+            personal.forEach(p => {
+                // Diferenciación visual por tipo
+                const esDoctor = p.tipo.includes("DOCTOR");
+                const colorBadge = esDoctor ? "bg-green-900/30 text-green-400 border-green-800" : "bg-blue-900/30 text-blue-400 border-blue-800";
+                const iconoRol = esDoctor ? "fa-user-doctor" : "fa-user-nurse";
+
+                tabla.innerHTML += `
+                    <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition-all">
+                        <td class="p-5 text-blue-400 font-black tracking-tighter">${p.ci}</td>
+                        <td class="p-5 uppercase tracking-tight">${p.nombre} ${p.apellidos}</td>
+                        <td class="p-5">
+                            <span class="${colorBadge} px-4 py-1.5 rounded-full text-[9px] font-black border flex items-center w-fit gap-2">
+                                <i class="fa-solid ${iconoRol}"></i> ${p.tipo}: ${p.especialidad}
+                            </span>
+                        </td>
+                        <td class="p-5">
+                            <div class="flex justify-center gap-2">
+                                <button onclick="alert('EDITAR: ${p.nombre}')" class="bg-amber-500/10 text-amber-500 p-2.5 rounded-lg border border-amber-500/50 hover:bg-amber-500 hover:text-white transition-all shadow-lg shadow-amber-900/20" title="EDITAR">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button onclick="alert('BORRAR: ${p.nombre}')" class="bg-red-500/10 text-red-500 p-2.5 rounded-lg border border-red-500/50 hover:bg-red-500 hover:text-white transition-all shadow-lg shadow-red-900/20" title="BORRAR">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                                <button onclick="alert('PDF GENERADO')" class="bg-slate-700/50 text-white p-2.5 rounded-lg border border-slate-600 hover:bg-blue-600 hover:border-blue-500 transition-all shadow-lg" title="VER PDF">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
             });
-        };
+        }
+
+        window.onload = cargarPersonal;
     </script>
 </body>
 </html>
