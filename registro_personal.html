@@ -5,146 +5,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>REGISTRO PRESTIGIO OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Montserrat', sans-serif; text-transform: uppercase; }
+        /* REGLAS ESTILO NANCY CORIA */
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            text-transform: uppercase; 
+            zoom: 1.3; /* Escala 130% para máxima legibilidad */
+            background-color: #f4f4f5;
+        }
         .font-elegant { font-family: 'Playfair Display', serif; }
-        .tab-doctor-active { border-bottom: 4px solid #1e3a8a; color: #1e3a8a; background: #f8fafc; font-weight: 900; }
-        .tab-enfermera-active { border-bottom: 4px solid #059669; color: #064e3b; background: #f0fdf4; font-weight: 900; }
-        .input-elegant { border-radius: 0px; border-bottom: 2px solid #e2e8f0; transition: all 0.3s; }
-        .input-elegant:focus { border-bottom: 2px solid #1e3a8a; background: #f8fafc; outline: none; }
-        .gold-border { border-top: 5px solid #d4af37; } /* Detalle Dorado Elegante */
+        .input-nancy { 
+            border-radius: 0px; 
+            border-bottom: 1px solid #d1d5db; 
+            padding: 12px 0px;
+            transition: all 0.4s;
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+        }
+        .input-nancy:focus { 
+            border-bottom: 2px solid #1e3a8a; 
+            outline: none;
+            background: rgba(248, 250, 252, 0.5);
+        }
+        .tab-active-doc { border-bottom: 3px solid #1e3a8a; color: #1e3a8a; font-weight: 700; }
+        .tab-active-enf { border-bottom: 3px solid #059669; color: #059669; font-weight: 700; }
+        .gold-line { height: 4px; background: linear-gradient(90deg, #d4af37, #f1e5ac, #d4af37); }
     </style>
 </head>
-<body class="bg-stone-100 p-4 md:p-10">
-    <div class="max-w-4xl mx-auto bg-white shadow-2xl overflow-hidden gold-border">
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl bg-white shadow-2xl rounded-sm overflow-hidden">
+        <div class="gold-line"></div>
         
-        <div class="p-10 flex flex-col md:flex-row justify-between items-center bg-white">
-            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-20 mb-6 md:mb-0 opacity-90">
+        <div class="p-10 flex flex-col md:flex-row justify-between items-center border-b border-stone-100">
+            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="h-16 opacity-90 mb-4 md:mb-0">
             <div class="text-center md:text-right">
-                <h1 class="text-4xl font-elegant text-slate-800 italic">Registro de Personal</h1>
-                <p class="text-sm tracking-[0.3em] text-blue-900 font-bold">SISTEMA MÉDICO OHS NANCY</p>
+                <h1 class="text-2xl font-elegant italic text-slate-800">Registro de Personal</h1>
+                <p class="text-[9px] tracking-[0.4em] text-blue-900 font-black">SISTEMA MÉDICO OHS NANCY</p>
             </div>
         </div>
 
-        <div class="flex border-y border-stone-100">
-            <button onclick="activarSeccion('doctor')" id="btn-doctor" class="flex-1 py-5 text-sm tracking-widest transition-all tab-doctor-active">
-                🩺 SECCIÓN DOCTORES
-            </button>
-            <button onclick="activarSeccion('enfermera')" id="btn-enfermera" class="flex-1 py-5 text-sm tracking-widest text-stone-400 transition-all">
-                💉 SECCIÓN ENFERMERAS
-            </button>
+        <div class="flex text-[10px] tracking-[0.2em] bg-stone-50">
+            <button onclick="cambiarModo('doctor')" id="tab-doc" class="flex-1 py-4 transition-all tab-active-doc">🩺 DOCTORES</button>
+            <button onclick="cambiarModo('enfermera')" id="tab-enf" class="flex-1 py-4 transition-all text-stone-400">💉 ENFERMERAS</button>
         </div>
 
-        <form id="form-registro" class="p-10 space-y-10">
+        <form id="form-registro" class="p-10 space-y-8">
             <input type="hidden" id="tipo_empleado" value="doctor">
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
-                <div class="relative">
-                    <label id="lbl-ci" class="text-[10px] font-black text-blue-900 tracking-widest">C.I. PROFESIONAL MÉDICO</label>
-                    <input type="text" id="ci_val" required class="w-full py-2 input-elegant font-bold text-lg">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                <div class="flex flex-col">
+                    <label id="lbl-ci" class="text-[9px] font-bold text-slate-400 mb-1">C.I. PROFESIONAL MÉDICO</label>
+                    <input type="text" id="ci_val" required class="input-nancy font-bold uppercase">
                 </div>
-                <div class="relative">
-                    <label class="text-[10px] font-black text-blue-900 tracking-widest">NOMBRE COMPLETO</label>
-                    <input type="text" id="nombre_val" required class="w-full py-2 input-elegant font-bold">
+                <div class="flex flex-col">
+                    <label class="text-[9px] font-bold text-slate-400 mb-1">NOMBRE COMPLETO</label>
+                    <input type="text" id="nombre_val" required class="input-nancy font-bold uppercase">
                 </div>
-                <div class="relative">
-                    <label class="text-[10px] font-black text-blue-900 tracking-widest">APELLIDO PATERNO</label>
-                    <input type="text" id="paterno_val" required class="w-full py-2 input-elegant font-bold">
+                <div class="flex flex-col">
+                    <label class="text-[9px] font-bold text-slate-400 mb-1">APELLIDO PATERNO</label>
+                    <input type="text" id="paterno_val" required class="input-nancy font-bold uppercase">
                 </div>
-                <div class="relative">
-                    <label class="text-[10px] font-black text-blue-900 tracking-widest">APELLIDO MATERNO</label>
-                    <input type="text" id="materno_val" class="w-full py-2 input-elegant font-bold">
+                <div class="flex flex-col">
+                    <label class="text-[9px] font-bold text-slate-400 mb-1">APELLIDO MATERNO</label>
+                    <input type="text" id="materno_val" class="input-nancy font-bold uppercase">
                 </div>
-                <div class="relative">
-                    <label class="text-[10px] font-black text-blue-900 tracking-widest">TURNO ASIGNADO</label>
-                    <select id="turno_val" class="w-full py-2 input-elegant font-bold bg-transparent cursor-pointer">
+                <div class="flex flex-col">
+                    <label class="text-[9px] font-bold text-slate-400 mb-1">TURNO DE ATENCIÓN</label>
+                    <select id="turno_val" class="input-nancy font-bold cursor-pointer">
                         <option value="MAÑANA">☀️ MAÑANA</option>
                         <option value="TARDE">🌤️ TARDE</option>
                         <option value="NOCHE">🌙 NOCHE</option>
                     </select>
                 </div>
-                <div class="relative">
-                    <label id="lbl-extra" class="text-[10px] font-black text-blue-900 tracking-widest">ESPECIALIDAD</label>
-                    <select id="extra_val" class="w-full py-2 input-elegant font-bold bg-transparent cursor-pointer"></select>
+                <div class="flex flex-col">
+                    <label id="lbl-extra" class="text-[9px] font-bold text-slate-400 mb-1">ESPECIALIDAD MÉDICA</label>
+                    <select id="extra_val" class="input-nancy font-bold cursor-pointer uppercase"></select>
                 </div>
             </div>
 
-            <button id="btn-submit" type="submit" class="w-full bg-slate-800 hover:bg-blue-950 text-white font-bold py-5 tracking-[0.2em] transition-all shadow-lg hover:shadow-blue-200/50">
-                GUARDAR REGISTRO EN LA NUBE
+            <button id="btn-submit" type="submit" class="w-full bg-slate-900 text-white py-4 text-[11px] font-bold tracking-[0.3em] hover:bg-blue-900 transition-all shadow-xl">
+                GUARDAR EN LA NUBE
             </button>
         </form>
-        
-        <div class="p-4 bg-stone-50 text-center">
-            <p class="text-[9px] text-stone-400 tracking-widest font-bold uppercase">Calidad y Precisión en Historiales Clínicos © 2026</p>
+
+        <div class="py-6 border-t border-stone-50 text-center">
+            <p class="text-[8px] text-stone-300 tracking-[0.5em]">CALIDAD Y PRECISIÓN © 2026</p>
         </div>
     </div>
 
     <script>
         const API_BASE = "https://historial-clinico-936s.onrender.com";
-        const especialidadesDoc = ["HISTORIA CLINICA", "PSICOLOGO", "APTITUDES FISICAS", "APTITUDES LABORALES", "ESPIROMETRIA", "TRABAJO EN ALTURAS", "ELECTROENCEFALOGRAMA", "CARDIOLOGIA", "OSTEOMUSCULAR", "OFTALMOLOGIA"];
-        const cargosEnf = ["AUXILIAR DE ENFERMERIA", "LICENCIADA EN ENFERMERIA", "INSTRUMENTISTA", "ENFERMERA DE PLANTA"];
+        // Mapeo exacto image_aa7a7b.png
+        const especialidades = ["HISTORIA CLINICA", "PSICOLOGO", "APTITUDES FISICAS", "APTITUDES LABORALES", "ESPIROMETRIA", "TRABAJO EN ALTURAS", "ELECTROENCEFALOGRAMA", "CARDIOLOGIA", "OSTEOMUSCULAR", "OFTALMOLOGIA"];
+        const cargos = ["AUXILIAR DE ENFERMERIA", "LICENCIADA EN ENFERMERIA", "INSTRUMENTISTA", "ENFERMERA DE PLANTA"];
 
-        function activarSeccion(tipo) {
+        function cambiarModo(tipo) {
             document.getElementById('tipo_empleado').value = tipo;
-            const btnDoc = document.getElementById('btn-doctor');
-            const btnEnfe = document.getElementById('btn-enfermera');
-            const btnSubmit = document.getElementById('btn-submit');
-            const selectExtra = document.getElementById('extra_val');
-            const lblCi = document.getElementById('lbl-ci');
-            const lblExtra = document.getElementById('lbl-extra');
-
-            selectExtra.innerHTML = "";
-
+            const tDoc = document.getElementById('tab-doc');
+            const tEnf = document.getElementById('tab-enf');
+            const btn = document.getElementById('btn-submit');
+            const selExtra = document.getElementById('extra_val');
+            
+            selExtra.innerHTML = "";
             if(tipo === 'doctor') {
-                btnDoc.className = "flex-1 py-5 text-sm tracking-widest transition-all tab-doctor-active";
-                btnEnfe.className = "flex-1 py-5 text-sm tracking-widest text-stone-400 transition-all";
-                btnSubmit.className = "w-full bg-slate-800 hover:bg-blue-900 text-white font-bold py-5 tracking-[0.2em] transition-all shadow-lg";
-                lblCi.innerText = "C.I. PROFESIONAL MÉDICO";
-                lblExtra.innerText = "ESPECIALIDAD MÉDICA";
-                especialidadesDoc.forEach(e => { let o = new Option(e, e); selectExtra.add(o); });
+                tDoc.className = "flex-1 py-4 transition-all tab-active-doc";
+                tEnf.className = "flex-1 py-4 transition-all text-stone-400";
+                btn.className = "w-full bg-slate-900 text-white py-4 text-[11px] font-bold tracking-[0.3em] hover:bg-blue-950 transition-all shadow-xl";
+                document.getElementById('lbl-ci').innerText = "C.I. PROFESIONAL MÉDICO";
+                document.getElementById('lbl-extra').innerText = "ESPECIALIDAD MÉDICA";
+                especialidades.forEach(e => selExtra.add(new Option(e, e)));
             } else {
-                btnEnfe.className = "flex-1 py-5 text-sm tracking-widest transition-all tab-enfermera-active";
-                btnDoc.className = "flex-1 py-5 text-sm tracking-widest text-stone-400 transition-all";
-                btnSubmit.className = "w-full bg-emerald-800 hover:bg-emerald-950 text-white font-bold py-5 tracking-[0.2em] transition-all shadow-lg";
-                lblCi.innerText = "C.I. PERSONAL ENFERMERÍA";
-                lblExtra.innerText = "CARGO / NIVEL";
-                cargosEnf.forEach(c => { let o = new Option(c, c); selectExtra.add(o); });
+                tEnf.className = "flex-1 py-4 transition-all tab-active-enf";
+                tDoc.className = "flex-1 py-4 transition-all text-stone-400";
+                btn.className = "w-full bg-emerald-900 text-white py-4 text-[11px] font-bold tracking-[0.3em] hover:bg-emerald-950 transition-all shadow-xl";
+                document.getElementById('lbl-ci').innerText = "C.I. PERSONAL ENFERMERÍA";
+                document.getElementById('lbl-extra').innerText = "CARGO / NIVEL";
+                cargos.forEach(c => selExtra.add(new Option(c, c)));
             }
         }
-
-        activarSeccion('doctor');
+        
+        cambiarModo('doctor');
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
-            const payload = {
+            const data = {
                 ci: document.getElementById('ci_val').value.trim(),
-                nombre: document.getElementById('nombre_val').value.trim(),
-                paterno: document.getElementById('paterno_val').value.trim(),
-                materno: document.getElementById('materno_val').value.trim(),
-                turno: document.getElementById('turno_val').value,
-                extra: document.getElementById('extra_val').value
+                nom: document.getElementById('nombre_val').value.trim(),
+                pat: document.getElementById('paterno_val').value.trim(),
+                mat: document.getElementById('materno_val').value.trim(),
+                tur: document.getElementById('turno_val').value,
+                ext: document.getElementById('extra_val').value
             };
 
-            let finalData = tipo === 'doctor' ? 
-                { ci_doc: payload.ci, nombre_doc: payload.nombre, appaterno_doc: payload.paterno, apmaterno_doc: payload.materno, turno_doc: payload.turno, especialidad: payload.extra } :
-                { ci_enfe: payload.ci, nombre_enfe: payload.nombre, appaterno_enfe: payload.paterno, apmaterno_enfe: payload.materno, turno_enfe: payload.turno, edu_enfe: payload.extra };
-
-            const endpoint = tipo === 'doctor' ? '/api/save-doctor' : '/api/save-enfermera';
+            const payload = tipo === 'doctor' ? 
+                { ci_doc: data.ci, nombre_doc: data.nom, appaterno_doc: data.pat, apmaterno_doc: data.mat, turno_doc: data.tur, especialidad: data.ext } :
+                { ci_enfe: data.ci, nombre_enfe: data.nom, appaterno_enfe: data.pat, apmaterno_enfe: data.mat, turno_enfe: data.tur, edu_enfe: data.ext };
 
             try {
-                const response = await fetch(`${API_BASE}${endpoint}`, {
+                const res = await fetch(`${API_BASE}${tipo === 'doctor' ? '/api/save-doctor' : '/api/save-enfermera'}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(finalData)
+                    body: JSON.stringify(payload)
                 });
-                if (response.ok) {
-                    alert("REGISTRO GUARDADO CON EXITO EN EL SISTEMA NANCY OHS");
-                    e.target.reset();
-                    activarSeccion(tipo);
-                } else { alert("ERROR EN EL REGISTRO. VERIFIQUE C.I."); }
-            } catch (err) { alert("ERROR DE COMUNICACIÓN CON EL SERVIDOR."); }
+                if(res.ok) { 
+                    alert("REGISTRO EXITOSO - SISTEMA OHS"); 
+                    e.target.reset(); 
+                    cambiarModo(tipo);
+                } else { alert("ERROR: VERIFIQUE EL C.I."); }
+            } catch { alert("SIN CONEXIÓN CON LA NUBE."); }
         });
     </script>
 </body>
