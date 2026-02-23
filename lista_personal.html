@@ -55,8 +55,7 @@
 
         async function cargarDoctores() {
             try {
-                // Llamamos a la ruta GET que creamos en el Backend
-                const response = await fetch(`${API_BASE}/api/doctores`);
+                const response = await fetch(`${API_BASE}/doctores/`);
                 if (!response.ok) throw new Error("Error en la nube");
                 
                 const doctores = await response.json();
@@ -84,11 +83,10 @@
             } catch (error) {
                 console.error(error);
                 document.getElementById('tabla-doctores').innerHTML = 
-                    '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR: EL SERVIDOR NO RESPONDE (RENDER DORMIDO)</td></tr>';
+                    '<tr><td colspan="5" class="p-10 text-center text-red-600 font-black">❌ ERROR: EL SERVIDOR NO RESPONDE</td></tr>';
             }
         }
 
-        // Ejecutar carga al abrir la página
         cargarDoctores();
     </script>
 </body>
