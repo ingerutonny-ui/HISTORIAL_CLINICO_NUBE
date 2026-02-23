@@ -22,7 +22,7 @@
 </head>
 <body>
 
-<div id="loading" class="loading-overlay">⏳ SINCRONIZANDO DATOS...</div>
+<div id="loading" class="loading-overlay">⏳ SINCRONIZANDO EXPEDIENTE...</div>
 
 <div class="form-container">
     <div class="header-ohs">
@@ -36,9 +36,9 @@
     <form id="formP1">
         <div class="section-title">I. Datos Personales</div>
         <div class="grid-inputs">
-            <div><label>Apellidos</label><input id="apellido" class="form-control" required readonly></div>
-            <div><label>Nombres</label><input id="nombre" class="form-control" required readonly></div>
-            <div><label>Cédula Identidad</label><input id="ci" class="form-control" required readonly></div>
+            <div><label>Apellidos</label><input id="apellido" class="form-control" readonly></div>
+            <div><label>Nombres</label><input id="nombre" class="form-control" readonly></div>
+            <div><label>Cédula Identidad</label><input id="ci" class="form-control" readonly></div>
             <div><label>Código Paciente</label><input id="codigo_paciente" class="form-control" readonly style="background:#f8fafc;"></div>
         </div>
 
@@ -62,7 +62,8 @@
         <div class="section-title">III. Datos Complementarios</div>
         <div class="grid-inputs">
             <div><label>Estado Civil</label>
-                <select id="estado_civil" class="form-select">
+                <select id="estado_civil" class="form-select" required>
+                    <option value="">SELECCIONE...</option>
                     <option value="SOLTERO(A)">SOLTERO(A)</option>
                     <option value="CASADO(A)">CASADO(A)</option>
                     <option value="DIVORCIADO(A)">DIVORCIADO(A)</option>
@@ -73,7 +74,7 @@
         </div>
 
         <div class="nav-controls">
-            <button type="button" class="btn-volver" onclick="cancelarEdicion()">✖ CANCELAR</button>
+            <button type="button" class="btn-volver" onclick="location.href='lista_historial.html'">✖ CANCELAR</button>
             <button type="submit" class="btn-next">SIGUIENTE: ANTECEDENTES (P2) →</button>
         </div>
     </form>
@@ -83,46 +84,47 @@
     const API = 'https://historial-clinico-936s.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
-    function cancelarEdicion() {
-        localStorage.removeItem('edit_modo');
-        window.location.href = "lista_historial.html";
-    }
-
     window.onload = async () => {
-        if (p_id) {
-            document.getElementById('loading').style.display = 'flex';
-            try {
-                const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
-                const data = await resp.json();
+        if (!p_id) return;
+        document.getElementById('loading').style.display = 'flex';
+        try {
+            const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
+            const data = await resp.json();
+            
+            if (data.paciente) {
+                document.getElementById('apellido').value = data.paciente.apellido || '';
+                document.getElementById('nombre').value = data.paciente.nombre || '';
+                document.getElementById('ci').value = data.paciente.ci || '';
+                document.getElementById('codigo_paciente').value = data.paciente.codigo_paciente || '';
                 
-                if (data.paciente) {
-                    document.getElementById('apellido').value = data.paciente.apellido || '';
-                    document.getElementById('nombre').value = data.paciente.nombre || '';
-                    document.getElementById('ci').value = data.paciente.ci || '';
-                    document.getElementById('codigo_paciente').value = data.paciente.codigo_paciente || '';
+                if (data.filiacion) {
+                    document.getElementById('edad').value = data.filiacion.edad || '';
+                    document.getElementById('sexo').value = data.filiacion.sexo || 'MASCULINO';
+                    document.getElementById('fecha_nacimiento').value = data.filiacion.fecha_nacimiento || '';
+                    document.getElementById('lugar_nacimiento').value = data.filiacion.lugar_nacimiento || '';
+                    document.getElementById('domicilio').value = data.filiacion.domicilio || '';
+                    document.getElementById('n_casa').value = data.filiacion.n_casa || '';
+                    document.getElementById('zona_barrio').value = data.filiacion.zona_barrio || '';
+                    document.getElementById('ciudad').value = data.filiacion.ciudad || '';
+                    document.getElementById('pais').value = data.filiacion.pais || 'BOLIVIA';
+                    document.getElementById('telefono').value = data.filiacion.telefono || '';
+                    document.getElementById('profesion_oficio').value = data.filiacion.profesion_oficio || '';
                     
-                    if (data.filiacion) {
-                        document.getElementById('edad').value = data.filiacion.edad || '';
-                        document.getElementById('sexo').value = data.filiacion.sexo || 'MASCULINO';
-                        document.getElementById('fecha_nacimiento').value = data.filiacion.fecha_nacimiento || '';
-                        document.getElementById('lugar_nacimiento').value = data.filiacion.lugar_nacimiento || '';
-                        document.getElementById('domicilio').value = data.filiacion.domicilio || '';
-                        document.getElementById('n_casa').value = data.filiacion.n_casa || '';
-                        document.getElementById('zona_barrio').value = data.filiacion.zona_barrio || '';
-                        document.getElementById('ciudad').value = data.filiacion.ciudad || '';
-                        document.getElementById('pais').value = data.filiacion.pais || 'BOLIVIA';
-                        document.getElementById('telefono').value = data.filiacion.telefono || '';
-                        document.getElementById('profesion_oficio').value = data.filiacion.profesion_oficio || '';
-                        
-                        // CORRECCIÓN ESTADO CIVIL
-                        if(data.filiacion.estado_civil) {
-                            document.getElementById('estado_civil').value = data.filiacion.estado_civil;
+                    // CARGA FORZADA DE ESTADO CIVIL
+                    const selectEC = document.getElementById('estado_civil');
+                    const valEC = data.filiacion.estado_civil;
+                    if (valEC) {
+                        for(let i=0; i<selectEC.options.length; i++){
+                            if(selectEC.options[i].value === valEC.toUpperCase()){
+                                selectEC.selectedIndex = i;
+                                break;
+                            }
                         }
                     }
                 }
-            } catch (e) { console.error("Error en carga:", e); }
-            document.getElementById('loading').style.display = 'none';
-        }
+            }
+        } catch (e) { console.error("Error al cargar:", e); }
+        document.getElementById('loading').style.display = 'none';
     };
 
     document.getElementById('formP1').onsubmit = async (e) => {
@@ -144,19 +146,26 @@
         };
 
         try {
-            const res = await fetch(`${API}/p1/`, {
-                method: 'POST',
+            // USAMOS PUT PARA ACTUALIZAR SI YA EXISTE
+            const res = await fetch(`${API}/p1/${p_id}`, {
+                method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
             });
 
-            if (res.ok) {
+            // Si el PUT falla con 404, intentamos POST por si es la primera vez
+            if (res.status === 404 || !res.ok) {
+                const resPost = await fetch(`${API}/p1/`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                if (resPost.ok) window.location.href = "declaracion_jurada_p2.html";
+                else alert("ERROR AL GUARDAR");
+            } else {
                 window.location.href = "declaracion_jurada_p2.html";
-            } else { 
-                const errorData = await res.json();
-                alert("ERROR AL GUARDAR: " + (errorData.detail || "Consulte al administrador")); 
             }
-        } catch (err) { alert("ERROR DE CONEXIÓN CON EL SERVIDOR"); }
+        } catch (err) { alert("ERROR DE CONEXIÓN"); }
     };
 </script>
 </body>
