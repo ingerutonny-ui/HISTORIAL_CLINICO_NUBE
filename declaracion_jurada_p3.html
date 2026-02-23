@@ -27,6 +27,13 @@
         .risk-item { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .btn-save { background: var(--ohs-green); color: white; width: 100%; padding: 18px; border-radius: 15px; border: none; font-weight: 800; font-size: 15px; margin-top: 30px; text-transform: uppercase; transition: 0.3s; box-shadow: 0 8px 20px rgba(34, 197, 94, 0.2); }
         .btn-save:hover { background: #16a34a; transform: translateY(-3px); }
+        @media (max-width: 768px) {
+            .table-responsive-custom thead { display: none; }
+            .table-responsive-custom tr { display: block; background: #f8fafc; margin-bottom: 10px; padding: 10px; border-radius: 12px; border: 1px solid #e2e8f0; }
+            .table-responsive-custom td { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border: none; }
+            .table-responsive-custom td::before { content: attr(data-label); font-size: 10px; font-weight: 800; color: #64748b; }
+            .table-responsive-custom td input, .table-responsive-custom td select { width: 60%; }
+        }
     </style>
 </head>
 <body>
@@ -56,12 +63,12 @@
                 <thead><tr><th>EDAD</th><th>EMPRESA</th><th>CARGO</th><th>TIEMPO</th><th>RIESGOS</th><th>EPP</th></tr></thead>
                 <tbody id="tablaLaboral">
                     <tr>
-                        <td><input type="number" class="edad"></td>
-                        <td><input type="text" class="empresa"></td>
-                        <td><input type="text" class="cargo"></td>
-                        <td><input type="text" class="tiempo"></td>
-                        <td><input type="text" class="riesgos"></td>
-                        <td><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
+                        <td data-label="EDAD"><input type="number" class="edad"></td>
+                        <td data-label="EMPRESA"><input type="text" class="empresa"></td>
+                        <td data-label="CARGO"><input type="text" class="cargo"></td>
+                        <td data-label="TIEMPO"><input type="text" class="tiempo"></td>
+                        <td data-label="RIESGOS"><input type="text" class="riesgos"></td>
+                        <td data-label="EPP"><select class="epp"><option value="NO">NO</option><option value="SI">SI</option></select></td>
                     </tr>
                 </tbody>
             </table>
@@ -77,7 +84,7 @@
             <label class="risk-item"><input type="checkbox" value="ERGONÓMICOS"> ERGONÓMICOS</label>
             <label class="risk-item"><input type="checkbox" value="PSICOSOCIAL"> PSICOSOCIAL</label>
         </div>
-        <button type="submit" id="btnG" class="btn-save">💾 GUARDAR DECLARACIÓN COMPLETA (P2+P3)</button>
+        <button type="submit" id="btnG" class="btn-save">💾 FINALIZAR Y GUARDAR EXPEDIENTE COMPLETO</button>
     </form>
 </div>
 <script>
@@ -99,22 +106,18 @@
     document.getElementById('formP3').onsubmit = async (e) => {
         e.preventDefault();
         const btn = document.getElementById('btnG');
-        btn.innerHTML = "⏳ PROCESANDO GUARDADO..."; btn.disabled = true;
+        btn.innerHTML = "⏳ GUARDANDO EN LA NUBE..."; btn.disabled = true;
 
         const dataP2 = JSON.parse(localStorage.getItem('temp_p2') || '{}');
-        const laboral = [];
         const tr = document.querySelector('#tablaLaboral tr');
-        const emp = tr.querySelector('.empresa').value;
-        if(emp) {
-            laboral.push({
-                edad_inicio: tr.querySelector('.edad').value || "0",
-                empresa: emp.toUpperCase(),
-                cargo: tr.querySelector('.cargo').value.toUpperCase() || "S/D",
-                tiempo: tr.querySelector('.tiempo').value || "0",
-                riesgos: tr.querySelector('.riesgos').value.toUpperCase() || "NINGUNO",
-                epp: tr.querySelector('.epp').value
-            });
-        }
+        const laboral = [{
+            edad_inicio: tr.querySelector('.edad').value || "0",
+            empresa: (tr.querySelector('.empresa').value || "S/D").toUpperCase(),
+            cargo: (tr.querySelector('.cargo').value || "S/D").toUpperCase(),
+            tiempo: tr.querySelector('.tiempo').value || "0",
+            riesgos: (tr.querySelector('.riesgos').value || "NINGUNO").toUpperCase(),
+            epp: tr.querySelector('.epp').value
+        }];
 
         const riesgos = [];
         document.querySelectorAll('#riesgosCheck input:checked').forEach(i => riesgos.push(i.value));
@@ -137,7 +140,7 @@
         };
 
         try {
-            const res = await fetch(`${API}/api/antecedentes/`, {
+            const res = await fetch(`${API}/api/save-p2`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
@@ -146,9 +149,9 @@
                 alert("✅ EXPEDIENTE GUARDADO CON ÉXITO");
                 localStorage.removeItem('temp_p2');
                 window.location.href = "lista_historial.html";
-            } else { alert("❌ ERROR AL GUARDAR. VERIFIQUE EL SERVIDOR."); }
+            } else { alert("❌ ERROR AL GUARDAR. VERIFIQUE ENDPOINT."); }
         } catch(err) { alert("❌ ERROR DE RED."); }
-        finally { btn.innerHTML = "💾 GUARDAR DECLARACIÓN COMPLETA (P2+P3)"; btn.disabled = false; }
+        finally { btn.innerHTML = "💾 FINALIZAR Y GUARDAR EXPEDIENTE COMPLETO"; btn.disabled = false; }
     };
 </script>
 </body>
