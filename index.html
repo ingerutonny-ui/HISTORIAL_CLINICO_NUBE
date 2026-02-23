@@ -3,173 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HISTORIAL CLÍNICO NUBE</title>
+    <title>HC NUBE | Inicio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #050a18;
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            text-transform: uppercase;
-        }
-
-        /* Logo Circular Idéntico */
-        .logo-main {
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            overflow: hidden;
-            margin-bottom: 35px;
-        }
-        .logo-main img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Títulos en Negrilla Extrema */
-        h1 {
-            font-size: 2rem;
-            font-weight: 900; /* Black weight */
-            letter-spacing: 1px;
-            margin: 0;
-        }
-
-        .subtitle {
-            font-size: 0.7rem;
-            color: #475569;
-            letter-spacing: 4px;
-            margin-top: 5px;
-            margin-bottom: 50px;
-        }
-
-        /* Grid de Módulos */
-        .modules-grid {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 60px;
-        }
-
-        .card-acceso {
-            background-color: #0f172a;
-            width: 175px;
-            height: 175px;
-            border-radius: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: transform 0.2s;
-        }
-
-        .card-acceso:hover {
-            transform: translateY(-5px);
-        }
-
-        /* Iconos de la Captura */
-        .icon-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #475569; /* Gris de la captura */
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-        }
-
-        .icon-caduceus {
-            color: #0ea5e9; /* Azul de la captura */
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-        }
-
-        .card-acceso span {
-            font-size: 0.8rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        /* Estados */
-        .status-tag {
-            font-size: 0.6rem;
-            font-weight: 800;
-            color: #22c55e; /* Verde Módulo Activo */
-            margin-top: 15px;
-            letter-spacing: 1px;
-        }
-
-        /* Botón Visor Inferior */
-        .btn-visor {
-            background-color: rgba(15, 23, 42, 0.6);
-            border: 1px solid #1e293b;
-            color: #475569;
-            padding: 10px 35px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-visor i { color: #0ea5e9; }
-
-        .footer-system {
-            position: fixed;
-            bottom: 30px;
-            font-size: 0.55rem;
-            color: #1e293b;
-            letter-spacing: 2px;
-        }
+        .loader { border-top-color: #3b82f6; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body class="bg-slate-950 flex items-center justify-center min-h-screen p-6">
 
-    <div class="logo-main">
-        <img src="puerta.jpeg" alt="Logo">
+    <div id="loader-screen" class="text-center">
+        <div class="loader ease-linear rounded-full border-4 border-slate-900 h-12 w-12 mb-4 mx-auto"></div>
+        <p class="text-slate-600 text-[9px] uppercase tracking-[0.4em] animate-pulse font-bold">Cargando Protocolos...</p>
     </div>
 
-    <h1>HISTORIAL CLÍNICO NUBE</h1>
-    <div class="subtitle">PANEL DE CONTROL DE ACCESO</div>
-
-    <div class="modules-grid">
-        <div class="flex flex-col items-center">
-            <a href="lista_personal.html" class="card-acceso">
-                <div class="icon-group">
-                    <i class="fa-solid fa-user-doctor"></i>
-                    <span class="text-slate-600 text-2xl">/</span>
-                    <i class="fa-solid fa-user-nurse"></i>
-                </div>
-                <span>MÉDICO</span>
-            </a>
-            <div class="status-tag">MÓDULO ACTIVO</div>
+    <div id="portal" class="hidden text-center fade-in w-full max-w-lg">
+        <div class="relative inline-block mb-8">
+            <img src="puerta.jpeg" alt="Logo" class="w-32 h-32 mx-auto rounded-full border-4 border-slate-900 shadow-2xl object-cover">
+            <div class="absolute inset-0 rounded-full shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]"></div>
         </div>
 
-        <div class="flex flex-col items-center">
-            <a href="registro_paciente.html" class="card-acceso">
-                <i class="fa-solid fa-staff-snake icon-caduceus"></i>
-                <span>ENFERMERA</span>
-            </a>
-            <div class="status-tag">MÓDULO ACTIVO</div>
+        <h1 class="text-white text-3xl font-bold uppercase tracking-tighter mb-1">Historial Clínico Nube</h1>
+        <p class="text-slate-500 text-[10px] uppercase tracking-[0.4em] mb-12">Panel de Control de Acceso</p>
+
+        <div class="flex flex-wrap gap-8 justify-center items-start">
+            
+            <div class="flex flex-col items-center">
+                <button onclick="location.href='lista_personal.html'" 
+                    class="w-40 py-10 bg-slate-900 rounded-[2.5rem] border border-slate-800 hover:border-blue-500 hover:bg-slate-900/80 transition-all duration-500 group flex flex-col items-center shadow-2xl shadow-black/50">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform duration-500">👨‍⚕️/👩‍⚕️</div>
+                    <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest group-hover:text-blue-400 transition-colors">Médico</span>
+                </button>
+                <p class="text-[7px] text-emerald-900 uppercase tracking-[0.3em] mt-4 font-bold">Módulo Activo</p>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <button onclick="location.href='enfermera.html'" 
+                    class="w-40 py-10 bg-slate-900 rounded-[2.5rem] border border-slate-800 hover:border-emerald-500 hover:bg-slate-900/80 transition-all duration-500 group flex flex-col items-center shadow-2xl shadow-black/50">
+                    <div class="text-4xl mb-4 group-hover:scale-110 transition-transform duration-500 text-emerald-500">⚕️</div>
+                    <span class="text-[11px] font-bold text-slate-300 uppercase tracking-widest group-hover:text-emerald-400 transition-colors">Enfermera</span>
+                </button>
+                <p class="text-[7px] text-emerald-900 uppercase tracking-[0.3em] mt-4 font-bold">Módulo Activo</p>
+            </div>
+        </div>
+
+        <div class="mt-14 flex justify-center">
+            <button onclick="location.href='opciones_visor.html'"
+                class="flex items-center gap-2 px-6 py-2 bg-slate-900/50 border border-slate-800 rounded-full hover:bg-slate-800 hover:border-slate-700 transition-all duration-300 group">
+                <span class="text-sm opacity-60 group-hover:opacity-100 transition-opacity">🔍</span>
+                <span class="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em] group-hover:text-slate-300">Visor de Historial</span>
+            </button>
+        </div>
+
+        <div class="mt-8">
+            <p class="text-slate-700 text-[8px] uppercase tracking-widest font-medium">Sistema de Gestión Hospitalaria v1.0</p>
         </div>
     </div>
 
-    <a href="menu_visor.html" class="btn-visor">
-        <i class="fa-solid fa-magnifying-glass"></i> VISOR DE HISTORIAL
-    </a>
-
-    <div class="footer-system">SISTEMA DE GESTIÓN HOSPITALARIA V1.0</div>
-
+    <script>
+        setTimeout(() => {
+            document.getElementById('loader-screen').classList.add('hidden');
+            document.getElementById('portal').classList.remove('hidden');
+        }, 3000);
+    </script>
 </body>
 </html>
