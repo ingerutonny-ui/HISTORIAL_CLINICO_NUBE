@@ -10,27 +10,30 @@
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; margin: 0; padding: 20px; text-transform: uppercase; color: var(--text-dark); }
         .container { max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 4px solid var(--nancy-blue); padding-bottom: 15px; }
-        .logo-small { height: 110px; } /* TAMAÑO EQUILIBRADO */
+        .logo-small { height: 110px; }
         .actions-bar { display: flex; justify-content: space-between; margin-bottom: 20px; }
-        .btn-new { background: var(--nancy-green); color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: 900; font-size: 13px; }
-        table { width: 100%; border-collapse: collapse; }
+        .btn-new { background: var(--nancy-green); color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: 900; font-size: 13px; border: none; cursor: pointer; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th { background: #f8fafc; color: var(--nancy-blue); text-align: left; padding: 15px; font-size: 11px; font-weight: 900; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 15px; font-size: 13px; border-bottom: 1px solid #f1f5f9; font-weight: 700; }
-        .badge { padding: 5px 10px; border-radius: 4px; font-size: 10px; color: white; display: flex; align-items: center; gap: 5px; width: fit-content; }
+        td { padding: 15px; font-size: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 700; }
+        .badge { padding: 6px 12px; border-radius: 4px; font-size: 10px; color: white; display: flex; align-items: center; gap: 8px; width: fit-content; font-weight: 900; }
         .bg-doc { background: var(--nancy-blue); }
         .bg-enfe { background: var(--nancy-green); }
-        .btn-action { border: none; background: none; cursor: pointer; font-size: 18px; margin: 0 5px; }
+        .btn-action { border: none; background: none; cursor: pointer; font-size: 18px; margin: 0 5px; opacity: 0.7; transition: 0.3s; }
+        .btn-action:hover { opacity: 1; transform: scale(1.2); }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
         <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" class="logo-small">
-        <div class="title-area"><h2>GESTIÓN DE PERSONAL REGISTRADO</h2></div>
+        <div class="title-area"><h2>GESTIÓN DE PERSONAL REGISTRADO - OHS</h2></div>
     </div>
     <div class="actions-bar">
-        <a href="registro_personal.html" class="btn-new">+ REGISTRAR NUEVO</a>
-        <div style="font-weight: 900; color: #64748b;">TOTAL: <span id="total-count">0</span></div>
+        <a href="registro_personal.html" class="btn-new">+ REGISTRAR NUEVO PROFESIONAL</a>
+        <div style="font-weight: 900; color: #64748b; font-size: 14px; align-self: center;">
+            TOTAL EN SISTEMA: <span id="total-count" style="color: var(--nancy-blue);">0</span>
+        </div>
     </div>
     <table>
         <thead>
@@ -43,52 +46,83 @@
                 <th>ACCIONES</th>
             </tr>
         </thead>
-        <tbody id="lista-cuerpo"></tbody>
+        <tbody id="lista-cuerpo">
+            <tr><td colspan="6" style="text-align:center; padding:60px; color: #94a3b8;">CONECTANDO CON EL SERVIDOR DE RENDER...</td></tr>
+        </tbody>
     </table>
 </div>
+
 <script>
-    const API_URL = "https://tu-servicio-en-render.com/api"; // CAMBIAR POR TU URL REAL
+    // URL REAL DETECTADA EN SUS CAPTURAS
+    const API_URL = "https://historial-clinico-936s.onrender.com/api"; 
 
     async function cargarPersonal() {
+        const cuerpo = document.getElementById('lista-cuerpo');
         try {
             const res = await fetch(`${API_URL}/get-personal`);
+            if (!res.ok) throw new Error("ERROR AL OBTENER DATOS");
+            
             const data = await res.json();
-            const cuerpo = document.getElementById('lista-cuerpo');
             cuerpo.innerHTML = "";
             let total = 0;
 
+            // Listar Doctores
             data.doctores.forEach(d => {
                 total++;
-                cuerpo.innerHTML += rowTemplate('DOCTOR', '👨‍⚕️', 'bg-doc', d.ci_doc, `${d.nombre_doc} ${d.appaterno_doc}`, d.turno_doc, d.especialidad);
+                cuerpo.innerHTML += `
+                    <tr>
+                        <td><span class="badge bg-doc">👨‍⚕️ DOCTOR</span></td>
+                        <td>${d.ci_doc}</td>
+                        <td>${d.nombre_doc} ${d.appaterno_doc} ${d.apmaterno_doc || ''}</td>
+                        <td>${d.turno_doc}</td>
+                        <td>${d.especialidad}</td>
+                        <td>
+                            <button class="btn-action" title="EDITAR">📝</button>
+                            <button class="btn-action" onclick="eliminar('DOCTOR', '${d.ci_doc}')" title="ELIMINAR">🗑️</button>
+                        </td>
+                    </tr>`;
             });
+
+            // Listar Enfermeras
             data.enfermeras.forEach(e => {
                 total++;
-                cuerpo.innerHTML += rowTemplate('ENFERMERA', '👩‍⚕️', 'bg-enfe', e.ci_enfe, `${e.nombre_enfe} ${e.appaterno_enfe}`, e.turno_enfe, e.edu_enfe);
+                cuerpo.innerHTML += `
+                    <tr>
+                        <td><span class="badge bg-enfe">👩‍⚕️ ENFERMERA</span></td>
+                        <td>${e.ci_enfe}</td>
+                        <td>${e.nombre_enfe} ${e.appaterno_enfe} ${e.apmaterno_enfe || ''}</td>
+                        <td>${e.turno_enfe}</td>
+                        <td>${e.edu_enfe}</td>
+                        <td>
+                            <button class="btn-action" title="EDITAR">📝</button>
+                            <button class="btn-action" onclick="eliminar('ENFERMERA', '${e.ci_enfe}')" title="ELIMINAR">🗑️</button>
+                        </td>
+                    </tr>`;
             });
-            document.getElementById('total-count').innerText = total;
-        } catch (e) { console.error(e); }
-    }
 
-    function rowTemplate(tipo, icon, bg, ci, nombre, turno, detalle) {
-        return `<tr>
-            <td><span class="badge ${bg}">${icon} ${tipo}</span></td>
-            <td>${ci}</td>
-            <td>${nombre}</td>
-            <td>${turno}</td>
-            <td>${detalle}</td>
-            <td>
-                <button class="btn-action" onclick="alert('EDITAR PRÓXIMAMENTE')">📝</button>
-                <button class="btn-action" onclick="eliminar('${tipo}', '${ci}')">🗑️</button>
-            </td>
-        </tr>`;
+            document.getElementById('total-count').innerText = total;
+            if(total === 0) cuerpo.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:60px; font-weight:900; color:#64748b;">NO SE ENCONTRÓ PERSONAL EN LA BASE DE DATOS</td></tr>';
+
+        } catch (e) {
+            console.error("Error de conexión:", e);
+            cuerpo.innerHTML = `<tr><td colspan="6" style="text-align:center; color:red; padding:60px; font-weight:900;">ERROR DE CONEXIÓN CON RENDER: VERIFIQUE QUE EL SERVICIO ESTÉ ACTIVO</td></tr>`;
+        }
     }
 
     async function eliminar(tipo, ci) {
-        if(confirm(`¿ELIMINAR ${tipo} CON C.I. ${ci}?`)) {
-            const res = await fetch(`${API_URL}/delete-personal/${tipo}/${ci}`, { method: 'DELETE' });
-            if(res.ok) { alert("ELIMINADO"); cargarPersonal(); }
+        if(confirm(`¿ESTÁ COMPLETAMENTE SEGURO DE ELIMINAR AL PROFESIONAL CON C.I. ${ci}?`)) {
+            try {
+                const res = await fetch(`${API_URL}/delete-personal/${tipo}/${ci}`, { method: 'DELETE' });
+                if(res.ok) {
+                    alert("REGISTRO ELIMINADO EXITOSAMENTE.");
+                    cargarPersonal();
+                } else {
+                    alert("NO SE PUDO ELIMINAR EL REGISTRO.");
+                }
+            } catch (e) { alert("ERROR AL COMUNICAR CON EL SERVIDOR"); }
         }
     }
+
     window.onload = cargarPersonal;
 </script>
 </body>
