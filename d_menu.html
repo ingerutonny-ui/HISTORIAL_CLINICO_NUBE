@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HC NUBE | Especialidades</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏥</text></svg>">
+</head>
+<body class="bg-slate-950 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <a href="enfermera.html" class="mb-10 text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] hover:text-emerald-400 transition-colors">
+        ← Volver al Área de Enfermería
+    </a>
+
+    <div class="text-center">
+        <h1 class="text-emerald-500 text-2xl font-bold uppercase tracking-tighter mb-1">Módulo de Especialidades</h1>
+        <p class="text-slate-500 text-[9px] uppercase tracking-[0.3em] mb-12">Seleccione el área de evaluación</p>
+
+        <div class="grid grid-cols-2 gap-6 w-full max-w-md">
+            
+            <button onclick="location.href='lista_dj.html'" class="py-8 bg-slate-900 rounded-2xl border border-slate-800 hover:border-emerald-500 transition-all group flex flex-col items-center">
+                <span class="block text-3xl mb-2 group-hover:scale-110 transition-transform">⚖️</span>
+                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest text-center">Declaración<br>Jurada</span>
+            </button>
+
+            <button onclick="location.href='doc_optalmologico.html'" class="py-8 bg-slate-900 rounded-2xl border border-slate-800 hover:border-emerald-500 transition-all group flex flex-col items-center">
+                <span class="block text-3xl mb-2 group-hover:scale-110 transition-transform">👁️</span>
+                <span class="text-[10px] font-bold text-slate-300 uppercase tracking-widest text-center">Oftalmología</span>
+            </button>
+
+            <div class="py-8 bg-slate-900/40 rounded-2xl border border-slate-900 opacity-50 cursor-not-allowed flex flex-col items-center relative overflow-hidden">
+                <span class="block text-3xl mb-2">📁</span>
+                <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest text-center">Historia<br>Clínica</span>
+                <div class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 hover:opacity-100 transition-opacity">
+                    <span class="text-[8px] text-emerald-400 font-black uppercase tracking-tighter">Próximamente</span>
+                </div>
+            </div>
+
+            <div class="py-8 bg-slate-900/40 rounded-2xl border border-slate-900 opacity-50 cursor-not-allowed flex flex-col items-center relative overflow-hidden">
+                <span class="block text-3xl mb-2">🦴</span>
+                <span class="text-[10px] font-bold text-slate-600 uppercase tracking-widest text-center">Osteomuscular</span>
+                <div class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 hover:opacity-100 transition-opacity">
+                    <span class="text-[8px] text-emerald-400 font-black uppercase tracking-tighter">Próximamente</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="mt-16 text-[8px] text-slate-700 uppercase tracking-[0.5em] font-bold">
+        Historial Clínico Nube v2.0
+    </div>
+
+</body>
+</html>
