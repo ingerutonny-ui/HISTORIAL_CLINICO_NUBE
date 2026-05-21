@@ -10,11 +10,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
         
-        /* Contenedor principal igualado al tamaño grande */
         .hoja-sistema {
             background-color: white;
             width: 100%;
-            max-width: 1200px; /* Tamaño máximo igualado */
+            max-width: 1200px;
             margin: 0 auto;
             border-radius: 20px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
@@ -66,76 +65,8 @@
                             <th class="p-5 text-center">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody class="text-[11px] font-bold text-gray-700">
-                        <tr class="border-b border-gray-50 hover:bg-blue-50/50 transition">
-                            <td class="p-5 text-blue-700 font-black">1234567</td>
-                            <td class="p-5">JUAN CARLOS GARCIA LOPEZ</td>
-                            <td class="p-5">
-                                <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-green-200">
-                                    <i class="fa-solid fa-user-doctor"></i> DOCTOR: CARDIOLOGÍA
-                                </span>
-                            </td>
-                            <td class="p-5 text-gray-400">MAÑANA</td>
-                            <td class="p-5">
-                                <div class="flex justify-center gap-2">
-                                    <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="border-b border-gray-50 hover:bg-blue-50/50 transition">
-                            <td class="p-5 text-blue-700 font-black">8822334</td>
-                            <td class="p-5">ANA BEATRIZ SOSA MONTERO</td>
-                            <td class="p-5">
-                                <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-green-200">
-                                    <i class="fa-solid fa-user-doctor"></i> DOCTORA: PEDIATRÍA
-                                </span>
-                            </td>
-                            <td class="p-5 text-gray-400">TARDE</td>
-                            <td class="p-5">
-                                <div class="flex justify-center gap-2">
-                                    <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="border-b border-gray-50 hover:bg-blue-50/50 transition">
-                            <td class="p-5 text-blue-700 font-black">7654321</td>
-                            <td class="p-5">MARIA ELENA MENDOZA RIVAS</td>
-                            <td class="p-5">
-                                <span class="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-blue-200">
-                                    <i class="fa-solid fa-user-nurse"></i> ENFERMERA: GENERAL
-                                </span>
-                            </td>
-                            <td class="p-5 text-gray-400">TARDE</td>
-                            <td class="p-5">
-                                <div class="flex justify-center gap-2">
-                                    <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr class="border-b border-gray-50 hover:bg-blue-50/50 transition">
-                            <td class="p-5 text-blue-700 font-black">4455667</td>
-                            <td class="p-5">PEDRO LUIS RODRIGUEZ PAZ</td>
-                            <td class="p-5">
-                                <span class="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-blue-200">
-                                    <i class="fa-solid fa-user-nurse"></i> ENFERMERO: INSTRUMENTACIÓN
-                                </span>
-                            </td>
-                            <td class="p-5 text-gray-400">NOCHE</td>
-                            <td class="p-5">
-                                <div class="flex justify-center gap-2">
-                                    <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
-                                    <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
-                                    <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
+                    <tbody id="tabla-personal" class="text-[11px] font-bold text-gray-700">
+                        </tbody>
                 </table>
             </div>
         </div>
@@ -144,5 +75,45 @@
             <p class="text-[9px] text-gray-400 font-black tracking-widest">SISTEMA OHS NANCY V1.0 - GESTIÓN DE PERSONAL</p>
         </div>
     </div>
+
+    <script>
+        async function cargarPersonal() {
+            try {
+                const response = await fetch('https://historial-clinico-nube.onrender.com/personal/');
+                const data = await response.json();
+                const tabla = document.getElementById('tabla-personal');
+                tabla.innerHTML = '';
+
+                const agregarFila = (p, tipo) => {
+                    const row = document.createElement('tr');
+                    row.className = "border-b border-gray-50 hover:bg-blue-50/50 transition";
+                    row.innerHTML = `
+                        <td class="p-5 text-blue-700 font-black">${tipo === 'doc' ? p.ci_doc : p.ci_enfe}</td>
+                        <td class="p-5">${tipo === 'doc' ? (p.nombre_doc + ' ' + p.appaterno_doc) : (p.nombre_enfe + ' ' + p.appaterno_enfe)}</td>
+                        <td class="p-5">
+                            <span class="bg-${tipo === 'doc' ? 'green' : 'blue'}-100 text-${tipo === 'doc' ? 'green' : 'blue'}-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-${tipo === 'doc' ? 'green' : 'blue'}-200">
+                                <i class="fa-solid fa-user-${tipo === 'doc' ? 'doctor' : 'nurse'}"></i> ${tipo === 'doc' ? 'DOCTOR: ' + p.especialidad : 'ENFERMERA: ' + p.especialidad}
+                            </span>
+                        </td>
+                        <td class="p-5 text-gray-400">${tipo === 'doc' ? p.turno_doc : p.turno_enfe}</td>
+                        <td class="p-5">
+                            <div class="flex justify-center gap-2">
+                                <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
+                                <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
+                            </div>
+                        </td>
+                    `;
+                    tabla.appendChild(row);
+                };
+
+                data.doctores.forEach(d => agregarFila(d, 'doc'));
+                data.enfermeras.forEach(e => agregarFila(e, 'enf'));
+            } catch (error) {
+                console.error("Error al cargar personal:", error);
+            }
+        }
+        cargarPersonal();
+    </script>
 </body>
 </html>
