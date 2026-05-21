@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro - OHS</title>
+    <title>Nuevo Registro - OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -74,6 +74,7 @@
             </form>
         </div>
     </div>
+
     <script>
         function setModo(t) {
             document.getElementById('tipo_empleado').value = t;
@@ -97,10 +98,18 @@
                     const data = await res.json();
                     
                     document.getElementById('ci_val').value = editId;
-                    document.getElementById('nombre_val').value = data.nombre_doc || data.nombre_enfe || data.nombre || "";
-                    document.getElementById('paterno_val').value = data.appaterno_doc || data.appaterno_enfe || data.apellidos || "";
-                    document.getElementById('especialidad_val').value = data.especialidad || "";
-                    document.getElementById('turno_val').value = data.turno_doc || data.turno_enfe || data.turno || "MAÑANA";
+                    
+                    if(editTipo === 'doctor') {
+                        document.getElementById('nombre_val').value = data.nombre_doc || "";
+                        document.getElementById('paterno_val').value = data.appaterno_doc || "";
+                        document.getElementById('especialidad_val').value = data.especialidad || "";
+                        document.getElementById('turno_val').value = data.turno_doc || "MAÑANA";
+                    } else {
+                        document.getElementById('nombre_val').value = data.nombre_enfe || "";
+                        document.getElementById('paterno_val').value = data.appaterno_enfe || "";
+                        document.getElementById('especialidad_val').value = data.especialidad || "";
+                        document.getElementById('turno_val').value = data.turno_enfe || "MAÑANA";
+                    }
                 } catch (e) {
                     console.error("Error al cargar:", e);
                 }
@@ -111,6 +120,7 @@
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
             const id = document.getElementById('ci_val').value;
+            
             const payload = (tipo === 'doctor') ? {
                 ci_doc: id,
                 nombre_doc: document.getElementById('nombre_val').value,
@@ -132,7 +142,7 @@
             });
 
             if (res.ok) {
-                alert("✅ DATOS GUARDADOS");
+                alert("✅ DATOS ACTUALIZADOS");
                 window.location.href = 'lista_personal.html';
             } else {
                 alert("❌ ERROR AL GUARDAR. REVISA LA CONSOLA (F12).");
