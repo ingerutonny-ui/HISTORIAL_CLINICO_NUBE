@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuevo Registro - OHS</title>
+    <title>Gestión de Personal - OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
         .hoja-sistema { background-color: white; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); overflow: hidden; }
-        .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; transition: all 0.3s; }
-        .input-ohs:focus { border-color: #2563eb; outline: none; background-color: white; }
+        .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; }
         .active-doc { border: 3px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
         .active-enf { border: 3px solid #10b981; background-color: #ecfdf5; color: #065f46; }
         .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; }
@@ -20,99 +19,64 @@
 </head>
 <body class="flex flex-col min-h-screen">
     <div class="btn-volver-top">
-        <button onclick="location.href='lista_personal.html'" class="bg-slate-800/80 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition text-[10px] font-black flex items-center gap-2 border border-slate-700 shadow-2xl">
+        <button onclick="location.href='lista_personal.html'" class="bg-slate-800/80 text-white px-6 py-2 rounded-lg text-[10px] font-black flex items-center gap-2">
             <i class="fa-solid fa-arrow-left"></i> VOLVER AL LISTADO
         </button>
     </div>
     <div class="hoja-sistema">
-        <div class="p-8 md:p-10 flex flex-col md:flex-row justify-between items-center border-b border-gray-100 gap-6">
-            <h1 class="text-3xl md:text-4xl font-black text-blue-900 tracking-tighter" id="titulo-form">NUEVO REGISTRO</h1>
-            <p class="text-[10px] md:text-[12px] font-bold text-emerald-600 tracking-[0.3em]">OHS NANCY CLOUD</p>
+        <div class="p-8 border-b border-gray-100">
+            <h1 id="titulo-form" class="text-4xl font-black text-blue-900">NUEVO REGISTRO</h1>
         </div>
-        <div class="p-8 md:p-12">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                <button onclick="setModo('doctor')" id="btn-doc" class="active-doc p-8 rounded-3xl flex flex-col items-center gap-3 transition-all transform hover:scale-[1.02]">
-                    <i class="fa-solid fa-user-doctor text-4xl"></i>
-                    <span class="text-[12px] font-black tracking-widest">PERSONAL MÉDICO / DOCTORES</span>
-                </button>
-                <button onclick="setModo('enfermera')" id="btn-enf" class="inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all transform hover:scale-[1.02]">
-                    <i class="fa-solid fa-user-nurse text-4xl"></i>
-                    <span class="text-[12px] font-black tracking-widest">PERSONAL DE ENFERMERÍA</span>
-                </button>
-            </div>
+        <div class="p-12">
             <form id="form-registro" class="space-y-8">
                 <input type="hidden" id="tipo_empleado" value="doctor">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2">
-                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">NÚMERO DE C.I.</label>
-                        <input type="text" id="ci_val" class="input-ohs" placeholder="INGRESE DOCUMENTO" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">NOMBRES</label>
-                        <input type="text" id="nombre_val" class="input-ohs" placeholder="INGRESE NOMBRES" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">APELLIDO PATERNO Y MATERNO</label>
-                        <input type="text" id="paterno_val" class="input-ohs" placeholder="INGRESE APELLIDOS" required>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">ESPECIALIDAD</label>
-                        <input type="text" id="especialidad_val" class="input-ohs" placeholder="INGRESE ESPECIALIDAD">
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">TURNO DE TRABAJO</label>
+                <div class="grid grid-cols-2 gap-6 mb-8">
+                    <button type="button" onclick="setModo('doctor')" id="btn-doc" class="active-doc p-8 rounded-3xl flex flex-col items-center gap-3">
+                        <i class="fa-solid fa-user-doctor text-4xl"></i><span>DOCTOR</span>
+                    </button>
+                    <button type="button" onclick="setModo('enfermera')" id="btn-enf" class="inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3">
+                        <i class="fa-solid fa-user-nurse text-4xl"></i><span>ENFERMERA</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 gap-8">
+                    <div><label>C.I.</label><input type="text" id="ci_val" class="input-ohs" required></div>
+                    <div><label>NOMBRES</label><input type="text" id="nombre_val" class="input-ohs" required></div>
+                    <div><label>APELLIDOS</label><input type="text" id="paterno_val" class="input-ohs" required></div>
+                    <div><label>ESPECIALIDAD</label><input type="text" id="especialidad_val" class="input-ohs"></div>
+                    <div><label>TURNO</label>
                         <select id="turno_val" class="input-ohs">
-                            <option value="MAÑANA">MAÑANA</option>
-                            <option value="TARDE">TARDE</option>
-                            <option value="NOCHE">NOCHE</option>
+                            <option>MAÑANA</option><option>TARDE</option><option>NOCHE</option>
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-2xl font-black text-sm tracking-[0.3em] hover:bg-blue-800 transition shadow-2xl">
-                    <i class="fa-solid fa-cloud-arrow-up mr-3"></i> GUARDAR REGISTRO EN LA NUBE
-                </button>
+                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-xl font-black">GUARDAR</button>
             </form>
         </div>
     </div>
 
     <script>
-        function setModo(t) {
-            document.getElementById('tipo_empleado').value = t;
-            const isDoc = (t === 'doctor');
-            document.getElementById('btn-doc').className = isDoc ? 'active-doc p-8 rounded-3xl flex flex-col items-center gap-3 transition-all' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all';
-            document.getElementById('btn-enf').className = !isDoc ? 'active-enf p-8 rounded-3xl flex flex-col items-center gap-3 transition-all' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all';
-        }
-
         const params = new URLSearchParams(window.location.search);
         const editId = params.get('id');
         const editTipo = params.get('tipo');
 
+        function setModo(t) {
+            document.getElementById('tipo_empleado').value = t;
+            document.getElementById('btn-doc').className = (t === 'doctor') ? 'active-doc p-8 rounded-3xl flex flex-col items-center gap-3' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3';
+            document.getElementById('btn-enf').className = (t === 'enfermera') ? 'active-enf p-8 rounded-3xl flex flex-col items-center gap-3' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3';
+        }
+
         async function init() {
             if(editId && editTipo) {
                 document.getElementById('titulo-form').innerText = "EDITAR REGISTRO";
-                setModo(editTipo);
                 document.getElementById('ci_val').readOnly = true;
-                
-                try {
-                    const res = await fetch(`https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`);
-                    const data = await res.json();
-                    
-                    document.getElementById('ci_val').value = editId;
-                    
-                    if(editTipo === 'doctor') {
-                        document.getElementById('nombre_val').value = data.nombre_doc || "";
-                        document.getElementById('paterno_val').value = data.appaterno_doc || "";
-                        document.getElementById('especialidad_val').value = data.especialidad || "";
-                        document.getElementById('turno_val').value = data.turno_doc || "MAÑANA";
-                    } else {
-                        document.getElementById('nombre_val').value = data.nombre_enfe || "";
-                        document.getElementById('paterno_val').value = data.appaterno_enfe || "";
-                        document.getElementById('especialidad_val').value = data.especialidad || "";
-                        document.getElementById('turno_val').value = data.turno_enfe || "MAÑANA";
-                    }
-                } catch (e) {
-                    console.error("Error al cargar:", e);
-                }
+                setModo(editTipo);
+                const res = await fetch(`https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`);
+                const data = await res.json();
+                document.getElementById('ci_val').value = editId;
+                document.getElementById('nombre_val').value = data.nombre_doc || data.nombre_enfe || "";
+                document.getElementById('paterno_val').value = data.appaterno_doc || data.appaterno_enfe || "";
+                document.getElementById('especialidad_val').value = data.especialidad || "";
+                document.getElementById('turno_val').value = data.turno_doc || data.turno_enfe || "MAÑANA";
             }
         }
 
@@ -120,33 +84,13 @@
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
             const id = document.getElementById('ci_val').value;
+            const payload = (tipo === 'doctor') ? { ci_doc: id, nombre_doc: document.getElementById('nombre_val').value, appaterno_doc: document.getElementById('paterno_val').value, especialidad: document.getElementById('especialidad_val').value, turno_doc: document.getElementById('turno_val').value } : { ci_enfe: id, nombre_enfe: document.getElementById('nombre_val').value, appaterno_enfe: document.getElementById('paterno_val').value, especialidad: document.getElementById('especialidad_val').value, turno_enfe: document.getElementById('turno_val').value };
+
+            const method = (editId) ? 'PUT' : 'POST';
+            const url = (editId) ? `https://historial-clinico-nube.onrender.com/${tipo}/${editId}` : `https://historial-clinico-nube.onrender.com/${tipo}/`;
             
-            const payload = (tipo === 'doctor') ? {
-                ci_doc: id,
-                nombre_doc: document.getElementById('nombre_val').value,
-                appaterno_doc: document.getElementById('paterno_val').value,
-                especialidad: document.getElementById('especialidad_val').value,
-                turno_doc: document.getElementById('turno_val').value
-            } : {
-                ci_enfe: id,
-                nombre_enfe: document.getElementById('nombre_val').value,
-                appaterno_enfe: document.getElementById('paterno_val').value,
-                especialidad: document.getElementById('especialidad_val').value,
-                turno_enfe: document.getElementById('turno_val').value
-            };
-
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok) {
-                alert("✅ DATOS ACTUALIZADOS");
-                window.location.href = 'lista_personal.html';
-            } else {
-                alert("❌ ERROR AL GUARDAR. REVISA LA CONSOLA (F12).");
-            }
+            const res = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if(res.ok) { window.location.href = 'lista_personal.html'; } else { alert('Error al procesar'); }
         });
         init();
     </script>
