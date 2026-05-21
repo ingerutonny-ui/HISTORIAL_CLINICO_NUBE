@@ -93,8 +93,9 @@
                 document.getElementById('ci_val').readOnly = true;
                 setModo(editTipo);
                 
-                // Nota: Ajusta 'api' o la ruta base según sea necesario para que la API responda
-                const url = `https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`;
+                // IMPORTANTE: Asegúrate de que el endpoint sea plural o singular según tu backend (ej: /doctores o /doctor)
+                const url = `https://historial-clinico-nube.onrender.com/${editTipo}s/${editId}`;
+                
                 try {
                     const res = await fetch(url);
                     if (!res.ok) throw new Error("No encontrado");
@@ -102,7 +103,6 @@
                     
                     document.getElementById('ci_val').value = editId;
                     
-                    // Asignación directa según estructura recibida
                     if(editTipo === 'doctor') {
                         document.getElementById('nombre_val').value = data.nombre_doc || "";
                         document.getElementById('paterno_val').value = data.appaterno_doc || "";
@@ -138,7 +138,7 @@
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const url = editId ? `https://historial-clinico-nube.onrender.com/${tipo}/${editId}` : `https://historial-clinico-nube.onrender.com/${tipo}/`;
+            const url = editId ? `https://historial-clinico-nube.onrender.com/${tipo}s/${editId}` : `https://historial-clinico-nube.onrender.com/${tipo}s/`;
             const method = editId ? 'PUT' : 'POST';
 
             const res = await fetch(url, {
