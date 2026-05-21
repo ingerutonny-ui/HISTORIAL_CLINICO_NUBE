@@ -138,9 +138,9 @@
         }
 
         function editar(id, tipo) {
-            window.location.href = `registro_personal.html?id=${id}&tipo=${tipo}`;
+            // Pasamos el tipo correctamente en la URL
+            window.location.href = `registro_personal.html?id=${id}&tipo=${tipo === 'doc' ? 'doctor' : 'enfermera'}`;
         }
-
         cargarPersonal();
     </script>
 </body>
