@@ -66,7 +66,7 @@
                         </tr>
                     </thead>
                     <tbody id="tabla-personal" class="text-[11px] font-bold text-gray-700">
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -86,9 +86,10 @@
 
                 const agregarFila = (p, tipo) => {
                     const row = document.createElement('tr');
+                    const id = tipo === 'doc' ? p.ci_doc : p.ci_enfe;
                     row.className = "border-b border-gray-50 hover:bg-blue-50/50 transition";
                     row.innerHTML = `
-                        <td class="p-5 text-blue-700 font-black">${tipo === 'doc' ? p.ci_doc : p.ci_enfe}</td>
+                        <td class="p-5 text-blue-700 font-black">${id}</td>
                         <td class="p-5">${tipo === 'doc' ? (p.nombre_doc + ' ' + p.appaterno_doc) : (p.nombre_enfe + ' ' + p.appaterno_enfe)}</td>
                         <td class="p-5">
                             <span class="bg-${tipo === 'doc' ? 'green' : 'blue'}-100 text-${tipo === 'doc' ? 'green' : 'blue'}-700 px-4 py-1.5 rounded-full flex items-center gap-2 w-fit border border-${tipo === 'doc' ? 'green' : 'blue'}-200">
@@ -98,9 +99,9 @@
                         <td class="p-5 text-gray-400">${tipo === 'doc' ? p.turno_doc : p.turno_enfe}</td>
                         <td class="p-5">
                             <div class="flex justify-center gap-2">
-                                <button class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
-                                <button class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button onclick="editar('${id}', '${tipo}')" class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
+                                <button onclick="eliminar('${id}', '${tipo}')" class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
+                                <button onclick="imprimir('${id}')" class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
                             </div>
                         </td>
                     `;
@@ -113,6 +114,18 @@
                 console.error("Error al cargar personal:", error);
             }
         }
+
+        async function eliminar(id, tipo) {
+            if(confirm('¿Está seguro de eliminar este profesional?')) {
+                const endpoint = tipo === 'doc' ? 'doctor' : 'enfermera';
+                await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${id}`, { method: 'DELETE' });
+                cargarPersonal();
+            }
+        }
+
+        function editar(id, tipo) { alert('Funcionalidad de edición para: ' + id); }
+        function imprimir(id) { window.print(); }
+
         cargarPersonal();
     </script>
 </body>
