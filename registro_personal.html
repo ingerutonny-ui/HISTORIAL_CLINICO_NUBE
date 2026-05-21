@@ -98,7 +98,8 @@
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const response = await fetch(`/${tipo}/`, {
+            // Reemplaza la línea del fetch por esta:
+            const response = await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
