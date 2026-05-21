@@ -59,3 +59,10 @@ def borrar_paciente(paciente_id: int, db: Session = Depends(get_db)):
     if not success:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"message": "Paciente eliminado"}
+
+# Agrega esto a main.py
+@app.get("/personal/")
+def obtener_personal(db: Session = Depends(get_db)):
+    doctores = db.query(models.Doctor).all()
+    enfermeras = db.query(models.Enfermera).all()
+    return {"doctores": doctores, "enfermeras": enfermeras}
