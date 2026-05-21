@@ -13,7 +13,7 @@
         .hoja-sistema {
             background-color: white;
             width: 100%;
-            max-width: 1200px; /* Tamaño igualado a la lista */
+            max-width: 1200px;
             margin: 0 auto;
             border-radius: 20px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
@@ -80,6 +80,10 @@
                         <input type="text" id="paterno_val" class="input-ohs" placeholder="INGRESE APELLIDOS" required>
                     </div>
                     <div class="space-y-2">
+                        <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">ESPECIALIDAD</label>
+                        <input type="text" id="especialidad_val" class="input-ohs" placeholder="INGRESE ESPECIALIDAD">
+                    </div>
+                    <div class="space-y-2">
                         <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">TURNO DE TRABAJO</label>
                         <select id="turno_val" class="input-ohs">
                             <option>MAÑANA</option>
@@ -95,10 +99,6 @@
                     </button>
                 </div>
             </form>
-        </div>
-
-        <div class="bg-gray-50 p-6 text-center border-t border-gray-100">
-            <p class="text-[9px] text-gray-400 font-black tracking-widest">SISTEMA PROTEGIDO BAJO PROTOCOLO OHS 2026</p>
         </div>
     </div>
 
@@ -117,10 +117,33 @@
             }
         }
 
-        document.getElementById('form-registro').addEventListener('submit', (e) => {
+        document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert("✅ PERSONAL REGISTRADO EXITOSAMENTE");
-            location.href = 'lista_personal.html';
+            const tipo = document.getElementById('tipo_empleado').value;
+            const payload = {
+                ci: document.getElementById('ci_val').value,
+                nombre: document.getElementById('nombre_val').value,
+                paterno: document.getElementById('paterno_val').value,
+                especialidad: document.getElementById('especialidad_val').value,
+                turno: document.getElementById('turno_val').value
+            };
+
+            try {
+                const response = await fetch(`/${tipo}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert("✅ PERSONAL REGISTRADO EXITOSAMENTE");
+                    location.href = 'lista_personal.html';
+                } else {
+                    alert("❌ ERROR AL REGISTRAR");
+                }
+            } catch (error) {
+                alert("❌ ERROR DE CONEXIÓN CON LA NUBE");
+            }
         });
     </script>
 </body>
