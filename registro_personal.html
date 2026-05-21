@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuevo Registro - OHS</title>
+    <title>Registro - OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -90,26 +90,19 @@
             if(editId && editTipo) {
                 document.getElementById('titulo-form').innerText = "EDITAR REGISTRO";
                 setModo(editTipo);
+                document.getElementById('ci_val').readOnly = true;
                 
                 try {
                     const res = await fetch(`https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`);
-                    if (!res.ok) throw new Error("API error: " + res.status);
                     const data = await res.json();
                     
-                    // DEPURACIÓN: Esto aparecerá en tu F12 -> Consola
-                    console.log("DATOS RECIBIDOS:", data);
-
                     document.getElementById('ci_val').value = editId;
-                    document.getElementById('ci_val').readOnly = true;
-
-                    // Asignación directa según los nombres de campos que suelen usar
                     document.getElementById('nombre_val').value = data.nombre_doc || data.nombre_enfe || data.nombre || "";
                     document.getElementById('paterno_val').value = data.appaterno_doc || data.appaterno_enfe || data.apellidos || "";
                     document.getElementById('especialidad_val').value = data.especialidad || "";
                     document.getElementById('turno_val').value = data.turno_doc || data.turno_enfe || data.turno || "MAÑANA";
                 } catch (e) {
-                    console.error("Fallo al cargar:", e);
-                    alert("Error al cargar datos. Revisa la consola (F12).");
+                    console.error("Error al cargar:", e);
                 }
             }
         }
@@ -117,21 +110,22 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
+            const id = document.getElementById('ci_val').value;
             const payload = (tipo === 'doctor') ? {
-                ci_doc: document.getElementById('ci_val').value,
+                ci_doc: id,
                 nombre_doc: document.getElementById('nombre_val').value,
                 appaterno_doc: document.getElementById('paterno_val').value,
                 especialidad: document.getElementById('especialidad_val').value,
                 turno_doc: document.getElementById('turno_val').value
             } : {
-                ci_enfe: document.getElementById('ci_val').value,
+                ci_enfe: id,
                 nombre_enfe: document.getElementById('nombre_val').value,
                 appaterno_enfe: document.getElementById('paterno_val').value,
                 especialidad: document.getElementById('especialidad_val').value,
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/${editId}`, {
+            const res = await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
