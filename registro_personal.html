@@ -62,9 +62,9 @@
                     <div class="space-y-2">
                         <label class="text-[11px] text-gray-400 font-black tracking-widest ml-1">TURNO DE TRABAJO</label>
                         <select id="turno_val" class="input-ohs">
-                            <option>MAÑANA</option>
-                            <option>TARDE</option>
-                            <option>NOCHE</option>
+                            <option value="MAÑANA">MAÑANA</option>
+                            <option value="TARDE">TARDE</option>
+                            <option value="NOCHE">NOCHE</option>
                         </select>
                     </div>
                 </div>
@@ -77,28 +77,41 @@
     <script>
         function setModo(t) {
             document.getElementById('tipo_empleado').value = t;
-            document.getElementById('btn-doc').className = t === 'doctor' ? 'active-doc p-8 rounded-3xl flex flex-col items-center gap-3 transition-all' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all';
-            document.getElementById('btn-enf').className = t === 'enfermera' ? 'active-enf p-8 rounded-3xl flex flex-col items-center gap-3 transition-all' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all';
+            const isDoc = (t === 'doctor');
+            document.getElementById('btn-doc').className = isDoc ? 'active-doc p-8 rounded-3xl flex flex-col items-center gap-3 transition-all' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all';
+            document.getElementById('btn-enf').className = !isDoc ? 'active-enf p-8 rounded-3xl flex flex-col items-center gap-3 transition-all' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all';
         }
 
         const params = new URLSearchParams(window.location.search);
         const editId = params.get('id');
         const editTipo = params.get('tipo');
 
-        if(editId) {
-            document.getElementById('titulo-form').innerText = "EDITAR REGISTRO";
-            fetch(`https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`)
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('ci_val').value = editId;
-                document.getElementById('ci_val').readOnly = true;
-                // Accedemos a los campos según la estructura original de tu BD
-                document.getElementById('nombre_val').value = (editTipo === 'doctor') ? data.nombre_doc : data.nombre_enfe;
-                document.getElementById('paterno_val').value = (editTipo === 'doctor') ? data.appaterno_doc : data.appaterno_enfe;
-                document.getElementById('especialidad_val').value = data.especialidad;
-                document.getElementById('turno_val').value = (editTipo === 'doctor') ? data.turno_doc : data.turno_enfe;
+        async function init() {
+            if(editId && editTipo) {
+                document.getElementById('titulo-form').innerText = "EDITAR REGISTRO";
                 setModo(editTipo);
-            });
+                
+                try {
+                    const res = await fetch(`https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`);
+                    if (!res.ok) throw new Error("API error: " + res.status);
+                    const data = await res.json();
+                    
+                    // DEPURACIÓN: Esto aparecerá en tu F12 -> Consola
+                    console.log("DATOS RECIBIDOS:", data);
+
+                    document.getElementById('ci_val').value = editId;
+                    document.getElementById('ci_val').readOnly = true;
+
+                    // Asignación directa según los nombres de campos que suelen usar
+                    document.getElementById('nombre_val').value = data.nombre_doc || data.nombre_enfe || data.nombre || "";
+                    document.getElementById('paterno_val').value = data.appaterno_doc || data.appaterno_enfe || data.apellidos || "";
+                    document.getElementById('especialidad_val').value = data.especialidad || "";
+                    document.getElementById('turno_val').value = data.turno_doc || data.turno_enfe || data.turno || "MAÑANA";
+                } catch (e) {
+                    console.error("Fallo al cargar:", e);
+                    alert("Error al cargar datos. Revisa la consola (F12).");
+                }
+            }
         }
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
@@ -118,19 +131,20 @@
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const response = await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/${editId}`, {
+            const res = await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/${editId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
-            if (response.ok) {
-                alert("✅ DATOS GUARDADOS CORRECTAMENTE");
-                location.href = 'lista_personal.html';
+            if (res.ok) {
+                alert("✅ DATOS GUARDADOS");
+                window.location.href = 'lista_personal.html';
             } else {
-                alert("❌ ERROR AL GUARDAR");
+                alert("❌ ERROR AL GUARDAR. REVISA LA CONSOLA (F12).");
             }
         });
+        init();
     </script>
 </body>
 </html>
