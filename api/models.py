@@ -30,11 +30,10 @@ class AntecedentesP2(Base):
     __tablename__ = "antecedentes_p2"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
-    # Aseguramos nombres consistentes con el CRUD y Frontend
     vista = Column(String)
     auditivo = Column(String)
     respiratorio = Column(String)
-    cardiovasculares = Column(String) # Corregido de 'cardio' para reporte completo
+    cardiovasculares = Column(String)
     digestivos = Column(String)
     sangre = Column(String)
     genitourinario = Column(String)
@@ -42,11 +41,11 @@ class AntecedentesP2(Base):
     psiquiatricos = Column(String)
     osteomusculares = Column(String)
     reumatologicos = Column(String)
-    dermatologicos = Column(String) # Corregido para consistencia
+    dermatologicos = Column(String)
     alergias = Column(String)
     cirugias = Column(String)
     infecciones = Column(String)
-    accidentes_pers = Column(String) # Ajustado para que no haya choques
+    accidentes_pers = Column(String)
     accidentes_trab = Column(String) 
     medicamentos = Column(String)
     endocrino = Column(String)
@@ -81,6 +80,7 @@ class Enfermera(Base):
     nombre_enfe = Column(String)
     turno_enfe = Column(String)
     edu_enfe = Column(String)
+    especialidad = Column(String)
 
 class Doctor(Base):
     __tablename__ = "doctores"
