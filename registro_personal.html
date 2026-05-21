@@ -83,7 +83,7 @@
 
         const params = new URLSearchParams(window.location.search);
         const editId = params.get('id');
-        const editTipo = params.get('tipo'); // Recibe 'doctor' o 'enfermera'
+        const editTipo = params.get('tipo');
 
         if(editId) {
             document.getElementById('titulo-form').innerText = "EDITAR REGISTRO";
@@ -92,11 +92,11 @@
             .then(data => {
                 document.getElementById('ci_val').value = editId;
                 document.getElementById('ci_val').readOnly = true;
-                // Accedemos a los campos específicos de tu base de datos
-                document.getElementById('nombre_val').value = data.nombre_doc || data.nombre_enfe;
-                document.getElementById('paterno_val').value = data.appaterno_doc || data.appaterno_enfe;
+                // Accedemos a los campos según la estructura original de tu BD
+                document.getElementById('nombre_val').value = (editTipo === 'doctor') ? data.nombre_doc : data.nombre_enfe;
+                document.getElementById('paterno_val').value = (editTipo === 'doctor') ? data.appaterno_doc : data.appaterno_enfe;
                 document.getElementById('especialidad_val').value = data.especialidad;
-                document.getElementById('turno_val').value = data.turno_doc || data.turno_enfe;
+                document.getElementById('turno_val').value = (editTipo === 'doctor') ? data.turno_doc : data.turno_enfe;
                 setModo(editTipo);
             });
         }
@@ -104,7 +104,7 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
-            const payload = tipo === 'doctor' ? {
+            const payload = (tipo === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value,
                 nombre_doc: document.getElementById('nombre_val').value,
                 appaterno_doc: document.getElementById('paterno_val').value,
