@@ -93,11 +93,16 @@
                 document.getElementById('ci_val').readOnly = true;
                 setModo(editTipo);
                 
+                // Nota: Ajusta 'api' o la ruta base según sea necesario para que la API responda
+                const url = `https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`;
                 try {
-                    const res = await fetch(`https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`);
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error("No encontrado");
                     const data = await res.json();
                     
                     document.getElementById('ci_val').value = editId;
+                    
+                    // Asignación directa según estructura recibida
                     if(editTipo === 'doctor') {
                         document.getElementById('nombre_val').value = data.nombre_doc || "";
                         document.getElementById('paterno_val').value = data.appaterno_doc || "";
@@ -109,7 +114,9 @@
                         document.getElementById('especialidad_val').value = data.especialidad || "";
                         document.getElementById('turno_val').value = data.turno_enfe || "MAÑANA";
                     }
-                } catch (e) { console.error("Error:", e); }
+                } catch (e) {
+                    console.error("Error al cargar datos:", e);
+                }
             }
         }
 
@@ -141,10 +148,9 @@
             });
 
             if (res.ok) {
-                alert("✅ DATOS GUARDADOS");
                 window.location.href = 'lista_personal.html';
             } else {
-                alert("❌ ERROR AL GUARDAR");
+                alert("Error al guardar en la nube");
             }
         });
         init();
