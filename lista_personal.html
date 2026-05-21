@@ -25,6 +25,12 @@
             margin: 0 auto 15px auto;
             width: 100%;
         }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white; padding: 0; }
+            .hoja-sistema { box-shadow: none; border-radius: 0; }
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -97,11 +103,11 @@
                             </span>
                         </td>
                         <td class="p-5 text-gray-400">${tipo === 'doc' ? p.turno_doc : p.turno_enfe}</td>
-                        <td class="p-5">
+                        <td class="p-5 no-print">
                             <div class="flex justify-center gap-2">
                                 <button onclick="editar('${id}', '${tipo}')" class="bg-orange-500 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-pen-to-square"></i></button>
                                 <button onclick="eliminar('${id}', '${tipo}')" class="bg-red-600 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-trash"></i></button>
-                                <button onclick="imprimir('${id}')" class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
+                                <button onclick="window.print()" class="bg-slate-700 text-white p-2.5 rounded shadow-lg"><i class="fa-solid fa-file-pdf"></i></button>
                             </div>
                         </td>
                     `;
@@ -116,15 +122,16 @@
         }
 
         async function eliminar(id, tipo) {
-            if(confirm('¿Está seguro de eliminar este profesional?')) {
+            if(confirm('¿Está seguro de eliminar este registro?')) {
                 const endpoint = tipo === 'doc' ? 'doctor' : 'enfermera';
                 await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${id}`, { method: 'DELETE' });
                 cargarPersonal();
             }
         }
 
-        function editar(id, tipo) { alert('Funcionalidad de edición para: ' + id); }
-        function imprimir(id) { window.print(); }
+        function editar(id, tipo) {
+            window.location.href = `registro_personal.html?id=${id}&tipo=${tipo}`;
+        }
 
         cargarPersonal();
     </script>
