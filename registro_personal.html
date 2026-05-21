@@ -26,7 +26,7 @@
     </div>
     <div class="hoja-sistema">
         <div class="p-8 md:p-10 flex flex-col md:flex-row justify-between items-center border-b border-gray-100 gap-6">
-            <h1 class="text-3xl md:text-4xl font-black text-blue-900 tracking-tighter">NUEVO REGISTRO</h1>
+            <h1 class="text-3xl md:text-4xl font-black text-blue-900 tracking-tighter" id="titulo-form">NUEVO REGISTRO</h1>
             <p class="text-[10px] md:text-[12px] font-bold text-emerald-600 tracking-[0.3em]">OHS NANCY CLOUD</p>
         </div>
         <div class="p-8 md:p-12">
@@ -81,35 +81,54 @@
             document.getElementById('btn-enf').className = t === 'enfermera' ? 'active-enf p-8 rounded-3xl flex flex-col items-center gap-3 transition-all' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 transition-all';
         }
 
+        // Lógica para cargar datos si se pasa id por URL
+        const params = new URLSearchParams(window.location.search);
+        const editId = params.get('id');
+        const editTipo = params.get('tipo');
+
+        if(editId) {
+            document.getElementById('titulo-form').innerText = "EDITAR REGISTRO";
+            fetch(`https://historial-clinico-nube.onrender.com/${editTipo === 'doc' ? 'doctor' : 'enfermera'}/${editId}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('ci_val').value = editId;
+                document.getElementById('nombre_val').value = editTipo === 'doc' ? data.nombre_doc : data.nombre_enfe;
+                document.getElementById('paterno_val').value = editTipo === 'doc' ? data.appaterno_doc : data.appaterno_enfe;
+                document.getElementById('especialidad_val').value = data.especialidad;
+                document.getElementById('turno_val').value = editTipo === 'doc' ? data.turno_doc : data.turno_enfe;
+                setModo(editTipo === 'doc' ? 'doctor' : 'enfermera');
+            });
+        }
+
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
+            const id = document.getElementById('ci_val').value;
             const payload = tipo === 'doctor' ? {
-                ci_doc: document.getElementById('ci_val').value,
+                ci_doc: id,
                 nombre_doc: document.getElementById('nombre_val').value,
                 appaterno_doc: document.getElementById('paterno_val').value,
                 especialidad: document.getElementById('especialidad_val').value,
                 turno_doc: document.getElementById('turno_val').value
             } : {
-                ci_enfe: document.getElementById('ci_val').value,
+                ci_enfe: id,
                 nombre_enfe: document.getElementById('nombre_val').value,
                 appaterno_enfe: document.getElementById('paterno_val').value,
                 especialidad: document.getElementById('especialidad_val').value,
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            // Reemplaza la línea del fetch por esta:
-            const response = await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/`, {
-                method: 'POST',
+            const response = await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/${editId ? 'update/'+editId : ''}`, {
+                method: editId ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (response.ok) {
-                alert("✅ PERSONAL REGISTRADO EXITOSAMENTE");
+                alert("✅ PROCESADO EXITOSAMENTE");
                 location.href = 'lista_personal.html';
             } else {
-                alert("❌ ERROR AL REGISTRAR");
+                alert("❌ ERROR AL GUARDAR");
             }
         });
     </script>
