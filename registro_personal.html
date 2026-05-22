@@ -21,7 +21,7 @@
         <button onclick="location.href='lista_personal.html'" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-[10px] font-black">VOLVER</button>
     </div>
     <div class="hoja-sistema">
-        <div class="p-8 border-b"><h1 class="text-4xl font-black text-blue-900">NUEVO REGISTRO</h1></div>
+        <div class="p-8 border-b"><h1 class="text-4xl font-black text-blue-900">REGISTRO</h1></div>
         <div class="p-12">
             <div class="grid grid-cols-2 gap-6 mb-12">
                 <button type="button" id="btn-doc" onclick="setModo('doctor')" class="active-doc p-8 rounded-3xl flex flex-col items-center gap-3 font-black">
@@ -60,7 +60,7 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
-            // Quitamos la barra final para evitar el 404
+            // Quitamos la barra final para asegurar que la ruta coincida con el backend
             const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
             const id = document.getElementById('ci_val').value;
             
@@ -82,13 +82,14 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if(res.ok) window.location.href = 'lista_personal.html';
-                else {
-                    const err = await res.text();
-                    console.error(err);
-                    alert("Error en el servidor. Revisa si el C.I. ya existe.");
+                if(res.ok) {
+                    window.location.href = 'lista_personal.html';
+                } else {
+                    alert("Error al guardar: Verifique la conexión o el C.I.");
                 }
-            } catch(e) { alert("Error de conexión con la nube."); }
+            } catch(e) { 
+                alert("Error de conexión con la nube."); 
+            }
         });
     </script>
 </body>
