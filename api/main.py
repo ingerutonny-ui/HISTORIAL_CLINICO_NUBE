@@ -4,12 +4,11 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from . import crud, models
 
-# Inicialización de la base de datos
+# Inicialización
 Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
 
-# Configuración estricta de CORS para eliminar el error de tu consola
+# Middleware CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,7 +29,6 @@ async def add_cors_headers(request: Request, call_next):
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
-# Dependency para la base de datos
 def get_db():
     db = SessionLocal()
     try:
@@ -38,7 +36,7 @@ def get_db():
     finally:
         db.close()
 
-# --- RUTA DE CONSULTA INTEGRAL ---
+# --- RUTA DE CONSULTA INTEGRAL (CORREGIDA) ---
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == identificador).first()
@@ -48,10 +46,12 @@ def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db))
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
-    filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente.id).first()
+    # Consulta usando el nombre real de la clase en models.py
+    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first()
+    
     return {"paciente": paciente, "filiacion": filiacion}
 
-# --- RUTAS DE REGISTRO Y GESTIÓN DE DATOS ---
+# --- RUTAS DE REGISTRO Y GESTIÓN (COMPLETAS) ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
