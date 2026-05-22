@@ -22,7 +22,7 @@
         <a href="lista_personal.html" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> VOLVER</a>
     </div>
     <div class="hoja-sistema">
-        <div class="p-10 border-b border-gray-100"><h1 class="text-4xl font-black text-blue-900" id="titulo-form">NUEVO REGISTRO</h1></div>
+        <div class="p-10 border-b border-gray-100"><h1 class="text-4xl font-black text-blue-900" id="titulo-form">EDITAR REGISTRO</h1></div>
         <div class="p-12">
             <div id="selector-tipo" class="grid grid-cols-2 gap-8 mb-10">
                 <div id="btn-doc" class="inactive-btn p-8 rounded-3xl text-center"><i class="fa-solid fa-user-doctor text-3xl"></i><br>DOCTOR</div>
@@ -50,15 +50,9 @@
         const params = new URLSearchParams(window.location.search);
         const ci = params.get('id');
         const tipo = params.get('tipo');
-        let dbId = null; // Variable para almacenar el ID real de la base de datos
+        let registroId = null;
 
         async function cargar() {
-            if (!ci || !tipo) return;
-            document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
-            
-            if (tipo === 'doctor') document.getElementById('btn-doc').className = 'active-doc p-8 rounded-3xl text-center';
-            else document.getElementById('btn-enf').className = 'active-enf p-8 rounded-3xl text-center';
-
             const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
             const data = await res.json();
             
@@ -67,10 +61,11 @@
                 : data.enfermeras.find(e => e.ci_enfe === ci);
 
             if (item) {
-                // Guardamos el ID real de la base de datos (id_doc o id_enfe)
-                dbId = item.id_doc || item.id_enfe; 
+                registroId = (tipo === 'doctor') ? item.id_doc : item.id_enfe;
+                if (tipo === 'doctor') document.getElementById('btn-doc').className = 'active-doc p-8 rounded-3xl text-center';
+                else document.getElementById('btn-enf').className = 'active-enf p-8 rounded-3xl text-center';
+                
                 document.getElementById('ci_val').value = ci;
-                document.getElementById('ci_val').readOnly = true;
                 document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
                 document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
                 document.getElementById('especialidad_val').value = item.especialidad || '';
@@ -80,12 +75,8 @@
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!dbId) return alert("Error: No se cargó el ID del registro.");
-            
-            const esDoctor = document.getElementById('btn-doc').className.includes('active-doc');
-            const endpoint = esDoctor ? 'doctores' : 'enfermeras';
-            
-            const payload = esDoctor ? {
+            const endpoint = (tipo === 'doctor') ? 'doctores' : 'enfermeras';
+            const payload = (tipo === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value,
                 nombre_doc: document.getElementById('nombre_val').value,
                 appaterno_doc: document.getElementById('paterno_val').value,
@@ -99,13 +90,14 @@
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${dbId}`, {
+            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${registroId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
+                alert("Guardado exitosamente");
                 window.location.href = 'lista_personal.html';
             } else {
                 alert("Error al guardar en el servidor");
