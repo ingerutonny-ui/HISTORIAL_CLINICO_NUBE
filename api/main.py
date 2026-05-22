@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
@@ -9,7 +9,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# BLOQUE REESTRUCTURADO: CORS al inicio absoluto para interceptar preflight
+# --- CONFIGURACIÓN DE SEGURIDAD Y CORS (Nivel Máximo) ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,6 +17,20 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# Middleware para asegurar que los headers CORS viajen en todas las respuestas
+@app.middleware("http")
+async def add_cors_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
+
+# Manejador para preflight OPTIONS
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str):
+    return Response(status_code=200)
 
 def get_db():
     db = SessionLocal()
