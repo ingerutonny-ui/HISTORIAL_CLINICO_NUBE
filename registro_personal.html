@@ -61,7 +61,9 @@
                 : data.enfermeras.find(e => e.ci_enfe === ci);
 
             if (item) {
+                // Aquí capturamos el ID real de la base de datos
                 registroId = (tipo === 'doctor') ? item.id_doc : item.id_enfe;
+                
                 if (tipo === 'doctor') document.getElementById('btn-doc').className = 'active-doc p-8 rounded-3xl text-center';
                 else document.getElementById('btn-enf').className = 'active-enf p-8 rounded-3xl text-center';
                 
@@ -75,6 +77,8 @@
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!registroId) return alert("Error: ID no cargado");
+            
             const endpoint = (tipo === 'doctor') ? 'doctores' : 'enfermeras';
             const payload = (tipo === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value,
