@@ -76,7 +76,7 @@
 </div>
 
 <script>
-    const API = 'https://historial-clinico-936s.onrender.com';
+    const API = 'https://historial-clinico-nube.onrender.com';
     const p_id = localStorage.getItem('p_id');
 
     window.onload = async () => {
@@ -102,12 +102,8 @@
                     document.getElementById('pais').value = data.filiacion.pais || 'BOLIVIA';
                     document.getElementById('telefono').value = data.filiacion.telefono || '';
                     document.getElementById('profesion_oficio').value = data.filiacion.profesion_oficio || '';
-                    
-                    const valEC = data.filiacion.estado_civil ? data.filiacion.estado_civil.toUpperCase() : "SOLTERO(A)";
                     const selectEC = document.getElementById('estado_civil');
-                    for(let opt of selectEC.options) {
-                        if(opt.value === valEC) opt.selected = true;
-                    }
+                    selectEC.value = data.filiacion.estado_civil || "SOLTERO(A)";
                 }
             }
         } catch (e) { console.error(e); }
@@ -132,8 +128,7 @@
         };
 
         try {
-            // RUTA CORRECTA PARA GUARDAR DIRECTO EN BASE DE DATOS
-            const res = await fetch(`${API}/filiacion`, {
+            const res = await fetch(`${API}/filiacion/`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify(payload)
@@ -141,11 +136,9 @@
             if (res.ok) {
                 window.location.href = "declaracion_jurada_p2.html";
             } else {
-                alert("ERROR AL GUARDAR FILIACIÓN");
+                alert("ERROR AL GUARDAR");
             }
-        } catch (err) { 
-            alert("ERROR DE RED O SERVIDOR"); 
-        }
+        } catch (err) { alert("ERROR DE CONEXIÓN"); }
     };
 </script>
 </body>
