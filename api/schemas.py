@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 
 class PacienteBase(BaseModel):
@@ -29,7 +29,7 @@ class AntecedentesP2Base(BaseModel):
     vista: Optional[str] = None
     auditivo: Optional[str] = None
     respiratorio: Optional[str] = None
-    cardio: Optional[str] = None
+    cardiovasculares: Optional[str] = None
     digestivos: Optional[str] = None
     sangre: Optional[str] = None
     genitourinario: Optional[str] = None
@@ -37,15 +37,15 @@ class AntecedentesP2Base(BaseModel):
     psiquiatricos: Optional[str] = None
     osteomusculares: Optional[str] = None
     reumatologicos: Optional[str] = None
-    dermatologicas: Optional[str] = None
+    dermatologicos: Optional[str] = None
     alergias: Optional[str] = None
     cirugias: Optional[str] = None
     infecciones: Optional[str] = None
-    acc_personales: Optional[str] = None
-    acc_trabajo: Optional[str] = None
+    accidentes_pers: Optional[str] = None
+    accidentes_trab: Optional[str] = None
     medicamentos: Optional[str] = None
     endocrino: Optional[str] = None
-    familiares: Optional[str] = None
+    antecedentes_fam: Optional[str] = None
     otros_especificos: Optional[str] = None
     generales: Optional[str] = None
     model_config = ConfigDict(from_attributes=True, extra='allow')
