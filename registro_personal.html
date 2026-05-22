@@ -52,6 +52,7 @@
         const tipo_url = params.get('tipo');
         let registroId = null;
         let tipoSeleccionado = tipo_url;
+        const API_URL = 'https://historial-clinico-nube.onrender.com';
 
         const btnDoc = document.getElementById('btn-doc');
         const btnEnf = document.getElementById('btn-enf');
@@ -73,7 +74,7 @@
             document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
             actualizarSeleccion(tipo_url);
             
-            const res = await fetch('https://historial-clinico-nube.onrender.com/personal');
+            const res = await fetch(`${API_URL}/personal`);
             const data = await res.json();
             const item = (tipo_url === 'doctor') ? data.doctores.find(d => d.ci_doc == id_url) : data.enfermeras.find(e => e.ci_enfe == id_url);
 
@@ -91,9 +92,9 @@
             e.preventDefault();
             if (!tipoSeleccionado) return alert("SELECCIONE DOCTOR O ENFERMERA");
             
-            const base = 'https://historial-clinico-nube.onrender.com';
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
-            const url = registroId ? `${base}/${endpoint}/${registroId}` : `${base}/${endpoint}`;
+            // Se elimina la barra diagonal final para evitar el error 404
+            const url = registroId ? `${API_URL}/${endpoint}/${registroId}` : `${API_URL}/${endpoint}`;
             
             const payload = (tipoSeleccionado === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value.toUpperCase(),
@@ -109,16 +110,20 @@
                 turno_enfe: document.getElementById('turno_val').value.toUpperCase()
             };
 
-            const res = await fetch(url, {
-                method: registroId ? 'PUT' : 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            try {
+                const res = await fetch(url, {
+                    method: registroId ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-            if (res.ok) {
-                window.location.href = 'lista_personal.html';
-            } else {
-                alert("ERROR AL GUARDAR");
+                if (res.ok) {
+                    window.location.href = 'lista_personal.html';
+                } else {
+                    alert("ERROR AL GUARDAR: VERIFIQUE LOS DATOS");
+                }
+            } catch (err) {
+                alert("ERROR DE CONEXIÓN");
             }
         });
 
