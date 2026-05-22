@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Response, Request
+from fastapi import FastAPI, Depends, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
@@ -9,7 +9,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Middleware CORS completo
+# Configuración estricta de CORS para eliminar el error de tu consola
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,6 +30,7 @@ async def add_cors_headers(request: Request, call_next):
     response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
+# Dependency para la base de datos
 def get_db():
     db = SessionLocal()
     try:
@@ -37,7 +38,7 @@ def get_db():
     finally:
         db.close()
 
-# --- RUTA DE CONSULTA INTEGRAL (PACIENTE + FILIACIÓN) ---
+# --- RUTA DE CONSULTA INTEGRAL ---
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == identificador).first()
@@ -50,7 +51,7 @@ def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db))
     filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente.id).first()
     return {"paciente": paciente, "filiacion": filiacion}
 
-# --- RUTAS DE REGISTRO Y GESTIÓN ---
+# --- RUTAS DE REGISTRO Y GESTIÓN DE DATOS ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
