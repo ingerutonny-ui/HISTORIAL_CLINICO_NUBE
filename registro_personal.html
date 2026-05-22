@@ -11,6 +11,7 @@
         body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
         .hoja-sistema { background-color: white; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); overflow: hidden; }
         .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        .input-disabled { background-color: #f1f5f9; cursor: not-allowed; }
         .btn-volver { background-color: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; font-size: 10px; font-weight: 900; margin-bottom: 15px; display: inline-block; }
         .active-doc { border: 3px solid #2563eb !important; background-color: #eff6ff !important; color: #2563eb !important; cursor: pointer; }
         .active-enf { border: 3px solid #10b981 !important; background-color: #ecfdf5 !important; color: #10b981 !important; cursor: pointer; }
@@ -56,6 +57,7 @@
 
         const btnDoc = document.getElementById('btn-doc');
         const btnEnf = document.getElementById('btn-enf');
+        const ciInput = document.getElementById('ci_val');
 
         function actualizarSeleccion(t) {
             tipoSeleccionado = t;
@@ -71,6 +73,9 @@
         async function cargar() {
             if (id_url && tipo_url) {
                 document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
+                ciInput.readOnly = true;
+                ciInput.classList.add('input-disabled');
+                
                 const res = await fetch(`${BASE_API}/personal`);
                 const data = await res.json();
                 const item = (tipo_url === 'doctor') ? data.doctores.find(d => d.ci_doc == id_url) : data.enfermeras.find(e => e.ci_enfe == id_url);
@@ -115,8 +120,7 @@
             if (res.ok) {
                 window.location.href = 'lista_personal.html';
             } else {
-                const errData = await res.json().catch(() => ({}));
-                alert(errData.message || "ERROR: VERIFIQUE LOS DATOS O EL C.I.");
+                alert("ERROR AL GUARDAR: VERIFIQUE LOS DATOS O CONEXIÓN");
             }
         });
 
