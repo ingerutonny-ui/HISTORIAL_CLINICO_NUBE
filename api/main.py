@@ -26,25 +26,25 @@ def get_db():
 
 # --- PACIENTES ---
 @app.post("/pacientes/")
-def registrar_paciente(data: schemas.PacienteBase, db: Session = Depends(get_db)):
-    return crud.create_paciente(db, data.model_dump())
+def registrar_paciente(data: dict, db: Session = Depends(get_db)):
+    return crud.create_paciente(db, data)
 
 # --- DECLARACIÓN JURADA (P1) ---
 @app.post("/filiacion/")
-def registrar_filiacion(data: schemas.DeclaracionJuradaBase, db: Session = Depends(get_db)):
-    return crud.upsert_filiacion(db, data.model_dump())
+def registrar_filiacion(data: dict, db: Session = Depends(get_db)):
+    return crud.upsert_filiacion(db, data)
 
 # --- ANTECEDENTES (P2) ---
 @app.post("/antecedentes_p2/")
-def registrar_p2(data: schemas.AntecedentesP2Base, db: Session = Depends(get_db)):
-    return crud.upsert_p2(db, data.model_dump())
+def registrar_p2(data: dict, db: Session = Depends(get_db)):
+    return crud.upsert_p2(db, data)
 
 # --- HÁBITOS Y RIESGOS (P3) ---
 @app.post("/habitos_p3/")
-def registrar_p3(data: schemas.HabitosRiesgosP3Base, db: Session = Depends(get_db)):
-    return crud.upsert_p3(db, data.model_dump())
+def registrar_p3(data: dict, db: Session = Depends(get_db)):
+    return crud.upsert_p3(db, data)
 
-# --- DOCTORES Y ENFERMERAS (INTEGRIDAD MANTENIDA) ---
+# --- PERSONAL (DOCTORES Y ENFERMERAS) ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {
@@ -53,25 +53,25 @@ def obtener_personal(db: Session = Depends(get_db)):
     }
 
 @app.post("/doctores/")
-def registrar_doctor(data: schemas.DoctorBase, db: Session = Depends(get_db)):
-    return crud.create_doctor(db, data.model_dump())
+def registrar_doctor(data: dict, db: Session = Depends(get_db)):
+    return crud.create_doctor(db, data)
 
 @app.post("/enfermeras/")
-def registrar_enfermera(data: schemas.EnfermeraBase, db: Session = Depends(get_db)):
-    return crud.create_enfermera(db, data.model_dump())
+def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
+    return crud.create_enfermera(db, data)
 
 @app.delete("/doctores/{id_doc}")
 def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
-    if not doctor: raise HTTPException(status_code=404, detail="Doctor no encontrado")
+    if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
     db.delete(doctor)
     db.commit()
-    return {"message": "Doctor eliminado"}
+    return {"message": "Eliminado"}
 
 @app.delete("/enfermeras/{id_enfe}")
 def borrar_enfermera(id_enfe: int, db: Session = Depends(get_db)):
     enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
-    if not enfermera: raise HTTPException(status_code=404, detail="Enfermera no encontrada")
+    if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
     db.delete(enfermera)
     db.commit()
-    return {"message": "Enfermera eliminada"}
+    return {"message": "Eliminada"}
