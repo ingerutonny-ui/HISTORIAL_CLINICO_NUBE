@@ -68,7 +68,9 @@
 
         async function eliminar(id, tipo) {
             if(!confirm('¿Eliminar?')) return;
-            await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/${id}`, { method: 'DELETE' });
+            // Se fuerza el plural para coincidir con el endpoint de Render
+            const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
+            await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${id}`, { method: 'DELETE' });
             cargar();
         }
         cargar();
