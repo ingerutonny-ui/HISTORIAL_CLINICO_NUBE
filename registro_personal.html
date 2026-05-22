@@ -86,21 +86,21 @@
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!tipoSeleccionado) return alert("SELECCIONE TIPO DE PERSONAL");
+            if (!tipoSeleccionado) return alert("SELECCIONE DOCTOR O ENFERMERA");
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
             const url = registroId ? `${BASE_API}/${endpoint}/${registroId}` : `${BASE_API}/${endpoint}`;
             const payload = (tipoSeleccionado === 'doctor') ? {
-                ci_doc: document.getElementById('ci_val').value,
-                nombre_doc: document.getElementById('nombre_val').value,
-                appaterno_doc: document.getElementById('paterno_val').value,
-                especialidad: document.getElementById('especialidad_val').value,
-                turno_doc: document.getElementById('turno_val').value
+                ci_doc: document.getElementById('ci_val').value.toUpperCase(),
+                nombre_doc: document.getElementById('nombre_val').value.toUpperCase(),
+                appaterno_doc: document.getElementById('paterno_val').value.toUpperCase(),
+                especialidad: document.getElementById('especialidad_val').value.toUpperCase(),
+                turno_doc: document.getElementById('turno_val').value.toUpperCase()
             } : {
-                ci_enfe: document.getElementById('ci_val').value,
-                nombre_enfe: document.getElementById('nombre_val').value,
-                appaterno_enfe: document.getElementById('paterno_val').value,
-                especialidad: document.getElementById('especialidad_val').value,
-                turno_enfe: document.getElementById('turno_val').value
+                ci_enfe: document.getElementById('ci_val').value.toUpperCase(),
+                nombre_enfe: document.getElementById('nombre_val').value.toUpperCase(),
+                appaterno_enfe: document.getElementById('paterno_val').value.toUpperCase(),
+                especialidad: document.getElementById('especialidad_val').value.toUpperCase(),
+                turno_enfe: document.getElementById('turno_val').value.toUpperCase()
             };
 
             const res = await fetch(url, {
@@ -110,7 +110,7 @@
             });
 
             if (res.ok) window.location.href = 'lista_personal.html';
-            else alert("ERROR: EL C.I. YA EXISTE O DATOS INCORRECTOS");
+            else alert("ERROR: EL C.I. YA EXISTE O EL SERVIDOR RECHAZÓ LA RUTA");
         });
 
         cargar();
