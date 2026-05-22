@@ -9,7 +9,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración de CORS para permitir la comunicación desde el Frontend
+# Configuración de CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,7 +18,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Dependencia para obtener la base de datos
 def get_db():
     db = SessionLocal()
     try:
@@ -26,17 +25,39 @@ def get_db():
     finally:
         db.close()
 
-# --- Rutas para Doctores ---
-@app.post("/doctor/")
+# --- Rutas Doctores ---
+@app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
     return crud.create_doctor(db, data)
 
-# --- Rutas para Enfermeras ---
-@app.post("/enfermera/")
+@app.put("/doctores/{id_doc}")
+def editar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
+    doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor no encontrado")
+    for key, value in data.items():
+        setattr(doctor, key, value)
+    db.commit()
+    db.refresh(doctor)
+    return doctor
+
+# --- Rutas Enfermeras ---
+@app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
     return crud.create_enfermera(db, data)
 
-# --- Rutas para Pacientes ---
+@app.put("/enfermeras/{id_enfe}")
+def editar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)):
+    enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
+    if not enfermera:
+        raise HTTPException(status_code=404, detail="Enfermera no encontrada")
+    for key, value in data.items():
+        setattr(enfermera, key, value)
+    db.commit()
+    db.refresh(enfermera)
+    return enfermera
+
+# --- Rutas Pacientes ---
 @app.post("/paciente/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
@@ -60,7 +81,6 @@ def borrar_paciente(paciente_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"message": "Paciente eliminado"}
 
-# Agrega esto a main.py
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     doctores = db.query(models.Doctor).all()
