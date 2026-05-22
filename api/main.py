@@ -4,11 +4,12 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from . import crud, models
 
-# Inicialización
+# Integridad total de base de datos
 models.Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
-# 1. Configuración absoluta de CORS
+# Configuración CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -22,7 +23,7 @@ async def add_cors_headers(request: Request, call_next):
     if request.method == "OPTIONS":
         return Response(status_code=200, headers={
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Methods": "*",
             "Access-Control-Allow-Headers": "*",
         })
     response = await call_next(request)
@@ -36,17 +37,15 @@ def get_db():
     finally:
         db.close()
 
-# 2. RUTA MAESTRA PARA RECUPERAR PACIENTE COMPLETO
-# Acepta cualquier identificador (código o ID) para evitar el error de "Integer"
+# --- RUTA UNIFICADA DE CONSULTA (Solución definitiva para IDs y Códigos) ---
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
-    # Lógica de búsqueda flexible
-    paciente = None
-    if identificador.isdigit():
-        paciente = db.query(models.Paciente).filter(models.Paciente.id == int(identificador)).first()
+    # Búsqueda prioritaria por código alfanumérico
+    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == identificador).first()
     
-    if not paciente:
-        paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == identificador).first()
+    # Búsqueda secundaria por ID numérico
+    if not paciente and identificador.isdigit():
+        paciente = db.query(models.Paciente).filter(models.Paciente.id == int(identificador)).first()
     
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
@@ -58,7 +57,7 @@ def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db))
         "filiacion": filiacion
     }
 
-# 3. RUTAS DE REGISTRO (MANTENIDAS ÍNTEGRAS)
+# --- REGISTROS ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
@@ -75,11 +74,11 @@ def registrar_p2(data: dict, db: Session = Depends(get_db)):
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
+# --- DOCTORES Y ENFERMERAS (INTOUCHABLES) ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
 
-# Rutas Doctores
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
     return crud.create_doctor(db, data)
@@ -101,7 +100,6 @@ def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Eliminado"}
 
-# Rutas Enfermeras
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
     return crud.create_enfermera(db, data)
