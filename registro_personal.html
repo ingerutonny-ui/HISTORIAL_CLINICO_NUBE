@@ -78,7 +78,7 @@
                 const item = (tipo_url === 'doctor') ? data.doctores.find(d => String(d.ci_doc) === String(id_url)) : data.enfermeras.find(e => String(e.ci_enfe) === String(id_url));
                 
                 if (item) {
-                    registroId = (tipo_url === 'doctor') ? item.id_doc : item.id_enfe;
+                    registroId = item.id;
                     ciInput.value = id_url;
                     document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
                     document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
@@ -123,7 +123,7 @@
                     alert("ERROR DEL SERVIDOR: " + errorText);
                 }
             } catch (err) {
-                alert("ERROR DE CONEXIÓN: NO SE PUDO ESTABLECER COMUNICACIÓN");
+                alert("ERROR DE CONEXIÓN");
             }
         });
 
