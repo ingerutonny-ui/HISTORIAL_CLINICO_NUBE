@@ -50,6 +50,7 @@
         const params = new URLSearchParams(window.location.search);
         const ci = params.get('id');
         const tipo = params.get('tipo');
+        let registroId = null;
 
         async function cargar() {
             if (!ci || !tipo) return;
@@ -66,6 +67,7 @@
                 : data.enfermeras.find(e => e.ci_enfe === ci);
 
             if (item) {
+                registroId = item.id_doc || item.id_enfe;
                 document.getElementById('ci_val').value = ci;
                 document.getElementById('ci_val').readOnly = true;
                 document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
@@ -79,30 +81,28 @@
             e.preventDefault();
             const esDoctor = document.getElementById('btn-doc').className.includes('active-doc');
             const endpoint = esDoctor ? 'doctores' : 'enfermeras';
-            const ci = document.getElementById('ci_val').value;
             
             const payload = esDoctor ? {
-                ci_doc: ci,
+                ci_doc: document.getElementById('ci_val').value,
                 nombre_doc: document.getElementById('nombre_val').value,
                 appaterno_doc: document.getElementById('paterno_val').value,
                 especialidad: document.getElementById('especialidad_val').value,
                 turno_doc: document.getElementById('turno_val').value
             } : {
-                ci_enfe: ci,
+                ci_enfe: document.getElementById('ci_val').value,
                 nombre_enfe: document.getElementById('nombre_val').value,
                 appaterno_enfe: document.getElementById('paterno_val').value,
                 especialidad: document.getElementById('especialidad_val').value,
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${ci}`, {
+            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${registroId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("Cambios guardados");
                 window.location.href = 'lista_personal.html';
             } else {
                 alert("Error al guardar");
