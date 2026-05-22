@@ -73,7 +73,7 @@
             document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
             actualizarSeleccion(tipo_url);
             
-            const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
+            const res = await fetch('https://historial-clinico-nube.onrender.com/personal');
             const data = await res.json();
             const item = (tipo_url === 'doctor') ? data.doctores.find(d => d.ci_doc == id_url) : data.enfermeras.find(e => e.ci_enfe == id_url);
 
@@ -109,20 +109,16 @@
                 turno_enfe: document.getElementById('turno_val').value.toUpperCase()
             };
 
-            try {
-                const res = await fetch(url, {
-                    method: registroId ? 'PUT' : 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+            const res = await fetch(url, {
+                method: registroId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-                if (res.ok) {
-                    window.location.href = 'lista_personal.html';
-                } else {
-                    alert("ERROR: EL C.I. YA EXISTE O DATOS INCORRECTOS");
-                }
-            } catch (err) {
-                alert("ERROR DE CONEXIÓN CON EL SERVIDOR");
+            if (res.ok) {
+                window.location.href = 'lista_personal.html';
+            } else {
+                alert("ERROR AL GUARDAR");
             }
         });
 
