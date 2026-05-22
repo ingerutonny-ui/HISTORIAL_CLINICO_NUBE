@@ -12,9 +12,9 @@
         .hoja-sistema { background-color: white; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); overflow: hidden; }
         .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; }
         .btn-volver { background-color: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; font-size: 10px; font-weight: 900; margin-bottom: 15px; display: inline-block; }
-        .active-doc { border: 3px solid #2563eb; background-color: #eff6ff; }
-        .active-enf { border: 3px solid #10b981; background-color: #ecfdf5; }
-        .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; }
+        .active-doc { border: 3px solid #2563eb !important; background-color: #eff6ff !important; color: #2563eb !important; cursor: pointer; }
+        .active-enf { border: 3px solid #10b981 !important; background-color: #ecfdf5 !important; color: #10b981 !important; cursor: pointer; }
+        .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; cursor: pointer; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -22,11 +22,11 @@
         <a href="lista_personal.html" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> VOLVER</a>
     </div>
     <div class="hoja-sistema">
-        <div class="p-10 border-b border-gray-100"><h1 class="text-4xl font-black text-blue-900" id="titulo-form">NUEVO REGISTRO</h1></div>
+        <div class="p-10 border-b border-gray-100"><h1 class="text-4xl font-black text-blue-900" id="titulo-form">REGISTRO</h1></div>
         <div class="p-12">
             <div id="selector-tipo" class="grid grid-cols-2 gap-8 mb-10">
-                <div id="btn-doc" class="inactive-btn p-8 rounded-3xl text-center"><i class="fa-solid fa-user-doctor text-3xl"></i><br>DOCTOR</div>
-                <div id="btn-enf" class="inactive-btn p-8 rounded-3xl text-center"><i class="fa-solid fa-user-nurse text-3xl"></i><br>ENFERMERA</div>
+                <div id="btn-doc" class="inactive-btn p-8 rounded-3xl text-center transition-all"><i class="fa-solid fa-user-doctor text-3xl"></i><br>DOCTOR</div>
+                <div id="btn-enf" class="inactive-btn p-8 rounded-3xl text-center transition-all"><i class="fa-solid fa-user-nurse text-3xl"></i><br>ENFERMERA</div>
             </div>
             <form id="form-registro" class="space-y-6">
                 <div class="grid grid-cols-2 gap-8">
@@ -49,29 +49,42 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         const ci = params.get('id');
-        const tipo = params.get('tipo');
+        const tipoURL = params.get('tipo');
         let registroId = null;
+        let tipoSeleccionado = tipoURL;
+
+        // Lógica de selección de botones
+        const btnDoc = document.getElementById('btn-doc');
+        const btnEnf = document.getElementById('btn-enf');
+
+        function actualizarSeleccion(t) {
+            tipoSeleccionado = t;
+            if (t === 'doctor') {
+                btnDoc.className = 'active-doc p-8 rounded-3xl text-center transition-all';
+                btnEnf.className = 'inactive-btn p-8 rounded-3xl text-center transition-all';
+            } else {
+                btnEnf.className = 'active-enf p-8 rounded-3xl text-center transition-all';
+                btnDoc.className = 'inactive-btn p-8 rounded-3xl text-center transition-all';
+            }
+        }
+
+        btnDoc.addEventListener('click', () => actualizarSeleccion('doctor'));
+        btnEnf.addEventListener('click', () => actualizarSeleccion('enfermera'));
 
         async function cargar() {
-            // CORRECCIÓN: Si no hay ID ni tipo, es un registro nuevo, no hacemos fetch
-            if (!ci || !tipo) {
+            if (!ci || !tipoURL) {
                 document.getElementById('titulo-form').innerText = 'NUEVO REGISTRO';
                 return;
             }
-
             document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
+            actualizarSeleccion(tipoURL);
+            
             const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
             const data = await res.json();
-            
-            const item = (tipo === 'doctor') 
-                ? data.doctores.find(d => d.ci_doc === ci)
-                : data.enfermeras.find(e => e.ci_enfe === ci);
+            const item = (tipoURL === 'doctor') ? data.doctores.find(d => d.ci_doc === ci) : data.enfermeras.find(e => e.ci_enfe === ci);
 
             if (item) {
-                registroId = (tipo === 'doctor') ? item.id_doc : item.id_enfe;
-                if (tipo === 'doctor') document.getElementById('btn-doc').className = 'active-doc p-8 rounded-3xl text-center';
-                else document.getElementById('btn-enf').className = 'active-enf p-8 rounded-3xl text-center';
-                
+                registroId = (tipoURL === 'doctor') ? item.id_doc : item.id_enfe;
                 document.getElementById('ci_val').value = ci;
                 document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
                 document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
@@ -82,14 +95,13 @@
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const esDoctor = (tipo === 'doctor') || document.getElementById('btn-doc').className.includes('active-doc');
-            const endpoint = esDoctor ? 'doctores' : 'enfermeras';
+            if (!tipoSeleccionado) return alert("Seleccione si es DOCTOR o ENFERMERA");
             
-            // Si hay registroId es PUT (editar), si no, es POST (nuevo)
+            const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
             const method = registroId ? 'PUT' : 'POST';
             const url = registroId ? `https://historial-clinico-nube.onrender.com/${endpoint}/${registroId}` : `https://historial-clinico-nube.onrender.com/${endpoint}/`;
 
-            const payload = esDoctor ? {
+            const payload = (tipoSeleccionado === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value,
                 nombre_doc: document.getElementById('nombre_val').value,
                 appaterno_doc: document.getElementById('paterno_val').value,
