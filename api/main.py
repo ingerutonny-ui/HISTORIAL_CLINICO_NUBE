@@ -44,7 +44,7 @@ def registrar_p2(data: dict, db: Session = Depends(get_db)):
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
-# --- PERSONAL (DOCTORES Y ENFERMERAS) ---
+# --- PERSONAL ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {
@@ -52,7 +52,7 @@ def obtener_personal(db: Session = Depends(get_db)):
         "enfermeras": db.query(models.Enfermera).all()
     }
 
-# --- REGISTROS Y EDICIÓN ---
+# --- DOCTORES (POST para crear, PUT para editar) ---
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
     return crud.create_doctor(db, data)
@@ -61,13 +61,14 @@ def registrar_doctor(data: dict, db: Session = Depends(get_db)):
 def actualizar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
     doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
     if not doctor:
-        raise HTTPException(status_code=404, detail="Doctor no encontrado")
+        raise HTTPException(status_code=404, detail="No encontrado")
     for key, value in data.items():
         setattr(doctor, key, value)
     db.commit()
     db.refresh(doctor)
     return doctor
 
+# --- ENFERMERAS (POST para crear, PUT para editar) ---
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
     return crud.create_enfermera(db, data)
@@ -76,7 +77,7 @@ def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
 def actualizar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)):
     enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
     if not enfermera:
-        raise HTTPException(status_code=404, detail="Enfermera no encontrada")
+        raise HTTPException(status_code=404, detail="No encontrada")
     for key, value in data.items():
         setattr(enfermera, key, value)
     db.commit()
