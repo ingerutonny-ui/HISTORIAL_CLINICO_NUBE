@@ -40,41 +40,59 @@
         </div>
     </div>
     <script>
+        const BASE_API = 'https://historial-clinico-nube.onrender.com';
+
         async function cargar() {
             try {
-                const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
+                const res = await fetch(`${BASE_API}/personal/`);
                 const data = await res.json();
                 const t = document.getElementById('tabla-personal');
                 t.innerHTML = '';
                 
-                const add = (p, tipo, id, nom, ap) => {
+                // Procesar Doctores
+                data.doctores.forEach(p => {
                     const row = document.createElement('tr');
                     row.className = "border-b";
                     row.innerHTML = `
-                        <td class="p-5">${id}</td>
-                        <td class="p-5">${nom} ${ap}</td>
+                        <td class="p-5">${p.ci_doc}</td>
+                        <td class="p-5">${p.nombre_doc} ${p.appaterno_doc}</td>
                         <td class="p-5">${p.especialidad}</td>
                         <td class="p-5 no-print text-center">
-                            <button onclick="editar('${id}', '${tipo}')" class="bg-orange-500 text-white p-2 rounded mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="eliminar('${id}', '${tipo}')" class="bg-red-600 text-white p-2 rounded mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td>
-                    `;
+                            <button onclick="editar('${p.ci_doc}', 'doctor')" class="bg-orange-500 text-white p-2 rounded mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminar(${p.id_doc}, 'doctor')" class="bg-red-600 text-white p-2 rounded mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td>`;
                     t.appendChild(row);
-                };
-                data.doctores.forEach(p => add(p, 'doctor', p.ci_doc, p.nombre_doc, p.appaterno_doc));
-                data.enfermeras.forEach(p => add(p, 'enfermera', p.ci_enfe, p.nombre_enfe, p.appaterno_enfe));
+                });
+
+                // Procesar Enfermeras
+                data.enfermeras.forEach(p => {
+                    const row = document.createElement('tr');
+                    row.className = "border-b";
+                    row.innerHTML = `
+                        <td class="p-5">${p.ci_enfe}</td>
+                        <td class="p-5">${p.nombre_enfe} ${p.appaterno_enfe}</td>
+                        <td class="p-5">${p.especialidad}</td>
+                        <td class="p-5 no-print text-center">
+                            <button onclick="editar('${p.ci_enfe}', 'enfermera')" class="bg-orange-500 text-white p-2 rounded mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminar(${p.id_enfe}, 'enfermera')" class="bg-red-600 text-white p-2 rounded mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td>`;
+                    t.appendChild(row);
+                });
             } catch (err) { console.error("Error al cargar:", err); }
         }
 
-        function editar(id, tipo) { window.location.href = `registro_personal.html?id=${id}&tipo=${tipo}`; }
+        function editar(ci, tipo) { window.location.href = `registro_personal.html?id=${ci}&tipo=${tipo}`; }
 
         async function eliminar(id, tipo) {
-            if(!confirm('¿Eliminar registro?')) return;
+            if(!confirm('¿ELIMINAR ESTE REGISTRO?')) return;
             const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${id}`, { method: 'DELETE' });
-            if(res.ok) cargar();
-            else alert("Error al eliminar");
+            try {
+                const res = await fetch(`${BASE_API}/${endpoint}/${id}`, { method: 'DELETE' });
+                if(res.ok) cargar();
+                else alert("Error al eliminar");
+            } catch (err) { alert("Error de conexión"); }
         }
+        
         cargar();
     </script>
 </body>
