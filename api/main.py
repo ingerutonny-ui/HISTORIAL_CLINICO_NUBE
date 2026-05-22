@@ -52,14 +52,38 @@ def obtener_personal(db: Session = Depends(get_db)):
         "enfermeras": db.query(models.Enfermera).all()
     }
 
+# --- REGISTROS Y EDICIÓN ---
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
     return crud.create_doctor(db, data)
+
+@app.put("/doctores/{id_doc}")
+def actualizar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
+    doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
+    if not doctor:
+        raise HTTPException(status_code=404, detail="Doctor no encontrado")
+    for key, value in data.items():
+        setattr(doctor, key, value)
+    db.commit()
+    db.refresh(doctor)
+    return doctor
 
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
     return crud.create_enfermera(db, data)
 
+@app.put("/enfermeras/{id_enfe}")
+def actualizar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)):
+    enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
+    if not enfermera:
+        raise HTTPException(status_code=404, detail="Enfermera no encontrada")
+    for key, value in data.items():
+        setattr(enfermera, key, value)
+    db.commit()
+    db.refresh(enfermera)
+    return enfermera
+
+# --- ELIMINACIÓN ---
 @app.delete("/doctores/{id_doc}")
 def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
