@@ -13,7 +13,10 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],
+    # CAMBIO: Se agregó "OPTIONS" a allow_methods. 
+    # POR QUÉ: Es necesario para que el navegador pueda realizar la petición de verificación 
+    # (preflight) antes de ejecutar métodos como PUT o POST, evitando el error 405/CORS.
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
