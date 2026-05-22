@@ -11,27 +11,31 @@
         body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
         .hoja-sistema { background-color: white; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); overflow: hidden; }
         .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; }
-        .active-doc { border: 3px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
-        .active-enf { border: 3px solid #10b981; background-color: #ecfdf5; color: #065f46; }
-        .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; }
+        .btn-volver-top { max-width: 1200px; margin: 0 auto 15px auto; width: 100%; }
+        .active-doc { border: 3px solid #2563eb; background-color: #eff6ff; }
+        .active-enf { border: 3px solid #10b981; background-color: #ecfdf5; }
+        .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
+    <div class="btn-volver-top">
+        <button onclick="location.href='lista_personal.html'" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-[10px] font-black"><i class="fa-solid fa-arrow-left"></i> VOLVER</button>
+    </div>
     <div class="hoja-sistema">
-        <div class="p-8 border-b border-gray-100 flex justify-between items-center">
-            <h1 class="text-3xl font-black text-blue-900" id="titulo-form">NUEVO REGISTRO</h1>
-        </div>
+        <div class="p-10 border-b border-gray-100"><h1 class="text-4xl font-black text-blue-900" id="titulo-form">NUEVO REGISTRO</h1></div>
         <div class="p-12">
-            <form id="form-registro" class="space-y-8">
-                <input type="hidden" id="tipo_empleado" value="doctores">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">C.I.</label><input type="text" id="ci_val" class="input-ohs" required></div>
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">NOMBRES</label><input type="text" id="nombre_val" class="input-ohs" required></div>
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">APELLIDOS</label><input type="text" id="paterno_val" class="input-ohs" required></div>
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">ESPECIALIDAD</label><input type="text" id="especialidad_val" class="input-ohs"></div>
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">TURNO</label><select id="turno_val" class="input-ohs"><option value="MAÑANA">MAÑANA</option><option value="TARDE">TARDE</option><option value="NOCHE">NOCHE</option></select></div>
+            <div id="selector-tipo" class="grid grid-cols-2 gap-8 mb-10">
+                <button id="btn-doc" class="active-doc p-8 rounded-3xl text-center"><i class="fa-solid fa-user-doctor text-3xl"></i><br>DOCTOR</button>
+                <button id="btn-enf" class="inactive-btn p-8 rounded-3xl text-center"><i class="fa-solid fa-user-nurse text-3xl"></i><br>ENFERMERA</button>
+            </div>
+            <form id="form-registro" class="space-y-6">
+                <div class="grid grid-cols-2 gap-8">
+                    <div><label class="text-[10px] font-black text-gray-400">C.I.</label><input type="text" id="ci_val" class="input-ohs" required></div>
+                    <div><label class="text-[10px] font-black text-gray-400">NOMBRES</label><input type="text" id="nombre_val" class="input-ohs" required></div>
+                    <div><label class="text-[10px] font-black text-gray-400">APELLIDOS</label><input type="text" id="paterno_val" class="input-ohs" required></div>
+                    <div><label class="text-[10px] font-black text-gray-400">ESPECIALIDAD</label><input type="text" id="especialidad_val" class="input-ohs"></div>
                 </div>
-                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-2xl font-black text-sm">GUARDAR</button>
+                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-2xl font-black">GUARDAR</button>
             </form>
         </div>
     </div>
@@ -40,23 +44,36 @@
         const id = params.get('id');
         const tipo = params.get('tipo');
 
-        async function cargarEdicion() {
+        async function cargar() {
             if (!id || !tipo) return;
-            const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${id}`);
-            const p = await res.json();
-            
             document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
-            document.getElementById('tipo_empleado').value = endpoint;
-            document.getElementById('ci_val').value = id;
-            document.getElementById('ci_val').readOnly = true;
-            // Mapeo según models.py
-            document.getElementById('nombre_val').value = p.nombre_doc || p.nombre_enfe || '';
-            document.getElementById('paterno_val').value = p.appaterno_doc || p.appaterno_enfe || '';
-            document.getElementById('especialidad_val').value = p.especialidad || '';
-            document.getElementById('turno_val').value = p.turno_doc || p.turno_enfe || 'MAÑANA';
+            
+            // Usamos el endpoint correcto detectado en tu backend (plural)
+            const endpoint = (tipo === 'doctor') ? 'doctores' : 'enfermeras';
+            const url = `https://historial-clinico-nube.onrender.com/${endpoint}/${id}`;
+            
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error('No se pudo obtener el registro');
+                const p = await res.json();
+                
+                document.getElementById('ci_val').value = id;
+                document.getElementById('ci_val').readOnly = true;
+                
+                // Mapeo directo según tu models.py
+                if (tipo === 'doctor') {
+                    document.getElementById('nombre_val').value = p.nombre_doc || '';
+                    document.getElementById('paterno_val').value = p.appaterno_doc || '';
+                } else {
+                    document.getElementById('nombre_val').value = p.nombre_enfe || '';
+                    document.getElementById('paterno_val').value = p.appaterno_enfe || '';
+                }
+                document.getElementById('especialidad_val').value = p.especialidad || '';
+            } catch (err) {
+                console.error("Error al cargar:", err);
+            }
         }
-        cargarEdicion();
+        cargar();
     </script>
 </body>
 </html>
