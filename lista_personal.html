@@ -3,82 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Personal - OHS</title>
+    <title>Personal Médico - OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
         .hoja-sistema { background-color: white; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); overflow: hidden; }
-        .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; transition: all 0.3s; }
-        .input-ohs:focus { border-color: #2563eb; outline: none; background-color: white; }
-        .active-doc { border: 3px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
-        .active-enf { border: 3px solid #10b981; background-color: #ecfdf5; color: #065f46; }
-        .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; }
+        .btn-volver-top { max-width: 1200px; margin: 0 auto 15px auto; width: 100%; }
+        @media print { .no-print { display: none !important; } .btn-volver-top { display: none !important; } }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
+    <div class="btn-volver-top">
+        <button onclick="location.href='index.html'" class="bg-slate-800/80 text-white px-6 py-2 rounded-lg text-[10px] font-black flex items-center gap-2">
+            <i class="fa-solid fa-house"></i> IR AL INICIO
+        </button>
+    </div>
     <div class="hoja-sistema">
-        <div class="p-8 border-b border-gray-100"><h1 class="text-3xl font-black text-blue-900" id="titulo-form">NUEVO REGISTRO</h1></div>
-        <div class="p-12">
-            <form id="form-registro" class="space-y-8">
-                <input type="hidden" id="tipo_empleado" value="doctores">
-                <input type="hidden" id="is_edit" value="false">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">C.I.</label><input type="text" id="ci_val" class="input-ohs" required></div>
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">NOMBRES</label><input type="text" id="nombre_val" class="input-ohs" required></div>
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">APELLIDOS</label><input type="text" id="paterno_val" class="input-ohs" required></div>
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">ESPECIALIDAD</label><input type="text" id="especialidad_val" class="input-ohs"></div>
-                    <div class="space-y-2"><label class="text-[11px] text-gray-400 font-black">TURNO</label><select id="turno_val" class="input-ohs"><option value="MAÑANA">MAÑANA</option><option value="TARDE">TARDE</option><option value="NOCHE">NOCHE</option></select></div>
-                </div>
-                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-2xl font-black text-sm hover:bg-blue-800">GUARDAR</button>
-            </form>
+        <div class="p-10 border-b border-gray-100 flex justify-between items-center">
+            <h1 class="text-4xl font-black text-blue-900">PERSONAL MÉDICO</h1>
+            <a href="registro_personal.html" class="bg-blue-700 text-white px-8 py-3 rounded-full font-black text-[11px]">+ REGISTRAR NUEVO</a>
+        </div>
+        <div class="p-10">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-blue-700 text-white text-[11px] font-black">
+                        <th class="p-5">C.I.</th>
+                        <th class="p-5">Nombre Completo</th>
+                        <th class="p-5">Cargo</th>
+                        <th class="p-5 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-personal" class="text-[11px] font-bold text-gray-700"></tbody>
+            </table>
         </div>
     </div>
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const id = params.get('id');
-        const tipo = params.get('tipo');
-
-        async function cargarDatos() {
-            if (!id || !tipo) return;
-            document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
-            document.getElementById('is_edit').value = 'true';
-            document.getElementById('tipo_empleado').value = tipo === 'doctor' ? 'doctores' : 'enfermeras';
-            
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${document.getElementById('tipo_empleado').value}/${id}`);
-            const p = await res.json();
-            
-            document.getElementById('ci_val').value = id;
-            document.getElementById('ci_val').readOnly = true;
-            document.getElementById('nombre_val').value = p.nombre_doc || p.nombre_enfe;
-            document.getElementById('paterno_val').value = p.appaterno_doc || p.appaterno_enfe;
-            document.getElementById('especialidad_val').value = p.especialidad;
-            document.getElementById('turno_val').value = p.turno_doc || p.turno_enfe;
+        async function cargar() {
+            try {
+                const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
+                const data = await res.json();
+                const t = document.getElementById('tabla-personal');
+                t.innerHTML = '';
+                
+                const add = (p, tipo, id, nom, ap) => {
+                    const row = document.createElement('tr');
+                    row.className = "border-b";
+                    row.innerHTML = `
+                        <td class="p-5">${id}</td>
+                        <td class="p-5">${nom} ${ap}</td>
+                        <td class="p-5">${p.especialidad}</td>
+                        <td class="p-5 no-print text-center">
+                            <button onclick="editar('${id}', '${tipo}')" class="bg-orange-500 text-white p-2 rounded mx-1"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminar('${id}', '${tipo}')" class="bg-red-600 text-white p-2 rounded mx-1"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    `;
+                    t.appendChild(row);
+                };
+                data.doctores.forEach(p => add(p, 'doctor', p.ci_doc, p.nombre_doc, p.appaterno_doc));
+                data.enfermeras.forEach(p => add(p, 'enfermera', p.ci_enfe, p.nombre_enfe, p.appaterno_enfe));
+            } catch (err) { console.error("Error al cargar:", err); }
         }
 
-        document.getElementById('form-registro').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const esEdicion = document.getElementById('is_edit').value === 'true';
-            const endpoint = document.getElementById('tipo_empleado').value;
-            const payload = {
-                [endpoint === 'doctores' ? 'ci_doc' : 'ci_enfe']: document.getElementById('ci_val').value,
-                [endpoint === 'doctores' ? 'nombre_doc' : 'nombre_enfe']: document.getElementById('nombre_val').value,
-                [endpoint === 'doctores' ? 'appaterno_doc' : 'appaterno_enfe']: document.getElementById('paterno_val').value,
-                especialidad: document.getElementById('especialidad_val').value,
-                [endpoint === 'doctores' ? 'turno_doc' : 'turno_enfe']: document.getElementById('turno_val').value
-            };
-            
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${esEdicion ? id : ''}`, {
-                method: esEdicion ? 'PUT' : 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            
-            if(res.ok) window.location.href = 'lista_personal.html';
-            else alert("Error al guardar");
-        });
-        cargarDatos();
+        function editar(id, tipo) { window.location.href = `registro_personal.html?id=${id}&tipo=${tipo}`; }
+
+        async function eliminar(id, tipo) {
+            if(!confirm('¿Eliminar registro?')) return;
+            const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
+            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${id}`, { method: 'DELETE' });
+            if(res.ok) cargar();
+            else alert("Error al eliminar");
+        }
+        cargar();
     </script>
 </body>
 </html>
