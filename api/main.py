@@ -4,9 +4,12 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from . import crud, models
 
+# Inicialización de la base de datos
 Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
+# Configuración de Middleware CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -34,14 +37,17 @@ def get_db():
     finally:
         db.close()
 
+# --- CONSULTA INTEGRAL (P1, P2, P3) ---
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(
         (models.Paciente.codigo_paciente == identificador) | 
         (models.Paciente.id == (int(identificador) if identificador.isdigit() else 0))
     ).first()
+    
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    
     return {
         "paciente": paciente,
         "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first(),
@@ -49,6 +55,7 @@ def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db))
         "habitos": db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente.id).first()
     }
 
+# --- RUTAS DE REGISTRO Y UPSERT ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
@@ -65,9 +72,13 @@ def registrar_p2(data: dict, db: Session = Depends(get_db)):
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
+# --- GESTIÓN DE PERSONAL ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
-    return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
+    return {
+        "doctores": db.query(models.Doctor).all(),
+        "enfermeras": db.query(models.Enfermera).all()
+    }
 
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
@@ -76,8 +87,10 @@ def registrar_doctor(data: dict, db: Session = Depends(get_db)):
 @app.put("/doctores/{id_doc}")
 def actualizar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
     doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
-    if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
-    for key, value in data.items(): setattr(doctor, key, value)
+    if not doctor:
+        raise HTTPException(status_code=404, detail="No encontrado")
+    for key, value in data.items():
+        setattr(doctor, key, value)
     db.commit()
     db.refresh(doctor)
     return doctor
@@ -85,7 +98,8 @@ def actualizar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
 @app.delete("/doctores/{id_doc}")
 def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
-    if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
+    if not doctor:
+        raise HTTPException(status_code=404, detail="No encontrado")
     db.delete(doctor)
     db.commit()
     return {"message": "Eliminado"}
@@ -97,8 +111,10 @@ def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
 @app.put("/enfermeras/{id_enfe}")
 def actualizar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)):
     enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
-    if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
-    for key, value in data.items(): setattr(enfermera, key, value)
+    if not enfermera:
+        raise HTTPException(status_code=404, detail="No encontrada")
+    for key, value in data.items():
+        setattr(enfermera, key, value)
     db.commit()
     db.refresh(enfermera)
     return enfermera
@@ -106,7 +122,8 @@ def actualizar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)
 @app.delete("/enfermeras/{id_enfe}")
 def borrar_enfermera(id_enfe: int, db: Session = Depends(get_db)):
     enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
-    if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
+    if not enfermera:
+        raise HTTPException(status_code=404, detail="No encontrada")
     db.delete(enfermera)
     db.commit()
     return {"message": "Eliminada"}
