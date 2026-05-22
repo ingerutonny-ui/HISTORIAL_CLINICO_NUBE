@@ -8,7 +8,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Middleware de CORS con respuesta explícita para preflight
+# Configuración CORS global
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -34,27 +34,38 @@ def get_db():
     finally:
         db.close()
 
-# --- PACIENTES ---
+# --- RUTA PARA RECUPERAR DATOS COMPLETOS (LA QUE FALTABA) ---
+@app.get("/api/paciente-completo/{paciente_id}")
+def obtener_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    
+    # Buscamos en las tablas correspondientes
+    filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente_id).first()
+    
+    return {
+        "paciente": paciente,
+        "filiacion": filiacion
+    }
+
+# --- RUTAS EXISTENTES ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
 
-# --- DECLARACIÓN JURADA (P1) ---
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_filiacion(db, data)
 
-# --- ANTECEDENTES (P2) ---
 @app.post("/antecedentes_p2/")
 def registrar_p2(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p2(db, data)
 
-# --- HÁBITOS Y RIESGOS (P3) ---
 @app.post("/habitos_p3/")
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
-# --- PERSONAL ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {
@@ -62,7 +73,6 @@ def obtener_personal(db: Session = Depends(get_db)):
         "enfermeras": db.query(models.Enfermera).all()
     }
 
-# --- DOCTORES ---
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
     return crud.create_doctor(db, data)
@@ -70,10 +80,8 @@ def registrar_doctor(data: dict, db: Session = Depends(get_db)):
 @app.put("/doctores/{id_doc}")
 def actualizar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
     doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
-    if not doctor:
-        raise HTTPException(status_code=404, detail="No encontrado")
-    for key, value in data.items():
-        setattr(doctor, key, value)
+    if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
+    for key, value in data.items(): setattr(doctor, key, value)
     db.commit()
     db.refresh(doctor)
     return doctor
@@ -86,7 +94,6 @@ def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Eliminado"}
 
-# --- ENFERMERAS ---
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
     return crud.create_enfermera(db, data)
@@ -94,10 +101,8 @@ def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
 @app.put("/enfermeras/{id_enfe}")
 def actualizar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)):
     enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
-    if not enfermera:
-        raise HTTPException(status_code=404, detail="No encontrada")
-    for key, value in data.items():
-        setattr(enfermera, key, value)
+    if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
+    for key, value in data.items(): setattr(enfermera, key, value)
     db.commit()
     db.refresh(enfermera)
     return enfermera
