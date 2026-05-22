@@ -12,87 +12,77 @@
         .hoja-sistema { background-color: white; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); overflow: hidden; }
         .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; transition: all 0.3s; }
         .input-ohs:focus { border-color: #2563eb; outline: none; background-color: white; }
-        .active-doc { border: 3px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
-        .active-enf { border: 3px solid #10b981; background-color: #ecfdf5; color: #065f46; }
+        .active-btn { border: 3px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
         .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; }
-        .btn-volver-top { max-width: 1200px; margin: 0 auto 15px auto; width: 100%; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
-    <div class="btn-volver-top">
-        <button onclick="location.href='lista_personal.html'" class="bg-slate-800/80 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition text-[10px] font-black flex items-center gap-2 border border-slate-700 shadow-2xl">
-            <i class="fa-solid fa-arrow-left"></i> VOLVER AL LISTADO
-        </button>
+    <div class="max-w-[1200px] mx-auto w-full mb-4">
+        <button onclick="location.href='lista_personal.html'" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-[10px] font-black">VOLVER</button>
     </div>
     <div class="hoja-sistema">
-        <div class="p-8 md:p-10 flex flex-col md:flex-row justify-between items-center border-b border-gray-100 gap-6">
-            <h1 class="text-3xl md:text-4xl font-black text-blue-900 tracking-tighter" id="titulo-form">REGISTRO</h1>
-            <p class="text-[10px] md:text-[12px] font-bold text-emerald-600 tracking-[0.3em]">OHS NANCY CLOUD</p>
-        </div>
-        <div class="p-8 md:p-12">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                <button type="button" id="btn-doc" class="inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3">
-                    <i class="fa-solid fa-user-doctor text-4xl"></i>
-                    <span class="text-[12px] font-black tracking-widest">DOCTOR</span>
-                </button>
-                <button type="button" id="btn-enf" class="inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3">
-                    <i class="fa-solid fa-user-nurse text-4xl"></i>
-                    <span class="text-[12px] font-black tracking-widest">ENFERMERA</span>
-                </button>
+        <div class="p-8 border-b"><h1 id="titulo-form" class="text-4xl font-black text-blue-900">NUEVO REGISTRO</h1></div>
+        <div class="p-12">
+            <div class="grid grid-cols-2 gap-6 mb-12">
+                <button type="button" id="btn-doc" onclick="setModo('doctor')" class="inactive-btn p-8 rounded-3xl font-black">DOCTOR</button>
+                <button type="button" id="btn-enf" onclick="setModo('enfermera')" class="inactive-btn p-8 rounded-3xl font-black">ENFERMERA</button>
             </div>
             <form id="form-registro" class="space-y-8">
-                <input type="hidden" id="tipo_empleado">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div><label class="text-[11px] font-black">C.I.</label><input type="text" id="ci_val" class="input-ohs" readonly></div>
+                <input type="hidden" id="tipo_empleado" value="doctor">
+                <div class="grid grid-cols-2 gap-8">
+                    <div><label class="text-[11px] font-black">C.I.</label><input type="text" id="ci_val" class="input-ohs" required></div>
                     <div><label class="text-[11px] font-black">NOMBRES</label><input type="text" id="nombre_val" class="input-ohs" required></div>
                     <div><label class="text-[11px] font-black">APELLIDOS</label><input type="text" id="paterno_val" class="input-ohs" required></div>
-                    <div><label class="text-[11px] font-black">ESPECIALIDAD</label><input type="text" id="especialidad_val" class="input-ohs"></div>
+                    <div><label class="text-[11px] font-black">ESPECIALIDAD</label><input type="text" id="especialidad_val" class="input-ohs" required></div>
                     <div><label class="text-[11px] font-black">TURNO</label>
                         <select id="turno_val" class="input-ohs">
                             <option value="MAÑANA">MAÑANA</option><option value="TARDE">TARDE</option><option value="NOCHE">NOCHE</option>
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-2xl font-black">GUARDAR</button>
+                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-xl font-black">GUARDAR REGISTRO</button>
             </form>
         </div>
     </div>
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const editId = params.get('id');
-        const editTipo = params.get('tipo');
 
-        async function init() {
-            if (editId && editTipo) {
-                document.getElementById('tipo_empleado').value = editTipo;
-                document.getElementById('ci_val').value = editId;
-                
-                // Determinamos la ruta plural que tu API espera
-                const endpoint = editTipo === 'doctor' ? 'doctores' : 'enfermeras';
-                try {
-                    const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${editId}`);
-                    const data = await res.json();
-                    
-                    document.getElementById('nombre_val').value = data.nombre_doc || data.nombre_enfe || "";
-                    document.getElementById('paterno_val').value = data.appaterno_doc || data.appaterno_enfe || "";
-                    document.getElementById('especialidad_val').value = data.especialidad || "";
-                    document.getElementById('turno_val').value = data.turno_doc || data.turno_enfe || "MAÑANA";
-                    
-                    // Activamos visualmente el botón correcto
-                    if(editTipo === 'doctor') document.getElementById('btn-doc').className = 'active-doc p-8 rounded-3xl flex flex-col items-center gap-3';
-                    else document.getElementById('btn-enf').className = 'active-enf p-8 rounded-3xl flex flex-col items-center gap-3';
-                } catch(e) { console.error(e); }
-            }
+    <script>
+        function setModo(tipo) {
+            document.getElementById('tipo_empleado').value = tipo;
+            document.getElementById('btn-doc').className = tipo === 'doctor' ? 'active-btn p-8 rounded-3xl font-black' : 'inactive-btn p-8 rounded-3xl font-black';
+            document.getElementById('btn-enf').className = tipo === 'enfermera' ? 'active-btn p-8 rounded-3xl font-black' : 'inactive-btn p-8 rounded-3xl font-black';
         }
+        
+        setModo('doctor'); // Default
+
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
+            // Endpoint plural para asegurar coincidencia con el backend
             const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
-            const payload = tipo === 'doctor' ? { ci_doc: editId, nombre_doc: document.getElementById('nombre_val').value, appaterno_doc: document.getElementById('paterno_val').value, especialidad: document.getElementById('especialidad_val').value, turno_doc: document.getElementById('turno_val').value } : { ci_enfe: editId, nombre_enfe: document.getElementById('nombre_val').value, appaterno_enfe: document.getElementById('paterno_val').value, especialidad: document.getElementById('especialidad_val').value, turno_enfe: document.getElementById('turno_val').value };
-            await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${editId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-            window.location.href = 'lista_personal.html';
+            const id = document.getElementById('ci_val').value;
+            
+            const payload = tipo === 'doctor' ? {
+                ci_doc: id, nombre_doc: document.getElementById('nombre_val').value, 
+                appaterno_doc: document.getElementById('paterno_val').value, 
+                especialidad: document.getElementById('especialidad_val').value, 
+                turno_doc: document.getElementById('turno_val').value
+            } : {
+                ci_enfe: id, nombre_enfe: document.getElementById('nombre_val').value, 
+                appaterno_enfe: document.getElementById('paterno_val').value, 
+                especialidad: document.getElementById('especialidad_val').value, 
+                turno_enfe: document.getElementById('turno_val').value
+            };
+
+            try {
+                const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if(res.ok) window.location.href = 'lista_personal.html';
+                else alert("Error al guardar: Verifique que el C.I. no exista.");
+            } catch(e) { alert("Error de conexión con la nube."); }
         });
-        init();
     </script>
 </body>
 </html>
