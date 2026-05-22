@@ -10,9 +10,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
         .hoja-sistema { background-color: white; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); overflow: hidden; }
-        .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; transition: all 0.3s; }
-        .input-ohs:focus { border-color: #2563eb; outline: none; background-color: white; }
-        .active-btn { border: 3px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
+        .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; }
+        .active-doc { border: 3px solid #2563eb; background-color: #eff6ff; color: #1e40af; }
+        .active-enf { border: 3px solid #10b981; background-color: #ecfdf5; color: #065f46; }
         .inactive-btn { border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; }
     </style>
 </head>
@@ -21,11 +21,15 @@
         <button onclick="location.href='lista_personal.html'" class="bg-slate-800 text-white px-6 py-2 rounded-lg text-[10px] font-black">VOLVER</button>
     </div>
     <div class="hoja-sistema">
-        <div class="p-8 border-b"><h1 id="titulo-form" class="text-4xl font-black text-blue-900">NUEVO REGISTRO</h1></div>
+        <div class="p-8 border-b"><h1 id="titulo-form" class="text-4xl font-black text-blue-900">REGISTRO</h1></div>
         <div class="p-12">
             <div class="grid grid-cols-2 gap-6 mb-12">
-                <button type="button" id="btn-doc" onclick="setModo('doctor')" class="inactive-btn p-8 rounded-3xl font-black">DOCTOR</button>
-                <button type="button" id="btn-enf" onclick="setModo('enfermera')" class="inactive-btn p-8 rounded-3xl font-black">ENFERMERA</button>
+                <button type="button" id="btn-doc" onclick="setModo('doctor')" class="active-doc p-8 rounded-3xl flex flex-col items-center gap-3 font-black">
+                    <i class="fa-solid fa-user-doctor text-4xl"></i> DOCTOR
+                </button>
+                <button type="button" id="btn-enf" onclick="setModo('enfermera')" class="inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 font-black">
+                    <i class="fa-solid fa-user-nurse text-4xl"></i> ENFERMERA
+                </button>
             </div>
             <form id="form-registro" class="space-y-8">
                 <input type="hidden" id="tipo_empleado" value="doctor">
@@ -40,7 +44,7 @@
                         </select>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-xl font-black">GUARDAR REGISTRO</button>
+                <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-xl font-black">GUARDAR</button>
             </form>
         </div>
     </div>
@@ -48,16 +52,14 @@
     <script>
         function setModo(tipo) {
             document.getElementById('tipo_empleado').value = tipo;
-            document.getElementById('btn-doc').className = tipo === 'doctor' ? 'active-btn p-8 rounded-3xl font-black' : 'inactive-btn p-8 rounded-3xl font-black';
-            document.getElementById('btn-enf').className = tipo === 'enfermera' ? 'active-btn p-8 rounded-3xl font-black' : 'inactive-btn p-8 rounded-3xl font-black';
+            const isDoc = (tipo === 'doctor');
+            document.getElementById('btn-doc').className = isDoc ? 'active-doc p-8 rounded-3xl flex flex-col items-center gap-3 font-black' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 font-black';
+            document.getElementById('btn-enf').className = !isDoc ? 'active-enf p-8 rounded-3xl flex flex-col items-center gap-3 font-black' : 'inactive-btn p-8 rounded-3xl flex flex-col items-center gap-3 font-black';
         }
-        
-        setModo('doctor'); // Default
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
-            // Endpoint plural para asegurar coincidencia con el backend
             const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
             const id = document.getElementById('ci_val').value;
             
@@ -80,8 +82,8 @@
                     body: JSON.stringify(payload)
                 });
                 if(res.ok) window.location.href = 'lista_personal.html';
-                else alert("Error al guardar: Verifique que el C.I. no exista.");
-            } catch(e) { alert("Error de conexión con la nube."); }
+                else alert("Error al guardar.");
+            } catch(e) { alert("Error de conexión."); }
         });
     </script>
 </body>
