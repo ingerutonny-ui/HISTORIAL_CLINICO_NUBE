@@ -4,12 +4,11 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from . import crud, models
 
-# Crear tablas
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración CORS completa y obligatoria al inicio
+# Middleware de CORS con respuesta explícita para preflight
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,10 +17,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Manejador global para preflight OPTIONS (evita el 404 en la consola)
-@app.options("/{rest_of_path:path}")
-async def preflight_handler(rest_of_path: str):
-    return Response(status_code=200)
+@app.middleware("http")
+async def intercept_options(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return Response(status_code=200, headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+        })
+    return await call_next(request)
 
 def get_db():
     db = SessionLocal()
