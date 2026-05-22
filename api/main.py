@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
-from . import crud, models, schemas
+from . import crud, models
 
 # Crear tablas
 models.Base.metadata.create_all(bind=engine)
