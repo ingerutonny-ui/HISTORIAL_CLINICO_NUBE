@@ -53,7 +53,6 @@
         let registroId = null;
         let tipoSeleccionado = tipoURL;
 
-        // Lógica de selección de botones
         const btnDoc = document.getElementById('btn-doc');
         const btnEnf = document.getElementById('btn-enf');
 
@@ -62,7 +61,7 @@
             if (t === 'doctor') {
                 btnDoc.className = 'active-doc p-8 rounded-3xl text-center transition-all';
                 btnEnf.className = 'inactive-btn p-8 rounded-3xl text-center transition-all';
-            } else {
+            } else if (t === 'enfermera') {
                 btnEnf.className = 'active-enf p-8 rounded-3xl text-center transition-all';
                 btnDoc.className = 'inactive-btn p-8 rounded-3xl text-center transition-all';
             }
@@ -98,8 +97,10 @@
             if (!tipoSeleccionado) return alert("Seleccione si es DOCTOR o ENFERMERA");
             
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
-            const method = registroId ? 'PUT' : 'POST';
-            const url = registroId ? `https://historial-clinico-nube.onrender.com/${endpoint}/${registroId}` : `https://historial-clinico-nube.onrender.com/${endpoint}/`;
+            const isEdit = !!registroId;
+            const url = isEdit 
+                ? `https://historial-clinico-nube.onrender.com/${endpoint}/${registroId}` 
+                : `https://historial-clinico-nube.onrender.com/${endpoint}`;
 
             const payload = (tipoSeleccionado === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value,
@@ -116,18 +117,18 @@
             };
 
             const res = await fetch(url, {
-                method: method,
+                method: isEdit ? 'PUT' : 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                alert("Guardado exitosamente");
                 window.location.href = 'lista_personal.html';
             } else {
-                alert("Error al guardar en el servidor");
+                alert("Error al guardar: Verifique que el C.I. no esté duplicado.");
             }
         });
+
         cargar();
     </script>
 </body>
