@@ -91,24 +91,25 @@
                 document.getElementById('titulo-form').innerText = "EDITAR REGISTRO";
                 document.getElementById('ci_val').readOnly = true;
                 setModo(editTipo);
-                // Intentamos ruta singular, si falla tu servidor la cambiará automáticamente
+                const endpoint = editTipo === 'doctor' ? 'doctores' : 'enfermeras';
                 try {
-                    const res = await fetch(`https://historial-clinico-nube.onrender.com/${editTipo}/${editId}`);
+                    const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${editId}`);
                     const data = await res.json();
                     document.getElementById('ci_val').value = editId;
-                    document.getElementById('nombre_val').value = data.nombre_doc || data.nombre_enfe || data.nombre || "";
-                    document.getElementById('paterno_val').value = data.appaterno_doc || data.appaterno_enfe || data.appaterno || "";
+                    document.getElementById('nombre_val').value = data.nombre_doc || data.nombre_enfe || "";
+                    document.getElementById('paterno_val').value = data.appaterno_doc || data.appaterno_enfe || "";
                     document.getElementById('especialidad_val').value = data.especialidad || "";
-                    document.getElementById('turno_val').value = data.turno_doc || data.turno_enfe || data.turno || "MAÑANA";
-                } catch(e) { console.error("Error de carga"); }
+                    document.getElementById('turno_val').value = data.turno_doc || data.turno_enfe || "MAÑANA";
+                } catch(e) { console.error("Error al cargar datos"); }
             }
         }
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             const tipo = document.getElementById('tipo_empleado').value;
+            const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
             const id = document.getElementById('ci_val').value;
             const payload = (tipo === 'doctor') ? { ci_doc: id, nombre_doc: document.getElementById('nombre_val').value, appaterno_doc: document.getElementById('paterno_val').value, especialidad: document.getElementById('especialidad_val').value, turno_doc: document.getElementById('turno_val').value } : { ci_enfe: id, nombre_enfe: document.getElementById('nombre_val').value, appaterno_enfe: document.getElementById('paterno_val').value, especialidad: document.getElementById('especialidad_val').value, turno_enfe: document.getElementById('turno_val').value };
-            await fetch(`https://historial-clinico-nube.onrender.com/${tipo}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
             window.location.href = 'lista_personal.html';
         });
         init();
