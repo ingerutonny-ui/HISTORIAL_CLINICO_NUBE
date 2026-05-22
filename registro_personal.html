@@ -91,9 +91,9 @@
             e.preventDefault();
             if (!tipoSeleccionado) return alert("SELECCIONE DOCTOR O ENFERMERA");
             
-            const base = 'https://historial-clinico-nube.onrender.com/';
+            const base = 'https://historial-clinico-nube.onrender.com';
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
-            const url = registroId ? `${base}${endpoint}/${registroId}` : `${base}${endpoint}`;
+            const url = registroId ? `${base}/${endpoint}/${registroId}` : `${base}/${endpoint}`;
             
             const payload = (tipoSeleccionado === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value.toUpperCase(),
@@ -109,16 +109,20 @@
                 turno_enfe: document.getElementById('turno_val').value.toUpperCase()
             };
 
-            const res = await fetch(url, {
-                method: registroId ? 'PUT' : 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            try {
+                const res = await fetch(url, {
+                    method: registroId ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-            if (res.ok) {
-                window.location.href = 'lista_personal.html';
-            } else {
-                alert("ERROR AL GUARDAR");
+                if (res.ok) {
+                    window.location.href = 'lista_personal.html';
+                } else {
+                    alert("ERROR: EL C.I. YA EXISTE O DATOS INCORRECTOS");
+                }
+            } catch (err) {
+                alert("ERROR DE CONEXIÓN CON EL SERVIDOR");
             }
         });
 
