@@ -4,9 +4,8 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from . import crud, models
 
-# Inicialización de la base de datos
+# Inicialización
 Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
 
 # Configuración CORS
@@ -14,7 +13,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
@@ -37,7 +36,7 @@ def get_db():
     finally:
         db.close()
 
-# --- CONSULTA INTEGRAL (P1:DeclaracionJurada, P2:AntecedentesP2, P3:HabitosRiesgosP3) ---
+# --- CONSULTA INTEGRAL ---
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(
@@ -48,19 +47,14 @@ def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db))
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
-    # Consultas a las 3 tablas de datos
-    p1 = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first()
-    p2 = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente.id).first()
-    p3 = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente.id).first()
-    
     return {
         "paciente": paciente,
-        "filiacion": p1,
-        "antecedentes": p2,
-        "habitos": p3
+        "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first(),
+        "antecedentes": db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente.id).first(),
+        "habitos": db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente.id).first()
     }
 
-# --- RUTAS DE REGISTRO ---
+# --- RUTAS DE REGISTRO Y UPSERT ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
@@ -77,7 +71,7 @@ def registrar_p2(data: dict, db: Session = Depends(get_db)):
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
-# --- GESTIÓN DE PERSONAL (INTACTA) ---
+# --- GESTIÓN DE PERSONAL (COMPLETA) ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {
