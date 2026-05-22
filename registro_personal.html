@@ -34,6 +34,13 @@
                     <div><label class="text-[10px] font-black text-gray-400">NOMBRES</label><input type="text" id="nombre_val" class="input-ohs" required></div>
                     <div><label class="text-[10px] font-black text-gray-400">APELLIDOS</label><input type="text" id="paterno_val" class="input-ohs" required></div>
                     <div><label class="text-[10px] font-black text-gray-400">ESPECIALIDAD</label><input type="text" id="especialidad_val" class="input-ohs"></div>
+                    <div><label class="text-[10px] font-black text-gray-400">TURNO</label>
+                        <select id="turno_val" class="input-ohs">
+                            <option value="MAÑANA">MAÑANA</option>
+                            <option value="TARDE">TARDE</option>
+                            <option value="NOCHE">NOCHE</option>
+                        </select>
+                    </div>
                 </div>
                 <button type="submit" class="w-full bg-blue-700 text-white py-5 rounded-2xl font-black">GUARDAR REGISTRO</button>
             </form>
@@ -41,18 +48,16 @@
     </div>
     <script>
         const params = new URLSearchParams(window.location.search);
-        const ci = params.get('id'); // Este es tu C.I.
+        const ci = params.get('id');
         const tipo = params.get('tipo');
 
         async function cargar() {
             if (!ci || !tipo) return;
             document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
             
-            // Highlight del tipo seleccionado
             if (tipo === 'doctor') document.getElementById('btn-doc').className = 'active-doc p-8 rounded-3xl text-center';
             else document.getElementById('btn-enf').className = 'active-enf p-8 rounded-3xl text-center';
 
-            // Buscamos primero en el listado general para obtener el ID real de base de datos
             const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
             const data = await res.json();
             
@@ -65,6 +70,7 @@
                 document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
                 document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
                 document.getElementById('especialidad_val').value = item.especialidad || '';
+                document.getElementById('turno_val').value = item.turno_doc || item.turno_enfe || 'MAÑANA';
             }
         }
         cargar();
