@@ -9,7 +9,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# --- CONFIGURACIÓN DE SEGURIDAD Y CORS (Nivel Máximo) ---
+# 1. CORS Middleware configurado de forma estricta al inicio
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,16 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Middleware para asegurar que los headers CORS viajen en todas las respuestas
-@app.middleware("http")
-async def add_cors_header(request: Request, call_next):
-    response = await call_next(request)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "*"
-    response.headers["Access-Control-Allow-Headers"] = "*"
-    return response
-
-# Manejador para preflight OPTIONS
+# 2. Manejador de preflight (OPTIONS) global para evitar 404 antes de las rutas
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(rest_of_path: str):
     return Response(status_code=200)
@@ -39,27 +30,23 @@ def get_db():
     finally:
         db.close()
 
-# --- PACIENTES ---
+# --- RUTAS ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
 
-# --- DECLARACIÓN JURADA (P1) ---
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_filiacion(db, data)
 
-# --- ANTECEDENTES (P2) ---
 @app.post("/antecedentes_p2/")
 def registrar_p2(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p2(db, data)
 
-# --- HÁBITOS Y RIESGOS (P3) ---
 @app.post("/habitos_p3/")
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
-# --- PERSONAL ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {
@@ -67,7 +54,6 @@ def obtener_personal(db: Session = Depends(get_db)):
         "enfermeras": db.query(models.Enfermera).all()
     }
 
-# --- DOCTORES ---
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
     return crud.create_doctor(db, data)
@@ -91,7 +77,6 @@ def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Eliminado"}
 
-# --- ENFERMERAS ---
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
     return crud.create_enfermera(db, data)
