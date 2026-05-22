@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
@@ -9,7 +9,7 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# 1. CORS Middleware configurado de forma estricta al inicio
+# Configuración CORS completa y obligatoria al inicio
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,7 +18,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 2. Manejador de preflight (OPTIONS) global para evitar 404 antes de las rutas
+# Manejador global para preflight OPTIONS (evita el 404 en la consola)
 @app.options("/{rest_of_path:path}")
 async def preflight_handler(rest_of_path: str):
     return Response(status_code=200)
@@ -30,23 +30,27 @@ def get_db():
     finally:
         db.close()
 
-# --- RUTAS ---
+# --- PACIENTES ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
 
+# --- DECLARACIÓN JURADA (P1) ---
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_filiacion(db, data)
 
+# --- ANTECEDENTES (P2) ---
 @app.post("/antecedentes_p2/")
 def registrar_p2(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p2(db, data)
 
+# --- HÁBITOS Y RIESGOS (P3) ---
 @app.post("/habitos_p3/")
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
+# --- PERSONAL ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {
@@ -54,6 +58,7 @@ def obtener_personal(db: Session = Depends(get_db)):
         "enfermeras": db.query(models.Enfermera).all()
     }
 
+# --- DOCTORES ---
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
     return crud.create_doctor(db, data)
@@ -77,6 +82,7 @@ def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Eliminado"}
 
+# --- ENFERMERAS ---
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
     return crud.create_enfermera(db, data)
