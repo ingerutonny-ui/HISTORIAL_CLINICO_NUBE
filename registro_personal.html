@@ -50,7 +50,7 @@
         const params = new URLSearchParams(window.location.search);
         const ci = params.get('id');
         const tipo = params.get('tipo');
-        let registroId = null;
+        let dbId = null; // Variable para almacenar el ID real de la base de datos
 
         async function cargar() {
             if (!ci || !tipo) return;
@@ -67,7 +67,8 @@
                 : data.enfermeras.find(e => e.ci_enfe === ci);
 
             if (item) {
-                registroId = item.id_doc || item.id_enfe;
+                // Guardamos el ID real de la base de datos (id_doc o id_enfe)
+                dbId = item.id_doc || item.id_enfe; 
                 document.getElementById('ci_val').value = ci;
                 document.getElementById('ci_val').readOnly = true;
                 document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
@@ -79,6 +80,8 @@
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (!dbId) return alert("Error: No se cargó el ID del registro.");
+            
             const esDoctor = document.getElementById('btn-doc').className.includes('active-doc');
             const endpoint = esDoctor ? 'doctores' : 'enfermeras';
             
@@ -96,7 +99,7 @@
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${registroId}`, {
+            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${dbId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -105,7 +108,7 @@
             if (res.ok) {
                 window.location.href = 'lista_personal.html';
             } else {
-                alert("Error al guardar");
+                alert("Error al guardar en el servidor");
             }
         });
         cargar();
