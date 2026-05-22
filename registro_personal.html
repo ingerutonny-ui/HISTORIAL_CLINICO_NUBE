@@ -67,35 +67,28 @@
         btnEnf.addEventListener('click', () => actualizarSeleccion('enfermera'));
 
         async function cargar() {
-            if (!id_url || !tipo_url) {
-                document.getElementById('titulo-form').innerText = 'NUEVO REGISTRO';
-                return;
-            }
-            document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
-            actualizarSeleccion(tipo_url);
-            
-            const res = await fetch(`${API_URL}/personal`);
-            const data = await res.json();
-            const item = (tipo_url === 'doctor') ? data.doctores.find(d => d.ci_doc == id_url) : data.enfermeras.find(e => e.ci_enfe == id_url);
-
-            if (item) {
-                registroId = (tipo_url === 'doctor') ? item.id_doc : item.id_enfe;
-                document.getElementById('ci_val').value = id_url;
-                document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
-                document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
-                document.getElementById('especialidad_val').value = item.especialidad || '';
-                document.getElementById('turno_val').value = item.turno_doc || item.turno_enfe || 'MAÑANA';
+            if (id_url && tipo_url) {
+                document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
+                actualizarSeleccion(tipo_url);
+                const res = await fetch(`${API_URL}/personal`);
+                const data = await res.json();
+                const item = (tipo_url === 'doctor') ? data.doctores.find(d => d.ci_doc == id_url) : data.enfermeras.find(e => e.ci_enfe == id_url);
+                if (item) {
+                    registroId = (tipo_url === 'doctor') ? item.id_doc : item.id_enfe;
+                    document.getElementById('ci_val').value = id_url;
+                    document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
+                    document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
+                    document.getElementById('especialidad_val').value = item.especialidad || '';
+                    document.getElementById('turno_val').value = item.turno_doc || item.turno_enfe || 'MAÑANA';
+                }
             }
         }
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!tipoSeleccionado) return alert("SELECCIONE DOCTOR O ENFERMERA");
-            
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
-            // Se elimina la barra diagonal final para evitar el error 404
             const url = registroId ? `${API_URL}/${endpoint}/${registroId}` : `${API_URL}/${endpoint}`;
-            
             const payload = (tipoSeleccionado === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value.toUpperCase(),
                 nombre_doc: document.getElementById('nombre_val').value.toUpperCase(),
@@ -110,21 +103,14 @@
                 turno_enfe: document.getElementById('turno_val').value.toUpperCase()
             };
 
-            try {
-                const res = await fetch(url, {
-                    method: registroId ? 'PUT' : 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+            const res = await fetch(url, {
+                method: registroId ? 'PUT' : 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
 
-                if (res.ok) {
-                    window.location.href = 'lista_personal.html';
-                } else {
-                    alert("ERROR AL GUARDAR: VERIFIQUE LOS DATOS");
-                }
-            } catch (err) {
-                alert("ERROR DE CONEXIÓN");
-            }
+            if (res.ok) window.location.href = 'lista_personal.html';
+            else alert("ERROR EN EL SERVIDOR. INTENTE DE NUEVO.");
         });
 
         cargar();
