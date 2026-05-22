@@ -67,12 +67,47 @@
 
             if (item) {
                 document.getElementById('ci_val').value = ci;
+                document.getElementById('ci_val').readOnly = true;
                 document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
                 document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
                 document.getElementById('especialidad_val').value = item.especialidad || '';
                 document.getElementById('turno_val').value = item.turno_doc || item.turno_enfe || 'MAÑANA';
             }
         }
+
+        document.getElementById('form-registro').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const esDoctor = document.getElementById('btn-doc').className.includes('active-doc');
+            const endpoint = esDoctor ? 'doctores' : 'enfermeras';
+            const ci = document.getElementById('ci_val').value;
+            
+            const payload = esDoctor ? {
+                ci_doc: ci,
+                nombre_doc: document.getElementById('nombre_val').value,
+                appaterno_doc: document.getElementById('paterno_val').value,
+                especialidad: document.getElementById('especialidad_val').value,
+                turno_doc: document.getElementById('turno_val').value
+            } : {
+                ci_enfe: ci,
+                nombre_enfe: document.getElementById('nombre_val').value,
+                appaterno_enfe: document.getElementById('paterno_val').value,
+                especialidad: document.getElementById('especialidad_val').value,
+                turno_enfe: document.getElementById('turno_val').value
+            };
+
+            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${ci}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                alert("Cambios guardados");
+                window.location.href = 'lista_personal.html';
+            } else {
+                alert("Error al guardar");
+            }
+        });
         cargar();
     </script>
 </body>
