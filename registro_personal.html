@@ -78,23 +78,27 @@
             document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
             actualizarSeleccion(tipoURL);
             
-            const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
-            const data = await res.json();
-            const item = (tipoURL === 'doctor') ? data.doctores.find(d => d.ci_doc === ci) : data.enfermeras.find(e => e.ci_enfe === ci);
+            try {
+                const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
+                const data = await res.json();
+                const item = (tipoURL === 'doctor') ? data.doctores.find(d => d.ci_doc === ci) : data.enfermeras.find(e => e.ci_enfe === ci);
 
-            if (item) {
-                registroId = (tipoURL === 'doctor') ? item.id_doc : item.id_enfe;
-                document.getElementById('ci_val').value = ci;
-                document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
-                document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
-                document.getElementById('especialidad_val').value = item.especialidad || '';
-                document.getElementById('turno_val').value = item.turno_doc || item.turno_enfe || 'MAÑANA';
+                if (item) {
+                    registroId = (tipoURL === 'doctor') ? item.id_doc : item.id_enfe;
+                    document.getElementById('ci_val').value = ci;
+                    document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
+                    document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
+                    document.getElementById('especialidad_val').value = item.especialidad || '';
+                    document.getElementById('turno_val').value = item.turno_doc || item.turno_enfe || 'MAÑANA';
+                }
+            } catch (error) {
+                console.error("Error al cargar datos");
             }
         }
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!tipoSeleccionado) return alert("Seleccione si es DOCTOR o ENFERMERA");
+            if (!tipoSeleccionado) return alert("Seleccione DOCTOR o ENFERMERA");
             
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
             const isEdit = !!registroId;
@@ -116,16 +120,20 @@
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const res = await fetch(url, {
-                method: isEdit ? 'PUT' : 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
+            try {
+                const res = await fetch(url, {
+                    method: isEdit ? 'PUT' : 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
 
-            if (res.ok) {
-                window.location.href = 'lista_personal.html';
-            } else {
-                alert("Error al guardar: Verifique que el C.I. no esté duplicado.");
+                if (res.ok) {
+                    window.location.href = 'lista_personal.html';
+                } else {
+                    alert("Error al guardar: Verifique los datos o si el C.I. ya existe.");
+                }
+            } catch (error) {
+                alert("Error de conexión con el servidor.");
             }
         });
 
