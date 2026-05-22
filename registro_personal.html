@@ -52,7 +52,7 @@
         const tipo_url = params.get('tipo');
         let registroId = null;
         let tipoSeleccionado = tipo_url;
-        const API_URL = 'https://historial-clinico-nube.onrender.com';
+        const BASE_API = 'https://historial-clinico-nube.onrender.com';
 
         const btnDoc = document.getElementById('btn-doc');
         const btnEnf = document.getElementById('btn-enf');
@@ -70,7 +70,7 @@
             if (id_url && tipo_url) {
                 document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
                 actualizarSeleccion(tipo_url);
-                const res = await fetch(`${API_URL}/personal`);
+                const res = await fetch(`${BASE_API}/personal`);
                 const data = await res.json();
                 const item = (tipo_url === 'doctor') ? data.doctores.find(d => d.ci_doc == id_url) : data.enfermeras.find(e => e.ci_enfe == id_url);
                 if (item) {
@@ -86,21 +86,21 @@
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!tipoSeleccionado) return alert("SELECCIONE DOCTOR O ENFERMERA");
+            if (!tipoSeleccionado) return alert("SELECCIONE TIPO DE PERSONAL");
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
-            const url = registroId ? `${API_URL}/${endpoint}/${registroId}` : `${API_URL}/${endpoint}`;
+            const url = registroId ? `${BASE_API}/${endpoint}/${registroId}` : `${BASE_API}/${endpoint}`;
             const payload = (tipoSeleccionado === 'doctor') ? {
-                ci_doc: document.getElementById('ci_val').value.toUpperCase(),
-                nombre_doc: document.getElementById('nombre_val').value.toUpperCase(),
-                appaterno_doc: document.getElementById('paterno_val').value.toUpperCase(),
-                especialidad: document.getElementById('especialidad_val').value.toUpperCase(),
-                turno_doc: document.getElementById('turno_val').value.toUpperCase()
+                ci_doc: document.getElementById('ci_val').value,
+                nombre_doc: document.getElementById('nombre_val').value,
+                appaterno_doc: document.getElementById('paterno_val').value,
+                especialidad: document.getElementById('especialidad_val').value,
+                turno_doc: document.getElementById('turno_val').value
             } : {
-                ci_enfe: document.getElementById('ci_val').value.toUpperCase(),
-                nombre_enfe: document.getElementById('nombre_val').value.toUpperCase(),
-                appaterno_enfe: document.getElementById('paterno_val').value.toUpperCase(),
-                especialidad: document.getElementById('especialidad_val').value.toUpperCase(),
-                turno_enfe: document.getElementById('turno_val').value.toUpperCase()
+                ci_enfe: document.getElementById('ci_val').value,
+                nombre_enfe: document.getElementById('nombre_val').value,
+                appaterno_enfe: document.getElementById('paterno_val').value,
+                especialidad: document.getElementById('especialidad_val').value,
+                turno_enfe: document.getElementById('turno_val').value
             };
 
             const res = await fetch(url, {
@@ -110,7 +110,7 @@
             });
 
             if (res.ok) window.location.href = 'lista_personal.html';
-            else alert("ERROR EN EL SERVIDOR. INTENTE DE NUEVO.");
+            else alert("ERROR: EL C.I. YA EXISTE O DATOS INCORRECTOS");
         });
 
         cargar();
