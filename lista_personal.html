@@ -6,93 +6,91 @@
     <title>Personal Médico - OHS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0a0e1a; margin: 0; padding: 20px; text-transform: uppercase; }
-        .hoja-sistema { background-color: white; width: 100%; max-width: 1200px; margin: 0 auto; border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); overflow: hidden; }
-        .btn-volver-top { max-width: 1200px; margin: 0 auto 15px auto; width: 100%; }
-        @media print { .no-print { display: none !important; } .btn-volver-top { display: none !important; } }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen">
-    <div class="btn-volver-top">
-        <button onclick="location.href='index.html'" class="bg-slate-800/80 text-white px-6 py-2 rounded-lg text-[10px] font-black flex items-center gap-2">
-            <i class="fa-solid fa-house"></i> IR AL INICIO
-        </button>
-    </div>
-    <div class="hoja-sistema">
-        <div class="p-10 border-b border-gray-100 flex justify-between items-center">
-            <h1 class="text-4xl font-black text-blue-900">PERSONAL MÉDICO</h1>
-            <a href="registro_personal.html" class="bg-blue-700 text-white px-8 py-3 rounded-full font-black text-[11px]">+ REGISTRAR NUEVO</a>
+<body class="p-10">
+    <div class="max-w-6xl mx-auto bg-white p-10 rounded-3xl shadow-xl">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl font-black text-blue-900">PERSONAL MÉDICO</h1>
+            <div class="flex gap-2">
+                <button onclick="generarPDF()" class="bg-red-600 text-white px-6 py-3 rounded-full font-black text-[11px] hover:bg-red-700">
+                    <i class="fa-solid fa-file-pdf mr-2"></i> EXPORTAR PDF
+                </button>
+                <a href="registro_personal.html" class="bg-blue-700 text-white px-8 py-3 rounded-full font-black text-[11px] hover:bg-blue-800">
+                    + REGISTRAR NUEVO PROFESIONAL
+                </a>
+            </div>
         </div>
-        <div class="p-10">
-            <table class="w-full text-left">
-                <thead>
-                    <tr class="bg-blue-700 text-white text-[11px] font-black">
-                        <th class="p-5">C.I.</th>
-                        <th class="p-5">Nombre Completo</th>
-                        <th class="p-5">Cargo</th>
-                        <th class="p-5 text-center">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tabla-personal" class="text-[11px] font-bold text-gray-700"></tbody>
-            </table>
-        </div>
+        
+        <table class="w-full text-left">
+            <thead>
+                <tr class="bg-blue-700 text-white text-[11px] font-black uppercase">
+                    <th class="p-5">C.I.</th>
+                    <th class="p-5">Nombre Completo</th>
+                    <th class="p-5">Especialidad / Cargo</th>
+                    <th class="p-5">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tabla-personal" class="text-[12px] font-bold text-gray-700"></tbody>
+        </table>
     </div>
+
     <script>
         const BASE_API = 'https://historial-clinico-nube.onrender.com';
-
+        
         async function cargar() {
-            try {
-                const res = await fetch(`${BASE_API}/personal/`);
-                const data = await res.json();
-                const t = document.getElementById('tabla-personal');
-                t.innerHTML = '';
-                
-                // Procesar Doctores
-                data.doctores.forEach(p => {
-                    const row = document.createElement('tr');
-                    row.className = "border-b";
-                    row.innerHTML = `
-                        <td class="p-5">${p.ci_doc}</td>
-                        <td class="p-5">${p.nombre_doc} ${p.appaterno_doc}</td>
-                        <td class="p-5">${p.especialidad}</td>
-                        <td class="p-5 no-print text-center">
-                            <button onclick="editar('${p.ci_doc}', 'doctor')" class="bg-orange-500 text-white p-2 rounded mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="eliminar(${p.id_doc}, 'doctor')" class="bg-red-600 text-white p-2 rounded mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td>`;
-                    t.appendChild(row);
-                });
+            const res = await fetch(`${BASE_API}/personal/`);
+            const data = await res.json();
+            const t = document.getElementById('tabla-personal');
+            t.innerHTML = '';
+            
+            const personal = [...data.doctores.map(d => ({...d, tipo: 'doctor', id: d.id_doc, ci: d.ci_doc, nom: d.nombre_doc, ap: d.appaterno_doc})), 
+                             ...data.enfermeras.map(e => ({...e, tipo: 'enfermera', id: e.id_enfe, ci: e.ci_enfe, nom: e.nombre_enfe, ap: e.appaterno_enfe}))];
 
-                // Procesar Enfermeras
-                data.enfermeras.forEach(p => {
-                    const row = document.createElement('tr');
-                    row.className = "border-b";
-                    row.innerHTML = `
-                        <td class="p-5">${p.ci_enfe}</td>
-                        <td class="p-5">${p.nombre_enfe} ${p.appaterno_enfe}</td>
-                        <td class="p-5">${p.especialidad}</td>
-                        <td class="p-5 no-print text-center">
-                            <button onclick="editar('${p.ci_enfe}', 'enfermera')" class="bg-orange-500 text-white p-2 rounded mx-1"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="eliminar(${p.id_enfe}, 'enfermera')" class="bg-red-600 text-white p-2 rounded mx-1"><i class="fa-solid fa-trash"></i></button>
-                        </td>`;
-                    t.appendChild(row);
-                });
-            } catch (err) { console.error("Error al cargar:", err); }
+            personal.forEach(p => {
+                const color = p.tipo === 'doctor' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700';
+                t.innerHTML += `
+                    <tr class="border-b">
+                        <td class="p-5">${p.ci}</td>
+                        <td class="p-5">${p.nom} ${p.ap}</td>
+                        <td class="p-5">
+                            <span class="${color} px-3 py-1 rounded-full text-[10px] uppercase font-black">
+                                <i class="fa-solid fa-user-md mr-1"></i> ${p.tipo}: ${p.especialidad}
+                            </span>
+                        </td>
+                        <td class="p-5 flex gap-2">
+                            <button onclick="window.location.href='registro_personal.html?id=${p.ci}&tipo=${p.tipo}'" class="text-orange-500"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminar(${p.id}, '${p.tipo}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+            });
         }
 
-        function editar(ci, tipo) { window.location.href = `registro_personal.html?id=${ci}&tipo=${tipo}`; }
+        async function generarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Reporte de Personal Médico", 14, 15);
+            doc.autoTable({
+                startY: 20,
+                head: [['C.I.', 'Nombre Completo', 'Especialidad / Cargo']],
+                body: Array.from(document.querySelectorAll('#tabla-personal tr')).map(tr => 
+                    Array.from(tr.querySelectorAll('td')).slice(0, 3).map(td => td.innerText)
+                )
+            });
+            doc.save('personal_medico.pdf');
+        }
 
         async function eliminar(id, tipo) {
             if(!confirm('¿ELIMINAR ESTE REGISTRO?')) return;
-            const endpoint = tipo === 'doctor' ? 'doctores' : 'enfermeras';
-            try {
-                const res = await fetch(`${BASE_API}/${endpoint}/${id}`, { method: 'DELETE' });
-                if(res.ok) cargar();
-                else alert("Error al eliminar");
-            } catch (err) { alert("Error de conexión"); }
+            const res = await fetch(`${BASE_API}/${tipo === 'doctor' ? 'doctores' : 'enfermeras'}/${id}`, { method: 'DELETE' });
+            if(res.ok) cargar();
         }
-        
+
         cargar();
     </script>
 </body>
