@@ -1,12 +1,15 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from .database import SessionLocal, engine
+from .database import SessionLocal, engine, Base
 from . import crud, models
 
-models.Base.metadata.create_all(bind=engine)
+# Inicialización de la base de datos
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
+# Middleware CORS completo
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,6 +18,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def add_cors_headers(request: Request, call_next):
+    if request.method == "OPTIONS":
+        return Response(status_code=200, headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+        })
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+
 def get_db():
     db = SessionLocal()
     try:
@@ -22,7 +37,7 @@ def get_db():
     finally:
         db.close()
 
-# --- RUTA DE PACIENTE COMPLETO ---
+# --- RUTA DE CONSULTA INTEGRAL (PACIENTE + FILIACIÓN) ---
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == identificador).first()
@@ -35,7 +50,7 @@ def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db))
     filiacion = db.query(models.Filiacion).filter(models.Filiacion.paciente_id == paciente.id).first()
     return {"paciente": paciente, "filiacion": filiacion}
 
-# --- RUTAS DE REGISTRO ---
+# --- RUTAS DE REGISTRO Y GESTIÓN ---
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     return crud.create_paciente(db, data)
@@ -52,10 +67,13 @@ def registrar_p2(data: dict, db: Session = Depends(get_db)):
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
-# --- PERSONAL ---
+# --- GESTIÓN DE PERSONAL ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
-    return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
+    return {
+        "doctores": db.query(models.Doctor).all(),
+        "enfermeras": db.query(models.Enfermera).all()
+    }
 
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
