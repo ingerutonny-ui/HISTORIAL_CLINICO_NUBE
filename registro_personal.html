@@ -51,7 +51,7 @@
         const id_url = params.get('id');
         const tipo_url = params.get('tipo');
         let registroId = null;
-        let tipoSeleccionado = tipo_url;
+        let tipoSeleccionado = tipo_url || null;
         const BASE_API = 'https://historial-clinico-nube.onrender.com';
 
         const btnDoc = document.getElementById('btn-doc');
@@ -63,13 +63,14 @@
             btnEnf.className = (t === 'enfermera') ? 'active-enf p-8 rounded-3xl text-center transition-all' : 'inactive-btn p-8 rounded-3xl text-center transition-all';
         }
 
+        if(tipo_url) actualizarSeleccion(tipo_url);
+
         btnDoc.addEventListener('click', () => actualizarSeleccion('doctor'));
         btnEnf.addEventListener('click', () => actualizarSeleccion('enfermera'));
 
         async function cargar() {
             if (id_url && tipo_url) {
                 document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
-                actualizarSeleccion(tipo_url);
                 const res = await fetch(`${BASE_API}/personal`);
                 const data = await res.json();
                 const item = (tipo_url === 'doctor') ? data.doctores.find(d => d.ci_doc == id_url) : data.enfermeras.find(e => e.ci_enfe == id_url);
@@ -87,8 +88,10 @@
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!tipoSeleccionado) return alert("SELECCIONE DOCTOR O ENFERMERA");
+            
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
             const url = registroId ? `${BASE_API}/${endpoint}/${registroId}` : `${BASE_API}/${endpoint}`;
+            
             const payload = (tipoSeleccionado === 'doctor') ? {
                 ci_doc: document.getElementById('ci_val').value.toUpperCase(),
                 nombre_doc: document.getElementById('nombre_val').value.toUpperCase(),
@@ -109,8 +112,12 @@
                 body: JSON.stringify(payload)
             });
 
-            if (res.ok) window.location.href = 'lista_personal.html';
-            else alert("ERROR: EL C.I. YA EXISTE O EL SERVIDOR RECHAZÓ LA RUTA");
+            if (res.ok) {
+                window.location.href = 'lista_personal.html';
+            } else {
+                const errData = await res.json().catch(() => ({}));
+                alert(errData.message || "ERROR: VERIFIQUE LOS DATOS O EL C.I.");
+            }
         });
 
         cargar();
