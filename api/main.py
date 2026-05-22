@@ -9,13 +9,11 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+# BLOQUE REESTRUCTURADO: CORS al inicio absoluto para interceptar preflight
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=True,
-    # CAMBIO: Se agregó "OPTIONS" a allow_methods. 
-    # POR QUÉ: Es necesario para que el navegador pueda realizar la petición de verificación 
-    # (preflight) antes de ejecutar métodos como PUT o POST, evitando el error 405/CORS.
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
@@ -55,7 +53,7 @@ def obtener_personal(db: Session = Depends(get_db)):
         "enfermeras": db.query(models.Enfermera).all()
     }
 
-# --- DOCTORES (POST para crear, PUT para editar) ---
+# --- DOCTORES ---
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)):
     return crud.create_doctor(db, data)
@@ -71,7 +69,15 @@ def actualizar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
     db.refresh(doctor)
     return doctor
 
-# --- ENFERMERAS (POST para crear, PUT para editar) ---
+@app.delete("/doctores/{id_doc}")
+def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
+    doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
+    if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
+    db.delete(doctor)
+    db.commit()
+    return {"message": "Eliminado"}
+
+# --- ENFERMERAS ---
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)):
     return crud.create_enfermera(db, data)
@@ -86,15 +92,6 @@ def actualizar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)
     db.commit()
     db.refresh(enfermera)
     return enfermera
-
-# --- ELIMINACIÓN ---
-@app.delete("/doctores/{id_doc}")
-def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
-    doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
-    if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
-    db.delete(doctor)
-    db.commit()
-    return {"message": "Eliminado"}
 
 @app.delete("/enfermeras/{id_enfe}")
 def borrar_enfermera(id_enfe: int, db: Session = Depends(get_db)):
