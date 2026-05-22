@@ -22,7 +22,7 @@
         <a href="lista_personal.html" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> VOLVER</a>
     </div>
     <div class="hoja-sistema">
-        <div class="p-10 border-b border-gray-100"><h1 class="text-4xl font-black text-blue-900" id="titulo-form">EDITAR REGISTRO</h1></div>
+        <div class="p-10 border-b border-gray-100"><h1 class="text-4xl font-black text-blue-900" id="titulo-form">NUEVO REGISTRO</h1></div>
         <div class="p-12">
             <div id="selector-tipo" class="grid grid-cols-2 gap-8 mb-10">
                 <div id="btn-doc" class="inactive-btn p-8 rounded-3xl text-center"><i class="fa-solid fa-user-doctor text-3xl"></i><br>DOCTOR</div>
@@ -53,6 +53,13 @@
         let registroId = null;
 
         async function cargar() {
+            // CORRECCIÓN: Si no hay ID ni tipo, es un registro nuevo, no hacemos fetch
+            if (!ci || !tipo) {
+                document.getElementById('titulo-form').innerText = 'NUEVO REGISTRO';
+                return;
+            }
+
+            document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
             const res = await fetch('https://historial-clinico-nube.onrender.com/personal/');
             const data = await res.json();
             
@@ -61,9 +68,7 @@
                 : data.enfermeras.find(e => e.ci_enfe === ci);
 
             if (item) {
-                // Aquí capturamos el ID real de la base de datos
                 registroId = (tipo === 'doctor') ? item.id_doc : item.id_enfe;
-                
                 if (tipo === 'doctor') document.getElementById('btn-doc').className = 'active-doc p-8 rounded-3xl text-center';
                 else document.getElementById('btn-enf').className = 'active-enf p-8 rounded-3xl text-center';
                 
@@ -77,10 +82,14 @@
 
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            if (!registroId) return alert("Error: ID no cargado");
+            const esDoctor = (tipo === 'doctor') || document.getElementById('btn-doc').className.includes('active-doc');
+            const endpoint = esDoctor ? 'doctores' : 'enfermeras';
             
-            const endpoint = (tipo === 'doctor') ? 'doctores' : 'enfermeras';
-            const payload = (tipo === 'doctor') ? {
+            // Si hay registroId es PUT (editar), si no, es POST (nuevo)
+            const method = registroId ? 'PUT' : 'POST';
+            const url = registroId ? `https://historial-clinico-nube.onrender.com/${endpoint}/${registroId}` : `https://historial-clinico-nube.onrender.com/${endpoint}/`;
+
+            const payload = esDoctor ? {
                 ci_doc: document.getElementById('ci_val').value,
                 nombre_doc: document.getElementById('nombre_val').value,
                 appaterno_doc: document.getElementById('paterno_val').value,
@@ -94,8 +103,8 @@
                 turno_enfe: document.getElementById('turno_val').value
             };
 
-            const res = await fetch(`https://historial-clinico-nube.onrender.com/${endpoint}/${registroId}`, {
-                method: 'PUT',
+            const res = await fetch(url, {
+                method: method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
