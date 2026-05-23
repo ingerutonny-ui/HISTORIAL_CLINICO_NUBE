@@ -7,8 +7,7 @@ def get_paciente_by_ci(db: Session, ci: str):
 def create_paciente(db: Session, data: dict):
     existente = db.query(models.Paciente).filter(models.Paciente.ci == data.get("ci")).first()
     if existente:
-        for key, value in data.items():
-            setattr(existente, key, value)
+        for key, value in data.items(): setattr(existente, key, value)
         db.commit()
         db.refresh(existente)
         return existente
@@ -32,6 +31,7 @@ def upsert_filiacion(db: Session, data: dict):
     return existente
 
 def upsert_p2(db: Session, data: dict):
+    # Aquí el backend recibe directamente el objeto P2
     p_id = data.get("paciente_id")
     if not p_id: return {"error": "Falta paciente_id"}
     existente = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
@@ -45,6 +45,7 @@ def upsert_p2(db: Session, data: dict):
     return existente
 
 def upsert_p3(db: Session, data: dict):
+    # Aquí el backend recibe directamente el objeto P3
     p_id = data.get("paciente_id")
     if not p_id: return {"error": "Falta paciente_id"}
     existente = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
@@ -56,16 +57,6 @@ def upsert_p3(db: Session, data: dict):
     db.commit()
     db.refresh(existente)
     return existente
-
-# --- CAMBIO REALIZADO: NUEVAS FUNCIONES PARA ESTRUCTURA ---
-def upsert_p2_data(db: Session, data: dict):
-    # Extrae el bloque 'antecedentes' si existe, si no, usa el dict completo
-    return upsert_p2(db, data.get("antecedentes", data))
-
-def upsert_p3_data(db: Session, data: dict):
-    # Extrae el bloque 'habitos' si existe, si no, usa el dict completo
-    return upsert_p3(db, data.get("habitos", data))
-# --- FIN CAMBIO ---
 
 def create_enfermera(db: Session, data: dict):
     ci = data.get("ci_enfe")
