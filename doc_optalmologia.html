@@ -38,8 +38,9 @@
 <body>
 
 <div class="form-container">
-    <div class="no-print mb-3">
+    <div class="no-print d-flex justify-content-between mb-3">
         <a href="d_menu.html" class="btn btn-secondary btn-sm" style="background:#64748b; border:none;">← VOLVER AL MENÚ</a>
+        <button onclick="window.print()" class="btn btn-dark btn-sm">IMPRIMIR FICHA</button>
     </div>
 
     <div class="header-nancy">
@@ -148,6 +149,7 @@
     async function buscarPaciente() {
         const cod = document.getElementById('codigo_search').value.trim();
         if(!cod) { alert("INGRESE UN CÓDIGO"); return; }
+        
         try {
             const resp = await fetch(`${API_BASE}/pacientes/codigo/${cod}`);
             if(!resp.ok) throw new Error("No encontrado");
@@ -167,7 +169,7 @@
         e.preventDefault();
         if(!p_id) { alert("ERROR: PRIMERO BUSQUE Y ENCUENTRE AL PACIENTE"); return; }
         alert("GUARDANDO EN LA NUBE...");
-        window.print();
+        // Aquí podrías agregar el fetch para enviar los datos
     };
 </script>
 </body>
