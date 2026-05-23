@@ -18,7 +18,6 @@
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-black text-blue-900">PERSONAL MÉDICO</h1>
             <div class="flex gap-2">
-             
                 <a href="registro_personal.html" class="bg-blue-700 text-white px-8 py-3 rounded-full font-black text-[11px] hover:bg-blue-800">
                     + REGISTRAR NUEVO PROFESIONAL
                 </a>
@@ -65,11 +64,16 @@
                             </span>
                         </td>
                         <td class="p-5 flex gap-2">
-                            <button onclick="window.location.href='registro_personal.html?id=${p.ci}&tipo=${p.tipo}'" class="text-orange-500"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="eliminar(${p.id}, '${p.tipo}')" class="text-red-500"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="ver('${p.id}', '${p.tipo}')" class="bg-green-500 text-white p-2 rounded"><i class="fa-solid fa-file-alt"></i></button>
+                            <button onclick="window.location.href='registro_personal.html?id=${p.id}&tipo=${p.tipo}'" class="bg-orange-500 text-white p-2 rounded"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="eliminar('${p.id}', '${p.tipo}')" class="bg-red-500 text-white p-2 rounded"><i class="fa-solid fa-trash"></i></button>
                         </td>
                     </tr>`;
             });
+        }
+
+        function ver(id, tipo) {
+            window.location.href = `ver_personal.html?id=${id}&tipo=${tipo}`;
         }
 
         async function generarPDF() {
