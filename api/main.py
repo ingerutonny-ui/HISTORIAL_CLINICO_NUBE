@@ -1,15 +1,14 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from .database import SessionLocal, engine, Base
-from . import crud, models
+from .database import engine, Base
+from . import models
 
-# Crear tablas
+# Inicializa la base de datos
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CORS configurado para permitir todo desde cualquier origen
+# Configuración CORS esencial
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,19 +17,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-# RUTA DE SALUD (Para que Render no se cierre)
+# Definimos las rutas de forma simple y directa
 @app.get("/")
 def read_root():
     return {"status": "ok"}
 
-# RUTA EXPLÍCITA PARA PACIENTES
+# Esta es la ruta que tu frontend intenta consultar
 @app.get("/pacientes/")
-def read_pacientes(db: Session = Depends(get_db)):
-    return db.query(models.Paciente).all()
+def get_pacientes():
+    from .database import SessionLocal
+    from .models import Paciente
+    db = SessionLocal()
+    try:
+        pacientes = db.query(Paciente).all()
+        return pacientes
+    finally:
+        db.close()
