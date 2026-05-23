@@ -5,7 +5,6 @@ from .database import SessionLocal, engine, Base
 from . import crud, models
 
 Base.metadata.create_all(bind=engine)
-
 app = FastAPI()
 
 app.add_middleware(
@@ -16,18 +15,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.middleware("http")
-async def add_cors_headers(request: Request, call_next):
-    if request.method == "OPTIONS":
-        return Response(status_code=200, headers={
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-            "Access-Control-Allow-Headers": "*",
-        })
-    response = await call_next(request)
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    return response
-
 def get_db():
     db = SessionLocal()
     try:
@@ -35,24 +22,6 @@ def get_db():
     finally:
         db.close()
 
-# --- ENDPOINT QUE CORRIGE EL ERROR DE CONEXIÓN ---
-@app.post("/p2/")
-def recibir_p2_p3(data: dict, db: Session = Depends(get_db)):
-    # Si el frontend envía P2 y P3 juntos, procesamos ambos.
-    # Si solo envía P2, procesa solo P2.
-    resultados = {}
-    if "antecedentes" in data:
-        resultados["p2"] = crud.upsert_p2(db, data["antecedentes"])
-    if "habitos" in data:
-        resultados["p3"] = crud.upsert_p3(db, data["habitos"])
-    
-    # Fallback si envía el objeto directo (según tu captura anterior)
-    if not resultados:
-        resultados["p2"] = crud.upsert_p2(db, data)
-        
-    return resultados
-
-# --- RESTO DE ENDPOINTS ---
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(
@@ -72,6 +41,14 @@ def registrar_paciente(data: dict, db: Session = Depends(get_db)): return crud.c
 
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)): return crud.upsert_filiacion(db, data)
+
+# --- CAMBIO REALIZADO: RUTAS QUE ACEPTAN ESTRUCTURA COMPLETA ---
+@app.post("/p2/")
+def registrar_p2(data: dict, db: Session = Depends(get_db)): return crud.upsert_p2_data(db, data)
+
+@app.post("/p3/")
+def registrar_p3(data: dict, db: Session = Depends(get_db)): return crud.upsert_p3_data(db, data)
+# --- FIN CAMBIO ---
 
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
