@@ -36,6 +36,10 @@ def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db))
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)): return crud.create_paciente(db, data)
 
+@app.get("/pacientes/")
+def listar_todos_los_pacientes(db: Session = Depends(get_db)):
+    return db.query(models.Paciente).all()
+
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)): return crud.upsert_filiacion(db, data)
 
