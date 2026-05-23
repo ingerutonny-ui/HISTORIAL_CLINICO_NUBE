@@ -53,7 +53,7 @@
 
     <form id="oftalmoForm">
         <div class="no-print mb-3 p-2 bg-light border">
-            <label>CÓDIGO GENERADO:</label>
+            <label>CÓDIGO PACIENTE:</label>
             <input type="text" id="codigo_search" class="form-control d-inline-block w-25" placeholder="INGRESE CÓDIGO">
             <button type="button" onclick="buscarPaciente()" class="btn btn-success" style="background:var(--emerald); border:none;">BUSCAR</button>
         </div>
@@ -143,7 +143,6 @@
 </div>
 
 <script>
-    // URL ABSOLUTA PARA SALIR HACIA EL SERVIDOR
     const API_BASE = 'https://historial-clinico-nube.onrender.com';
     let p_id = null;
 
@@ -152,11 +151,13 @@
         if(!cod) { alert("INGRESE UN CÓDIGO"); return; }
         
         try {
-            const resp = await fetch(`${API_BASE}/pacientes/codigo/${cod}`);
+            const resp = await fetch(`${API_BASE}/api/paciente-completo/${cod}`);
             if(!resp.ok) throw new Error("No encontrado");
-            const data = await resp.json();
+            const respuesta = await resp.json();
             
-            // LLENADO DE FILIACIÓN
+            // Accedemos a respuesta.paciente según tu main.py
+            const data = respuesta.paciente;
+            
             document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
             document.getElementById('ci').value = data.ci || '';
             document.getElementById('edad').value = data.edad || '';
