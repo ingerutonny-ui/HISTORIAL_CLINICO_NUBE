@@ -29,16 +29,7 @@
     </div>
 
     <div class="section-title">I. Afiliación del Trabajador (P1)</div>
-    <div class="data-grid">
-        <div>Paciente: <span class="val" id="r_paciente">---</span></div>
-        <div>Cédula: <span class="val" id="r_ci">---</span></div>
-        <div>Edad: <span class="val" id="r_edad">---</span></div>
-        <div>Sexo: <span class="val" id="r_sexo">---</span></div>
-        <div>Nacimiento: <span class="val" id="r_nac">---</span></div>
-        <div>Teléfono: <span class="val" id="r_tel">---</span></div>
-        <div>Profesión: <span class="val" id="r_profesion">---</span></div>
-        <div>Código: <span class="val" id="r_cod">---</span></div>
-    </div>
+    <div class="data-grid" id="grid_p1"></div>
 
     <div class="section-title">II. Antecedentes Patológicos (P2)</div>
     <div class="data-grid" id="grid_p2"></div>
@@ -49,6 +40,7 @@
 
 <script>
     const API = 'https://historial-clinico-nube.onrender.com';
+    const fields_p1 = ["paciente", "ci", "codigo_paciente", "edad", "sexo", "fecha_nacimiento", "lugar_nacimiento", "domicilio", "n_casa", "zona_barrio", "ciudad", "telefono", "estado_civil", "profesion_oficio"];
     const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
     const fields_p3 = ["fuma","fuma_cantidad","alcohol","alcohol_frecuencia","drogas","drogas_tipo","coca","deporte","deporte_detalle","grupo_sanguineo","historia_laboral","riesgos_expuestos","observaciones"];
 
@@ -65,20 +57,25 @@
             const ant = data.antecedentes || {};
             const hab = data.habitos || {};
 
-            document.getElementById('r_paciente').innerText = `${p.nombre || ''} ${p.apellido || ''}`;
-            document.getElementById('r_ci').innerText = p.ci || '---';
-            document.getElementById('r_edad').innerText = f1.edad || '---';
-            document.getElementById('r_sexo').innerText = f1.sexo || '---';
-            document.getElementById('r_nac').innerText = f1.fecha_nacimiento || '---';
-            document.getElementById('r_tel').innerText = f1.telefono || '---';
-            document.getElementById('r_profesion').innerText = f1.profesion_oficio || '---';
-            document.getElementById('r_cod').innerText = p.codigo_paciente || '---';
+            // Mapeo P1 (Dinámico para todos los campos)
+            const containerP1 = document.getElementById('grid_p1');
+            containerP1.innerHTML = fields_p1.map(f => {
+                let valor = "";
+                if(f === "paciente") valor = `${p.nombre || ''} ${p.apellido || ''}`;
+                else if(f === "ci") valor = p.ci || '---';
+                else if(f === "codigo_paciente") valor = p.codigo_paciente || '---';
+                else valor = f1[f] || '---';
+                
+                return `<div>${f.replace('_',' ').toUpperCase()}: <span class="val">${valor}</span></div>`;
+            }).join('');
 
+            // Mapeo P2
             const containerP2 = document.getElementById('grid_p2');
             containerP2.innerHTML = fields_p2.map(f => `
-                <div>${f.toUpperCase()}: <span class="val">${ant[f] || 'SIN HALLAZGOS'}</span></div>
+                <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${ant[f] || 'SIN HALLAZGOS'}</span></div>
             `).join('');
 
+            // Mapeo P3
             const containerP3 = document.getElementById('grid_p3');
             containerP3.innerHTML = fields_p3.map(f => `
                 <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${hab[f] || '---'}</span></div>
