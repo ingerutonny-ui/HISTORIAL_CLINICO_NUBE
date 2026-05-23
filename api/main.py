@@ -20,13 +20,11 @@ def get_db():
     try: yield db
     finally: db.close()
 
-# --- PACIENTES: BÚSQUEDA ÚNICA POR CÓDIGO ---
-
-@app.get("/api/paciente-completo/{codigo_paciente}")
-def obtener_paciente_completo(codigo_paciente: str, db: Session = Depends(get_db)):
-    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo_paciente).first()
-    if not paciente: 
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+# --- PACIENTES ---
+@app.get("/api/paciente-completo/{codigo_ingresado}")
+def obtener_paciente_completo(codigo_ingresado: str, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo_ingresado).first()
+    if not paciente: raise HTTPException(status_code=404, detail="No encontrado")
     return {
         "paciente": paciente,
         "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first(),
@@ -46,21 +44,16 @@ def eliminar_paciente(paciente_id: int, db: Session = Depends(get_db)):
     return {"message": "Eliminado"}
 
 # --- FILIACIÓN Y ANTECEDENTES ---
-
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)): return upsert_filiacion(db, data)
-
 @app.post("/p2/")
 def registrar_p2(data: dict, db: Session = Depends(get_db)): return upsert_p2(db, data)
-
 @app.post("/p3/")
 def registrar_p3(data: dict, db: Session = Depends(get_db)): return upsert_p3(db, data)
 
-# --- PERSONAL: DOCTORES Y ENFERMERAS (RUTAS ESTABLES) ---
-
-@app.get("/personal/")
-def obtener_personal(db: Session = Depends(get_db)):
-    return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
+# --- DOCTORES ---
+@app.get("/doctores/")
+def obtener_doctores(db: Session = Depends(get_db)): return db.query(models.Doctor).all()
 
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)): return create_doctor(db, data)
@@ -69,15 +62,22 @@ def registrar_doctor(data: dict, db: Session = Depends(get_db)): return create_d
 def actualizar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
     doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
     if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
-    for key, val in data.items(): setattr(doctor, key, val)
+    for key, value in data.items(): setattr(doctor, key, value)
     db.commit()
+    db.refresh(doctor)
     return doctor
 
 @app.delete("/doctores/{id_doc}")
 def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
-    db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).delete()
+    doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
+    if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
+    db.delete(doctor)
     db.commit()
     return {"message": "Eliminado"}
+
+# --- ENFERMERAS ---
+@app.get("/enfermeras/")
+def obtener_enfermeras(db: Session = Depends(get_db)): return db.query(models.Enfermera).all()
 
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)): return create_enfermera(db, data)
@@ -86,12 +86,15 @@ def registrar_enfermera(data: dict, db: Session = Depends(get_db)): return creat
 def actualizar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)):
     enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
     if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
-    for key, val in data.items(): setattr(enfermera, key, val)
+    for key, value in data.items(): setattr(enfermera, key, value)
     db.commit()
+    db.refresh(enfermera)
     return enfermera
 
 @app.delete("/enfermeras/{id_enfe}")
 def borrar_enfermera(id_enfe: int, db: Session = Depends(get_db)):
-    db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).delete()
+    enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
+    if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
+    db.delete(enfermera)
     db.commit()
     return {"message": "Eliminada"}
