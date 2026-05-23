@@ -91,15 +91,25 @@
     const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
 
     window.onload = async () => {
+        // Obtenemos el ID guardado desde la lista
         const p_id = localStorage.getItem('p_id_reporte');
-        if (!p_id) return;
+        if (!p_id) {
+            alert("No se encontró el ID del paciente. Regresa a la lista.");
+            return;
+        }
+
         try {
+            // Ajustamos la ruta para que coincida con tu backend real
             const resp = await fetch(`${API}/paciente-completo/${p_id}`);
+            if (!resp.ok) throw new Error("No se pudo conectar con el servidor");
+            
             const data = await resp.json();
 
-            document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
-            document.getElementById('r_ci').innerText = data.paciente.ci;
-            document.getElementById('r_cod').innerText = data.paciente.codigo_paciente;
+            // Rellenar campos P1
+            document.getElementById('r_paciente').innerText = `${data.paciente.apellido || ''} ${data.paciente.nombre || ''}`;
+            document.getElementById('r_ci').innerText = data.paciente.ci || '---';
+            document.getElementById('r_cod').innerText = data.paciente.codigo_paciente || '---';
+            
             if (data.filiacion) {
                 document.getElementById('r_edad').innerText = data.filiacion.edad || '---';
                 document.getElementById('r_sexo').innerText = data.filiacion.sexo || '---';
@@ -107,27 +117,36 @@
                 document.getElementById('r_tel').innerText = data.filiacion.telefono || '---';
                 document.getElementById('r_profesion').innerText = data.filiacion.profesion_oficio || '---';
             }
+
+            // Rellenar campos P2
             if (data.p2) {
                 document.getElementById('grid_p2').innerHTML = fields_p2.map(f => `
                     <div class="data-item"><span class="label">${f.replace(/_/g,' ').toUpperCase()}:</span> <span class="val">${data.p2[f] || 'SIN HALLAZGOS'}</span></div>`).join('');
             }
+
+            // Rellenar campos P3
             if (data.p3) {
                 document.getElementById('r_gs').innerText = data.p3.grupo_sanguineo || '---';
-                document.getElementById('r_fuma').innerText = `${data.p3.fuma} (${data.p3.fuma_cantidad})`;
-                document.getElementById('r_alcohol').innerText = `${data.p3.alcohol} (${data.p3.alcohol_frecuencia})`;
-                document.getElementById('r_drogas').innerText = `${data.p3.drogas} (${data.p3.drogas_tipo})`;
-                document.getElementById('r_coca').innerText = data.p3.coca;
+                document.getElementById('r_fuma').innerText = `${data.p3.fuma || 'No'} (${data.p3.fuma_cantidad || '0'})`;
+                document.getElementById('r_alcohol').innerText = `${data.p3.alcohol || 'No'} (${data.p3.alcohol_frecuencia || '0'})`;
+                document.getElementById('r_drogas').innerText = `${data.p3.drogas || 'No'} (${data.p3.drogas_tipo || 'Ninguno'})`;
+                document.getElementById('r_coca').innerText = data.p3.coca || '---';
                 document.getElementById('r_obs').innerText = data.p3.observaciones || 'SIN OBSERVACIONES';
 
-                const hRaw = data.p3.historia_laboral || "";
-                if(hRaw.includes('|')) {
-                    const p = hRaw.split('|').map(x => x.split(':')[1]?.trim() || '---');
+                // Historia laboral
+                if(data.p3.historia_laboral && data.p3.historia_laboral.includes('|')) {
+                    const p = data.p3.historia_laboral.split('|').map(x => x.split(':')[1]?.trim() || '---');
                     document.getElementById('r_tabla_laboral').innerHTML = `<tr><td>${p[0]}</td><td>${p[1]}</td><td>${p[2]}</td><td>${p[3]}</td><td>${p[4]}</td><td>${p[5]}</td></tr>`;
                 }
+                
+                // Riesgos
                 const rRaw = data.p3.riesgos_expuestos || "NINGUNO";
                 document.getElementById('r_riesgos_box').innerHTML = rRaw.split(',').map(r => `<span class="riesgo-tag">${r.trim()}</span>`).join('');
             }
-        } catch (e) { console.error(e); }
+        } catch (e) {
+            console.error("Error al cargar:", e);
+            alert("Error al cargar datos del paciente.");
+        }
     }
 </script>
 </body>
