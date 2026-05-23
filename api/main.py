@@ -23,18 +23,20 @@ def get_db():
 
 # --- PACIENTES ---
 
-@app.get("/api/paciente-completo/{identificador}")
-def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
+@app.get("/api/paciente-completo/{codigo_ingresado}")
+def obtener_paciente_completo(codigo_ingresado: str, db: Session = Depends(get_db)):
+    # Búsqueda estricta por codigo_paciente
     paciente = db.query(models.Paciente).filter(
-        (models.Paciente.codigo_paciente == identificador) | 
-        (models.Paciente.id == (int(identificador) if identificador.isdigit() else 0))
+        models.Paciente.codigo_paciente == codigo_ingresado
     ).first()
-    if not paciente: raise HTTPException(status_code=404, detail="No encontrado")
+    
+    if not paciente: 
+        raise HTTPException(status_code=404, detail="CÓDIGO NO ENCONTRADO")
+        
     return {
         "paciente": paciente,
         "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first(),
-        "antecedentes": db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente.id).first(),
-        "habitos": db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente.id).first()
+        # ... resto de tus relaciones
     }
 
 @app.post("/pacientes/")
