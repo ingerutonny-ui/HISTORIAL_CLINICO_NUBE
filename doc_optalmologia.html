@@ -146,30 +146,36 @@
     const API_BASE = 'https://historial-clinico-nube.onrender.com';
     let p_id = null;
 
-    async function buscarPaciente() {
-        const cod = document.getElementById('codigo_search').value.trim();
-        if(!cod) { alert("INGRESE UN CÓDIGO"); return; }
+async function buscarPaciente() {
+    // 1. Obtenemos el valor del input
+    const cod = document.getElementById('codigo_search').value.trim();
+    if(!cod) { alert("INGRESE UN CÓDIGO"); return; }
+    
+    // 2. La URL debe ser EXACTAMENTE la que probaste que funciona
+    const url = `https://historial-clinico-nube.onrender.com/api/paciente-completo/${cod}`;
+    
+    try {
+        const resp = await fetch(url);
         
-        try {
-            const resp = await fetch(`${API_BASE}/api/paciente-completo/${cod}`);
-            if(!resp.ok) throw new Error("No encontrado");
-            const respuesta = await resp.json();
-            
-            // Accedemos a respuesta.paciente según tu main.py
-            const data = respuesta.paciente;
-            
-            document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
-            document.getElementById('ci').value = data.ci || '';
-            document.getElementById('edad').value = data.edad || '';
-            document.getElementById('sexo').value = data.sexo || '';
-            document.getElementById('ocupacion').value = data.ocupacion || '';
-            
-            p_id = data.id; 
-            alert("PACIENTE ENCONTRADO");
-        } catch (err) { 
-            console.error(err);
-            alert("CÓDIGO NO ENCONTRADO EN LA BASE DE DATOS"); 
-        }
+        // Si el servidor responde con 404, lanzamos el error
+        if(!resp.ok) throw new Error("CÓDIGO NO ENCONTRADO");
+        
+        const respuesta = await resp.json();
+        
+        // 3. Accedemos a respuesta.paciente porque tu API devuelve { "paciente": {...} }
+        const data = respuesta.paciente;
+        
+        // 4. Llenamos los campos
+        document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
+        document.getElementById('ci').value = data.ci || '';
+        
+        p_id = data.id; 
+        alert("PACIENTE ENCONTRADO");
+        
+    } catch (err) { 
+        console.error(err);
+        alert(err.message); 
+    }
     }
 
     document.getElementById('oftalmoForm').onsubmit = (e) => {
