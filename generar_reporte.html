@@ -67,7 +67,6 @@
             const p = data.find(pac => String(pac.id) === String(p_id));
             if (!p) return;
 
-            // Mapeo directo del objeto p que ya recibes
             document.getElementById('r_paciente').innerText = `${p.nombre || ''} ${p.apellido || ''}`;
             document.getElementById('r_ci').innerText = p.ci || '---';
             document.getElementById('r_edad').innerText = p.edad || '---';
@@ -77,13 +76,11 @@
             document.getElementById('r_profesion').innerText = p.profesion || '---';
             document.getElementById('r_cod').innerText = p.codigo_paciente || '---';
 
-            // Mapeo P2
             const containerP2 = document.getElementById('grid_p2');
             containerP2.innerHTML = fields_p2.map(f => `
                 <div>${f.toUpperCase()}: <span class="val">${p[f] || 'SIN HALLAZGOS'}</span></div>
             `).join('');
 
-            // Mapeo P3
             document.getElementById('r_fuma').innerText = p.fuma || '---';
             document.getElementById('r_alcohol').innerText = p.alcohol || '---';
             document.getElementById('r_drogas').innerText = p.drogas || '---';
@@ -91,7 +88,7 @@
             document.getElementById('r_gs').innerText = p.grupo_sanguineo || '---';
 
         } catch (e) {
-            console.error("Error al cargar datos:", e);
+            console.error("Error:", e);
         }
     }
 </script>
