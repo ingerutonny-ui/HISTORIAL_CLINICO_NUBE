@@ -40,7 +40,7 @@
 <div class="form-container">
     <div class="no-print d-flex justify-content-between mb-3">
         <a href="d_menu.html" class="btn btn-secondary btn-sm" style="background:#64748b; border:none;">← VOLVER AL MENÚ</a>
-        <button onclick="window.print()" class="btn btn-dark btn-sm">IMPRIMIR FICHA</button>
+        <button onclick="window.print()" class="btn btn-dark btn-sm">🖨️ IMPRIMIR</button>
     </div>
 
     <div class="header-nancy">
@@ -143,6 +143,7 @@
 </div>
 
 <script>
+    // URL ABSOLUTA PARA SALIR HACIA EL SERVIDOR
     const API_BASE = 'https://historial-clinico-nube.onrender.com';
     let p_id = null;
 
@@ -155,21 +156,25 @@
             if(!resp.ok) throw new Error("No encontrado");
             const data = await resp.json();
             
+            // LLENADO DE FILIACIÓN
             document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
             document.getElementById('ci').value = data.ci || '';
             document.getElementById('edad').value = data.edad || '';
             document.getElementById('sexo').value = data.sexo || '';
             document.getElementById('ocupacion').value = data.ocupacion || '';
-            p_id = data.id;
+            
+            p_id = data.id; 
             alert("PACIENTE ENCONTRADO");
-        } catch (err) { alert("CÓDIGO NO ENCONTRADO"); }
+        } catch (err) { 
+            console.error(err);
+            alert("CÓDIGO NO ENCONTRADO EN LA BASE DE DATOS"); 
+        }
     }
 
     document.getElementById('oftalmoForm').onsubmit = (e) => {
         e.preventDefault();
         if(!p_id) { alert("ERROR: PRIMERO BUSQUE Y ENCUENTRE AL PACIENTE"); return; }
         alert("GUARDANDO EN LA NUBE...");
-        // Aquí podrías agregar el fetch para enviar los datos
     };
 </script>
 </body>
