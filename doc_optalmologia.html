@@ -137,45 +137,47 @@
 </div>
 
 <script>
-    // Asegúrate de que esta URL sea exactamente la misma que tienes en tu servidor de Render
-    const API = 'https://historial-clinico-nube.onrender.com';
+    // URL base de tu backend en Render
+    const API_BASE = 'https://historial-clinico-nube.onrender.com';
 
     document.getElementById('codigo_search').addEventListener('change', async (e) => {
         const cod = e.target.value.trim();
         if(!cod) return;
-        
-        console.log(`Intentando conectar a: ${API}/pacientes/codigo/${cod}`);
+
+        // Construimos la URL completa para evitar que el navegador busque en GitHub
+        const urlCompleta = `${API_BASE}/pacientes/codigo/${cod}`;
+        console.log("Consultando a:", urlCompleta);
         
         try {
-            const resp = await fetch(`${API}/pacientes/codigo/${cod}`);
+            const resp = await fetch(urlCompleta);
             
             if(!resp.ok) {
-                console.error("Error del servidor:", resp.status);
                 throw new Error("No encontrado");
             }
             
             const data = await resp.json();
             
-            // Mapeo de campos - Verifica que estos ID existen en tu HTML
+            // Llenado de campos
             document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
             document.getElementById('ci').value = data.ci || '';
             document.getElementById('edad').value = data.edad || '';
             document.getElementById('sexo').value = data.sexo || '';
             document.getElementById('ocupacion').value = data.ocupacion || '';
             
-            window.p_id = data.id;
+            window.p_id = data.id; // Guardamos el ID para el submit
             
             alert("PACIENTE ENCONTRADO");
         } catch (err) { 
-            alert("CÓDIGO NO ENCONTRADO EN LA BASE DE DATOS");
-            console.error(err);
+            console.error("Error en la petición:", err);
+            alert("ERROR: NO SE PUDO CONECTAR CON LA BASE DE DATOS O CÓDIGO INVÁLIDO");
         }
     });
 
     document.getElementById('oftalmoForm').onsubmit = async (e) => {
         e.preventDefault();
+        // Verificamos si tenemos el ID del paciente antes de permitir guardar
         if(!window.p_id) {
-            alert("ERROR: DEBE BUSCAR UN CÓDIGO VÁLIDO ANTES DE GUARDAR");
+            alert("ERROR: PRIMERO DEBE BUSCAR UN CÓDIGO Y ENCONTRAR UN PACIENTE");
             return;
         }
         alert("GUARDANDO EN LA NUBE...");
