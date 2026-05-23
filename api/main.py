@@ -40,6 +40,13 @@ def registrar_paciente(data: dict, db: Session = Depends(get_db)): return crud.c
 def listar_todos_los_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
 
+@app.delete("/api/pacientes/{paciente_id}")
+def eliminar_paciente(paciente_id: int, db: Session = Depends(get_db)):
+    exito = delete_paciente(db, paciente_id)
+    if not exito:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado o error al eliminar")
+    return {"message": "Paciente eliminado correctamente"}
+
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)): return crud.upsert_filiacion(db, data)
 
