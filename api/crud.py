@@ -31,11 +31,15 @@ def upsert_filiacion(db: Session, data: dict):
 
 def upsert_p2(db: Session, data: dict):
     p_id = data.get("paciente_id")
+    # Filtro de seguridad para evitar errores de columnas no existentes en BD
+    valid_keys = [col.name for col in models.AntecedentesP2.__table__.columns]
+    data_filtered = {k: v for k, v in data.items() if k in valid_keys}
+    
     existente = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
     if existente:
-        for key, value in data.items(): setattr(existente, key, value)
+        for key, value in data_filtered.items(): setattr(existente, key, value)
     else:
-        existente = models.AntecedentesP2(**data)
+        existente = models.AntecedentesP2(**data_filtered)
         db.add(existente)
     db.commit()
     db.refresh(existente)
@@ -43,11 +47,14 @@ def upsert_p2(db: Session, data: dict):
 
 def upsert_p3(db: Session, data: dict):
     p_id = data.get("paciente_id")
+    valid_keys = [col.name for col in models.HabitosRiesgosP3.__table__.columns]
+    data_filtered = {k: v for k, v in data.items() if k in valid_keys}
+    
     existente = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
     if existente:
-        for key, value in data.items(): setattr(existente, key, value)
+        for key, value in data_filtered.items(): setattr(existente, key, value)
     else:
-        existente = models.HabitosRiesgosP3(**data)
+        existente = models.HabitosRiesgosP3(**data_filtered)
         db.add(existente)
     db.commit()
     db.refresh(existente)
