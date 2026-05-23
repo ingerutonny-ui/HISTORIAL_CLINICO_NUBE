@@ -44,25 +44,19 @@
     <div class="data-grid" id="grid_p2"></div>
 
     <div class="section-title">III. Hábitos y Estilos de Vida (P3)</div>
-    <div class="data-grid">
-        <div>Fuma: <span class="val" id="r_fuma">---</span></div>
-        <div>Alcohol: <span class="val" id="r_alcohol">---</span></div>
-        <div>Drogas: <span class="val" id="r_drogas">---</span></div>
-        <div>Pijchar: <span class="val" id="r_coca">---</span></div>
-        <div>Grupo Sanguíneo: <span class="val" id="r_gs">---</span></div>
-    </div>
+    <div class="data-grid" id="grid_p3"></div>
 </div>
 
 <script>
     const API = 'https://historial-clinico-nube.onrender.com';
     const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
+    const fields_p3 = ["fuma","fuma_cantidad","alcohol","alcohol_frecuencia","drogas","drogas_tipo","coca","deporte","deporte_detalle","grupo_sanguineo","historia_laboral","riesgos_expuestos","observaciones"];
 
     window.onload = async () => {
         const p_id = localStorage.getItem('p_id_reporte');
         if (!p_id) return;
         
         try {
-            // Se usa la ruta definida en tu main.py: /api/paciente-completo/{id}
             const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
             
@@ -85,14 +79,13 @@
                 <div>${f.toUpperCase()}: <span class="val">${ant[f] || 'SIN HALLAZGOS'}</span></div>
             `).join('');
 
-            document.getElementById('r_fuma').innerText = hab.fuma || '---';
-            document.getElementById('r_alcohol').innerText = hab.alcohol || '---';
-            document.getElementById('r_drogas').innerText = hab.drogas || '---';
-            document.getElementById('r_coca').innerText = hab.coca || '---';
-            document.getElementById('r_gs').innerText = hab.grupo_sanguineo || '---';
+            const containerP3 = document.getElementById('grid_p3');
+            containerP3.innerHTML = fields_p3.map(f => `
+                <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${hab[f] || '---'}</span></div>
+            `).join('');
 
         } catch (e) {
-            console.error("Error al cargar datos:", e);
+            console.error("Error:", e);
         }
     }
 </script>
