@@ -29,63 +29,69 @@
     </div>
 
     <div class="section-title">I. Afiliación del Trabajador (P1)</div>
-    <div class="data-grid" id="data_p1"></div>
+    <div class="data-grid">
+        <div>Paciente: <span class="val" id="r_paciente">---</span></div>
+        <div>Cédula: <span class="val" id="r_ci">---</span></div>
+        <div>Edad: <span class="val" id="r_edad">---</span></div>
+        <div>Sexo: <span class="val" id="r_sexo">---</span></div>
+        <div>Nacimiento: <span class="val" id="r_nac">---</span></div>
+        <div>Teléfono: <span class="val" id="r_tel">---</span></div>
+        <div>Profesión: <span class="val" id="r_profesion">---</span></div>
+        <div>Código: <span class="val" id="r_cod">---</span></div>
+    </div>
 
     <div class="section-title">II. Antecedentes Patológicos (P2)</div>
     <div class="data-grid" id="grid_p2"></div>
 
     <div class="section-title">III. Hábitos y Estilos de Vida (P3)</div>
-    <div class="data-grid" id="data_p3"></div>
+    <div class="data-grid">
+        <div>Fuma: <span class="val" id="r_fuma">---</span></div>
+        <div>Alcohol: <span class="val" id="r_alcohol">---</span></div>
+        <div>Drogas: <span class="val" id="r_drogas">---</span></div>
+        <div>Pijchar: <span class="val" id="r_coca">---</span></div>
+        <div>Grupo Sanguíneo: <span class="val" id="r_gs">---</span></div>
+    </div>
 </div>
 
 <script>
     const API = 'https://historial-clinico-nube.onrender.com';
-    
+    const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
+
     window.onload = async () => {
         const p_id = localStorage.getItem('p_id_reporte');
         if (!p_id) return;
         
         try {
-            // 1. Obtenemos datos básicos del paciente
             const resp = await fetch(`${API}/pacientes/`);
-            const lista = await resp.json();
-            const p = lista.find(pac => String(pac.id) === String(p_id));
+            const data = await resp.json();
+            const p = data.find(pac => String(pac.id) === String(p_id));
             if (!p) return;
 
-            // 2. Cargamos datos de P1, P2 y P3 consultando sus endpoints específicos
-            // (Asumiendo que existen endpoints como /p1/{id}, /p2/{id}, etc. en tu backend)
-            const [p1, p2, p3] = await Promise.all([
-                fetch(`${API}/p1/${p_id}`).then(r => r.json()).catch(() => ({})),
-                fetch(`${API}/p2/${p_id}`).then(r => r.json()).catch(() => ({})),
-                fetch(`${API}/p3/${p_id}`).then(r => r.json()).catch(() => ({}))
-            ]);
-
-            // Mapeo P1
-            document.getElementById('data_p1').innerHTML = `
-                <div>Paciente: <span class="val">${p.nombre || ''} ${p.apellido || ''}</span></div>
-                <div>Cédula: <span class="val">${p.ci || '---'}</span></div>
-                <div>Edad: <span class="val">${p1.edad || '---'}</span></div>
-                <div>Sexo: <span class="val">${p1.sexo || '---'}</span></div>
-                <div>Profesión: <span class="val">${p1.profesion_oficio || '---'}</span></div>
-                <div>Código: <span class="val">${p.codigo_paciente || '---'}</span></div>
-            `;
+            // Mapeo directo del objeto p que ya recibes
+            document.getElementById('r_paciente').innerText = `${p.nombre || ''} ${p.apellido || ''}`;
+            document.getElementById('r_ci').innerText = p.ci || '---';
+            document.getElementById('r_edad').innerText = p.edad || '---';
+            document.getElementById('r_sexo').innerText = p.sexo || '---';
+            document.getElementById('r_nac').innerText = p.fecha_nacimiento || '---';
+            document.getElementById('r_tel').innerText = p.telefono || '---';
+            document.getElementById('r_profesion').innerText = p.profesion || '---';
+            document.getElementById('r_cod').innerText = p.codigo_paciente || '---';
 
             // Mapeo P2
-            const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
-            document.getElementById('grid_p2').innerHTML = fields_p2.map(f => `
-                <div>${f.toUpperCase()}: <span class="val">${p2[f] || 'SIN HALLAZGOS'}</span></div>
+            const containerP2 = document.getElementById('grid_p2');
+            containerP2.innerHTML = fields_p2.map(f => `
+                <div>${f.toUpperCase()}: <span class="val">${p[f] || 'SIN HALLAZGOS'}</span></div>
             `).join('');
 
             // Mapeo P3
-            document.getElementById('data_p3').innerHTML = `
-                <div>Fuma: <span class="val">${p3.fuma || '---'}</span></div>
-                <div>Alcohol: <span class="val">${p3.alcohol || '---'}</span></div>
-                <div>Drogas: <span class="val">${p3.drogas || '---'}</span></div>
-                <div>Pijchar: <span class="val">${p3.coca || '---'}</span></div>
-                <div>Grupo Sanguíneo: <span class="val">${p3.grupo_sanguineo || '---'}</span></div>
-            `;
+            document.getElementById('r_fuma').innerText = p.fuma || '---';
+            document.getElementById('r_alcohol').innerText = p.alcohol || '---';
+            document.getElementById('r_drogas').innerText = p.drogas || '---';
+            document.getElementById('r_coca').innerText = p.coca || '---';
+            document.getElementById('r_gs').innerText = p.grupo_sanguineo || '---';
+
         } catch (e) {
-            console.error("Error al cargar:", e);
+            console.error("Error al cargar datos:", e);
         }
     }
 </script>
