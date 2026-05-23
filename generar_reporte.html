@@ -12,9 +12,9 @@
         .section-title { background: #f1f5f9; padding: 8px; font-weight: 800; border-left: 6px solid #22c55e; margin: 20px 0 10px; text-transform: uppercase; font-size: 12px; }
         .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 11px; }
         .val { font-weight: 700; color: #1e293b; text-transform: uppercase; }
-        /* Estilo especial para los datos principales */
-        .highlight-header { grid-column: span 2; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; }
-        .highlight-header .val { font-size: 16px; color: #22c55e; }
+        /* Contenedor principal destacado */
+        .main-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+        .main-info-grid .val { font-size: 14px; color: #22c55e; display: block; }
         .btn-print { background: #22c55e; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; }
         @media print { .no-print { display: none; } }
     </style>
@@ -32,6 +32,7 @@
     </div>
 
     <div class="section-title">I. Afiliación del Trabajador (P1)</div>
+    <div class="main-info-grid" id="main_info"></div>
     <div class="data-grid" id="grid_p1"></div>
 
     <div class="section-title">II. Antecedentes Patológicos (P2)</div>
@@ -43,8 +44,7 @@
 
 <script>
     const API = 'https://historial-clinico-nube.onrender.com';
-    // Ordenamos campos para P1: Paciente y Código primero
-    const fields_p1 = ["paciente", "codigo_paciente", "ci", "edad", "sexo", "fecha_nacimiento", "lugar_nacimiento", "domicilio", "n_casa", "zona_barrio", "ciudad", "telefono", "estado_civil", "profesion_oficio"];
+    const fields_p1_resto = ["ci", "edad", "sexo", "fecha_nacimiento", "lugar_nacimiento", "domicilio", "n_casa", "zona_barrio", "ciudad", "telefono", "estado_civil", "profesion_oficio"];
     const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
     const fields_p3 = ["fuma","fuma_cantidad","alcohol","alcohol_frecuencia","drogas","drogas_tipo","coca","deporte","deporte_detalle","grupo_sanguineo","historia_laboral","riesgos_expuestos","observaciones"];
 
@@ -61,26 +61,22 @@
             const ant = data.antecedentes || {};
             const hab = data.habitos || {};
 
-            const containerP1 = document.getElementById('grid_p1');
-            containerP1.innerHTML = fields_p1.map((f, index) => {
-                let valor = "";
-                if(f === "paciente") valor = `${p.nombre || ''} ${p.apellido || ''}`;
-                else if(f === "codigo_paciente") valor = p.codigo_paciente || '---';
-                else if(f === "ci") valor = p.ci || '---';
-                else valor = f1[f] || '---';
-                
-                // Aplicamos clase especial a los dos primeros campos
-                const className = (index < 2) ? 'highlight-header' : '';
-                return `<div class="${className}">${f.replace('_',' ').toUpperCase()}: <span class="val">${valor}</span></div>`;
-            }).join('');
+            // Renderizar Paciente y Código en la parte superior destacada
+            document.getElementById('main_info').innerHTML = `
+                <div>PACIENTE: <span class="val">${p.nombre || ''} ${p.apellido || ''}</span></div>
+                <div>CÓDIGO PACIENTE: <span class="val">${p.codigo_paciente || '---'}</span></div>
+            `;
 
-            const containerP2 = document.getElementById('grid_p2');
-            containerP2.innerHTML = fields_p2.map(f => `
+            // Resto de los datos en el grid normal
+            document.getElementById('grid_p1').innerHTML = fields_p1_resto.map(f => `
+                <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${f1[f] || '---'}</span></div>
+            `).join('');
+
+            document.getElementById('grid_p2').innerHTML = fields_p2.map(f => `
                 <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${ant[f] || 'SIN HALLAZGOS'}</span></div>
             `).join('');
 
-            const containerP3 = document.getElementById('grid_p3');
-            containerP3.innerHTML = fields_p3.map(f => `
+            document.getElementById('grid_p3').innerHTML = fields_p3.map(f => `
                 <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${hab[f] || '---'}</span></div>
             `).join('');
 
