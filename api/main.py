@@ -9,7 +9,6 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# CORS abierto
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -24,10 +23,11 @@ def get_db():
     finally:
         db.close()
 
+# RUTA PARA MANTENER EL SERVIDOR VIVO Y QUE RENDER NO LA MATE
+@app.get("/")
+def health_check():
+    return {"status": "ok"}
+
 @app.get("/pacientes/")
 def read_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
-
-@app.get("/")
-def read_root():
-    return {"status": "ok"}
