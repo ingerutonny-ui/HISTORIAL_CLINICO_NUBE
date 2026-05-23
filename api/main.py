@@ -2,7 +2,6 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
-# IMPORTANTE: Asegúrate de importar delete_paciente desde crud
 from .crud import create_paciente, delete_paciente, upsert_filiacion, upsert_p2, upsert_p3, create_doctor, create_enfermera
 from . import models
 
@@ -36,7 +35,8 @@ def obtener_paciente_completo(codigo_ingresado: str, db: Session = Depends(get_d
     return {
         "paciente": paciente,
         "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first(),
-        # ... resto de tus relaciones
+        "antecedentes": db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente.id).first(),
+        "habitos": db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente.id).first()
     }
 
 @app.post("/pacientes/")
@@ -48,10 +48,9 @@ def listar_todos_los_pacientes(db: Session = Depends(get_db)):
 
 @app.delete("/api/pacientes/{paciente_id}")
 def eliminar_paciente(paciente_id: int, db: Session = Depends(get_db)):
-    # Ahora esta función es reconocida porque la importamos arriba
     exito = delete_paciente(db, paciente_id)
     if not exito:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado o error al eliminar")
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"message": "Paciente eliminado correctamente"}
 
 # --- FILIACIÓN Y ANTECEDENTES ---
