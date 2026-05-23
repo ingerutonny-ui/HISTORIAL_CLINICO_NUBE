@@ -108,13 +108,26 @@
     }
 
     async function eliminarPaciente(id) {
-        if (confirm("⚠️ ¿ESTÁ SEGURO DE ELIMINAR ESTE REGISTRO?")) {
-            try {
-                const r = await fetch(`${API}/pacientes/${id}`, { method: 'DELETE' });
-                if (r.ok) cargarPacientes();
-            } catch (e) { alert("ERROR AL ELIMINAR"); }
+        if (!confirm("¿Estás seguro de que deseas eliminar este paciente y todos sus registros?")) {
+            return;
         }
-    }
+
+        try {
+            const response = await fetch(`https://historial-clinico-nube.onrender.com/api/pacientes/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert("Paciente eliminado exitosamente.");
+                // Recargar la página o eliminar la fila de la tabla sin refrescar
+                location.reload(); 
+            } else {
+                alert("Error al intentar eliminar el paciente.");
+            }
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }    
 
     window.onload = cargarPacientes;
 </script>
