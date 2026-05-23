@@ -7,42 +7,28 @@
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
         .sheet { width: 210mm; min-height: 297mm; background: white; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 20px; box-sizing: border-box; position: relative; }
-        
-        /* Contenedor de botones para que no se muevan al imprimir */
         .nav-buttons { display: flex; gap: 10px; margin-bottom: 15px; width: 210mm; justify-content: flex-end; }
-        
         .header { display: flex; align-items: center; border-bottom: 3px solid #22c55e; padding-bottom: 15px; margin-bottom: 25px; }
         .logo { height: 60px; }
         .header-title { flex: 1; text-align: center; }
         .header-title h1 { margin: 0; font-size: 20px; color: #1e293b; text-transform: uppercase; font-weight: 900; }
-        
         .section-title { background: #f1f5f9; padding: 8px 12px; font-size: 12px; font-weight: 800; border-left: 6px solid #22c55e; margin: 25px 0 15px 0; text-transform: uppercase; }
         .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 11.5px; }
         .data-item { border-bottom: 1.5px solid #f1f5f9; padding: 6px 0; display: flex; align-items: baseline; }
         .label { font-weight: 800; color: #64748b; width: 170px; text-transform: uppercase; font-size: 9.5px; flex-shrink: 0; }
         .val { color: #1e293b; font-weight: 700; text-transform: uppercase; flex-grow: 1; }
-
         .table-report { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 15px; }
         .table-report th { background: #f8fafc; border: 1px solid #cbd5e1; padding: 10px; text-align: left; text-transform: uppercase; }
         .table-report td { border: 1px solid #cbd5e1; padding: 10px; text-transform: uppercase; }
-
         .riesgos-box { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
         .riesgo-tag { border: 2px solid #22c55e; padding: 5px 12px; border-radius: 6px; font-size: 10.5px; font-weight: 800; background: #f0fdf4; color: #16a34a; }
-
         .footer-sign { margin-top: 80px; display: flex; justify-content: space-around; text-align: center; font-size: 12px; }
         .sign-line { border-top: 2px solid #1e293b; width: 250px; margin-top: 60px; padding-top: 10px; font-weight: 800; text-transform: uppercase; }
-
-        /* Estilo Botones */
         .btn-ohs { cursor:pointer; border:none; padding:12px 20px; border-radius:8px; font-weight:800; font-size:14px; transition: 0.3s; text-decoration: none; }
         .btn-print { background:#22c55e; color:white; }
         .btn-back { background:#1e293b; color:white; }
         .btn-ohs:hover { opacity: 0.9; transform: scale(1.02); }
-
-        @media print { 
-            body { background: white; padding: 0; } 
-            .sheet { box-shadow: none; width: 100%; margin: 0; padding: 15mm; } 
-            .no-print { display: none; }
-        }
+        @media print { body { background: white; padding: 0; } .sheet { box-shadow: none; width: 100%; margin: 0; padding: 15mm; } .no-print { display: none; } }
     </style>
 </head>
 <body>
@@ -101,14 +87,14 @@
 </div>
 
 <script>
-    const API = 'https://historial-clinico-936s.onrender.com';
+    const API = 'https://historial-clinico-nube.onrender.com';
     const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
 
     window.onload = async () => {
         const p_id = localStorage.getItem('p_id_reporte');
         if (!p_id) return;
         try {
-            const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
+            const resp = await fetch(`${API}/paciente-completo/${p_id}`);
             const data = await resp.json();
 
             document.getElementById('r_paciente').innerText = `${data.paciente.apellido} ${data.paciente.nombre}`;
