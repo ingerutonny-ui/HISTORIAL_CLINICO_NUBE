@@ -79,9 +79,9 @@
                         <td>${p.ci || 'S/N'}</td>
                         <td><span class="badge bg-light text-dark border">${p.codigo_paciente || '---'}</span></td>
                         <td class="text-center">
-                            <button class="btn-action btn-reporte" title="REPORTE" onclick="verReporte(${p.id})">📄</button>
-                            <button class="btn-action btn-editar" title="EDITAR" onclick="editarPaciente(${p.id})">✏️</button>
-                            <button class="btn-action btn-borrar" title="BORRAR" onclick="eliminarPaciente(${p.id})">🗑️</button>
+                            <button class="btn-action btn-reporte" title="REPORTE" onclick="verReporte('${p.id}')">📄</button>
+                            <button class="btn-action btn-editar" title="EDITAR" onclick="editarPaciente('${p.id}')">✏️</button>
+                            <button class="btn-action btn-borrar" title="BORRAR" onclick="eliminarPaciente('${p.id}')">🗑️</button>
                         </td>
                     </tr>`;
             });
@@ -97,7 +97,6 @@
     }
 
     function editarPaciente(id) {
-        // Marcamos que es una EDICIÓN y guardamos el ID
         localStorage.setItem('edit_modo', 'true');
         localStorage.setItem('p_id', id); 
         window.location.href = "declaracion_jurada_p1.html";
