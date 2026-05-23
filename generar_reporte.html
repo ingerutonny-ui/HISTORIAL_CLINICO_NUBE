@@ -100,7 +100,7 @@
 
         try {
             // Ajustamos la ruta para que coincida con tu backend real
-            const resp = await fetch(`${API}/paciente-completo/${p_id}`);
+            const resp = await fetch(`${API}/pacientes/${p_id}`);
             if (!resp.ok) throw new Error("No se pudo conectar con el servidor");
             
             const data = await resp.json();
