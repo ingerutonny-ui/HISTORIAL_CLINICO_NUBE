@@ -31,7 +31,6 @@ def upsert_filiacion(db: Session, data: dict):
     return existente
 
 def upsert_p2(db: Session, data: dict):
-    # Aquí el backend recibe directamente el objeto P2
     p_id = data.get("paciente_id")
     if not p_id: return {"error": "Falta paciente_id"}
     existente = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
@@ -45,7 +44,6 @@ def upsert_p2(db: Session, data: dict):
     return existente
 
 def upsert_p3(db: Session, data: dict):
-    # Aquí el backend recibe directamente el objeto P3
     p_id = data.get("paciente_id")
     if not p_id: return {"error": "Falta paciente_id"}
     existente = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
