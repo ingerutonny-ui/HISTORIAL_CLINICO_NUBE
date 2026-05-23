@@ -12,6 +12,9 @@
         .section-title { background: #f1f5f9; padding: 8px; font-weight: 800; border-left: 6px solid #22c55e; margin: 20px 0 10px; text-transform: uppercase; font-size: 12px; }
         .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 11px; }
         .val { font-weight: 700; color: #1e293b; text-transform: uppercase; }
+        /* Estilo especial para los datos principales */
+        .highlight-header { grid-column: span 2; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px; }
+        .highlight-header .val { font-size: 16px; color: #22c55e; }
         .btn-print { background: #22c55e; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; }
         @media print { .no-print { display: none; } }
     </style>
@@ -40,7 +43,8 @@
 
 <script>
     const API = 'https://historial-clinico-nube.onrender.com';
-    const fields_p1 = ["paciente", "ci", "codigo_paciente", "edad", "sexo", "fecha_nacimiento", "lugar_nacimiento", "domicilio", "n_casa", "zona_barrio", "ciudad", "telefono", "estado_civil", "profesion_oficio"];
+    // Ordenamos campos para P1: Paciente y Código primero
+    const fields_p1 = ["paciente", "codigo_paciente", "ci", "edad", "sexo", "fecha_nacimiento", "lugar_nacimiento", "domicilio", "n_casa", "zona_barrio", "ciudad", "telefono", "estado_civil", "profesion_oficio"];
     const fields_p2 = ["vista","auditivo","respiratorio","cardio","digestivos","sangre","genitourinario","sistema_nervioso","psiquiatricos","osteomusculares","reumatologicos","dermatologicas","alergias","cirugias","infecciones","acc_personales","acc_trabajo","medicamentos","endocrino","familiares","otros_especificos","generales"];
     const fields_p3 = ["fuma","fuma_cantidad","alcohol","alcohol_frecuencia","drogas","drogas_tipo","coca","deporte","deporte_detalle","grupo_sanguineo","historia_laboral","riesgos_expuestos","observaciones"];
 
@@ -57,25 +61,24 @@
             const ant = data.antecedentes || {};
             const hab = data.habitos || {};
 
-            // Mapeo P1 (Dinámico para todos los campos)
             const containerP1 = document.getElementById('grid_p1');
-            containerP1.innerHTML = fields_p1.map(f => {
+            containerP1.innerHTML = fields_p1.map((f, index) => {
                 let valor = "";
                 if(f === "paciente") valor = `${p.nombre || ''} ${p.apellido || ''}`;
-                else if(f === "ci") valor = p.ci || '---';
                 else if(f === "codigo_paciente") valor = p.codigo_paciente || '---';
+                else if(f === "ci") valor = p.ci || '---';
                 else valor = f1[f] || '---';
                 
-                return `<div>${f.replace('_',' ').toUpperCase()}: <span class="val">${valor}</span></div>`;
+                // Aplicamos clase especial a los dos primeros campos
+                const className = (index < 2) ? 'highlight-header' : '';
+                return `<div class="${className}">${f.replace('_',' ').toUpperCase()}: <span class="val">${valor}</span></div>`;
             }).join('');
 
-            // Mapeo P2
             const containerP2 = document.getElementById('grid_p2');
             containerP2.innerHTML = fields_p2.map(f => `
                 <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${ant[f] || 'SIN HALLAZGOS'}</span></div>
             `).join('');
 
-            // Mapeo P3
             const containerP3 = document.getElementById('grid_p3');
             containerP3.innerHTML = fields_p3.map(f => `
                 <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${hab[f] || '---'}</span></div>
