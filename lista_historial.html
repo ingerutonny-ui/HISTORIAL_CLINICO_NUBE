@@ -13,7 +13,7 @@
         .table thead { background-color: #f8fafc; }
         .table th { font-size: 0.75rem; font-weight: 800; color: #475569; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
         .table td { vertical-align: middle; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; color: #1e293b; }
-        .btn-action { padding: 6px 10px; border-radius: 8px; border: none; font-size: 1.1rem; transition: 0.3s; margin: 0 2px; cursor: pointer; }
+        .btn-action { padding: 6px 10px; border-radius: 8px; border: none; font-size: 1.1rem; transition: 0.3s; margin: 0 2px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; }
         .btn-reporte { background-color: #22c55e; color: white; }
         .btn-reporte:hover { background-color: #16a34a; transform: scale(1.1); }
         .btn-editar { background-color: #f59e0b; color: white; }
@@ -65,12 +65,14 @@
             const resp = await fetch(`${API}/pacientes/`);
             if (!resp.ok) throw new Error("Error en servidor");
             const pacientes = await resp.json();
+            
             tabla.innerHTML = "";
             if (!pacientes || pacientes.length === 0) {
                 contador.innerText = "TOTAL: 0";
                 tabla.innerHTML = `<tr><td colspan="4" class="text-center py-4">NO HAY REGISTROS DISPONIBLES</td></tr>`;
                 return;
             }
+            
             contador.innerText = `TOTAL: ${pacientes.length}`;
             pacientes.forEach(p => {
                 tabla.innerHTML += `
@@ -108,26 +110,21 @@
     }
 
     async function eliminarPaciente(id) {
-        if (!confirm("¿Estás seguro de que deseas eliminar este paciente y todos sus registros?")) {
-            return;
-        }
+        if (!confirm("¿Estás seguro de que deseas eliminar este paciente y todos sus registros?")) return;
 
         try {
-            const response = await fetch(`https://historial-clinico-nube.onrender.com/api/pacientes/${id}`, {
-                method: 'DELETE'
-            });
-
+            const response = await fetch(`${API}/api/pacientes/${id}`, { method: 'DELETE' });
             if (response.ok) {
                 alert("Paciente eliminado exitosamente.");
-                // Recargar la página o eliminar la fila de la tabla sin refrescar
                 location.reload(); 
             } else {
                 alert("Error al intentar eliminar el paciente.");
             }
         } catch (error) {
             console.error("Error:", error);
+            alert("Error de conexión al eliminar.");
         }
-    }    
+    }   
 
     window.onload = cargarPacientes;
 </script>
