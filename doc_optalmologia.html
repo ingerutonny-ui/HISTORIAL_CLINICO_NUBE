@@ -48,7 +48,7 @@
 
     <form id="oftalmoForm">
         <div class="no-print mb-2 p-2" style="background: #ecfdf5; border: 2px solid var(--emerald); border-radius: 8px;">
-            <label style="color: #065f46;">CÓDIGO PACIENTE:</label>
+            <label style="color: #065f46;">CÓDIGO GENERADO:</label>
             <input type="text" id="codigo_search" class="form-control form-control-sm d-inline-block w-25 ms-2" placeholder="ESCRIBA Y ENTER" autofocus>
         </div>
 
@@ -139,35 +139,25 @@
 <script>
     const API = 'https://historial-clinico-936s.onrender.com';
 
-    // JALADO AUTOMÁTICO DE LOS 5 DATOS
     document.getElementById('codigo_search').addEventListener('change', async (e) => {
         const cod = e.target.value.trim();
         if(!cod) return;
         try {
             const resp = await fetch(`${API}/pacientes/codigo/${cod}`);
+            if(!resp.ok) throw new Error("No encontrado");
             const data = await resp.json();
-            if(data) {
-                document.getElementById('nombre_completo').value = `${data.nombre} ${data.apellido}`;
-                document.getElementById('ci').value = data.ci;
-                window.p_id = data.id;
-
-                const respF = await fetch(`${API}/api/paciente-completo/${data.id}`);
-                const dF = await respF.json();
-                if(dF.filiacion) {
-                    document.getElementById('edad').value = dF.filiacion.edad || '';
-                    document.getElementById('sexo').value = dF.filiacion.sexo || '';
-                    document.getElementById('ocupacion').value = dF.filiacion.profesion_oficio || '';
-                }
-            }
+            
+            document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
+            document.getElementById('ci').value = data.ci || '';
+            document.getElementById('edad').value = data.edad || '';
+            document.getElementById('sexo').value = data.sexo || '';
+            document.getElementById('ocupacion').value = data.ocupacion || '';
+            window.p_id = data.id;
         } catch (err) { alert("CÓDIGO NO ENCONTRADO"); }
     });
 
-    // GUARDAR E IMPRIMIR
     document.getElementById('oftalmoForm').onsubmit = async (e) => {
         e.preventDefault();
-        if(!window.p_id) { alert("ERROR: SELECCIONE PACIENTE"); return; }
-        
-        // Simulación de guardado y disparo de impresión
         alert("GUARDANDO EN LA NUBE...");
         window.print();
     };
