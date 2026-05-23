@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Request, Response
+from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
@@ -22,7 +22,8 @@ def get_db():
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(
-        (models.Paciente.codigo_paciente == identificador) | (models.Paciente.id == (int(identificador) if identificador.isdigit() else 0))
+        (models.Paciente.codigo_paciente == identificador) | 
+        (models.Paciente.id == (int(identificador) if identificador.isdigit() else 0))
     ).first()
     if not paciente: raise HTTPException(status_code=404, detail="No encontrado")
     return {
