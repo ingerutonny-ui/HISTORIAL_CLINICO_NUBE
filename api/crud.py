@@ -19,7 +19,6 @@ def create_paciente(db: Session, data: dict):
 
 def upsert_filiacion(db: Session, data: dict):
     p_id = data.get("paciente_id")
-    if not p_id: return {"error": "Falta paciente_id"}
     existente = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == p_id).first()
     if existente:
         for key, value in data.items(): setattr(existente, key, value)
@@ -32,7 +31,6 @@ def upsert_filiacion(db: Session, data: dict):
 
 def upsert_p2(db: Session, data: dict):
     p_id = data.get("paciente_id")
-    if not p_id: return {"error": "Falta paciente_id"}
     existente = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == p_id).first()
     if existente:
         for key, value in data.items(): setattr(existente, key, value)
@@ -45,7 +43,6 @@ def upsert_p2(db: Session, data: dict):
 
 def upsert_p3(db: Session, data: dict):
     p_id = data.get("paciente_id")
-    if not p_id: return {"error": "Falta paciente_id"}
     existente = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == p_id).first()
     if existente:
         for key, value in data.items(): setattr(existente, key, value)
