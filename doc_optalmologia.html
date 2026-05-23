@@ -137,27 +137,45 @@
 </div>
 
 <script>
-    const API = 'https://historial-clinico-936s.onrender.com';
+    const API = 'https://historial-clinico-nube.onrender.com';
 
     document.getElementById('codigo_search').addEventListener('change', async (e) => {
         const cod = e.target.value.trim();
         if(!cod) return;
+        
         try {
             const resp = await fetch(`${API}/pacientes/codigo/${cod}`);
             if(!resp.ok) throw new Error("No encontrado");
             const data = await resp.json();
             
+            // Mapeo exacto de la sección I. FILIACION DEL PACIENTE
             document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
             document.getElementById('ci').value = data.ci || '';
             document.getElementById('edad').value = data.edad || '';
             document.getElementById('sexo').value = data.sexo || '';
             document.getElementById('ocupacion').value = data.ocupacion || '';
+            
+            // Guardamos el ID para el registro posterior
             window.p_id = data.id;
-        } catch (err) { alert("CÓDIGO NO ENCONTRADO"); }
+            
+            alert("PACIENTE ENCONTRADO");
+        } catch (err) { 
+            alert("CÓDIGO NO ENCONTRADO"); 
+            // Limpiamos campos si no se encuentra
+            document.getElementById('nombre_completo').value = '';
+            document.getElementById('ci').value = '';
+            document.getElementById('edad').value = '';
+            document.getElementById('sexo').value = '';
+            document.getElementById('ocupacion').value = '';
+        }
     });
 
     document.getElementById('oftalmoForm').onsubmit = async (e) => {
         e.preventDefault();
+        if(!window.p_id) {
+            alert("ERROR: DEBE BUSCAR UN CÓDIGO VÁLIDO ANTES DE GUARDAR");
+            return;
+        }
         alert("GUARDANDO EN LA NUBE...");
         window.print();
     };
