@@ -2,35 +2,45 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>REPORTE MÉDICO OHS - COMPLETO</title>
+    <title>REPORTE MÉDICO OHS | FINAL</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .sheet { width: 210mm; min-height: 297mm; background: white; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); box-sizing: border-box; }
-        .section-title { background: #f1f5f9; padding: 8px; font-weight: 800; border-left: 6px solid #22c55e; margin: 20px 0 10px; text-transform: uppercase; font-size: 12px; }
-        .data-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 11px; }
-        .label { font-weight: 800; color: #64748b; text-transform: uppercase; }
-        .val { font-weight: 700; color: #1e293b; text-transform: uppercase; }
-        .btn-print { background: #22c55e; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #525659; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        .sheet { width: 210mm; min-height: 297mm; background: white; padding: 20mm; box-shadow: 0 0 10px rgba(0,0,0,0.5); margin-bottom: 20px; box-sizing: border-box; }
+        .nav-buttons { display: flex; gap: 10px; margin-bottom: 15px; width: 210mm; justify-content: flex-end; }
+        .header { display: flex; align-items: center; border-bottom: 3px solid #22c55e; padding-bottom: 15px; margin-bottom: 25px; }
+        .header-title h1 { margin: 0; font-size: 20px; color: #1e293b; text-transform: uppercase; font-weight: 900; }
+        .section-title { background: #f1f5f9; padding: 8px 12px; font-size: 12px; font-weight: 800; border-left: 6px solid #22c55e; margin: 25px 0 15px 0; text-transform: uppercase; }
+        .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; font-size: 11.5px; }
+        .data-item { border-bottom: 1.5px solid #f1f5f9; padding: 6px 0; display: flex; align-items: baseline; }
+        .label { font-weight: 800; color: #64748b; width: 170px; text-transform: uppercase; font-size: 9.5px; }
+        .val { color: #1e293b; font-weight: 700; text-transform: uppercase; }
+        .btn-ohs { cursor:pointer; border:none; padding:12px 20px; border-radius:8px; font-weight:800; text-decoration:none; color:white; }
+        .btn-print { background:#22c55e; } .btn-back { background:#1e293b; }
         @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
 
-<div class="no-print" style="margin-bottom: 20px;">
-    <button class="btn-print" onclick="window.print()">IMPRIMIR REPORTE COMPLETO</button>
+<div class="nav-buttons no-print">
+    <a href="lista_historial.html" class="btn-ohs btn-back">⬅ VOLVER AL LISTADO</a>
+    <button class="btn-ohs btn-print" onclick="window.print()">IMPRIMIR REPORTE 📄</button>
 </div>
 
 <div class="sheet">
+    <div class="header">
+        <div class="header-title"><h1>Historial Clínico Ocupacional</h1></div>
+    </div>
+
     <div class="section-title">I. Afiliación del Trabajador (P1)</div>
     <div class="data-grid">
-        <div>Paciente: <span class="val" id="r_paciente">---</span></div>
-        <div>Cédula: <span class="val" id="r_ci">---</span></div>
-        <div>Edad: <span class="val" id="r_edad">---</span></div>
-        <div>Sexo: <span class="val" id="r_sexo">---</span></div>
-        <div>Nacimiento: <span class="val" id="r_f_nac">---</span></div>
-        <div>Teléfono: <span class="val" id="r_tel">---</span></div>
-        <div>Profesión: <span class="val" id="r_profesion">---</span></div>
-        <div>Código: <span class="val" id="r_cod">---</span></div>
+        <div class="data-item"><span class="label">Paciente:</span> <span class="val" id="r_paciente">---</span></div>
+        <div class="data-item"><span class="label">Cédula:</span> <span class="val" id="r_ci">---</span></div>
+        <div class="data-item"><span class="label">Edad:</span> <span class="val" id="r_edad">---</span></div>
+        <div class="data-item"><span class="label">Sexo:</span> <span class="val" id="r_sexo">---</span></div>
+        <div class="data-item"><span class="label">Nacimiento:</span> <span class="val" id="r_f_nac">---</span></div>
+        <div class="data-item"><span class="label">Teléfono:</span> <span class="val" id="r_tel">---</span></div>
+        <div class="data-item"><span class="label">Profesión:</span> <span class="val" id="r_profesion">---</span></div>
+        <div class="data-item"><span class="label">Código:</span> <span class="val" id="r_cod">---</span></div>
     </div>
 
     <div class="section-title">II. Antecedentes Patológicos (P2)</div>
@@ -38,15 +48,12 @@
 
     <div class="section-title">III. Hábitos y Estilos de Vida (P3)</div>
     <div class="data-grid">
-        <div>Fuma: <span class="val" id="r_fuma">---</span></div>
-        <div>Alcohol: <span class="val" id="r_alcohol">---</span></div>
-        <div>Drogas: <span class="val" id="r_drogas">---</span></div>
-        <div>Pijchar: <span class="val" id="r_coca">---</span></div>
-        <div>Grupo Sanguíneo: <span class="val" id="r_gs">---</span></div>
+        <div class="data-item"><span class="label">Fuma:</span> <span class="val" id="r_fuma">---</span></div>
+        <div class="data-item"><span class="label">Alcohol:</span> <span class="val" id="r_alcohol">---</span></div>
+        <div class="data-item"><span class="label">Drogas:</span> <span class="val" id="r_drogas">---</span></div>
+        <div class="data-item"><span class="label">Pijchar:</span> <span class="val" id="r_coca">---</span></div>
+        <div class="data-item"><span class="label">Grupo Sanguíneo:</span> <span class="val" id="r_gs">---</span></div>
     </div>
-
-    <div class="section-title">IV. Historia Laboral y Riesgos</div>
-    <div id="r_laboral" style="font-size: 11px; margin-top: 10px;">---</div>
 </div>
 
 <script>
@@ -63,8 +70,7 @@
             const p = data.find(pac => String(pac.id) === String(p_id));
             if (!p) return;
 
-            // P1
-            document.getElementById('r_paciente').innerText = `${p.apellido || ''} ${p.nombre || ''}`;
+            document.getElementById('r_paciente').innerText = `${p.nombre || ''} ${p.apellido || ''}`;
             document.getElementById('r_ci').innerText = p.ci || '---';
             document.getElementById('r_edad').innerText = p.edad || '---';
             document.getElementById('r_sexo').innerText = p.sexo || '---';
@@ -73,24 +79,17 @@
             document.getElementById('r_profesion').innerText = p.profesion || '---';
             document.getElementById('r_cod').innerText = p.codigo_paciente || '---';
 
-            // P2 (Mapeo completo)
             const gridP2 = document.getElementById('grid_p2');
             gridP2.innerHTML = fields_p2.map(f => `
-                <div>${f.toUpperCase()}: <span class="val">${p[f] || 'SIN HALLAZGOS'}</span></div>
-            `).join('');
+                <div class="data-item"><span class="label">${f.replace(/_/g,' ')}:</span> 
+                <span class="val">${p[f] || 'SIN HALLAZGOS'}</span></div>`).join('');
 
-            // P3
             document.getElementById('r_fuma').innerText = p.fuma || '---';
             document.getElementById('r_alcohol').innerText = p.alcohol || '---';
             document.getElementById('r_drogas').innerText = p.drogas || '---';
             document.getElementById('r_coca').innerText = p.coca || '---';
             document.getElementById('r_gs').innerText = p.grupo_sanguineo || '---';
-            
-            // Historia Laboral y Riesgos
-            document.getElementById('r_laboral').innerText = p.historia_laboral || 'SIN REGISTRO LABORAL';
-        } catch (e) {
-            console.error("Error crítico:", e);
-        }
+        } catch (e) { console.error(e); }
     }
 </script>
 </body>
