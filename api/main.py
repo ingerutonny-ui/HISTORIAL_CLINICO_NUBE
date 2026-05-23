@@ -1,14 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine, Base
-from . import models
+import logging
 
-# Inicializa la base de datos
+# Configurar logs para ver qué está pasando
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración CORS esencial
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,19 +19,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Definimos las rutas de forma simple y directa
 @app.get("/")
 def read_root():
     return {"status": "ok"}
 
-# Esta es la ruta que tu frontend intenta consultar
+# RUTA DEFINIDA DE FORMA PLANA Y SIN DEPENDENCIAS DE SESSION DURANTE EL ARRANQUE
 @app.get("/pacientes/")
 def get_pacientes():
+    logger.info("Recibida petición en /pacientes/")
     from .database import SessionLocal
     from .models import Paciente
     db = SessionLocal()
     try:
         pacientes = db.query(Paciente).all()
         return pacientes
+    except Exception as e:
+        logger.error(f"Error al obtener pacientes: {e}")
+        return []
     finally:
         db.close()
