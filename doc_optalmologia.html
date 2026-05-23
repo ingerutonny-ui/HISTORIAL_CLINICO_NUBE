@@ -147,36 +147,47 @@
     let p_id = null;
 
 async function buscarPaciente() {
-    // 1. Obtenemos el valor del input
     const cod = document.getElementById('codigo_search').value.trim();
-    if(!cod) { alert("INGRESE UN CÓDIGO"); return; }
+    if (!cod) { 
+        alert("INGRESE UN CÓDIGO"); 
+        return; 
+    }
     
-    // 2. La URL debe ser EXACTAMENTE la que probaste que funciona
-    const url = `https://historial-clinico-nube.onrender.com/api/paciente-completo/${cod}`;
+    // URL completa y absoluta para evitar errores de ruta relativa
+    const url = `https://historial-clinico-nube.onrender.com/api/paciente-completo/${encodeURIComponent(cod)}`;
     
+    console.log("Intentando conectar a:", url); // Para depurar en consola
+
     try {
         const resp = await fetch(url);
         
-        // Si el servidor responde con 404, lanzamos el error
-        if(!resp.ok) throw new Error("CÓDIGO NO ENCONTRADO");
+        if (!resp.ok) {
+            throw new Error("CÓDIGO NO ENCONTRADO");
+        }
         
         const respuesta = await resp.json();
         
-        // 3. Accedemos a respuesta.paciente porque tu API devuelve { "paciente": {...} }
+        // Según tu API, el objeto principal tiene la clave "paciente"
         const data = respuesta.paciente;
         
-        // 4. Llenamos los campos
-        document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
-        document.getElementById('ci').value = data.ci || '';
-        
-        p_id = data.id; 
-        alert("PACIENTE ENCONTRADO");
-        
+        if (data) {
+            document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
+            document.getElementById('ci').value = data.ci || '';
+            document.getElementById('edad').value = data.edad || '';
+            document.getElementById('sexo').value = data.sexo || '';
+            document.getElementById('ocupacion').value = data.ocupacion || '';
+            
+            p_id = data.id; 
+            alert("PACIENTE ENCONTRADO");
+        }
     } catch (err) { 
-        console.error(err);
+        console.error("Error en la búsqueda:", err);
         alert(err.message); 
     }
-    }
+}
+
+
+    
 
     document.getElementById('oftalmoForm').onsubmit = (e) => {
         e.preventDefault();
