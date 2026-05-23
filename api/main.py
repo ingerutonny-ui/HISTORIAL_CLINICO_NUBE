@@ -10,7 +10,6 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -23,10 +22,9 @@ def get_db():
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(
-        (models.Paciente.codigo_paciente == identificador) | 
-        (models.Paciente.id == (int(identificador) if identificador.isdigit() else 0))
+        (models.Paciente.codigo_paciente == identificador) | (models.Paciente.id == (int(identificador) if identificador.isdigit() else 0))
     ).first()
-    if not paciente: raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    if not paciente: raise HTTPException(status_code=404, detail="No encontrado")
     return {
         "paciente": paciente,
         "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first(),
@@ -40,10 +38,10 @@ def registrar_paciente(data: dict, db: Session = Depends(get_db)): return crud.c
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)): return crud.upsert_filiacion(db, data)
 
-@app.post("/antecedentes_p2/")
+@app.post("/p2/")
 def registrar_p2(data: dict, db: Session = Depends(get_db)): return crud.upsert_p2(db, data)
 
-@app.post("/habitos_p3/")
+@app.post("/p3/")
 def registrar_p3(data: dict, db: Session = Depends(get_db)): return crud.upsert_p3(db, data)
 
 @app.get("/personal/")
