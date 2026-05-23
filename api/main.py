@@ -4,15 +4,16 @@ from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
 from . import crud, models
 
-# Crear tablas en la base de datos
+# Crear tablas
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración CORS
+# CORS configurado para permitir todo desde cualquier origen
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -24,12 +25,12 @@ def get_db():
     finally:
         db.close()
 
-# RUTA DE SALUD
+# RUTA DE SALUD (Para que Render no se cierre)
 @app.get("/")
-def health_check():
+def read_root():
     return {"status": "ok"}
 
-# RUTA LISTA PACIENTES
+# RUTA EXPLÍCITA PARA PACIENTES
 @app.get("/pacientes/")
 def read_pacientes(db: Session = Depends(get_db)):
     return db.query(models.Paciente).all()
