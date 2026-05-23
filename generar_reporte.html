@@ -10,7 +10,7 @@
         .logo { height: 60px; }
         .header-title { flex: 1; text-align: center; }
         
-        /* Contenedor principal destacado (Nuevo) */
+        /* Encabezado destacado */
         .header-main-info { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: center; margin-bottom: 25px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
         .header-main-info .val { font-size: 16px; color: #22c55e; display: block; font-weight: 800; }
         
@@ -64,22 +64,26 @@
             const ant = data.antecedentes || {};
             const hab = data.habitos || {};
 
-            // Renderizar nombre y código arriba
+            // Bloque superior
             document.getElementById('main_info').innerHTML = `
                 <div>PACIENTE: <span class="val">${p.nombre || ''} ${p.apellido || ''}</span></div>
                 <div>CÓDIGO PACIENTE: <span class="val">${p.codigo_paciente || '---'}</span></div>
             `;
 
-            // Renderizar el resto de campos en la cuadrícula, incluyendo CI
+            // Filtrar CI de la lista para no duplicarlo, pero incluirlo al inicio de la rejilla
+            const campos_p1_filtrados = fields_p1.filter(f => f !== 'ci');
             const containerP1 = document.getElementById('grid_p1');
-            containerP1.innerHTML = `<div>CI: <span class="val">${p.ci || '---'}</span></div>` + fields_p1.map(f => `
-                <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${f1[f] || '---'}</span></div>
-            `).join('');
+            containerP1.innerHTML = `<div>CI: <span class="val">${p.ci || '---'}</span></div>` + 
+                campos_p1_filtrados.map(f => `
+                    <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${f1[f] || '---'}</span></div>
+                `).join('');
 
+            // Mapeo P2
             document.getElementById('grid_p2').innerHTML = fields_p2.map(f => `
                 <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${ant[f] || 'SIN HALLAZGOS'}</span></div>
             `).join('');
 
+            // Mapeo P3
             document.getElementById('grid_p3').innerHTML = fields_p3.map(f => `
                 <div>${f.replace('_',' ').toUpperCase()}: <span class="val">${hab[f] || '---'}</span></div>
             `).join('');
