@@ -62,33 +62,37 @@
         if (!p_id) return;
         
         try {
-            const resp = await fetch(`${API}/pacientes/`);
+            // Se usa la ruta definida en tu main.py: /api/paciente-completo/{id}
+            const resp = await fetch(`${API}/api/paciente-completo/${p_id}`);
             const data = await resp.json();
-            const p = data.find(pac => String(pac.id) === String(p_id));
-            if (!p) return;
+            
+            const p = data.paciente;
+            const f1 = data.filiacion || {};
+            const ant = data.antecedentes || {};
+            const hab = data.habitos || {};
 
             document.getElementById('r_paciente').innerText = `${p.nombre || ''} ${p.apellido || ''}`;
             document.getElementById('r_ci').innerText = p.ci || '---';
-            document.getElementById('r_edad').innerText = p.edad || '---';
-            document.getElementById('r_sexo').innerText = p.sexo || '---';
-            document.getElementById('r_nac').innerText = p.fecha_nacimiento || '---';
-            document.getElementById('r_tel').innerText = p.telefono || '---';
-            document.getElementById('r_profesion').innerText = p.profesion || '---';
+            document.getElementById('r_edad').innerText = f1.edad || '---';
+            document.getElementById('r_sexo').innerText = f1.sexo || '---';
+            document.getElementById('r_nac').innerText = f1.fecha_nacimiento || '---';
+            document.getElementById('r_tel').innerText = f1.telefono || '---';
+            document.getElementById('r_profesion').innerText = f1.profesion_oficio || '---';
             document.getElementById('r_cod').innerText = p.codigo_paciente || '---';
 
             const containerP2 = document.getElementById('grid_p2');
             containerP2.innerHTML = fields_p2.map(f => `
-                <div>${f.toUpperCase()}: <span class="val">${p[f] || 'SIN HALLAZGOS'}</span></div>
+                <div>${f.toUpperCase()}: <span class="val">${ant[f] || 'SIN HALLAZGOS'}</span></div>
             `).join('');
 
-            document.getElementById('r_fuma').innerText = p.fuma || '---';
-            document.getElementById('r_alcohol').innerText = p.alcohol || '---';
-            document.getElementById('r_drogas').innerText = p.drogas || '---';
-            document.getElementById('r_coca').innerText = p.coca || '---';
-            document.getElementById('r_gs').innerText = p.grupo_sanguineo || '---';
+            document.getElementById('r_fuma').innerText = hab.fuma || '---';
+            document.getElementById('r_alcohol').innerText = hab.alcohol || '---';
+            document.getElementById('r_drogas').innerText = hab.drogas || '---';
+            document.getElementById('r_coca').innerText = hab.coca || '---';
+            document.getElementById('r_gs').innerText = hab.grupo_sanguineo || '---';
 
         } catch (e) {
-            console.error("Error:", e);
+            console.error("Error al cargar datos:", e);
         }
     }
 </script>
