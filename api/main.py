@@ -58,11 +58,12 @@ def registrar_paciente(data: dict, db: Session = Depends(get_db)):
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_filiacion(db, data)
 
-@app.post("/antecedentes_p2/")
+# Rutas corregidas para coincidir con el frontend
+@app.post("/p2/")
 def registrar_p2(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p2(db, data)
 
-@app.post("/habitos_p3/")
+@app.post("/p3/")
 def registrar_p3(data: dict, db: Session = Depends(get_db)):
     return crud.upsert_p3(db, data)
 
