@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
+# IMPORTANTE: Asegúrate de importar delete_paciente desde crud
 from .crud import create_paciente, delete_paciente, upsert_filiacion, upsert_p2, upsert_p3, create_doctor, create_enfermera
 from . import models
 
@@ -21,9 +22,13 @@ def get_db():
     finally: db.close()
 
 # --- PACIENTES ---
-@app.get("/api/paciente-completo/{codigo_ingresado}")
-def obtener_paciente_completo(codigo_ingresado: str, db: Session = Depends(get_db)):
-    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo_ingresado).first()
+
+@app.get("/api/paciente-completo/{identificador}")
+def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(
+        (models.Paciente.codigo_paciente == identificador) | 
+        (models.Paciente.id == (int(identificador) if identificador.isdigit() else 0))
+    ).first()
     if not paciente: raise HTTPException(status_code=404, detail="No encontrado")
     return {
         "paciente": paciente,
@@ -36,24 +41,33 @@ def obtener_paciente_completo(codigo_ingresado: str, db: Session = Depends(get_d
 def registrar_paciente(data: dict, db: Session = Depends(get_db)): return create_paciente(db, data)
 
 @app.get("/pacientes/")
-def listar_todos_los_pacientes(db: Session = Depends(get_db)): return db.query(models.Paciente).all()
+def listar_todos_los_pacientes(db: Session = Depends(get_db)):
+    return db.query(models.Paciente).all()
 
 @app.delete("/api/pacientes/{paciente_id}")
 def eliminar_paciente(paciente_id: int, db: Session = Depends(get_db)):
-    if not delete_paciente(db, paciente_id): raise HTTPException(status_code=404, detail="No encontrado")
-    return {"message": "Eliminado"}
+    # Ahora esta función es reconocida porque la importamos arriba
+    exito = delete_paciente(db, paciente_id)
+    if not exito:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado o error al eliminar")
+    return {"message": "Paciente eliminado correctamente"}
 
 # --- FILIACIÓN Y ANTECEDENTES ---
+
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)): return upsert_filiacion(db, data)
+
 @app.post("/p2/")
 def registrar_p2(data: dict, db: Session = Depends(get_db)): return upsert_p2(db, data)
+
 @app.post("/p3/")
 def registrar_p3(data: dict, db: Session = Depends(get_db)): return upsert_p3(db, data)
 
-# --- DOCTORES ---
-@app.get("/doctores/")
-def obtener_doctores(db: Session = Depends(get_db)): return db.query(models.Doctor).all()
+# --- PERSONAL ---
+
+@app.get("/personal/")
+def obtener_personal(db: Session = Depends(get_db)):
+    return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
 
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)): return create_doctor(db, data)
@@ -74,10 +88,6 @@ def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     db.delete(doctor)
     db.commit()
     return {"message": "Eliminado"}
-
-# --- ENFERMERAS ---
-@app.get("/enfermeras/")
-def obtener_enfermeras(db: Session = Depends(get_db)): return db.query(models.Enfermera).all()
 
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)): return create_enfermera(db, data)
