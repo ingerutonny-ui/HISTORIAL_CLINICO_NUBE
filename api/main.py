@@ -2,7 +2,6 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
-# IMPORTANTE: Asegúrate de importar delete_paciente desde crud
 from .crud import create_paciente, delete_paciente, upsert_filiacion, upsert_p2, upsert_p3, create_doctor, create_enfermera
 from . import models
 
@@ -22,7 +21,6 @@ def get_db():
     finally: db.close()
 
 # --- PACIENTES ---
-
 @app.get("/api/paciente-completo/{identificador}")
 def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(
@@ -41,30 +39,23 @@ def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db))
 def registrar_paciente(data: dict, db: Session = Depends(get_db)): return create_paciente(db, data)
 
 @app.get("/pacientes/")
-def listar_todos_los_pacientes(db: Session = Depends(get_db)):
-    return db.query(models.Paciente).all()
+def listar_todos_los_pacientes(db: Session = Depends(get_db)): return db.query(models.Paciente).all()
 
 @app.delete("/api/pacientes/{paciente_id}")
 def eliminar_paciente(paciente_id: int, db: Session = Depends(get_db)):
-    # Ahora esta función es reconocida porque la importamos arriba
     exito = delete_paciente(db, paciente_id)
-    if not exito:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado o error al eliminar")
+    if not exito: raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"message": "Paciente eliminado correctamente"}
 
 # --- FILIACIÓN Y ANTECEDENTES ---
-
 @app.post("/filiacion/")
 def registrar_filiacion(data: dict, db: Session = Depends(get_db)): return upsert_filiacion(db, data)
-
 @app.post("/p2/")
 def registrar_p2(data: dict, db: Session = Depends(get_db)): return upsert_p2(db, data)
-
 @app.post("/p3/")
 def registrar_p3(data: dict, db: Session = Depends(get_db)): return upsert_p3(db, data)
 
 # --- PERSONAL ---
-
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
