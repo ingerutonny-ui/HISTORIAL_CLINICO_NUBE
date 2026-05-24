@@ -5,8 +5,7 @@ from .database import SessionLocal, engine, Base
 from .crud import create_doctor, create_enfermera
 from . import models
 
-# RECREACIÓN DE BASE DE DATOS (Ejecutar 1 vez para limpiar tipos)
-
+# RECREACIÓN DE BASE DE DATOS
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -30,7 +29,6 @@ def obtener_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     
-    # AGREGADO: Carga de datos relacionados para el reporte
     filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
     antecedentes = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
     habitos = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
@@ -39,22 +37,12 @@ def obtener_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
 
 @app.post("/filiacion/")
 def guardar_filiacion(data: dict, db: Session = Depends(get_db)):
-    nueva = models.DeclaracionJurada(**data)
-    db.add(nueva); db.commit(); db.refresh(nueva); return nueva
+    nueva = models.DeclaracionJurada(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
-# ----------- BLOQUE P2: ANTECEDENTES -----------
-@app.post("/p2/")
-def guardar_p2(data: dict, db: Session = Depends(get_db)):
-    nueva = models.AntecedentesP2(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
-
+# ----------- BLOQUE P2 y P3 -----------
 @app.post("/antecedentes/")
 def guardar_antecedentes(data: dict, db: Session = Depends(get_db)):
     nueva = models.AntecedentesP2(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
-
-# ----------- BLOQUE P3: HÁBITOS -----------
-@app.post("/p3/")
-def guardar_p3(data: dict, db: Session = Depends(get_db)):
-    nueva = models.HabitosRiesgosP3(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
 @app.post("/habitos/")
 def guardar_habitos(data: dict, db: Session = Depends(get_db)):
@@ -68,14 +56,12 @@ def listar_pacientes(db: Session = Depends(get_db)):
 @app.get("/paciente/{codigo}")
 def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
-    if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    if not paciente: raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"paciente": paciente}
 
 @app.post("/pacientes/")
 def registrar_paciente(data: dict, db: Session = Depends(get_db)):
-    nuevo = models.Paciente(**data)
-    db.add(nuevo); db.commit(); db.refresh(nuevo); return nuevo
+    nuevo = models.Paciente(**data); db.add(nuevo); db.commit(); db.refresh(nuevo); return nuevo
 
 @app.put("/pacientes/{paciente_id}")
 def actualizar_paciente(paciente_id: int, data: dict, db: Session = Depends(get_db)):
@@ -90,57 +76,30 @@ def borrar_paciente(paciente_id: int, db: Session = Depends(get_db)):
     if not p: raise HTTPException(status_code=404, detail="No encontrado")
     db.delete(p); db.commit(); return {"message": "Eliminado"}
 
-
-# --------------------BUSCADOR----------------------
 @app.get("/buscar-id-por-codigo/{codigo}")
 def buscar_id_por_codigo(codigo: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
-    if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    if not paciente: raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"id": paciente.id}
-
-
 
 # ----------- FICHA MÉDICA -----------
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     nueva = models.FichaOftalmologica(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
-@app.post("/ficha-psicologia/")
-def guardar_ficha_psicologia(data: dict, db: Session = Depends(get_db)):
-    nueva = models.FichaPsicologia(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
-
-@app.post("/ficha-espirometria/")
-def guardar_ficha_espirometria(data: dict, db: Session = Depends(get_db)):
-    nueva = models.FichaEspirometria(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
-
-@app.post("/ficha-electro/")
-def guardar_ficha_electro(data: dict, db: Session = Depends(get_db)):
-    nueva = models.FichaElectroencefalograma(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
-
-@app.post("/declaracion/")
-def guardar_declaracion(data: dict, db: Session = Depends(get_db)):
-    nueva = models.DeclaracionJurada(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
-
 # ----------- PERSONAL (CRUD) -----------
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
+
+@app.post("/doctores/")
+def registrar_doctor(data: dict, db: Session = Depends(get_db)): return create_doctor(db, data)
 
 @app.get("/doctores/{id_doc}")
 def obtener_doctor(id_doc: int, db: Session = Depends(get_db)):
     doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
     if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
     return doctor
-
-@app.get("/enfermeras/{id_enfe}")
-def obtener_enfermera(id_enfe: int, db: Session = Depends(get_db)):
-    enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
-    if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
-    return enfermera
-
-@app.post("/doctores/")
-def registrar_doctor(data: dict, db: Session = Depends(get_db)): return create_doctor(db, data)
 
 @app.put("/doctores/{id_doc}")
 def actualizar_doctor(id_doc: int, data: dict, db: Session = Depends(get_db)):
@@ -157,6 +116,12 @@ def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
 
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)): return create_enfermera(db, data)
+
+@app.get("/enfermeras/{id_enfe}")
+def obtener_enfermera(id_enfe: int, db: Session = Depends(get_db)):
+    enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
+    if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
+    return enfermera
 
 @app.put("/enfermeras/{id_enfe}")
 def actualizar_enfermera(id_enfe: int, data: dict, db: Session = Depends(get_db)):
