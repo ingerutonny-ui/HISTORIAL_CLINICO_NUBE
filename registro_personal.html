@@ -13,14 +13,10 @@
         .input-ohs { background-color: #f8fafc; border-radius: 12px; border: 2px solid #e2e8f0; padding: 16px; color: #1e293b; width: 100%; font-size: 12px; font-weight: 700; text-transform: uppercase; }
         .input-disabled { background-color: #f1f5f9; cursor: not-allowed; border: 2px solid #cbd5e1; color: #64748b; }
         .btn-volver { background-color: #1e293b; color: white; padding: 10px 20px; border-radius: 8px; font-size: 10px; font-weight: 900; margin-bottom: 15px; display: inline-block; }
-        
-        /* Estados de los botones selectores */
         .selector-btn { cursor: pointer; transition: all 0.3s ease; border: 2px solid #f1f5f9; background-color: #f8fafc; color: #94a3b8; }
         .selector-btn:hover { border-color: #cbd5e1; }
-        
         .active-doc { border: 3px solid #2563eb !important; background-color: #eff6ff !important; color: #2563eb !important; font-weight: 900; }
         .active-enf { border: 3px solid #10b981 !important; background-color: #ecfdf5 !important; color: #10b981 !important; font-weight: 900; }
-        
         .locked-selection { cursor: not-allowed; opacity: 0.7; pointer-events: none; }
     </style>
 </head>
@@ -44,22 +40,10 @@
 
             <form id="form-registro" class="space-y-6">
                 <div class="grid grid-cols-2 gap-8">
-                    <div>
-                        <label class="text-[10px] font-black text-gray-400">C.I.</label>
-                        <input type="text" id="ci_val" class="input-ohs" required>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-gray-400">NOMBRES</label>
-                        <input type="text" id="nombre_val" class="input-ohs" required>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-gray-400">APELLIDOS</label>
-                        <input type="text" id="paterno_val" class="input-ohs" required>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-gray-400">ESPECIALIDAD</label>
-                        <input type="text" id="especialidad_val" class="input-ohs">
-                    </div>
+                    <div><label class="text-[10px] font-black text-gray-400">C.I.</label><input type="text" id="ci_val" class="input-ohs" required></div>
+                    <div><label class="text-[10px] font-black text-gray-400">NOMBRES</label><input type="text" id="nombre_val" class="input-ohs" required></div>
+                    <div><label class="text-[10px] font-black text-gray-400">APELLIDOS</label><input type="text" id="paterno_val" class="input-ohs" required></div>
+                    <div><label class="text-[10px] font-black text-gray-400">ESPECIALIDAD</label><input type="text" id="especialidad_val" class="input-ohs"></div>
                     <div>
                         <label class="text-[10px] font-black text-gray-400">TURNO</label>
                         <select id="turno_val" class="input-ohs">
@@ -87,72 +71,47 @@
         const btnEnf = document.getElementById('btn-enf');
         const ciInput = document.getElementById('ci_val');
 
-        // Función para actualizar visualmente la selección
         function actualizarSeleccion(t) {
             tipoSeleccionado = t;
-            if (t === 'doctor') {
-                btnDoc.classList.add('active-doc');
-                btnDoc.classList.remove('active-enf');
-                btnEnf.classList.remove('active-enf', 'active-doc');
-            } else if (t === 'enfermera') {
-                btnEnf.classList.add('active-enf');
-                btnEnf.classList.remove('active-doc');
-                btnDoc.classList.remove('active-doc', 'active-enf');
-            }
+            btnDoc.className = 'selector-btn p-8 rounded-3xl text-center ' + (t === 'doctor' ? 'active-doc' : '');
+            btnEnf.className = 'selector-btn p-8 rounded-3xl text-center ' + (t === 'enfermera' ? 'active-enf' : '');
         }
 
-        // Eventos de selección (solo funcionan si no hay registroId / no es edición)
-        btnDoc.addEventListener('click', () => {
-            if (!registroId) actualizarSeleccion('doctor');
-        });
-        
-        btnEnf.addEventListener('click', () => {
-            if (!registroId) actualizarSeleccion('enfermera');
-        });
+        btnDoc.addEventListener('click', () => { if (!registroId) actualizarSeleccion('doctor'); });
+        btnEnf.addEventListener('click', () => { if (!registroId) actualizarSeleccion('enfermera'); });
 
-        // Carga de datos si es edición
         async function cargar() {
             if (id_url && tipo_url) {
                 document.getElementById('titulo-form').innerText = 'EDITAR REGISTRO';
-                
-                // Bloquear C.I. y Selector de Tipo
                 ciInput.readOnly = true;
                 ciInput.classList.add('input-disabled');
                 btnDoc.classList.add('locked-selection');
                 btnEnf.classList.add('locked-selection');
-                
                 actualizarSeleccion(tipo_url);
 
-                const res = await fetch(`${BASE_API}/personal/`);
-                const data = await res.json();
-                
-                const item = (tipo_url === 'doctor') 
-                    ? data.doctores.find(d => String(d.ci_doc) === String(id_url)) 
-                    : data.enfermeras.find(e => String(e.ci_enfe) === String(id_url));
-                
-                if (item) {
-                    registroId = (tipo_url === 'doctor') ? item.id_doc : item.id_enfe;
-                    ciInput.value = id_url;
-                    document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
-                    document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
-                    document.getElementById('especialidad_val').value = item.especialidad || '';
-                    document.getElementById('turno_val').value = item.turno_doc || item.turno_enfe || 'MAÑANA';
-                }
+                try {
+                    const res = await fetch(`${BASE_API}/personal/`);
+                    const data = await res.json();
+                    let item = (tipo_url === 'doctor') 
+                        ? data.doctores.find(d => String(d.id_doc) === String(id_url)) 
+                        : data.enfermeras.find(e => String(e.id_enfe) === String(id_url));
+                    
+                    if (item) {
+                        registroId = (tipo_url === 'doctor') ? item.id_doc : item.id_enfe;
+                        ciInput.value = (tipo_url === 'doctor') ? item.ci_doc : item.ci_enfe;
+                        document.getElementById('nombre_val').value = item.nombre_doc || item.nombre_enfe || '';
+                        document.getElementById('paterno_val').value = item.appaterno_doc || item.appaterno_enfe || '';
+                        document.getElementById('especialidad_val').value = item.especialidad || '';
+                        document.getElementById('turno_val').value = item.turno_doc || item.turno_enfe || 'MAÑANA';
+                    }
+                } catch (e) { console.error(e); }
             }
         }
 
-        // Envío del formulario
         document.getElementById('form-registro').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            if (!tipoSeleccionado) {
-                alert("POR FAVOR, SELECCIONE DOCTOR O ENFERMERA");
-                return;
-            }
-            
             const endpoint = (tipoSeleccionado === 'doctor') ? 'doctores' : 'enfermeras';
             const url = registroId ? `${BASE_API}/${endpoint}/${registroId}` : `${BASE_API}/${endpoint}/`;
-            
             const payload = (tipoSeleccionado === 'doctor') ? {
                 ci_doc: ciInput.value.toUpperCase(),
                 nombre_doc: document.getElementById('nombre_val').value.toUpperCase(),
@@ -173,16 +132,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
-                if (res.ok) {
-                    window.location.href = 'lista_personal.html';
-                } else {
-                    const errorMsg = await res.text();
-                    alert("ERROR: EL C.I. YA EXISTE O EL SERVIDOR RECHAZÓ LA SOLICITUD");
-                }
-            } catch (err) {
-                alert("ERROR DE CONEXIÓN CON EL SERVIDOR");
-            }
+                if (res.ok) window.location.href = 'lista_personal.html';
+                else alert("ERROR AL GUARDAR");
+            } catch (err) { alert("ERROR DE CONEXIÓN"); }
         });
 
         cargar();
