@@ -5,8 +5,10 @@ from .database import SessionLocal, engine, Base
 from .crud import create_doctor, create_enfermera
 from . import models
 
-
+# RECREACIÓN DE BASE DE DATOS (Ejecutar 1 vez para limpiar tipos)
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
+
 app = FastAPI()
 
 app.add_middleware(
@@ -20,6 +22,24 @@ def get_db():
     db = SessionLocal()
     try: yield db
     finally: db.close()
+
+# RUTA PARA FRONTEND (Sincronizada con el window.onload del HTML)
+@app.get("/api/paciente-completo/{paciente_id}")
+def obtener_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return {"paciente": paciente, "filiacion": filiacion}
+
+# RUTA PARA FRONTEND (Sincronizada con el onsubmit del HTML)
+@app.post("/filiacion/")
+def guardar_filiacion(data: dict, db: Session = Depends(get_db)):
+    nueva = models.DeclaracionJurada(**data)
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
 
 @app.get("/paciente/{codigo}")
 def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
@@ -35,15 +55,6 @@ def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(nuevo)
     return nuevo
-
-# --- RUTA PARA FRONTEND (declaracion_jurada_p1.html) ---
-@app.get("/api/paciente-completo/{paciente_id}")
-def obtener_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
-    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
-    if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    return paciente
-
 
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
