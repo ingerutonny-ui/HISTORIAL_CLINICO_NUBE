@@ -96,35 +96,61 @@ class FichaOftalmologica(Base):
     __tablename__ = "ficha_oftalmologica"
     id = Column(Integer, primary_key=True, index=True)
     paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
-    
-    # Antecedentes
-    lentes = Column(String)
-    daltonismo = Column(String)
-    diabetes = Column(String)
-    estrabismo = Column(String)
-    infecciones = Column(String)
-    presion_alta = Column(String)
+    lentes = Column(String); daltonismo = Column(String); diabetes = Column(String)
+    estrabismo = Column(String); infecciones = Column(String); presion_alta = Column(String)
     obs_ant = Column(Text)
-    
-    # Examen Clínico
-    anamnesis = Column(String)
-    ana_obs = Column(Text)
-    examen_externo = Column(String)
-    exe_obs = Column(Text)
-    
-    # Agudeza Visual
+    anamnesis = Column(String); ana_obs = Column(Text)
+    examen_externo = Column(String); exe_obs = Column(Text)
     od_l_sc = Column(String); od_l_cc = Column(String); od_l_dio = Column(String)
     oi_l_sc = Column(String); oi_l_cc = Column(String); oi_l_dio = Column(String)
     od_c_sc = Column(String); od_c_cc = Column(String); od_c_dio = Column(String)
     oi_c_sc = Column(String); oi_c_cc = Column(String); oi_c_dio = Column(String)
-    
-    # Exámenes Complementarios
     cv_od = Column(String); cv_od_obs = Column(Text)
     cv_oi = Column(String); cv_oi_obs = Column(Text)
     fo = Column(String); fo_obs = Column(Text)
     ish = Column(String); ish_obs = Column(Text)
     est = Column(String); est_obs = Column(Text)
-    
-    # Presión y Diagnóstico
     pio_od = Column(String); pio_oi = Column(String); pio_obs = Column(String)
     diagnostico = Column(Text)
+
+class FichaPsicologia(Base):
+    __tablename__ = "ficha_psicologia"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
+    historia_familiar = Column(Text)
+    habitos_alcohol = Column(String); habitos_tabaco = Column(String)
+    habitos_drogas = Column(String); habitos_coquear = Column(String)
+    otras_observaciones = Column(Text)
+    conducta = Column(Text); presentacion = Column(String); postura = Column(String)
+    lucido_atento = Column(String); pensamiento = Column(String); discurso = Column(String)
+    percepcion = Column(String); memoria = Column(String); articulacion_palabra = Column(String)
+    apetito = Column(String); sueno = Column(String); orientacion = Column(String)
+    personalidad = Column(String); afectividad = Column(String); conducta_sexual = Column(String)
+    puntaje_test = Column(String); nombre_prueba = Column(String); observaciones_test = Column(Text)
+
+class FichaEspirometria(Base):
+    __tablename__ = "ficha_espirometria"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
+    criterios_exclusion_1 = Column(String); criterios_exclusion_2 = Column(String)
+    criterios_exclusion_3 = Column(String); criterios_exclusion_4 = Column(String)
+    criterios_exclusion_5 = Column(String)
+    hemoptisis = Column(String); infarto_reciente = Column(String); neumotorax = Column(String)
+    fiebre_nauseas = Column(String); traqueostomia = Column(String); embarazo_avanzado = Column(String)
+    sonda_pleural = Column(String); embarazo_complicado = Column(String); aneurisma_cerebral = Column(String)
+    inestabilidad_cv = Column(String); embolia_pulmonar = Column(String); infeccion_respiratoria = Column(String)
+    infeccion_oido = Column(String); uso_aerosoles = Column(String); fumo_ultimas_horas = Column(String)
+
+class FichaElectroencefalograma(Base):
+    __tablename__ = "ficha_electroencefalograma"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
+    cefaleas = Column(String); epilepsia = Column(String); convulsiones = Column(String)
+    accidente = Column(String); perdida_conocimiento = Column(String); paralisis = Column(String)
+    otros_antecedentes = Column(Text); derrame_cerebral = Column(String); quirurgicos = Column(String)
+    observaciones_antecedentes = Column(Text)
+    marcha = Column(String); reflejos = Column(String)
+    coordinacion_dedo_nariz = Column(String); coordinacion_talon_rodilla = Column(String)
+    romberg = Column(String); vertigo_nistagmo = Column(String); vertigo_adaptacion = Column(String)
+    observaciones_examen = Column(Text)
+    descripcion_estudio = Column(String); resultado_estudio = Column(String); observaciones_estudio = Column(Text)
