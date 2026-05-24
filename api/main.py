@@ -46,6 +46,14 @@ def guardar_p3(data: dict, db: Session = Depends(get_db)):
     nueva = models.HabitosRiesgosP3(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
 # ----------- GESTION PACIENTES -----------
+@app.get("/pacientes/")
+def listar_pacientes(db: Session = Depends(get_db)):
+    return db.query(models.Paciente).all()
+
+@app.post("/pacientes/")
+def registrar_paciente(data: dict, db: Session = Depends(get_db)):
+    nuevo = models.Paciente(**data); db.add(nuevo); db.commit(); db.refresh(nuevo); return nuevo
+
 @app.get("/buscar-id-por-codigo/{codigo}")
 def buscar_id_por_codigo(codigo: str, db: Session = Depends(get_db)):
     p = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
