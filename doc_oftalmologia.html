@@ -127,37 +127,48 @@
     document.getElementById('oftalmoForm').onsubmit = async (e) => {
         e.preventDefault();
         
-        const getRadio = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || "";
+        const codigo_input = document.getElementById('paciente_id').value;
         
-        const payload = {
-            paciente_id: document.getElementById('paciente_id').value,
-            lentes: getRadio('lentes'), daltonismo: getRadio('daltonismo'), diabetes: getRadio('diabetes'),
-            estrabismo: getRadio('estrabismo'), infecciones: getRadio('infecciones'), presion_alta: getRadio('presion_alta'),
-            obs_ant: document.getElementById('obs_ant').value,
-            anamnesis: getRadio('anamnesis'), ana_obs: document.getElementById('ana_obs').value,
-            examen_externo: getRadio('examen_externo'), exe_obs: document.getElementById('exe_obs').value,
-            od_l_sc: document.getElementById('od_l_sc').value, od_l_cc: document.getElementById('od_l_cc').value, od_l_dio: document.getElementById('od_l_dio').value,
-            oi_l_sc: document.getElementById('oi_l_sc').value, oi_l_cc: document.getElementById('oi_l_cc').value, oi_l_dio: document.getElementById('oi_l_dio').value,
-            od_c_sc: document.getElementById('od_c_sc').value, od_c_cc: document.getElementById('od_c_cc').value, od_c_dio: document.getElementById('od_c_dio').value,
-            oi_c_sc: document.getElementById('oi_c_sc').value, oi_c_cc: document.getElementById('oi_c_cc').value, oi_c_dio: document.getElementById('oi_c_dio').value,
-            cv_od: getRadio('cv_od'), cv_od_obs: document.getElementById('cv_od_obs').value,
-            cv_oi: getRadio('cv_oi'), cv_oi_obs: document.getElementById('cv_oi_obs').value,
-            fo: getRadio('fo'), fo_obs: document.getElementById('fo_obs').value,
-            ish: getRadio('ish'), ish_obs: document.getElementById('ish_obs').value,
-            est: getRadio('est'), est_obs: document.getElementById('est_obs').value,
-            pio_od: document.getElementById('pio_od').value, pio_oi: document.getElementById('pio_oi').value, pio_obs: document.getElementById('pio_obs').value,
-            diagnostico: document.getElementById('diagnostico').value
-        };
-
         try {
+            // 1. Buscamos el ID real usando el código
+            const resp = await fetch(`${API_BASE}/buscar-id-por-codigo/${codigo_input}`);
+            if (!resp.ok) throw new Error("Código no encontrado");
+            const data_p = await resp.json();
+            
+            // 2. Preparamos el payload usando el ID obtenido
+            const getRadio = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || "";
+            
+            const payload = {
+                paciente_id: data_p.id, // Aquí inyectamos el ID numérico real
+                lentes: getRadio('lentes'), daltonismo: getRadio('daltonismo'), diabetes: getRadio('diabetes'),
+                estrabismo: getRadio('estrabismo'), infecciones: getRadio('infecciones'), presion_alta: getRadio('presion_alta'),
+                obs_ant: document.getElementById('obs_ant').value,
+                anamnesis: getRadio('anamnesis'), ana_obs: document.getElementById('ana_obs').value,
+                examen_externo: getRadio('examen_externo'), exe_obs: document.getElementById('exe_obs').value,
+                od_l_sc: document.getElementById('od_l_sc').value, od_l_cc: document.getElementById('od_l_cc').value, od_l_dio: document.getElementById('od_l_dio').value,
+                oi_l_sc: document.getElementById('oi_l_sc').value, oi_l_cc: document.getElementById('oi_l_cc').value, oi_l_dio: document.getElementById('oi_l_dio').value,
+                od_c_sc: document.getElementById('od_c_sc').value, od_c_cc: document.getElementById('od_c_cc').value, od_c_dio: document.getElementById('od_c_dio').value,
+                oi_c_sc: document.getElementById('oi_c_sc').value, oi_c_cc: document.getElementById('oi_c_cc').value, oi_c_dio: document.getElementById('oi_c_dio').value,
+                cv_od: getRadio('cv_od'), cv_od_obs: document.getElementById('cv_od_obs').value,
+                cv_oi: getRadio('cv_oi'), cv_oi_obs: document.getElementById('cv_oi_obs').value,
+                fo: getRadio('fo'), fo_obs: document.getElementById('fo_obs').value,
+                ish: getRadio('ish'), ish_obs: document.getElementById('ish_obs').value,
+                est: getRadio('est'), est_obs: document.getElementById('est_obs').value,
+                pio_od: document.getElementById('pio_od').value, pio_oi: document.getElementById('pio_oi').value, pio_obs: document.getElementById('pio_obs').value,
+                diagnostico: document.getElementById('diagnostico').value
+            };
+
+            // 3. Enviamos el registro final
             const res = await fetch(`${API_BASE}/ficha-oftalmo/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
             if(res.ok) { alert("GUARDADO CON ÉXITO"); window.location.reload(); }
             else alert("ERROR AL GUARDAR");
-        } catch (err) { alert("ERROR DE CONEXIÓN"); }
+
+        } catch (err) { alert("ERROR: " + err.message); }
     };
 </script>
 </body>
