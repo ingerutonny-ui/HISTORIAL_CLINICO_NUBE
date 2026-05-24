@@ -20,7 +20,7 @@ def get_db():
     try: yield db
     finally: db.close()
 
-# RUTA DE BÚSQUEDA PRIORITARIA
+# RUTA DE BÚSQUEDA
 @app.get("/paciente/{codigo}")
 def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
@@ -28,6 +28,7 @@ def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"paciente": paciente}
 
+# FICHA OFTALMOLOGÍA
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     nueva_ficha = models.FichaOftalmologica(**data)
@@ -36,6 +37,57 @@ def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     db.refresh(nueva_ficha)
     return nueva_ficha
 
+# NUEVAS FICHAS
+@app.post("/ficha-psicologia/")
+def guardar_ficha_psicologia(data: dict, db: Session = Depends(get_db)):
+    nueva = models.FichaPsicologia(**data)
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+@app.post("/ficha-espirometria/")
+def guardar_ficha_espirometria(data: dict, db: Session = Depends(get_db)):
+    nueva = models.FichaEspirometria(**data)
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+@app.post("/ficha-electro/")
+def guardar_ficha_electro(data: dict, db: Session = Depends(get_db)):
+    nueva = models.FichaElectroencefalograma(**data)
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+# ANTECEDENTES Y DECLARACIONES
+@app.post("/declaracion/")
+def guardar_declaracion(data: dict, db: Session = Depends(get_db)):
+    nueva = models.DeclaracionJurada(**data)
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+@app.post("/antecedentes/")
+def guardar_antecedentes(data: dict, db: Session = Depends(get_db)):
+    nueva = models.AntecedentesP2(**data)
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+@app.post("/habitos/")
+def guardar_habitos(data: dict, db: Session = Depends(get_db)):
+    nueva = models.HabitosRiesgosP3(**data)
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+# PERSONAL
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
