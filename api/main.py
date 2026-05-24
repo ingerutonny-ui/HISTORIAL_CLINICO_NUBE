@@ -20,10 +20,25 @@ def get_db():
     try: yield db
     finally: db.close()
 
-# --- PERSONAL ---
+# --- PERSONAL (Actualizado para permitir lectura individual) ---
+
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
+
+@app.get("/doctores/{id_doc}")
+def obtener_doctor(id_doc: int, db: Session = Depends(get_db)):
+    doctor = db.query(models.Doctor).filter(models.Doctor.id_doc == id_doc).first()
+    if not doctor: raise HTTPException(status_code=404, detail="No encontrado")
+    return doctor
+
+@app.get("/enfermeras/{id_enfe}")
+def obtener_enfermera(id_enfe: int, db: Session = Depends(get_db)):
+    enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
+    if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
+    return enfermera
+
+# (Mantén tus POST, PUT y DELETE debajo de estos nuevos GET)
 
 # --- DOCTORES ---
 @app.post("/doctores/")
