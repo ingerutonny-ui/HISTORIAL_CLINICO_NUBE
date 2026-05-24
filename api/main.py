@@ -36,6 +36,15 @@ def registrar_paciente(data: dict, db: Session = Depends(get_db)):
     db.refresh(nuevo)
     return nuevo
 
+# --- RUTA PARA FRONTEND (declaracion_jurada_p1.html) ---
+@app.get("/api/paciente-completo/{paciente_id}")
+def obtener_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return paciente
+
+
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     nueva = models.FichaOftalmologica(**data)
