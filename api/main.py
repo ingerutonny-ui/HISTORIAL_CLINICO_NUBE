@@ -5,6 +5,7 @@ from .database import SessionLocal, engine, Base
 from .crud import create_doctor, create_enfermera
 from . import models
 
+Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
