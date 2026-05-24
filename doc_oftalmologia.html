@@ -136,16 +136,20 @@
     const API_BASE = 'https://historial-clinico-nube.onrender.com';
     let p_id = null;
 
+
 async function buscarPaciente() {
     const cod = document.getElementById('codigo_search').value.trim();
     if (!cod) { alert("INGRESE UN CÓDIGO"); return; }
     
-    // RUTA CORRECTA: Coincide con el main.py de arriba
-    const url = `${API_BASE}/pacientes/${encodeURIComponent(cod)}`;
+    // URL explícita para evitar confusiones de enrutamiento
+    const url = `https://historial-clinico-nube.onrender.com/buscar_paciente_por_codigo/${encodeURIComponent(cod)}`;
     
     try {
         const resp = await fetch(url);
-        if (!resp.ok) throw new Error("CÓDIGO NO ENCONTRADO EN SISTEMA");
+        if (!resp.ok) {
+            // Esto nos dirá exactamente por qué falla: 404, 500, etc.
+            throw new Error(`Error ${resp.status}: El servidor no responde en ${url}`);
+        }
         
         const respuesta = await resp.json();
         const data = respuesta.paciente;
@@ -161,6 +165,7 @@ async function buscarPaciente() {
         }
     } catch (err) {
         alert(err.message);
+        console.error("Detalle del error:", err);
     }
 }
 
