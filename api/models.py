@@ -91,3 +91,40 @@ class Doctor(Base):
     nombre_doc = Column(String)
     turno_doc = Column(String)
     especialidad = Column(String)
+
+class FichaOftalmologica(Base):
+    __tablename__ = "ficha_oftalmologica"
+    id = Column(Integer, primary_key=True, index=True)
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
+    
+    # Antecedentes
+    lentes = Column(String)
+    daltonismo = Column(String)
+    diabetes = Column(String)
+    estrabismo = Column(String)
+    infecciones = Column(String)
+    presion_alta = Column(String)
+    obs_ant = Column(Text)
+    
+    # Examen Clínico
+    anamnesis = Column(String)
+    ana_obs = Column(Text)
+    examen_externo = Column(String)
+    exe_obs = Column(Text)
+    
+    # Agudeza Visual
+    od_l_sc = Column(String); od_l_cc = Column(String); od_l_dio = Column(String)
+    oi_l_sc = Column(String); oi_l_cc = Column(String); oi_l_dio = Column(String)
+    od_c_sc = Column(String); od_c_cc = Column(String); od_c_dio = Column(String)
+    oi_c_sc = Column(String); oi_c_cc = Column(String); oi_c_dio = Column(String)
+    
+    # Exámenes Complementarios
+    cv_od = Column(String); cv_od_obs = Column(Text)
+    cv_oi = Column(String); cv_oi_obs = Column(Text)
+    fo = Column(String); fo_obs = Column(Text)
+    ish = Column(String); ish_obs = Column(Text)
+    est = Column(String); est_obs = Column(Text)
+    
+    # Presión y Diagnóstico
+    pio_od = Column(String); pio_oi = Column(String); pio_obs = Column(String)
+    diagnostico = Column(Text)
