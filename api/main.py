@@ -81,6 +81,14 @@ def borrar_paciente(paciente_id: int, db: Session = Depends(get_db)):
     if not p: raise HTTPException(status_code=404, detail="No encontrado")
     db.delete(p); db.commit(); return {"message": "Eliminado"}
 
+@app.get("/pacientes/")
+def listar_pacientes(db: Session = Depends(get_db)):
+    return db.query(models.Paciente).all()
+
+@app.get("/paciente/{codigo}")
+def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
+
+
 # ----------- FICHA MÉDICA -----------
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
