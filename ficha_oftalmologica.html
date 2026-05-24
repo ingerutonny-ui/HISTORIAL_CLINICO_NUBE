@@ -55,16 +55,32 @@
 
             document.getElementById('fichaContent').style.display = 'block';
             contenedor.innerHTML = `
-                <table class="table table-bordered">
-                    <tr class="section-title"><td colspan="4">II. ANTECEDENTES</td></tr>
-                    <tr><td>Usa Lentes: ${f.lentes || '-'}</td><td>Daltonismo: ${f.daltonismo || '-'}</td><td>Diabetes: ${f.diabetes || '-'}</td></tr>
-                    <tr><td colspan="3">Observaciones: ${f.ana_obs || '-'}</td></tr>
-                    <tr class="section-title"><td colspan="4">III. AGUDEZA VISUAL</td></tr>
-                    <tr><td><b>OD (Ojo Derecho)</b></td><td>SC: ${f.od_c_sc || '-'}</td><td>CC: ${f.od_c_cc || '-'}</td></tr>
-                    <tr><td><b>OI (Ojo Izquierdo)</b></td><td>SC: ${f.oi_l_sc || '-'}</td><td>CC: ${f.oi_c_cc || '-'}</td></tr>
-                    <tr class="section-title"><td colspan="4">V. EXAMENES COMPLEMENTARIOS</td></tr>
-                    <tr><td>PIO OD: ${f.pio_od || '-'} mmHg</td><td>PIO OI: ${f.pio_oi || '-'} mmHg</td><td>Fondo Ojo: ${f.fo || '-'}</td></tr>
-                    <tr><td colspan="4"><b>Diagnóstico:</b> ${f.diagnostico || 'Sin observaciones'}</td></tr>
+            <table class="table table-bordered">
+                    <tr class="section-title"><td colspan="3">II. ANTECEDENTES</td></tr>
+                    <tr>
+                        <td>Usa Lentes: ${f.lentes ?? ''}</td>
+                        <td>Daltonismo: ${f.daltonismo ?? ''}</td>
+                        <td>Diabetes: ${f.diabetes ?? ''}</td>
+                    </tr>
+                    <tr>
+                        <td>Estrabismo: ${f.estrabismo ?? ''}</td>
+                        <td>Infecciones: ${f.infecciones ?? ''}</td>
+                        <td>Presión Alta: ${f.presion_alta ?? ''}</td>
+                    </tr>
+                    <tr><td colspan="3">Observaciones: ${f.ana_obs ?? ''}</td></tr>
+                    
+                    <tr class="section-title"><td colspan="3">III. AGUDEZA VISUAL DE LEJOS</td></tr>
+                    <tr><td><b>Ojo Derecho (OD)</b></td><td>SC: ${f.od_c_sc ?? ''}</td><td>CC: ${f.od_c_cc ?? ''}</td></tr>
+                    <tr><td><b>Ojo Izquierdo (OI)</b></td><td>SC: ${f.oi_l_sc ?? ''}</td><td>CC: ${f.oi_c_cc ?? ''}</td></tr>
+                    
+                    <tr class="section-title"><td colspan="3">IV. AGUDEZA VISUAL DE CERCA</td></tr>
+                    <tr><td><b>Ojo Derecho (OD)</b></td><td>SC: ${f.od_c_sc_cerca ?? ''}</td><td>CC: ${f.od_c_cc_cerca ?? ''}</td></tr>
+                    <tr><td><b>Ojo Izquierdo (OI)</b></td><td>SC: ${f.oi_l_sc_cerca ?? ''}</td><td>CC: ${f.oi_c_cc_cerca ?? ''}</td></tr>
+            
+                    <tr class="section-title"><td colspan="3">V. EXAMENES COMPLEMENTARIOS</td></tr>
+                    <tr><td>Anamnesis: ${f.anamnesis ?? ''}</td><td colspan="2">Examen Externo: ${f.examen_externo ?? ''}</td></tr>
+                    <tr><td>PIO OD: ${f.pio_od ?? ''} mmHg</td><td>PIO OI: ${f.pio_oi ?? ''} mmHg</td><td>Fondo Ojo: ${f.fo ?? ''}</td></tr>
+                    <tr><td colspan="3">Diagnóstico: ${f.diagnostico ?? ''}</td></tr>
                 </table>`;
         } catch (err) { alert(err.message); }
     }
