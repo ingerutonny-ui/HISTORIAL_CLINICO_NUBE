@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>VISOR FICHA OFTALMOLÓGICA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f1f5f9; padding: 20px; font-family: 'Inter', sans-serif; }
+        .form-container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border: 1.5px solid #000; }
+        .header-nancy { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #10b981; padding-bottom: 10px; margin-bottom: 20px; }
+        .header-nancy img { height: 50px; }
+        .no-print { margin-bottom: 20px; }
+        #fichaContent { display: none; }
+        @media print { .no-print { display: none !important; } body { background: white; } }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="no-print">
+        <a href="d_menu.html" class="btn btn-secondary">← VOLVER AL MENÚ</a>
+        <button onclick="window.print()" class="btn btn-dark">🖨️ IMPRIMIR FICHA</button>
+        <hr>
+        <div class="input-group mb-3">
+            <input type="text" id="codigo_busqueda" class="form-control" placeholder="INTRODUZCA CÓDIGO DE PACIENTE (Ej: EH1111)">
+            <button onclick="buscarFicha()" class="btn btn-primary">BUSCAR FICHA</button>
+        </div>
+    </div>
+
+    <div id="fichaContent">
+        <div class="header-nancy">
+            <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo">
+            <div class="text-end">
+                <h5 class="m-0 fw-bold">ESPECIALIDAD OFTALMOLÓGICA</h5>
+                <small class="text-success fw-bold">SALUD OCUPACIONAL - DOCUMENTO LEGAL</small>
+            </div>
+        </div>
+        <div id="datos_ficha">
+            <p class="text-center text-muted">Cargando datos del paciente...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'https://historial-clinico-nube.onrender.com';
+
+    async function buscarFicha() {
+        const codigo = document.getElementById('codigo_busqueda').value;
+        const display = document.getElementById('fichaContent');
+        const contenedor = document.getElementById('datos_ficha');
+
+        try {
+            // 1. MAPEADO: Obtenemos el ID real a partir del código
+            const resId = await fetch(`${API_BASE}/buscar-id-por-codigo/${codigo}`);
+            if(!resId.ok) throw new Error("Paciente no encontrado");
+            const dataId = await resId.json();
+
+            // 2. BUSQUEDA: Traemos la ficha oftalmológica usando el ID
+            // Nota: Debes asegurarte de tener un endpoint que busque por paciente_id
+            const resFicha = await fetch(`${API_BASE}/ficha-oftalmo/${dataId.id}`);
+            const ficha = await resFicha.json();
+
+            // 3. RENDERIZADO: (Aquí inyectarás el HTML de los resultados)
+            display.style.display = 'block';
+            contenedor.innerHTML = `<h4>Ficha del Paciente ID: ${dataId.id}</h4>
+                                    <pre>${JSON.stringify(ficha, null, 2)}</pre>`;
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+</script>
+</body>
+</html>
