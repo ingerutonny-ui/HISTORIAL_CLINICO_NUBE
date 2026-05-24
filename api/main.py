@@ -20,7 +20,7 @@ def get_db():
     try: yield db
     finally: db.close()
 
-# --- BUSCADOR DE PACIENTE (Ruta corregida según tu sistema previo) ---
+# RUTA DE BUSQUEDA UNIFICADA
 @app.get("/pacientes/{codigo}")
 def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
@@ -28,7 +28,6 @@ def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"paciente": paciente}
 
-# --- FICHA OFTALMOLÓGICA ---
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     nueva_ficha = models.FichaOftalmologica(**data)
@@ -36,6 +35,8 @@ def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(nueva_ficha)
     return nueva_ficha
+
+# ... (Mantén aquí todas tus otras rutas de personal y doctores sin cambios)
 
 # --- PERSONAL Y RESTO DE RUTAS ---
 @app.get("/personal/")
