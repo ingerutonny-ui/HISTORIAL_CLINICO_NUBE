@@ -5,22 +5,27 @@ from .database import SessionLocal, engine, Base
 from .crud import create_doctor, create_enfermera
 from . import models
 
+# Inicialización de tablas
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
+# Configuración estricta de CORS para evitar bloqueos
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 def get_db():
     db = SessionLocal()
-    try: yield db
-    finally: db.close()
+    try:
+        yield db
+    finally:
+        db.close()
 
-# RUTA SIMPLIFICADA AL MÁXIMO
+# --- RUTA DE BÚSQUEDA ---
 @app.get("/paciente/{codigo}")
 def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
@@ -28,6 +33,7 @@ def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
     return {"paciente": paciente}
 
+# --- FICHA OFTALMOLÓGICA ---
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     nueva_ficha = models.FichaOftalmologica(**data)
@@ -36,6 +42,7 @@ def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     db.refresh(nueva_ficha)
     return nueva_ficha
 
+# --- PERSONAL (DOCTORES Y ENFERMERAS) ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
