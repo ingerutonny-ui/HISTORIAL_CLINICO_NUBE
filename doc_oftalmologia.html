@@ -19,7 +19,6 @@
         .bg-green-soft { background: #eefdf5; }
         label { font-weight: 800; color: #64748b; text-transform: uppercase; font-size: 9px; }
         input, select, textarea { border: 1px solid #cbd5e1 !important; font-size: 10px !important; font-weight: 600 !important; text-transform: uppercase; padding: 2px 4px !important; border-radius: 0 !important; }
-        .input-auto { background-color: #f8fafc !important; border: 1px solid #e2e8f0 !important; color: #1e293b; font-weight: 800 !important; }
         .signature-section { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 30px; text-align: center; }
         .signature-line { border-top: 1px solid #000; margin-top: 40px; padding-top: 5px; font-weight: 800; text-transform: uppercase; font-size: 9px; }
         @media print { .no-print { display: none !important; } body { padding: 0; background: white; } .form-container { width: 100%; max-width: 100%; box-shadow: none; border: 1.5px solid #000; } }
@@ -42,19 +41,9 @@
     </div>
 
     <form id="oftalmoForm">
-        <div class="no-print mb-3 p-2 bg-light border">
+        <div class="mb-3 p-2 bg-light border">
             <label>CÓDIGO PACIENTE:</label>
-            <input type="text" id="codigo_search" class="form-control d-inline-block w-25" placeholder="INGRESE CÓDIGO">
-            <button type="button" onclick="buscarPaciente()" class="btn btn-success" style="background:var(--emerald); border:none;">BUSCAR</button>
-        </div>
-
-        <div class="section-title">I. FILIACION DEL PACIENTE</div>
-        <div class="row g-2 mb-2">
-            <div class="col-5"><label>NOMBRE COMPLETO</label><input id="nombre_completo" class="form-control input-auto" readonly></div>
-            <div class="col-2"><label>C.I.</label><input id="ci" class="form-control input-auto" readonly></div>
-            <div class="col-1"><label>EDAD</label><input id="edad" class="form-control input-auto" readonly></div>
-            <div class="col-1"><label>SEXO</label><input id="sexo" class="form-control input-auto" readonly></div>
-            <div class="col-3"><label>OCUPACIÓN / PROFESIÓN</label><input id="ocupacion" class="form-control input-auto" readonly></div>
+            <input type="text" id="paciente_id" class="form-control d-inline-block w-25" placeholder="INGRESE CÓDIGO MANUALMENTE" required>
         </div>
 
         <div class="section-title">II. ANTECEDENTES (PATOLOGICAS Y NO PATOLOGICAS)</div>
@@ -134,50 +123,14 @@
 
 <script>
     const API_BASE = 'https://historial-clinico-nube.onrender.com';
-    let p_id = null;
 
-
-async function buscarPaciente() {
-    const cod = document.getElementById('codigo_search').value.trim();
-    if (!cod) { alert("INGRESE UN CÓDIGO"); return; }
-    
-    // URL explícita para evitar confusiones de enrutamiento
-    const url = `https://historial-clinico-nube.onrender.com/paciente/${encodeURIComponent(cod)}`;
-    
-    try {
-        const resp = await fetch(url);
-        if (!resp.ok) {
-            // Esto nos dirá exactamente por qué falla: 404, 500, etc.
-            throw new Error(`Error ${resp.status}: El servidor no responde en ${url}`);
-        }
-        
-        const respuesta = await resp.json();
-        const data = respuesta.paciente;
-        
-        if (data) {
-            document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
-            document.getElementById('ci').value = data.ci || '';
-            document.getElementById('edad').value = data.edad || '';
-            document.getElementById('sexo').value = data.sexo || '';
-            document.getElementById('ocupacion').value = data.ocupacion || '';
-            p_id = data.id;
-            alert("PACIENTE ENCONTRADO");
-        }
-    } catch (err) {
-        alert(err.message);
-        console.error("Detalle del error:", err);
-    }
-}
-
-    
     document.getElementById('oftalmoForm').onsubmit = async (e) => {
         e.preventDefault();
-        if(!p_id) { alert("ERROR: DEBE BUSCAR UN CÓDIGO VÁLIDO ANTES DE GUARDAR"); return; }
         
         const getRadio = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || "";
         
         const payload = {
-            paciente_id: p_id,
+            paciente_id: document.getElementById('paciente_id').value,
             lentes: getRadio('lentes'), daltonismo: getRadio('daltonismo'), diabetes: getRadio('diabetes'),
             estrabismo: getRadio('estrabismo'), infecciones: getRadio('infecciones'), presion_alta: getRadio('presion_alta'),
             obs_ant: document.getElementById('obs_ant').value,
