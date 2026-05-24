@@ -20,9 +20,9 @@ def get_db():
     try: yield db
     finally: db.close()
 
-# --- BUSCADOR DE PACIENTE ---
-@app.get("/api/paciente-completo/{codigo}")
-def buscar_paciente_completo(codigo: str, db: Session = Depends(get_db)):
+# --- BUSCADOR DE PACIENTE (Ruta corregida según tu sistema previo) ---
+@app.get("/pacientes/{codigo}")
+def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
@@ -37,7 +37,7 @@ def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     db.refresh(nueva_ficha)
     return nueva_ficha
 
-# --- PERSONAL ---
+# --- PERSONAL Y RESTO DE RUTAS ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
@@ -54,7 +54,6 @@ def obtener_enfermera(id_enfe: int, db: Session = Depends(get_db)):
     if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
     return enfermera
 
-# --- DOCTORES ---
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)): return create_doctor(db, data)
 
@@ -75,7 +74,6 @@ def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Eliminado"}
 
-# --- ENFERMERAS ---
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)): return create_enfermera(db, data)
 
