@@ -6,11 +6,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f1f5f9; padding: 20px; font-family: 'Inter', sans-serif; }
-        .form-container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); border: 1.5px solid #000; }
+        .form-container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; border: 1.5px solid #000; }
         .header-nancy { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #10b981; padding-bottom: 10px; margin-bottom: 20px; }
         .header-nancy img { height: 50px; }
-        .no-print { margin-bottom: 20px; }
-        #fichaContent { display: none; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        .section-title { background-color: #e2e8f0; font-weight: bold; padding: 5px; }
         @media print { .no-print { display: none !important; } body { background: white; } }
     </style>
 </head>
@@ -22,12 +23,12 @@
         <button onclick="window.print()" class="btn btn-dark">🖨️ IMPRIMIR FICHA</button>
         <hr>
         <div class="input-group mb-3">
-            <input type="text" id="codigo_busqueda" class="form-control" placeholder="INTRODUZCA CÓDIGO DE PACIENTE (Ej: EH1111)">
+            <input type="text" id="codigo_busqueda" class="form-control" placeholder="INTRODUZCA CÓDIGO (Ej: EH1111)">
             <button onclick="buscarFicha()" class="btn btn-primary">BUSCAR FICHA</button>
         </div>
     </div>
 
-    <div id="fichaContent">
+    <div id="fichaContent" style="display: none;">
         <div class="header-nancy">
             <img src="https://ingerutonny-ui.github.io/HISTORIAL_CLINICO_NUBE/logo.png" alt="Logo">
             <div class="text-end">
@@ -35,9 +36,7 @@
                 <small class="text-success fw-bold">SALUD OCUPACIONAL - DOCUMENTO LEGAL</small>
             </div>
         </div>
-        <div id="datos_ficha">
-            <p class="text-center text-muted">Cargando datos del paciente...</p>
-        </div>
+        <div id="datos_ficha"></div>
     </div>
 </div>
 
@@ -46,27 +45,28 @@
 
     async function buscarFicha() {
         const codigo = document.getElementById('codigo_busqueda').value;
-        const display = document.getElementById('fichaContent');
         const contenedor = document.getElementById('datos_ficha');
-
         try {
-            // 1. MAPEADO: Obtenemos el ID real a partir del código
             const resId = await fetch(`${API_BASE}/buscar-id-por-codigo/${codigo}`);
             if(!resId.ok) throw new Error("Paciente no encontrado");
             const dataId = await resId.json();
-
-            // 2. BUSQUEDA: Traemos la ficha oftalmológica usando el ID
-            // Nota: Debes asegurarte de tener un endpoint que busque por paciente_id
             const resFicha = await fetch(`${API_BASE}/ficha-oftalmo/${dataId.id}`);
-            const ficha = await resFicha.json();
+            const f = await resFicha.json();
 
-            // 3. RENDERIZADO: (Aquí inyectarás el HTML de los resultados)
-            display.style.display = 'block';
-            contenedor.innerHTML = `<h4>Ficha del Paciente ID: ${dataId.id}</h4>
-                                    <pre>${JSON.stringify(ficha, null, 2)}</pre>`;
-        } catch (err) {
-            alert(err.message);
-        }
+            document.getElementById('fichaContent').style.display = 'block';
+            contenedor.innerHTML = `
+                <table class="table table-bordered">
+                    <tr class="section-title"><td colspan="4">II. ANTECEDENTES</td></tr>
+                    <tr><td>Usa Lentes: ${f.lentes || '-'}</td><td>Daltonismo: ${f.daltonismo || '-'}</td><td>Diabetes: ${f.diabetes || '-'}</td></tr>
+                    <tr><td colspan="3">Observaciones: ${f.ana_obs || '-'}</td></tr>
+                    <tr class="section-title"><td colspan="4">III. AGUDEZA VISUAL</td></tr>
+                    <tr><td><b>OD (Ojo Derecho)</b></td><td>SC: ${f.od_c_sc || '-'}</td><td>CC: ${f.od_c_cc || '-'}</td></tr>
+                    <tr><td><b>OI (Ojo Izquierdo)</b></td><td>SC: ${f.oi_l_sc || '-'}</td><td>CC: ${f.oi_c_cc || '-'}</td></tr>
+                    <tr class="section-title"><td colspan="4">V. EXAMENES COMPLEMENTARIOS</td></tr>
+                    <tr><td>PIO OD: ${f.pio_od || '-'} mmHg</td><td>PIO OI: ${f.pio_oi || '-'} mmHg</td><td>Fondo Ojo: ${f.fo || '-'}</td></tr>
+                    <tr><td colspan="4"><b>Diagnóstico:</b> ${f.diagnostico || 'Sin observaciones'}</td></tr>
+                </table>`;
+        } catch (err) { alert(err.message); }
     }
 </script>
 </body>
