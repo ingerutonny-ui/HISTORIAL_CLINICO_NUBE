@@ -8,26 +8,22 @@ from . import models
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 def get_db():
     db = SessionLocal()
     try: yield db
     finally: db.close()
 
-# RUTA DE BUSQUEDA UNIFICADA
-@app.get("/pacientes/{codigo}")
-def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
-    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
+# --- BUSCADOR DE PACIENTE BLINDADO ---
+@app.get("/buscar_paciente_por_codigo/{codigo_paciente}")
+def buscar_paciente_blindado(codigo_paciente: str, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo_paciente).first()
     if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+        raise HTTPException(status_code=404, detail="Paciente no encontrado en base de datos")
     return {"paciente": paciente}
 
+# --- FICHA OFTALMOLÓGICA ---
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     nueva_ficha = models.FichaOftalmologica(**data)
@@ -36,7 +32,7 @@ def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     db.refresh(nueva_ficha)
     return nueva_ficha
 
-# ... (Mantén aquí todas tus otras rutas de personal y doctores sin cambios)
+# (Mantén aquí todas tus otras rutas de personal, doctores y enfermeras)
 
 # --- PERSONAL Y RESTO DE RUTAS ---
 @app.get("/personal/")
