@@ -137,32 +137,32 @@
     let p_id = null;
 
 async function buscarPaciente() {
-        const cod = document.getElementById('codigo_search').value.trim();
-        if (!cod) { alert("INGRESE UN CÓDIGO"); return; }
+    const cod = document.getElementById('codigo_search').value.trim();
+    if (!cod) { alert("INGRESE UN CÓDIGO"); return; }
+    
+    // RUTA CORRECTA: Coincide con el main.py de arriba
+    const url = `${API_BASE}/pacientes/${encodeURIComponent(cod)}`;
+    
+    try {
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error("CÓDIGO NO ENCONTRADO EN SISTEMA");
         
-        // CORRECCIÓN: La ruta ahora coincide con el main.py
-        const url = `${API_BASE}/pacientes/${encodeURIComponent(cod)}`;
+        const respuesta = await resp.json();
+        const data = respuesta.paciente;
         
-        try {
-            const resp = await fetch(url);
-            if (!resp.ok) throw new Error("CÓDIGO NO ENCONTRADO");
-            
-            const respuesta = await resp.json();
-            const data = respuesta.paciente; 
-            
-            if (data) {
-                document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
-                document.getElementById('ci').value = data.ci || '';
-                document.getElementById('edad').value = data.edad || '';
-                document.getElementById('sexo').value = data.sexo || '';
-                document.getElementById('ocupacion').value = data.ocupacion || '';
-                p_id = data.id;
-                alert("PACIENTE ENCONTRADO");
-            }
-        } catch (err) {
-            alert(err.message);
+        if (data) {
+            document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
+            document.getElementById('ci').value = data.ci || '';
+            document.getElementById('edad').value = data.edad || '';
+            document.getElementById('sexo').value = data.sexo || '';
+            document.getElementById('ocupacion').value = data.ocupacion || '';
+            p_id = data.id;
+            alert("PACIENTE ENCONTRADO");
         }
+    } catch (err) {
+        alert(err.message);
     }
+}
 
     
     document.getElementById('oftalmoForm').onsubmit = async (e) => {
