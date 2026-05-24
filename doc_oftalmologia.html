@@ -66,21 +66,21 @@
             </tr>
             <tr>
                 <td>USA LENTES</td><td class="text-center"><input type="radio" name="lentes" value="SI"></td><td class="text-center"><input type="radio" name="lentes" value="NO"></td>
-                <td>DALTONISMO</td><td class="text-center"><input type="radio" name="dalto" value="SI"></td><td class="text-center"><input type="radio" name="dalto" value="NO"></td>
-                <td>DIABETES</td><td class="text-center"><input type="radio" name="diab" value="SI"></td><td class="text-center"><input type="radio" name="diab" value="NO"></td>
+                <td>DALTONISMO</td><td class="text-center"><input type="radio" name="daltonismo" value="SI"></td><td class="text-center"><input type="radio" name="daltonismo" value="NO"></td>
+                <td>DIABETES</td><td class="text-center"><input type="radio" name="diabetes" value="SI"></td><td class="text-center"><input type="radio" name="diabetes" value="NO"></td>
             </tr>
             <tr>
-                <td>ESTRABISMO</td><td class="text-center"><input type="radio" name="estra" value="SI"></td><td class="text-center"><input type="radio" name="estra" value="NO"></td>
-                <td>INFECCIONES</td><td class="text-center"><input type="radio" name="infec" value="SI"></td><td class="text-center"><input type="radio" name="infec" value="NO"></td>
-                <td>PRESION ALTA</td><td class="text-center"><input type="radio" name="hta" value="SI"></td><td class="text-center"><input type="radio" name="hta" value="NO"></td>
+                <td>ESTRABISMO</td><td class="text-center"><input type="radio" name="estrabismo" value="SI"></td><td class="text-center"><input type="radio" name="estrabismo" value="NO"></td>
+                <td>INFECCIONES</td><td class="text-center"><input type="radio" name="infecciones" value="SI"></td><td class="text-center"><input type="radio" name="infecciones" value="NO"></td>
+                <td>PRESION ALTA</td><td class="text-center"><input type="radio" name="presion_alta" value="SI"></td><td class="text-center"><input type="radio" name="presion_alta" value="NO"></td>
             </tr>
             <tr><td class="bg-grey">OBSERVACIONES</td><td colspan="8"><input id="obs_ant" class="form-control w-100" style="border:none !important;"></td></tr>
         </table>
 
         <table class="table-legal bg-green-soft">
             <tr class="bg-grey"><td>DESCRIPCIÓN</td><td style="width:10%">NORMAL</td><td style="width:10%">ALTERADO</td><td>OBSERVACIONES</td></tr>
-            <tr><td class="text-center"><strong>ANAMNESIS:</strong></td><td class="text-center"><input type="radio" name="ana" value="NORMAL"></td><td class="text-center"><input type="radio" name="ana" value="ALTERADO"></td><td><input id="ana_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
-            <tr><td class="text-center"><strong>EXAMEN CLINICO EXTERNO:</strong></td><td class="text-center"><input type="radio" name="exe" value="NORMAL"></td><td class="text-center"><input type="radio" name="exe" value="ALTERADO"></td><td><input id="exe_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td class="text-center"><strong>ANAMNESIS:</strong></td><td class="text-center"><input type="radio" name="anamnesis" value="NORMAL"></td><td class="text-center"><input type="radio" name="anamnesis" value="ALTERADO"></td><td><input id="ana_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
+            <tr><td class="text-center"><strong>EXAMEN CLINICO EXTERNO:</strong></td><td class="text-center"><input type="radio" name="examen_externo" value="NORMAL"></td><td class="text-center"><input type="radio" name="examen_externo" value="ALTERADO"></td><td><input id="exe_obs" class="form-control w-100 bg-transparent" style="border:none !important;"></td></tr>
         </table>
 
         <div class="row g-2">
@@ -119,7 +119,7 @@
         </table>
 
         <div class="section-title">VI. DIAGNOSTICO Y RECOMENDACIONES</div>
-        <textarea id="diag" class="form-control w-100" rows="3" style="border: 1.5px solid #000 !important;"></textarea>
+        <textarea id="diagnostico" class="form-control w-100" rows="3" style="border: 1.5px solid #000 !important;"></textarea>
 
         <div class="signature-section">
             <div><div class="signature-line">Firma del Paciente</div></div>
@@ -136,39 +136,62 @@
     const API_BASE = 'https://historial-clinico-nube.onrender.com';
     let p_id = null;
 
-async function buscarPaciente() {
-    const cod = document.getElementById('codigo_search').value.trim();
-    if (!cod) { alert("INGRESE UN CÓDIGO"); return; }
-    
-    const url = `${API_BASE}/api/paciente-completo/${encodeURIComponent(cod)}`;
-    
-    try {
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error("CÓDIGO NO ENCONTRADO");
-        
-        const respuesta = await resp.json();
-        const data = respuesta.paciente; // El objeto paciente que viene del backend
-        
-        if (data) {
-            // Mapeo directo a los campos del formulario
-            document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
-            document.getElementById('ci').value = data.ci || '';
-            document.getElementById('edad').value = data.edad || '';
-            document.getElementById('sexo').value = data.sexo || '';
-            document.getElementById('ocupacion').value = data.ocupacion || '';
-            
-            p_id = data.id; // Guardamos el ID solo para la referencia de guardado posterior
-            alert("PACIENTE ENCONTRADO");
-        }
-    } catch (err) {
-        alert(err.message);
+    async function buscarPaciente() {
+        const cod = document.getElementById('codigo_search').value.trim();
+        if (!cod) { alert("INGRESE UN CÓDIGO"); return; }
+        const url = `${API_BASE}/api/paciente-completo/${encodeURIComponent(cod)}`;
+        try {
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error("CÓDIGO NO ENCONTRADO");
+            const respuesta = await resp.json();
+            const data = respuesta.paciente;
+            if (data) {
+                document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
+                document.getElementById('ci').value = data.ci || '';
+                document.getElementById('edad').value = data.edad || '';
+                document.getElementById('sexo').value = data.sexo || '';
+                document.getElementById('ocupacion').value = data.ocupacion || '';
+                p_id = data.id;
+                alert("PACIENTE ENCONTRADO");
+            }
+        } catch (err) { alert(err.message); }
     }
-}
 
-    document.getElementById('oftalmoForm').onsubmit = (e) => {
+    document.getElementById('oftalmoForm').onsubmit = async (e) => {
         e.preventDefault();
         if(!p_id) { alert("ERROR: DEBE BUSCAR UN CÓDIGO VÁLIDO ANTES DE GUARDAR"); return; }
-        alert("GUARDANDO EN LA NUBE...");
+        
+        const getRadio = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value || "";
+        
+        const payload = {
+            paciente_id: p_id,
+            lentes: getRadio('lentes'), daltonismo: getRadio('daltonismo'), diabetes: getRadio('diabetes'),
+            estrabismo: getRadio('estrabismo'), infecciones: getRadio('infecciones'), presion_alta: getRadio('presion_alta'),
+            obs_ant: document.getElementById('obs_ant').value,
+            anamnesis: getRadio('anamnesis'), ana_obs: document.getElementById('ana_obs').value,
+            examen_externo: getRadio('examen_externo'), exe_obs: document.getElementById('exe_obs').value,
+            od_l_sc: document.getElementById('od_l_sc').value, od_l_cc: document.getElementById('od_l_cc').value, od_l_dio: document.getElementById('od_l_dio').value,
+            oi_l_sc: document.getElementById('oi_l_sc').value, oi_l_cc: document.getElementById('oi_l_cc').value, oi_l_dio: document.getElementById('oi_l_dio').value,
+            od_c_sc: document.getElementById('od_c_sc').value, od_c_cc: document.getElementById('od_c_cc').value, od_c_dio: document.getElementById('od_c_dio').value,
+            oi_c_sc: document.getElementById('oi_c_sc').value, oi_c_cc: document.getElementById('oi_c_cc').value, oi_c_dio: document.getElementById('oi_c_dio').value,
+            cv_od: getRadio('cv_od'), cv_od_obs: document.getElementById('cv_od_obs').value,
+            cv_oi: getRadio('cv_oi'), cv_oi_obs: document.getElementById('cv_oi_obs').value,
+            fo: getRadio('fo'), fo_obs: document.getElementById('fo_obs').value,
+            ish: getRadio('ish'), ish_obs: document.getElementById('ish_obs').value,
+            est: getRadio('est'), est_obs: document.getElementById('est_obs').value,
+            pio_od: document.getElementById('pio_od').value, pio_oi: document.getElementById('pio_oi').value, pio_obs: document.getElementById('pio_obs').value,
+            diagnostico: document.getElementById('diagnostico').value
+        };
+
+        try {
+            const res = await fetch(`${API_BASE}/ficha-oftalmo/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if(res.ok) { alert("GUARDADO CON ÉXITO"); window.location.reload(); }
+            else alert("ERROR AL GUARDAR");
+        } catch (err) { alert("ERROR DE CONEXIÓN"); }
     };
 </script>
 </body>
