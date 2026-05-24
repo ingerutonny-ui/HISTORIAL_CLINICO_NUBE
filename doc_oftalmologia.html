@@ -142,7 +142,7 @@ async function buscarPaciente() {
     if (!cod) { alert("INGRESE UN CÓDIGO"); return; }
     
     // URL explícita para evitar confusiones de enrutamiento
-    const url = `https://historial-clinico-nube.onrender.com/buscar_paciente_por_codigo/${encodeURIComponent(cod)}`;
+    const url = `https://historial-clinico-nube.onrender.com/paciente/${encodeURIComponent(cod)}`;
     
     try {
         const resp = await fetch(url);
