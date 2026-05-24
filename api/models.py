@@ -95,7 +95,7 @@ class Doctor(Base):
 class FichaOftalmologica(Base):
     __tablename__ = "ficha_oftalmologica"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(String, ForeignKey("pacientes.id", ondelete="CASCADE"))
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
     lentes = Column(String); daltonismo = Column(String); diabetes = Column(String)
     estrabismo = Column(String); infecciones = Column(String); presion_alta = Column(String)
     obs_ant = Column(Text)
@@ -116,7 +116,7 @@ class FichaOftalmologica(Base):
 class FichaPsicologia(Base):
     __tablename__ = "ficha_psicologia"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(String, ForeignKey("pacientes.id", ondelete="CASCADE"))
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
     historia_familiar = Column(Text)
     habitos_alcohol = Column(String); habitos_tabaco = Column(String)
     habitos_drogas = Column(String); habitos_coquear = Column(String)
@@ -131,7 +131,7 @@ class FichaPsicologia(Base):
 class FichaEspirometria(Base):
     __tablename__ = "ficha_espirometria"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(String, ForeignKey("pacientes.id", ondelete="CASCADE"))
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
     criterios_exclusion_1 = Column(String); criterios_exclusion_2 = Column(String)
     criterios_exclusion_3 = Column(String); criterios_exclusion_4 = Column(String)
     criterios_exclusion_5 = Column(String)
@@ -144,7 +144,7 @@ class FichaEspirometria(Base):
 class FichaElectroencefalograma(Base):
     __tablename__ = "ficha_electroencefalograma"
     id = Column(Integer, primary_key=True, index=True)
-    paciente_id = Column(String, ForeignKey("pacientes.id", ondelete="CASCADE"))
+    paciente_id = Column(Integer, ForeignKey("pacientes.id", ondelete="CASCADE"))
     cefaleas = Column(String); epilepsia = Column(String); convulsiones = Column(String)
     accidente = Column(String); perdida_conocimiento = Column(String); paralisis = Column(String)
     otros_antecedentes = Column(Text); derrame_cerebral = Column(String); quirurgicos = Column(String)
