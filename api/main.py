@@ -6,7 +6,7 @@ from .crud import create_doctor, create_enfermera
 from . import models
 
 # RECREACIÓN DE BASE DE DATOS (Ejecutar 1 vez para limpiar tipos)
-Base.metadata.drop_all(bind=engine)
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
