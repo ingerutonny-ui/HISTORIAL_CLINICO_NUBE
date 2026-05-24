@@ -20,7 +20,15 @@ def get_db():
     try: yield db
     finally: db.close()
 
-# --- NUEVA FICHA OFTALMOLÓGICA ---
+# --- BUSCADOR DE PACIENTE ---
+@app.get("/api/paciente-completo/{codigo}")
+def buscar_paciente_completo(codigo: str, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return {"paciente": paciente}
+
+# --- FICHA OFTALMOLÓGICA ---
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
     nueva_ficha = models.FichaOftalmologica(**data)
