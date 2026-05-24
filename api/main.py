@@ -27,10 +27,15 @@ def get_db():
 @app.get("/api/paciente-completo/{paciente_id}")
 def obtener_paciente_completo(paciente_id: int, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.id == paciente_id).first()
-    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
     if not paciente:
         raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    return {"paciente": paciente, "filiacion": filiacion}
+    
+    # AGREGADO: Carga de datos relacionados para el reporte
+    filiacion = db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente_id).first()
+    antecedentes = db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente_id).first()
+    habitos = db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente_id).first()
+    
+    return {"paciente": paciente, "filiacion": filiacion, "antecedentes": antecedentes, "habitos": habitos}
 
 @app.post("/filiacion/")
 def guardar_filiacion(data: dict, db: Session = Depends(get_db)):
@@ -56,6 +61,10 @@ def guardar_habitos(data: dict, db: Session = Depends(get_db)):
     nueva = models.HabitosRiesgosP3(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
 # ----------- GESTION PACIENTE (CRUD) -----------
+@app.get("/pacientes/")
+def listar_pacientes(db: Session = Depends(get_db)):
+    return db.query(models.Paciente).all()
+
 @app.get("/paciente/{codigo}")
 def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
     paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
@@ -81,43 +90,26 @@ def borrar_paciente(paciente_id: int, db: Session = Depends(get_db)):
     if not p: raise HTTPException(status_code=404, detail="No encontrado")
     db.delete(p); db.commit(); return {"message": "Eliminado"}
 
-@app.get("/pacientes/")
-def listar_pacientes(db: Session = Depends(get_db)):
-    return db.query(models.Paciente).all()
-
-@app.get("/paciente/{codigo}")
-def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
-    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
-    if not paciente:
-        raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    return {"paciente": paciente}
-
-
 # ----------- FICHA MÉDICA -----------
 @app.post("/ficha-oftalmo/")
 def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
-    nueva = models.FichaOftalmologica(**data)
-    db.add(nueva); db.commit(); db.refresh(nueva); return nueva
+    nueva = models.FichaOftalmologica(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
 @app.post("/ficha-psicologia/")
 def guardar_ficha_psicologia(data: dict, db: Session = Depends(get_db)):
-    nueva = models.FichaPsicologia(**data)
-    db.add(nueva); db.commit(); db.refresh(nueva); return nueva
+    nueva = models.FichaPsicologia(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
 @app.post("/ficha-espirometria/")
 def guardar_ficha_espirometria(data: dict, db: Session = Depends(get_db)):
-    nueva = models.FichaEspirometria(**data)
-    db.add(nueva); db.commit(); db.refresh(nueva); return nueva
+    nueva = models.FichaEspirometria(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
 @app.post("/ficha-electro/")
 def guardar_ficha_electro(data: dict, db: Session = Depends(get_db)):
-    nueva = models.FichaElectroencefalograma(**data)
-    db.add(nueva); db.commit(); db.refresh(nueva); return nueva
+    nueva = models.FichaElectroencefalograma(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
 @app.post("/declaracion/")
 def guardar_declaracion(data: dict, db: Session = Depends(get_db)):
-    nueva = models.DeclaracionJurada(**data)
-    db.add(nueva); db.commit(); db.refresh(nueva); return nueva
+    nueva = models.DeclaracionJurada(**data); db.add(nueva); db.commit(); db.refresh(nueva); return nueva
 
 # ----------- PERSONAL (CRUD) -----------
 @app.get("/personal/")
