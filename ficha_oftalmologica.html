@@ -10,8 +10,12 @@
         .header-nancy { display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #10b981; padding-bottom: 10px; margin-bottom: 20px; }
         .header-nancy img { height: 50px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-        .section-title { background-color: #e2e8f0; font-weight: bold; padding: 5px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        .section-title { background-color: #e2e8f0; font-weight: bold; padding: 5px; text-align: center; border: 1px solid #000; }
+        
+        /* ESTO FUERZA LAS MAYÚSCULAS EN EL INPUT */
+        #codigo_busqueda { text-transform: uppercase; }
+        
         @media print { .no-print { display: none !important; } body { background: white; } }
     </style>
 </head>
@@ -44,49 +48,72 @@
     const API_BASE = 'https://historial-clinico-nube.onrender.com';
 
     async function buscarFicha() {
-        const codigo = document.getElementById('codigo_busqueda').value;
+        // FORZAMOS A MAYÚSCULAS AL LEER EL VALOR
+        const codigo = document.getElementById('codigo_busqueda').value.trim().toUpperCase();
         const contenedor = document.getElementById('datos_ficha');
+        const display = document.getElementById('fichaContent');
+
+        if (!codigo) { alert("Por favor ingresa un código"); return; }
+
         try {
             const resId = await fetch(`${API_BASE}/buscar-id-por-codigo/${codigo}`);
-            if(!resId.ok) throw new Error("Paciente no encontrado");
+            if (!resId.ok) throw new Error("No se encontró ningún paciente con ese código.");
             const dataId = await resId.json();
+
             const resFicha = await fetch(`${API_BASE}/ficha-oftalmo/${dataId.id}`);
+            if (!resFicha.ok) throw new Error("No existe una ficha oftalmológica para este paciente.");
             const f = await resFicha.json();
 
-            document.getElementById('fichaContent').style.display = 'block';
+            display.style.display = 'block';
+            // AGREGAMOS TEXT-UPPERCASE TAMBIÉN EN LA TABLA PARA QUE AL IMPRIMIR TODO SALGA EN MAYÚSCULAS
             contenedor.innerHTML = `
-            <table class="table table-bordered">
-                    <tr class="section-title"><td colspan="4">II. ANTECEDENTES (PATOLOGICAS Y NO PATOLOGICAS)</td></tr>
-                    <tr>
-                        <td>Usa Lentes: ${f.lentes ?? ''}</td>
-                        <td>Daltonismo: ${f.daltonismo ?? ''}</td>
-                        <td>Diabetes: ${f.diabetes ?? ''}</td>
-                    </tr>
-                    <tr>
-                        <td>Estrabismo: ${f.estrabismo ?? ''}</td>
-                        <td>Infecciones: ${f.infecciones ?? ''}</td>
-                        <td>Presión Alta: ${f.presion_alta ?? ''}</td>
-                    </tr>
-                    <tr><td colspan="4">Observaciones: ${f.ana_obs ?? ''}</td></tr>
-                    
-                    <tr><td>Anamnesis: ${f.anamnesis ?? ''}</td><td colspan="3">Examen Externo: ${f.examen_externo ?? ''}</td></tr>
-            
-                    <tr class="section-title"><td colspan="4">III. AGUDEZA VISUAL DE LEJOS / IV. CERCA</td></tr>
-                    <tr><td>OD Lejos: SC:${f.od_c_sc ?? ''} CC:${f.od_c_cc ?? ''}</td><td>OI Lejos: SC:${f.oi_l_sc ?? ''} CC:${f.oi_c_cc ?? ''}</td>
-                        <td>OD Cerca: SC:${f.od_c_sc_cerca ?? ''} CC:${f.od_c_cc_cerca ?? ''}</td><td>OI Cerca: SC:${f.oi_l_sc_cerca ?? ''} CC:${f.oi_c_cc_cerca ?? ''}</td></tr>
-            
-                    <tr class="section-title"><td colspan="4">V. EXAMENES COMPLEMENTARIOS</td></tr>
-                    <tr><td>PIO OD: ${f.pio_od ?? ''} mmHg</td><td>PIO OI: ${f.pio_oi ?? ''} mmHg</td><td colspan="2">Fondo Ojo: ${f.fo ?? ''}</td></tr>
-                    <tr><td>Ishihara: ${f.ish ?? ''}</td><td>Estereoscópica: ${f.vision_estereo ?? ''}</td><td colspan="2">Otras: ${f.otras_pruebas ?? ''}</td></tr>
-                    
-                    <tr><td colspan="4"><b>VI. DIAGNOSTICO Y RECOMENDACIONES:</b><br>${f.diagnostico ?? ''}</td></tr>
-                </table>
+                <div style="text-transform: uppercase;">
+                    <table class="table table-bordered">
+                        <tr><td colspan="4" class="section-title">II. ANTECEDENTES (PATOLOGICAS Y NO PATOLOGICAS)</td></tr>
+                        <tr>
+                            <td><b>Usa Lentes:</b> ${f.lentes || ''}</td>
+                            <td><b>Daltonismo:</b> ${f.daltonismo || ''}</td>
+                            <td colspan="2"><b>Diabetes:</b> ${f.diabetes || ''}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Estrabismo:</b> ${f.estrabismo || ''}</td>
+                            <td><b>Infecciones:</b> ${f.infecciones || ''}</td>
+                            <td colspan="2"><b>Presión Alta:</b> ${f.presion_alta || ''}</td>
+                        </tr>
+                        <tr><td colspan="4"><b>Observaciones:</b> ${f.ana_obs || ''}</td></tr>
+                        <tr><td><b>Anamnesis:</b> ${f.anamnesis || ''}</td><td colspan="3"><b>Examen Externo:</b> ${f.examen_externo || ''}</td></tr>
+                        
+                        <tr><td colspan="4" class="section-title">III. AGUDEZA VISUAL</td></tr>
+                        <tr>
+                            <td><b>OD Lejos:</b> SC:${f.od_c_sc || ''} CC:${f.od_c_cc || ''}</td>
+                            <td><b>OI Lejos:</b> SC:${f.oi_l_sc || ''} CC:${f.oi_c_cc || ''}</td>
+                            <td><b>OD Cerca:</b> SC:${f.od_c_sc_cerca || ''} CC:${f.od_c_cc_cerca || ''}</td>
+                            <td><b>OI Cerca:</b> SC:${f.oi_l_sc_cerca || ''} CC:${f.oi_c_cc_cerca || ''}</td>
+                        </tr>
+                        
+                        <tr><td colspan="4" class="section-title">V. EXAMENES COMPLEMENTARIOS</td></tr>
+                        <tr>
+                            <td><b>PIO OD:</b> ${f.pio_od || ''} mmHg</td>
+                            <td><b>PIO OI:</b> ${f.pio_oi || ''} mmHg</td>
+                            <td colspan="2"><b>Fondo Ojo:</b> ${f.fo || ''}</td>
+                        </tr>
+                        <tr>
+                            <td><b>Ishihara:</b> ${f.ish || ''}</td>
+                            <td><b>Estereoscópica:</b> ${f.vision_estereo || ''}</td>
+                            <td colspan="2"><b>Otras:</b> ${f.otras_pruebas || ''}</td>
+                        </tr>
+                        <tr><td colspan="4"><b>VI. DIAGNOSTICO Y RECOMENDACIONES:</b><br>${f.diagnostico || ''}</td></tr>
+                    </table>
+                </div>
                 <br><br>
                 <div class="row text-center">
-                    <div class="col-6"><hr style="border-top: 1px solid #000; width: 80%;">FIRMA DEL PACIENTE</div>
-                    <div class="col-6"><hr style="border-top: 1px solid #000; width: 80%;">FIRMA Y SELLO MÉDICO</div>
+                    <div class="col-6"><hr style="border-top: 1px solid #000;">FIRMA DEL PACIENTE</div>
+                    <div class="col-6"><hr style="border-top: 1px solid #000;">FIRMA Y SELLO MÉDICO</div>
                 </div>`;
-        } catch (err) { alert(err.message); }
+        } catch (err) {
+            display.style.display = 'none';
+            alert(err.message);
+        }
     }
 </script>
 </body>
