@@ -136,15 +136,20 @@
     const API_BASE = 'https://historial-clinico-nube.onrender.com';
     let p_id = null;
 
-    async function buscarPaciente() {
+async function buscarPaciente() {
         const cod = document.getElementById('codigo_search').value.trim();
         if (!cod) { alert("INGRESE UN CÓDIGO"); return; }
-        const url = `${API_BASE}/api/paciente-completo/${encodeURIComponent(cod)}`;
+        
+        // CORRECCIÓN: La ruta ahora coincide con el main.py
+        const url = `${API_BASE}/pacientes/${encodeURIComponent(cod)}`;
+        
         try {
             const resp = await fetch(url);
             if (!resp.ok) throw new Error("CÓDIGO NO ENCONTRADO");
+            
             const respuesta = await resp.json();
-            const data = respuesta.paciente;
+            const data = respuesta.paciente; 
+            
             if (data) {
                 document.getElementById('nombre_completo').value = `${data.nombre || ''} ${data.apellido || ''}`;
                 document.getElementById('ci').value = data.ci || '';
@@ -154,9 +159,12 @@
                 p_id = data.id;
                 alert("PACIENTE ENCONTRADO");
             }
-        } catch (err) { alert(err.message); }
+        } catch (err) {
+            alert(err.message);
+        }
     }
 
+    
     document.getElementById('oftalmoForm').onsubmit = async (e) => {
         e.preventDefault();
         if(!p_id) { alert("ERROR: DEBE BUSCAR UN CÓDIGO VÁLIDO ANTES DE GUARDAR"); return; }
