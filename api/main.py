@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .database import SessionLocal, engine, Base
-from .crud import create_paciente, delete_paciente, upsert_filiacion, upsert_p2, upsert_p3, create_doctor, create_enfermera
+from .crud import create_doctor, create_enfermera
 from . import models
 
 Base.metadata.create_all(bind=engine)
@@ -20,46 +20,12 @@ def get_db():
     try: yield db
     finally: db.close()
 
-# --- PACIENTES ---
-@app.get("/api/paciente-completo/{identificador}")
-def obtener_paciente_completo(identificador: str, db: Session = Depends(get_db)):
-    paciente = db.query(models.Paciente).filter(
-        (models.Paciente.codigo_paciente == identificador) | 
-        (models.Paciente.id == (int(identificador) if identificador.isdigit() else 0))
-    ).first()
-    if not paciente: raise HTTPException(status_code=404, detail="No encontrado")
-    return {
-        "paciente": paciente,
-        "filiacion": db.query(models.DeclaracionJurada).filter(models.DeclaracionJurada.paciente_id == paciente.id).first(),
-        "antecedentes": db.query(models.AntecedentesP2).filter(models.AntecedentesP2.paciente_id == paciente.id).first(),
-        "habitos": db.query(models.HabitosRiesgosP3).filter(models.HabitosRiesgosP3.paciente_id == paciente.id).first()
-    }
-
-@app.post("/pacientes/")
-def registrar_paciente(data: dict, db: Session = Depends(get_db)): return create_paciente(db, data)
-
-@app.get("/pacientes/")
-def listar_todos_los_pacientes(db: Session = Depends(get_db)): return db.query(models.Paciente).all()
-
-@app.delete("/api/pacientes/{paciente_id}")
-def eliminar_paciente(paciente_id: int, db: Session = Depends(get_db)):
-    exito = delete_paciente(db, paciente_id)
-    if not exito: raise HTTPException(status_code=404, detail="Paciente no encontrado")
-    return {"message": "Paciente eliminado correctamente"}
-
-# --- FILIACIÓN Y ANTECEDENTES ---
-@app.post("/filiacion/")
-def registrar_filiacion(data: dict, db: Session = Depends(get_db)): return upsert_filiacion(db, data)
-@app.post("/p2/")
-def registrar_p2(data: dict, db: Session = Depends(get_db)): return upsert_p2(db, data)
-@app.post("/p3/")
-def registrar_p3(data: dict, db: Session = Depends(get_db)): return upsert_p3(db, data)
-
 # --- PERSONAL ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
 
+# --- DOCTORES ---
 @app.post("/doctores/")
 def registrar_doctor(data: dict, db: Session = Depends(get_db)): return create_doctor(db, data)
 
@@ -80,6 +46,7 @@ def borrar_doctor(id_doc: int, db: Session = Depends(get_db)):
     db.commit()
     return {"message": "Eliminado"}
 
+# --- ENFERMERAS ---
 @app.post("/enfermeras/")
 def registrar_enfermera(data: dict, db: Session = Depends(get_db)): return create_enfermera(db, data)
 
