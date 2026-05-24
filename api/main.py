@@ -87,6 +87,10 @@ def listar_pacientes(db: Session = Depends(get_db)):
 
 @app.get("/paciente/{codigo}")
 def buscar_paciente(codigo: str, db: Session = Depends(get_db)):
+    paciente = db.query(models.Paciente).filter(models.Paciente.codigo_paciente == codigo).first()
+    if not paciente:
+        raise HTTPException(status_code=404, detail="Paciente no encontrado")
+    return {"paciente": paciente}
 
 
 # ----------- FICHA MÉDICA -----------
