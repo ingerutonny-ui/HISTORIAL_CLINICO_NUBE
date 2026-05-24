@@ -20,8 +20,16 @@ def get_db():
     try: yield db
     finally: db.close()
 
-# --- PERSONAL (Actualizado para permitir lectura individual) ---
+# --- NUEVA FICHA OFTALMOLÓGICA ---
+@app.post("/ficha-oftalmo/")
+def guardar_ficha_oftalmo(data: dict, db: Session = Depends(get_db)):
+    nueva_ficha = models.FichaOftalmologica(**data)
+    db.add(nueva_ficha)
+    db.commit()
+    db.refresh(nueva_ficha)
+    return nueva_ficha
 
+# --- PERSONAL ---
 @app.get("/personal/")
 def obtener_personal(db: Session = Depends(get_db)):
     return {"doctores": db.query(models.Doctor).all(), "enfermeras": db.query(models.Enfermera).all()}
@@ -37,8 +45,6 @@ def obtener_enfermera(id_enfe: int, db: Session = Depends(get_db)):
     enfermera = db.query(models.Enfermera).filter(models.Enfermera.id_enfe == id_enfe).first()
     if not enfermera: raise HTTPException(status_code=404, detail="No encontrada")
     return enfermera
-
-# (Mantén tus POST, PUT y DELETE debajo de estos nuevos GET)
 
 # --- DOCTORES ---
 @app.post("/doctores/")
