@@ -12,6 +12,7 @@
         th, td { border: 1px solid #000; padding: 4px; font-size: 10px; }
         .section-title { background-color: #e2e8f0; font-weight: bold; text-align: center; }
         input[type="text"], textarea { border: none; width: 100%; text-transform: uppercase; }
+        .text-header { text-align: center; font-weight: bold; font-size: 14px; text-decoration: underline; margin: 15px 0; }
     </style>
 </head>
 <body>
@@ -20,10 +21,7 @@
     <button onclick="window.print()" class="btn btn-dark btn-imprimir">🖨️ IMPRIMIR</button>
     <a href="d_menu.html" class="btn btn-secondary mb-3">← VOLVER</a>
 
-    <div class="text-center mb-3">
-        <h5 class="fw-bold m-0">FICHA PSICOLÓGICA</h5>
-        <small>TRABAJO SEGURO Y PRODUCTIVO</small>
-    </div>
+    <div class="text-header">FICHA PSICOLÓGICA</div>
 
     <table class="table-bordered">
         <tr><td>NOMBRE COMPLETO: <input type="text"></td><td>EDAD: <input type="text"></td></tr>
@@ -51,7 +49,7 @@
     <table class="table-bordered">
         <tr class="section-title"><td colspan="4">IV. EXAMEN MENTAL</td></tr>
         <tr><td colspan="4"><b>4.1. OBSERVACIÓN DE LA CONDUCTA:</b><br><textarea rows="1"></textarea></td></tr>
-        <tr><td colspan="4" class="section-title">4.2. PROCESOS COGNITIVOS</td></tr>
+        <tr class="section-title"><td colspan="4">4.2. PROCESOS COGNITIVOS</td></tr>
         <tr>
             <td>PRESENTACIÓN:<br><input type="checkbox"> ADECUADO <input type="checkbox"> INADECUADO</td>
             <td>POSTURA:<br><input type="checkbox"> ERGUIDA <input type="checkbox"> ENCORVADA</td>
@@ -69,24 +67,25 @@
             <td>MEMORIA:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
             <td>APETITO:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
             <td>SUEÑO:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
-            <td>ORIENTACIÓN:<br> T<input type="checkbox"> E<input type="checkbox"> P<input type="checkbox"></td>
+            <td>ORIENTACIÓN:<br> TIEMPO <input type="checkbox"> ESPACIO <input type="checkbox"> PERSONA <input type="checkbox"></td>
         </tr>
         <tr>
             <td>PERSONALIDAD:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
             <td>AFECTIVIDAD:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
             <td>CONDUCTA SEXUAL:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
-            <td>PUNTAJE TEST MINIMENTAL:<br><input type="text"></td>
+            <td></td>
         </tr>
     </table>
 
     <table class="table-bordered">
-        <tr class="section-title"><td>V. EVALUACIÓN Y RESULTADOS</td></tr>
-        <tr><td>1. <input type="text"></td></tr>
-        <tr><td>2. <input type="text"></td></tr>
-        <tr><td>3. <input type="text"></td></tr>
-        <tr><td>4. <input type="text"></td></tr>
-        <tr><td>5. <input type="text"></td></tr>
-        <tr><td>CUESTIONARIO SUSESO/ISTAS: <input type="text"></td></tr>
+        <tr class="section-title"><td colspan="3">V. EVALUACIÓN Y RESULTADOS</td></tr>
+        <tr><td><b>PUNTAJE</b></td><td><b>NOMBRE DE LA PRUEBA</b></td><td><b>OBSERVACIONES</b></td></tr>
+        <tr><td><input type="text"></td><td>TEST MINIMENTAL</td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td>CUESTIONARIO SUSESO/ISTAS</td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td>INVENTARIO DE LA ANSIEDAD</td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td>TEST ACROFOBIA</td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td>MINI TEST PSIQUIÁTRICO</td><td><input type="text"></td></tr>
+        <tr><td><input type="text"></td><td>ADH RATING ESCALE</td><td><input type="text"></td></tr>
     </table>
 
     <div class="mt-3">
