@@ -7,53 +7,56 @@
     <style>
         body { background: white; padding: 20px; font-family: 'Arial', sans-serif; text-transform: uppercase; }
         .form-container { max-width: 950px; margin: auto; border: 2px solid #000; padding: 20px; }
-        .header-title { text-align: center; font-weight: bold; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
+        .header-title { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
         th, td { border: 1px solid #000; padding: 6px; font-size: 11px; }
-        .bg-gray { background-color: #f8f9fa; font-weight: bold; }
         .section-header { background-color: #e9ecef; font-weight: bold; text-align: center; }
+        .checkbox-container { display: flex; gap: 10px; align-items: center; }
     </style>
 </head>
 <body>
 <div class="form-container">
     <div class="header-title">
-        <h4>FICHA PSICOLÓGICA</h4>
+        <h4 class="fw-bold">FICHA PSICOLÓGICA</h4>
         <p>TRABAJO SEGURO Y PRODUCTIVO</p>
     </div>
 
     <table>
-        <tr><td><b>NOMBRE COMPLETO:</b> ${f.nombre || ''}</td><td><b>EDAD:</b> ${f.edad || ''}</td></tr>
-        <tr><td><b>SEXO:</b> ${f.sexo || ''}</td><td><b>CI (CÓDIGO):</b> ${f.codigo || ''}</td><td><b>FECHA:</b> ${f.fecha || ''}</td></tr>
+        <tr><td><b>NOMBRE COMPLETO:</b> <input type="text" id="nombre" class="border-0 w-100"></td><td><b>EDAD:</b> <input type="text" id="edad" class="border-0 w-50"></td></tr>
+        <tr><td><b>SEXO:</b> <input type="text" id="sexo" class="border-0 w-50"></td><td><b>CI (CÓDIGO):</b> <input type="text" id="codigo" class="border-0 w-50"></td><td><b>FECHA:</b> <input type="date" id="fecha" class="border-0"></td></tr>
     </table>
 
     <table>
         <tr><td class="section-header">1. HISTORIA FAMILIAR</td></tr>
-        <tr><td style="height: 60px;">${f.historia_familiar || ''}</td></tr>
+        <tr><td><textarea id="historia_familiar" class="w-100 border-0" rows="3"></textarea></td></tr>
     </table>
 
     <table>
         <tr class="section-header"><td>II. HABITOS</td><td>SI</td><td>NO</td><td>CANTIDAD</td><td>FRECUENCIA</td></tr>
-        <tr><td>ALCOHOL</td><td>${f.alc_si || ''}</td><td>${f.alc_no || ''}</td><td>${f.alc_can || ''}</td><td>${f.alc_fre || ''}</td></tr>
-        <tr><td>TABACO</td><td>${f.tab_si || ''}</td><td>${f.tab_no || ''}</td><td>${f.tab_can || ''}</td><td>${f.tab_fre || ''}</td></tr>
-        <tr><td>DROGAS</td><td>${f.dro_si || ''}</td><td>${f.dro_no || ''}</td><td>${f.dro_can || ''}</td><td>${f.dro_fre || ''}</td></tr>
-        <tr><td>COQUEAR</td><td>${f.coq_si || ''}</td><td>${f.coq_no || ''}</td><td>${f.coq_can || ''}</td><td>${f.coq_fre || ''}</td></tr>
+        <tr><td>ALCOHOL</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="text" class="border-0 w-100"></td><td><input type="text" class="border-0 w-100"></td></tr>
+        <tr><td>TABACO</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="text" class="border-0 w-100"></td><td><input type="text" class="border-0 w-100"></td></tr>
+        <tr><td>DROGAS</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="text" class="border-0 w-100"></td><td><input type="text" class="border-0 w-100"></td></tr>
+        <tr><td>COQUEAR</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="text" class="border-0 w-100"></td><td><input type="text" class="border-0 w-100"></td></tr>
     </table>
 
     <table>
         <tr class="section-header"><td colspan="4">IV. EXAMEN MENTAL</td></tr>
-        <tr><td><b>PRESENTACIÓN:</b> ${f.presentacion || ''}</td><td><b>POSTURA:</b> ${f.postura || ''}</td>
-            <td colspan="2"><b>LUCIDO/ATENTO:</b> ${f.lucido || ''}</td></tr>
-        <tr><td><b>PENSAMIENTO:</b> ${f.pensamiento || ''}</td><td><b>DISCURSO:</b> ${f.discurso || ''}</td>
-            <td><b>PERCEPCIÓN:</b> ${f.percepcion || ''}</td><td><b>RITMO:</b> ${f.ritmo || ''}</td></tr>
-        <tr><td><b>TONO:</b> ${f.tono || ''}</td><td><b>MEMORIA:</b> ${f.memoria || ''}</td>
-            <td><b>APETITO:</b> ${f.apetito || ''}</td><td><b>SUEÑO:</b> ${f.sueno || ''}</td></tr>
+        <tr>
+            <td><b>PRESENTACIÓN:</b><br><input type="radio" name="pres"> Adecuado <input type="radio" name="pres"> Inadecuado</td>
+            <td><b>POSTURA:</b><br><input type="radio" name="post"> Erguida <input type="radio" name="post"> Encorvada</td>
+            <td colspan="2"><b>LUCIDO, ATENTO:</b><br><input type="radio" name="luc"> Si <input type="radio" name="luc"> No</td>
+        </tr>
+        <tr>
+            <td><b>DISCURSO:</b><br><input type="text" class="border-0 w-100"></td>
+            <td><b>RITMO:</b><br><input type="radio" name="rit"> Lento <input type="radio" name="rit"> Rápido</td>
+            <td><b>TONO:</b><br><input type="radio" name="ton"> Bajo <input type="radio" name="ton"> Alto</td>
+            <td><b>MEMORIA:</b><br><input type="radio" name="mem"> Normal <input type="radio" name="mem"> Anormal</td>
+        </tr>
     </table>
 
-    <table>
-        <tr class="section-header"><td>PUNTAJE</td><td>NOMBRE DE LA PRUEBA</td><td>OBSERVACIONES</td></tr>
-        <tr><td>${f.pts_minimental || ''}</td><td>TEST MINIMENTAL</td><td>${f.obs_minimental || ''}</td></tr>
-        <tr><td>${f.pts_suseso || ''}</td><td>CUESTIONARIO SUSESO</td><td>${f.obs_suseso || ''}</td></tr>
-    </table>
+    <div class="text-end">
+        <button onclick="window.print()" class="btn btn-dark">🖨️ IMPRIMIR FICHA</button>
+    </div>
 </div>
 </body>
 </html>
