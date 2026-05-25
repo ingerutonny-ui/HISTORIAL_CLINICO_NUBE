@@ -8,8 +8,8 @@
         body { background-color: #f1f5f9; padding: 20px; font-family: 'Arial', sans-serif; text-transform: uppercase; }
         .form-container { max-width: 900px; margin: auto; background: white; padding: 30px; border: 2px solid #000; }
         .btn-imprimir { float: right; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
-        th, td { border: 1px solid #000; padding: 6px; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        th, td { border: 1px solid #000; padding: 5px; font-size: 10px; }
         .section-title { background-color: #e2e8f0; font-weight: bold; text-align: center; }
         input[type="text"], textarea { border: none; width: 100%; text-transform: uppercase; }
     </style>
@@ -20,8 +20,8 @@
     <button onclick="window.print()" class="btn btn-dark btn-imprimir">🖨️ IMPRIMIR</button>
     <a href="d_menu.html" class="btn btn-secondary mb-3">← VOLVER</a>
 
-    <div class="text-center mb-4">
-        <h4 class="fw-bold">FICHA PSICOLÓGICA</h4>
+    <div class="text-center mb-3">
+        <h5 class="fw-bold m-0">FICHA PSICOLÓGICA</h5>
         <small>TRABAJO SEGURO Y PRODUCTIVO</small>
     </div>
 
@@ -36,7 +36,7 @@
     </table>
 
     <table class="table-bordered">
-        <tr class="section-title"><td>II. HABITOS (ALCOHOL, TABACO, DROGAS, COQUEAR)</td><td>SI</td><td>NO</td><td>CANTIDAD</td><td>FRECUENCIA</td></tr>
+        <tr class="section-title"><td>II. HABITOS (ALCOHOL, TABACO, DROGAS, BOLEAR COCA)</td><td>SI</td><td>NO</td><td>CANTIDAD</td><td>FRECUENCIA</td></tr>
         <tr><td>ALCOHOL</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="text"></td><td><input type="text"></td></tr>
         <tr><td>TABACO</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="text"></td><td><input type="text"></td></tr>
         <tr><td>DROGAS</td><td><input type="checkbox"></td><td><input type="checkbox"></td><td><input type="text"></td><td><input type="text"></td></tr>
@@ -50,8 +50,8 @@
 
     <table class="table-bordered">
         <tr class="section-title"><td colspan="4">IV. EXAMEN MENTAL</td></tr>
-        <tr><td colspan="4"><b>4.1 OBSERVACIÓN DE LA CONDUCTA:</b><br><textarea rows="2"></textarea></td></tr>
-        <tr><td colspan="4"><b>4.2 PROCESOS COGNITIVOS</b></td></tr>
+        <tr><td colspan="4"><b>4.1. OBSERVACIÓN DE LA CONDUCTA:</b><br><textarea rows="1"></textarea></td></tr>
+        <tr><td colspan="4" class="section-title">4.2. PROCESOS COGNITIVOS</td></tr>
         <tr>
             <td>PRESENTACIÓN:<br><input type="checkbox"> ADECUADO <input type="checkbox"> INADECUADO</td>
             <td>POSTURA:<br><input type="checkbox"> ERGUIDA <input type="checkbox"> ENCORVADA</td>
@@ -68,7 +68,7 @@
             <td>SUEÑO:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
         </tr>
         <tr>
-            <td>ORIENTACIÓN:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
+            <td>ORIENTACIÓN:<br> TIEMPO <input type="checkbox"> ESPACIO <input type="checkbox"> PERSONA <input type="checkbox"></td>
             <td>PERSONALIDAD:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
             <td>AFECTIVIDAD:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
             <td>CONDUCTA SEXUAL:<br> NORMAL <input type="checkbox"> ANORMAL <input type="checkbox"></td>
@@ -81,8 +81,8 @@
         <tr><td><input type="text"></td><td>CUESTIONARIO SUSESO/ISTAS</td><td><input type="text"></td></tr>
     </table>
 
-    <div class="mt-4 text-center">
-        <button onclick="guardarFicha()" class="btn btn-primary w-100 py-3">💾 GUARDAR FICHA</button>
+    <div class="mt-3">
+        <button onclick="guardarFicha()" class="btn btn-primary w-100 py-2">💾 GUARDAR FICHA</button>
     </div>
 </div>
 
